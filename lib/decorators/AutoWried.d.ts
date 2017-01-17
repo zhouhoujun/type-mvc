@@ -1,1 +1,1 @@
-export declare function AutoWired(target: Function): any;
+export declare function AutoWired(target: Function): Function;

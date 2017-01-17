@@ -1,6 +1,6 @@
 /**
  * base controller
  */
-export declare class Controller {
+export declare class BaseController {
     constructor();
 }

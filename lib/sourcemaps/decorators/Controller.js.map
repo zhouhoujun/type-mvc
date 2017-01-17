@@ -1,0 +1,1 @@
+{"version":3,"sources":["decorators/Controller.ts"],"names":[],"mappings":";AAAA,oBAA2B,MAAgB;IACvC,MAAM,CAAC,MAAM,CAAC;AAClB,CAAC;AAFD,gCAEC","file":"../../decorators/Controller.js","sourcesContent":["export function Controller(target: Function) {\r\n    return target;\r\n}\r\n"]}
