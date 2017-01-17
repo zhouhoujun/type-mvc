@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.ts"],"names":[],"mappings":";;;;AAAA,4BAAyB;AACzB,kCAA6B;AAC7B,4CAAuC","file":"../index.js","sourcesContent":["import \"reflect-metadata\"\r\nexport * from './Controller';\r\nexport * from './decorators/AutoWried';\r\n"]}
