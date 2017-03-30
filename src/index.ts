@@ -1,5 +1,4 @@
-export * from './type';
+export * from './util/type';
 export * from './decorators/AutoWried';
-export * from './decorators/Controller';
-export * from './BaseController';
+export * from './decorators/decoratorFactories';
 

@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Type } from '../type';
+import { Type } from '../util/type';
 
 
 export const NOT_FOUND = new Object();

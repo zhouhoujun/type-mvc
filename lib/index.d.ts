@@ -1,4 +1,4 @@
-import "reflect-metadata";
+export * from './type';
 export * from './decorators/AutoWried';
-export * from './decorators/Controller';
+export * from './decorators/decoratorFactories';
 export * from './BaseController';

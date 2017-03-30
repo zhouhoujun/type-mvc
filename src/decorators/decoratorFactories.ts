@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { stringify } from '../util/index';
-import { Type } from '../type';
+import { Type } from '../util/type';
 
 let _nextClassId = 0;
 /**
