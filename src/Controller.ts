@@ -41,6 +41,10 @@ export class Controller {
                     }
                 });
             }
+        } else if (file instanceof Buffer) {
+            defer.resolve(file);
+        } else if (file instanceof Stream) {
+            defer.resolve()
         }
         return defer.promise;
     }
