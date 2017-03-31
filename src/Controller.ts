@@ -3,9 +3,11 @@ import { existsSync, readFile } from 'fs';
 import { Buffer } from 'buffer';
 import { Stream } from 'stream';
 import * as path from 'path';
+import { createDefer } from './util';
+
 /**
  * MVC Controller.
- * 
+ *
  * @export
  * @class Controller
  */
@@ -19,19 +21,27 @@ export class Controller {
     }
 
     view(viewName: string, model: any) {
-        if (!this.context['render']) {
+        if (!this.context.render) {
             return Promise.reject('view engin middleware no configed!');
         } else {
-            return this.context['render'](viewName, model);
+            return this.context.render(viewName, model);
         }
     }
 
-    file(file: string | Buffer | Stream, contentType: string, fileDownloadName?: string) {
-
+    file(file: string | Buffer | Stream, contentType?: string, fileDownloadName?: string) {
+        let defer = createDefer<Buffer>();
         if (file instanceof String) {
-            if (existsSync(path.join(this.context.appRoot, file))) {
-
+            let filepath = path.join(this.context.appRoot, file);
+            if (existsSync(filepath)) {
+                readFile(filepath, contentType || 'utf8', (err, data) => {
+                    if (err) {
+                        defer.reject(err);
+                    } else {
+                        defer.resolve(new Buffer(data));
+                    }
+                });
             }
         }
+        return defer.promise;
     }
 }
