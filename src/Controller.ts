@@ -11,7 +11,7 @@ import { createDefer } from './util';
  * @export
  * @class Controller
  */
-export class Controller {
+export abstract class Controller {
     private _context: MvcContext;
     get context(): MvcContext {
         return this._context;
@@ -28,7 +28,7 @@ export class Controller {
         }
     }
 
-    file(file: string | Buffer | Stream, contentType?: string, fileDownloadName?: string) {
+    file(file: string | Buffer | Stream, contentType?: string, fileDownloadName?: string): Promise<Buffer> {
         let defer = createDefer<Buffer>();
         if (file instanceof String) {
             let filepath = path.join(this.context.appRoot, file);
@@ -44,7 +44,10 @@ export class Controller {
         } else if (file instanceof Buffer) {
             defer.resolve(file);
         } else if (file instanceof Stream) {
-            defer.resolve()
+            file.once('end', (data) => {
+                defer.resolve(new Buffer(data));
+            })
+                .once('error', defer.reject);
         }
         return defer.promise;
     }
