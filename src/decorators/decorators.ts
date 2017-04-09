@@ -1,7 +1,5 @@
 import 'reflect-metadata';
-import { stringify } from '../util/index';
-import { Type } from '../util/type';
-
+import { stringify, Type } from '../util';
 let _nextClassId = 0;
 /**
  * Declares the interface to be used with {@link Class}.

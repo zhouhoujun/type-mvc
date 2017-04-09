@@ -56,3 +56,16 @@ export class InjectionToken<T> {
 export interface IMap<T> {
   [K: string]: T;
 }
+
+/**
+ * request method.
+ */
+export enum RequestMethod {
+  Get,
+  Post,
+  Put,
+  Delete,
+  Options,
+  Head,
+  Patch
+}

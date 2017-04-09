@@ -1,1 +1,0 @@
-{"version":3,"sources":["BaseController.ts"],"names":[],"mappings":";;AACA;;GAEG;AACH;IACI;IAEA,CAAC;IACL,qBAAC;AAAD,CAJA,AAIC,IAAA;AAJY,wCAAc","file":"../BaseController.js","sourcesContent":["\r\n/**\r\n * base controller\r\n */\r\nexport class BaseController {\r\n    constructor() {\r\n\r\n    }\r\n}\r\n"]}

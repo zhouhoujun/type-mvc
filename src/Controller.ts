@@ -1,9 +1,13 @@
 import { MvcContext } from './MvcContext';
 import { existsSync, readFile } from 'fs';
+import { Configuration } from './Configuration';
 import { Buffer } from 'buffer';
 import { Stream } from 'stream';
 import * as path from 'path';
 import { createDefer } from './util';
+
+import { IController, Controller, Get, AutoWired } from './decorators';
+
 
 /**
  * MVC Controller.
@@ -11,14 +15,9 @@ import { createDefer } from './util';
  * @export
  * @class Controller
  */
-export abstract class Controller {
-    private _context: MvcContext;
-    get context(): MvcContext {
-        return this._context;
-    }
-    set context(ctx: MvcContext) {
-        this._context = ctx;
-    }
+export abstract class BaseController implements IController {
+    @AutoWired('MvcContext')
+    context: MvcContext;
 
     view(viewName: string, model: any) {
         if (!this.context.render) {
@@ -31,7 +30,8 @@ export abstract class Controller {
     file(file: string | Buffer | Stream, contentType?: string, fileDownloadName?: string): Promise<Buffer> {
         let defer = createDefer<Buffer>();
         if (file instanceof String) {
-            let filepath = path.join(this.context.appRoot, file);
+            let confige = this.context.injector.get<Configuration>();
+            let filepath = path.join(confige.rootdir, file);
             if (existsSync(filepath)) {
                 readFile(filepath, contentType || 'utf8', (err, data) => {
                     if (err) {

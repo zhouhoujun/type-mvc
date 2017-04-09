@@ -14,12 +14,16 @@ export abstract class Injector {
 
     /**
      * Retrieves an instance from the injector based on the provided token.
-     * If not found:
-     * - Throws {@link NoProviderError} if no `notFoundValue` that is not equal to
-     * Injector.THROW_IF_NOT_FOUND is given
-     * - Returns the `notFoundValue` otherwise
+     *
+     * @abstract
+     * @template T
+     * @param {Token<T>} [token]
+     * @param {T} [notFoundValue]
+     * @returns {T}
+     *
+     * @memberOf Injector
      */
-    abstract get<T>(token: Token<T>, notFoundValue?: T): T;
+    abstract get<T>(token?: Token<T>, notFoundValue?: T): T;
 
     /**
      * register type.
@@ -59,13 +63,13 @@ export class DefaultInjector extends Injector {
     /**
      * get instance via token.
      * @template T
-     * @param {Token<T>} token
+     * @param {Token<T>} [token]
      * @param {T} [notFoundValue]
      * @returns {T}
      *
      * @memberOf DefaultInjector
      */
-    get<T>(token: Token<T>, notFoundValue?: T): T {
+    get<T>(token?: Token<T>, notFoundValue?: T): T {
         return null;
     }
 

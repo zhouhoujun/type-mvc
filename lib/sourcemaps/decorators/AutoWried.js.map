@@ -1,1 +1,0 @@
-{"version":3,"sources":["decorators/AutoWried.ts"],"names":[],"mappings":";;AAAA,mBAA0B,MAAgB;IACtC,MAAM,CAAC,MAAM,CAAC;AAClB,CAAC;AAFD,8BAEC","file":"../../decorators/AutoWried.js","sourcesContent":["export function AutoWired(target: Function) {\r\n    return target;\r\n}\r\n"]}

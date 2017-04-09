@@ -1,78 +1,11 @@
-import { TypeDecorator, makeDecorator, makePropDecorator } from './decoratorFactories';
+import { TypeDecorator, makeDecorator, makePropDecorator } from './decorators';
 
-/**
- * Type of the Injectable decorator / constructor function.
- *
- * @stable
- */
-export interface InjectableDecorator {
-    /**
-     * @whatItDoes A marker metadata that marks a class as available to {@link Injector} for creation.
-     * @howToUse
-     * ```
-     * @Injectable()
-     * class Car {}
-     * ```
-     *
-     * @description
-     * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
-     *
-     * ### Example
-     *
-     * {@example core/di/ts/metadata_spec.ts region='Injectable'}
-     *
-     * {@link Injector} will throw {@link NoAnnotationError} when trying to instantiate a class that
-     * does not have `@Injectable` marker, as shown in the example below.
-     *
-     * {@example core/di/ts/metadata_spec.ts region='InjectableThrows'}
-     *
-     * @stable
-     */
-    (): any;
-    new (): Injectable;
-}
-
-/**
- * Type of the Injectable metadata.
- *
- * @stable
- */
-export interface Injectable { }
-
-/**
- * Injectable decorator and metadata.
- *
- * @stable
- * @Annotation
- */
-export const Injectable: InjectableDecorator = <InjectableDecorator>makeDecorator('Injectable', []);
-
-
-/**
- * Type of the Controller decorator / constructor function.
- *
- * @stable
- */
-export interface ControllerDecorator extends InjectableDecorator {
-    routePrefix?: string;
-}
-
-/**
- * Type of the Controller metadata.
- *
- * @stable
- */
-export interface Controller { }
-
-/**
- * Controller decorator and metadata.
- *
- * @stable
- * @Annotation
- */
-export const Controller: ControllerDecorator = <ControllerDecorator>makeDecorator('Controller', []);
-
-
+export * from  './decorators';
+export * from './Injectable';
+export * from './AutoWried';
+export * from './Controller';
+export * from './methods';
+export * from './routes';
 
 /**
  * Type of the Input decorator / constructor function.

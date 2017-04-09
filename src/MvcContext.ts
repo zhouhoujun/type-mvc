@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-
+import { Injector } from './di';
 /**
  * mvc Context.
  * @export
@@ -17,10 +17,7 @@ export interface MvcContext extends Context {
     render?(viewName: string, model?: any);
 
     /**
-     * application root.
-     * @type {string}
-     * @memberOf MvcContext
+     * injector service.
      */
-    appRoot: string;
-
+    injector?: Injector;
 }

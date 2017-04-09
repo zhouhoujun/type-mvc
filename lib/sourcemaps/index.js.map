@@ -1,1 +1,0 @@
-{"version":3,"sources":["index.ts"],"names":[],"mappings":";;;;;AAAA,4BAAuB;AACvB,4CAAuC;AACvC,qDAAgD;AAChD,sCAAiC","file":"../index.js","sourcesContent":["export * from './type';\r\nexport * from './decorators/AutoWried';\r\nexport * from './decorators/decoratorFactories';\r\nexport * from './BaseController';\r\n\r\n"]}

@@ -1,8 +1,9 @@
 import * as Koa from 'koa';
 import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
+import { MvcContext } from './MvcContext';
 import { Configuration } from './Configuration';
-import { Defer, createDefer, MvcMiddleware, AsyncMiddleware } from './util';
+import { Defer, createDefer, MvcMiddleware, AsyncMiddleware, Type } from './util';
 import { Injector } from './di';
 import * as path from 'path';
 import * as _ from 'lodash';
@@ -19,7 +20,7 @@ const convert = require('koa-convert');
  */
 export class WebHostBuilder {
     private startup: Defer<Koa>;
-    private _injector: Injector;
+    private injector: Defer<Injector>;
     private middlewares: MvcMiddleware[];
     private configuration: Defer<Configuration>;
 
@@ -29,23 +30,35 @@ export class WebHostBuilder {
      * @param [app]
      */
     constructor(private rootdir: string, protected app?: Koa) {
-        this.middlewares = [];
+        this.middlewares = [this.createMvcMiddleware()];
+        this.injector = createDefer<Injector>(i => this.initInjector(i));
         this.configuration = createDefer<Configuration>();
         this.app = this.app || new Koa();
     }
 
-    useInjector(injector: Injector) {
-        this._injector = injector;
+    /**
+     * user custom Injector.
+     *
+     * @param {(Injector | Promise<Injector>)} [injector]
+     * @returns
+     *
+     * @memberOf WebHostBuilder
+     */
+    useInjector(injector?: Injector | Promise<Injector>) {
+        this.injector.resolve(injector || Injector.instance);
         return this;
     }
 
 
     /**
      * use custom configuration.
-     * @param {(string | Configuration)} config
+     *
+     * @param {(string | Configuration)} [config]
+     * @returns {WebHostBuilder}
+     *
      * @memberOf WebHostBuilder
      */
-    useConfiguration(config?: string | Configuration) {
+    useConfiguration(config?: string | Configuration): WebHostBuilder {
         let excfg: Configuration;
         if (typeof config === 'string') {
             if (existsSync(config)) {
@@ -66,18 +79,12 @@ export class WebHostBuilder {
                     return cfg;
                 });
         }
-    }
 
-    get injector(): Injector {
-        return this._injector || Injector.instance;
+        return this;
     }
 
     get config(): Promise<Configuration> {
-        return this.configuration.promise
-            .then(cfg => {
-                this.injector.registerSingleton('Configuration', cfg);
-                return cfg;
-            });
+        return this.configuration.promise;
     }
 
     /**
@@ -91,12 +98,22 @@ export class WebHostBuilder {
         return this;
     }
 
-    useStatic(paths: string | string[]) {
+    /**
+     * user static files.
+     *
+     * @param {(string | string[])} paths
+     * @returns {WebHostBuilder}
+     *
+     * @memberOf WebHostBuilder
+     */
+    useStatic(paths: string | string[]): WebHostBuilder {
         let ps = (typeof paths === 'string') ? [paths] : paths;
         ps.forEach(p => {
             let mid = convert(serveStatic(path.join(this.rootdir, p))) as Middleware;
             this.middlewares.push(mid);
         });
+
+        return this;
     }
 
     /**
@@ -107,10 +124,19 @@ export class WebHostBuilder {
     build(): WebHostBuilder {
         this.startup = createDefer<Koa>();
         this.useConfiguration();
-        this.setupMiddwares()
-            .then(this.loadController)
+        let cfg: Configuration;
+        let injector: Injector;
+        Promise.all([this.config, this.injector.promise])
+            .then(data => {
+                cfg = data[0];
+                injector = data[1];
+                injector.registerSingleton(Configuration, cfg);
+            })
+            .then(() => this.setupMiddwares(cfg, injector))
+            .then(() => this.loadController(cfg, injector))
             .then(this.startup.resolve)
             .catch(this.startup.reject);
+
         return this;
     }
 
@@ -128,15 +154,28 @@ export class WebHostBuilder {
         return app;
     }
 
+    /**
+     * create mvc middleware.
+     */
+    protected createMvcMiddleware() {
+        return async (ctx: MvcContext, next) => {
+            ctx.injector = await this.injector.promise;
+            await next();
+        }
+    }
 
-    protected async loadController(): Promise<Koa> {
+    protected async initInjector(injector): Promise<Injector> {
+        return this.injector.promise
+    }
+
+    protected async loadController(config: Configuration, injector: Injector): Promise<Koa> {
         return this.app;
     }
 
-    protected async setupMiddwares(): Promise<Koa> {
+    protected async setupMiddwares(config: Configuration, injector: Injector): Promise<Koa> {
         let middlewares = await Promise.all(this.middlewares.map(m => {
-            if (m && m['createMiddleware']) {
-                return Promise.resolve(m['createMiddleware']() as AsyncMiddleware)
+            if (m && _.isFunction(m['createMiddleware'])) {
+                return Promise.resolve(m['createMiddleware'](config, injector) as AsyncMiddleware)
             } else {
                 return Promise.resolve(m as AsyncMiddleware)
             }
