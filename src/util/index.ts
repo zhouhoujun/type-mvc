@@ -22,4 +22,3 @@ export function stringify(token: any): string {
   const newLineIndex = res.indexOf('\n');
   return newLineIndex === -1 ? res : res.substring(0, newLineIndex);
 }
-

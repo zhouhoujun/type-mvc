@@ -3,7 +3,7 @@ import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
 import { MvcContext } from './MvcContext';
 import { Configuration } from './Configuration';
-import { Defer, createDefer, MvcMiddleware, AsyncMiddleware, Type } from './util';
+import { Defer, createDefer, MvcMiddleware, AsyncMiddleware, MiddlewareFactory, Type } from './util';
 import { Injector } from './di';
 import * as path from 'path';
 import * as _ from 'lodash';
@@ -31,7 +31,6 @@ export class WebHostBuilder {
      */
     constructor(private rootdir: string, protected app?: Koa) {
         this.middlewares = [this.createMvcMiddleware()];
-        this.injector = createDefer<Injector>(i => this.initInjector(i));
         this.configuration = createDefer<Configuration>();
         this.app = this.app || new Koa();
     }
@@ -45,6 +44,9 @@ export class WebHostBuilder {
      * @memberOf WebHostBuilder
      */
     useInjector(injector?: Injector | Promise<Injector>) {
+        if (this.injector) {
+            this.injector = createDefer<Injector>();
+        }
         this.injector.resolve(injector || Injector.instance);
         return this;
     }
@@ -88,7 +90,7 @@ export class WebHostBuilder {
     }
 
     /**
-     * use middleware.
+     * use middleware `fn` or  `MiddlewareFactory`.
      * @param {MvcMiddleware} middleware
      * @returns {WebHostBuilder}
      * @memberOf WebHostBuilder
@@ -124,6 +126,9 @@ export class WebHostBuilder {
     build(): WebHostBuilder {
         this.startup = createDefer<Koa>();
         this.useConfiguration();
+        if (!this.injector) {
+            this.useInjector();
+        }
         let cfg: Configuration;
         let injector: Injector;
         Promise.all([this.config, this.injector.promise])
@@ -131,6 +136,7 @@ export class WebHostBuilder {
                 cfg = data[0];
                 injector = data[1];
                 injector.registerSingleton(Configuration, cfg);
+                return this.initInjector(cfg, injector);
             })
             .then(() => this.setupMiddwares(cfg, injector))
             .then(() => this.loadController(cfg, injector))
@@ -164,7 +170,7 @@ export class WebHostBuilder {
         }
     }
 
-    protected async initInjector(injector): Promise<Injector> {
+    protected async initInjector(config: Configuration, injector: Injector): Promise<Injector> {
         return this.injector.promise
     }
 

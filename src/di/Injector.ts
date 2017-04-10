@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Type, Token } from '../util';
+import { Token } from '../util';
 
 
 export const NOT_FOUND = new Object();
@@ -41,7 +41,7 @@ export abstract class Injector {
      * @template T
      * @param {Token<T>} token
      * @param {T} value
-     * 
+     *
      * @memberOf Injector
      */
     abstract registerSingleton<T>(token: Token<T>, value: T);
@@ -91,7 +91,7 @@ export class DefaultInjector extends Injector {
      * @template T
      * @param {Token<T>} token
      * @param {T} value
-     * 
+     *
      * @memberOf Injector
      */
     registerSingleton<T>(token: Token<T>, value: T) {
@@ -127,7 +127,7 @@ class NullInjector implements Injector {
      * @template T
      * @param {Token<T>} token
      * @param {T} value
-     * 
+     *
      * @memberOf Injector
      */
     registerSingleton<T>(token: Token<T>, value: T) {
