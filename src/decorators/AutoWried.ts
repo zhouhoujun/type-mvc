@@ -1,5 +1,4 @@
 import { makePropDecorator } from './decorators';
-import { RequestMethod, Type } from '../util';
 
 
 export interface AutoWiredDecorator {
