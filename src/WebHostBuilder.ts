@@ -1,4 +1,5 @@
 import * as Koa from 'koa';
+import * as chalk from 'chalk';
 import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
 import { MvcContext } from './MvcContext';
@@ -71,7 +72,23 @@ export class WebHostBuilder {
         } else if (config) {
             excfg = config;
         } else {
-            this.configuration.resolve(require(path.join(this.rootdir, './config.json')) as Configuration);
+            let cfgpath = path.join(this.rootdir, './config');
+            let config: Configuration;
+            ['.js', '.ts', '.json'].forEach(ext => {
+                if (config) {
+                    return false;
+                }
+                if (existsSync(cfgpath + ext)) {
+                    config = require(cfgpath + ext) as Configuration;
+                    return false;
+                }
+                return true;
+            });
+            if (!config) {
+                config = {};
+                console.log(chalk.yellow('your app has not config file.'));
+            }
+            this.configuration.resolve(_.extend(new Configuration(), config));
         }
 
         if (excfg) {
@@ -135,7 +152,6 @@ export class WebHostBuilder {
             .then(data => {
                 cfg = data[0];
                 injector = data[1];
-                injector.registerSingleton(Configuration, cfg);
                 return this.initInjector(cfg, injector);
             })
             .then(() => this.setupMiddwares(cfg, injector))
@@ -171,7 +187,8 @@ export class WebHostBuilder {
     }
 
     protected async initInjector(config: Configuration, injector: Injector): Promise<Injector> {
-        return this.injector.promise
+        injector.registerSingleton(Configuration, config);
+        return injector;
     }
 
     protected async loadController(config: Configuration, injector: Injector): Promise<Koa> {
