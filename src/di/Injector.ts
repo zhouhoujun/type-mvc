@@ -9,8 +9,12 @@ export const NOT_FOUND = new Object();
  */
 export abstract class Injector {
     static notFound = NOT_FOUND;
-    static NULL: Injector = new NullInjector();
-    static instance: Injector = new DefaultInjector();
+    static get Null(): Injector {
+        return Null;
+    }
+    static get instance(): Injector {
+        return Default;
+    }
 
     /**
      * Retrieves an instance from the injector based on the provided token.
@@ -99,14 +103,18 @@ export class DefaultInjector extends Injector {
     }
 }
 
-
-
-class NullInjector implements Injector {
-    get(token: any, notFoundValue: any = NOT_FOUND): any {
+/**
+ * Null Injector.
+ */
+class NullInjector extends Injector {
+    constructor() {
+        super();
+    }
+    get<T>(token: T, notFoundValue = NOT_FOUND): T {
         if (notFoundValue === NOT_FOUND) {
             throw new Error(`No provider for ${JSON.stringify(token)}!`);
         }
-        return notFoundValue;
+        return notFoundValue as T;
     }
 
     /**
@@ -134,3 +142,6 @@ class NullInjector implements Injector {
 
     }
 }
+
+const Default = new DefaultInjector();
+const Null = new NullInjector();

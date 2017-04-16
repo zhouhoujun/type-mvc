@@ -1,7 +1,21 @@
 import { fileFilter } from '../util';
 import * as _ from 'lodash';
 
+/**
+ * build.
+ * @export
+ * @interface Builder
+ */
 export interface Builder {
+    /**
+     * load source.
+     *
+     * @param {string[]} match
+     * @param {(string | RegExp)} [exp]
+     * @returns {Promise<Function[]>}
+     *
+     * @memberOf Builder
+     */
     load(match: string[], exp?: string | RegExp): Promise<Function[]>;
     register(): void;
     setup(): void;
