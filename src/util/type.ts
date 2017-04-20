@@ -31,7 +31,6 @@ export interface Type<T> extends Function { new (...args: any[]): T; }
  */
 export type Token<T> = Type<T> | InjectionToken<T> | string | symbol;
 
-
 /**
  * injecto token.
  * @export
@@ -39,11 +38,16 @@ export type Token<T> = Type<T> | InjectionToken<T> | string | symbol;
  * @template T
  */
 export class InjectionToken<T> {
-  constructor(protected desc: string) {
+  protected type: 'InjectionToken';
+  constructor(protected Class: Type<T>, protected desc: string) {
+  }
+
+  getClass() {
+    return this.Class
   }
 
   toString(): string {
-    return `InjectionToken ${this.desc}`;
+    return `${this.type} ${typeof this.Class} ${this.desc}`;
   }
 }
 

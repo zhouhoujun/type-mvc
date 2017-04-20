@@ -32,5 +32,5 @@ export interface ControllerDecorator {
  * @stable
  * @Annotation
  */
-export const Controller: ControllerDecorator = <ControllerDecorator>makeDecorator('Controller', { routePrefix: undefined });
+export const Controller: ControllerDecorator = makeDecorator('Controller', { routePrefix: undefined }) as ControllerDecorator;
 

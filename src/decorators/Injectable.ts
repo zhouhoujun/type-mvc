@@ -1,3 +1,4 @@
+import { Type } from '../util';
 import { TypeDecorator, makeDecorator, makePropDecorator } from './decorators';
 
 /**
@@ -37,7 +38,7 @@ export interface InjectableDecorator {
  *
  * @stable
  */
-export interface Injectable { }
+export interface Injectable extends Type<any> { }
 
 /**
  * Injectable decorator and metadata.
@@ -45,5 +46,5 @@ export interface Injectable { }
  * @stable
  * @Annotation
  */
-export const Injectable: InjectableDecorator = <InjectableDecorator>makeDecorator('Injectable', []);
+export const Injectable: InjectableDecorator = makeDecorator('Injectable', []) as InjectableDecorator;
 

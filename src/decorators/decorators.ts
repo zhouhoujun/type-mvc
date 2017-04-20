@@ -222,8 +222,7 @@ export function Class(clsDef: ClassDefinition): Type<any> {
             (<Function>constructor).prototype = proto =
                 Object.create((<Function>clsDef.extends).prototype);
         } else {
-            throw new Error(
-                `Class definition 'extends' property must be a constructor function was: ${stringify(clsDef.extends)}`);
+            throw new Error(`Class definition 'extends' property must be a constructor function was: ${stringify(clsDef.extends)}`);
         }
     }
 

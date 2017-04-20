@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import { Token } from '../util';
-
+import { Token, Type, InjectionToken } from '../util';
+import { Output, Input, Injectable } from '../decorators';
 
 export const NOT_FOUND = new Object();
 
@@ -59,6 +59,7 @@ export abstract class Injector {
  */
 export class DefaultInjector extends Injector {
     private factories: Map<Token<any>, any>;
+    private singleton: Map<Token<any>, any>;
     constructor() {
         super();
         this.factories = new Map<Token<any>, any>();
@@ -74,7 +75,11 @@ export class DefaultInjector extends Injector {
      * @memberOf DefaultInjector
      */
     get<T>(token?: Token<T>, notFoundValue?: T): T {
-        return null;
+        if (!this.factories.has(token)) {
+            return notFoundValue === undefined ? (NOT_FOUND as T) : notFoundValue;
+        }
+        let factory = this.factories.get(token);
+        return factory() as T;
     }
 
     /**
@@ -82,11 +87,11 @@ export class DefaultInjector extends Injector {
      * @abstract
      * @template T
      * @param {Token<T>} token
-     * @param {T} [notFoundValue]
+     * @param {T} [value]
      * @memberOf Injector
      */
-    register<T>(token: Token<T>, notFoundValue?: T) {
-
+    register<T>(token: Token<T>, value?: T) {
+        this.registerFactory(token, value);
     }
 
     /**
@@ -94,12 +99,88 @@ export class DefaultInjector extends Injector {
      * @abstract
      * @template T
      * @param {Token<T>} token
-     * @param {T} value
+     * @param {T} [value]
      *
      * @memberOf Injector
      */
-    registerSingleton<T>(token: Token<T>, value: T) {
+    registerSingleton<T>(token: Token<T>, value?: T) {
+        this.registerFactory(token, value, true);
+    }
 
+    protected getTokenKey<T>(token: Token<T>) {
+        return (token instanceof InjectionToken) ? token.toString() : token;
+    }
+
+    protected registerFactory<T>(token: Token<T>, value?: T, singleton?: boolean) {
+        let key = this.getTokenKey(token);
+        if (this.factories.has(token)) {
+            return;
+        }
+
+        let classFactory;
+        if (singleton && value !== undefined) {
+            let symbolValue = value;
+            classFactory = () => {
+                return symbolValue;
+            }
+        } else if (typeof token !== 'string' && typeof token !== 'symbol') {
+            let ClassT = (token instanceof InjectionToken) ? token.getClass() : token as Type<T>
+            let parameters = this.getParameterMetadata(ClassT);
+            this.registerDependencies(...parameters);
+            let props = this.getInputMetadata(ClassT);
+            this.registerDependencies(...props);
+
+            classFactory = () => {
+                if (singleton && this.singleton.has(token)) {
+                    return this.singleton.get(token);
+                }
+
+                let paramInstances = parameters.map((ParamClass, index) => this.get(ParamClass));
+                let instance = new ClassT(...paramInstances);
+                if (instance) {
+                    props.forEach((prop, idx) => {
+                            instance[prop.bindingPropertyName] = this.get(PropClass);
+                        });
+                } else {
+                    instance = value;
+                }
+                if (singleton) {
+                    this.singleton.set(key, instance);
+                }
+                return instance;
+            };
+        } else {
+            let symbolValue = value;
+            classFactory = () => {
+                return symbolValue;
+            }
+        }
+
+        this.factories.set(key, classFactory);
+    }
+
+    protected getParameterMetadata<T>(Class: Type<T>): Injectable[] {
+        let parameters: Injectable[] = Reflect.getMetadata('parameters', Class) || [];
+        return parameters;
+    }
+
+    protected getInputMetadata<T>(Class: Type<T>): Input[] {
+        let parameters: Input[] = Reflect.getMetadata('Input', Class) || [];
+        return parameters;
+    }
+
+    protected getOuputMetadata<T>(Class: Type<T>): Output[] {
+        let parameters: Output[] = Reflect.getMetadata('Output', Class) || [];
+        return parameters;
+    }
+
+    protected registerDependencies<T>(...deps: Token<any>[]) {
+        deps.forEach(DepClass => {
+            let injectableConfig = Reflect.getMetadata('Injectable', DepClass);
+            if (injectableConfig) {
+                this.register(DepClass, injectableConfig);
+            }
+        });
     }
 }
 
