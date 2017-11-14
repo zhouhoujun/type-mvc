@@ -6,7 +6,7 @@ import { Stream } from 'stream';
 import * as path from 'path';
 import { createDefer } from './util';
 
-import { IController, Controller, Get, AutoWired } from './decorators';
+import { IController, Get, AutoWired } from './decorators';
 
 
 /**

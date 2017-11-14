@@ -196,7 +196,7 @@ export function makeDecorator(
     name: string,
     props: { [name: string]: any },
     parentClass?: any,
-    chainFn: (fn: Function) => void = null): (...args: any[]) => ClassDecorator {
+    chainFn: (fn: Function) => void = null): any {
 
     const metaCtor = makeMetadataCtor([props]);
     function DecoratorFactory(objOrType: any): ClassDecorator {
@@ -237,7 +237,7 @@ export function makeDecorator(
 }
 
 export function makeParamDecorator(
-    name: string, props: ([string, any] | { [name: string]: any })[], parentClass?: any): (...args: any[]) => ParameterDecorator {
+    name: string, props: ([string, any] | { [name: string]: any })[], parentClass?: any): any {
     const metaCtor = makeMetadataCtor(props);
     function ParamDecoratorFactory(...args: any[]): ParameterDecorator {
         if (this instanceof ParamDecoratorFactory) {
@@ -274,7 +274,7 @@ export function makeParamDecorator(
 }
 
 export function makeMethodDecorator(
-    name: string, props: ([string, any] | { [key: string]: any })[], parentClass?: any): (...args: any[]) => MethodDecorator {
+    name: string, props: ([string, any] | { [key: string]: any })[], parentClass?: any): any {
 
     const metaCtor = makeMetadataCtor(props);
     function MethodDecoratorFactory(...args: any[]): MethodDecorator {
@@ -304,7 +304,7 @@ export function makeMethodDecorator(
 }
 
 export function makePropDecorator(
-    name: string, props: ([string, any] | { [key: string]: any })[], parentClass?: any): (...args: any[]) => PropertyDecorator {
+    name: string, props: ([string, any] | { [key: string]: any })[], parentClass?: any): any {
     const metaCtor = makeMetadataCtor(props);
 
     function PropDecoratorFactory(...args: any[]): PropertyDecorator {

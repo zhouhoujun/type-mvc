@@ -74,7 +74,7 @@ export class WebHostBuilder {
         } else {
             let cfgpath = path.join(this.rootdir, './config');
             let config: Configuration;
-            ['.js', '.ts', '.json'].forEach(ext => {
+            ['.js', '.json'].forEach(ext => {
                 if (config) {
                     return false;
                 }
@@ -167,12 +167,13 @@ export class WebHostBuilder {
      * @returns {Koa}
      * @memberOf WebHostBuilder
      */
-    async run(): Promise<Koa> {
+    async run() {
         if (!this.startup) {
             this.build();
         }
         let app = await this.startup.promise;
-        app.listen(this.app.env['port']);
+        let config = await this.configuration.promise;
+        app.listen(config.port || this.app.env['port']);
         return app;
     }
 

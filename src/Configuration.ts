@@ -18,6 +18,7 @@ export interface MiddlewareOptions {
  * @interface Configuration
  */
 export class Configuration {
+    port? = 3000;
     /**
      * system file root directory.
      */
