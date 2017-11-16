@@ -1,44 +1,73 @@
 import 'reflect-metadata';
 import { stringify, Type } from '../util';
 
-export function makeDecorator(name: string, props: { [name: string]: any }, parentClass?: any, chainFn: (fn: Function) => void = null): ClassDecorator {
-    const metaCtor = makeMetadataCtor([props]);
 
-    function DecoratorFactory(objOrType: any): ClassDecorator {
-        if (!(Reflect && Reflect.getOwnMetadata)) {
-            throw 'reflect-metadata shim is required when using class decorators';
-        }
+export function makeMethodDecorator(
+    name: string, props: ([string, any] | { [key: string]: any })[], parentClass?: any): (...args: any[]) => MethodDecorator {
 
-        if (this instanceof DecoratorFactory) {
-            metaCtor.call(this, objOrType);
+    const metaCtor = makeMetadataCtor(props);
+    function MethodDecoratorFactory(...args: any[]): MethodDecorator {
+        if (this instanceof MethodDecoratorFactory) {
+            metaCtor.apply(this, args);
             return this;
         }
 
-        const annotationInstance = new (<any>DecoratorFactory)(objOrType);
-        const chainAnnotation =
-            typeof this === 'function' && Array.isArray(this.annotations) ? this.annotations : [];
-        chainAnnotation.push(annotationInstance);
-        const TypeDecorator: TypeDecorator = <TypeDecorator>function TypeDecorator(cls: Type<any>) {
-            const annotations = Reflect.getOwnMetadata('annotations', cls) || [];
-            annotations.push(annotationInstance);
-            Reflect.defineMetadata('annotations', annotations, cls);
-            return cls;
+        const decoratorInstance = new (<any>MethodDecoratorFactory)(...args);
+
+        return function MethDecorator<T>(target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>): TypedPropertyDescriptor<T> | void {
+            const meta = Reflect.getOwnMetadata('methMetadata', target.constructor) || {};
+            meta[propertyKey] = meta.hasOwnProperty(propertyKey) && meta[propertyKey] || [];
+            meta[propertyKey].unshift(decoratorInstance);
+            Reflect.defineMetadata('methMetadata', meta, target.constructor);
         };
-        TypeDecorator.annotations = chainAnnotation;
-        TypeDecorator.Class = Type;
-        if (chainFn) {
-            chainFn(TypeDecorator);
-        }
-        return TypeDecorator;
     }
 
     if (parentClass) {
-        DecoratorFactory.prototype = Object.create(parentClass.prototype);
+        MethodDecoratorFactory.prototype = Object.create(parentClass.prototype);
     }
 
-    DecoratorFactory.prototype.toString = () => `@${name}`;
-    (<any>DecoratorFactory).annotationCls = DecoratorFactory;
-    return DecoratorFactory;
+    MethodDecoratorFactory.prototype.toString = () => `@${name}`;
+    (<any>MethodDecoratorFactory).annotationCls = MethodDecoratorFactory;
+    return MethodDecoratorFactory;
+
+}
+
+
+export function makeParamDecorator<T>(
+    name: string, props: ([string, any] | { [name: string]: any })[], parentClass?: any): (...args: any[]) => ParameterDecorator {
+    const metaCtor = makeMetadataCtor(props);
+    function ParamDecoratorFactory(...args: any[]): ParameterDecorator {
+        if (this instanceof ParamDecoratorFactory) {
+            metaCtor.apply(this, args);
+            return this;
+        }
+        const annotationInstance = new (<any>ParamDecoratorFactory)(...args);
+
+        (<any>ParamDecorator).annotation = annotationInstance;
+        return ParamDecorator;
+
+        function ParamDecorator(cls: any, propertyKey: string | symbol, index: number) {
+            const parameters: any[][] = Reflect.getOwnMetadata('parameters', cls) || [];
+
+            // there might be gaps if some in between parameters do not have annotations.
+            // we pad with nulls.
+            while (parameters.length <= index) {
+                parameters.push(null);
+            }
+
+            parameters[index] = parameters[index] || [];
+            parameters[index].push(annotationInstance);
+
+            Reflect.defineMetadata('parameters', parameters, cls);
+            return cls;
+        }
+    }
+    if (parentClass) {
+        ParamDecoratorFactory.prototype = Object.create(parentClass.prototype);
+    }
+    ParamDecoratorFactory.prototype.toString = () => `@${name}`;
+    (<any>ParamDecoratorFactory).annotationCls = ParamDecoratorFactory;
+    return ParamDecoratorFactory;
 }
 
 

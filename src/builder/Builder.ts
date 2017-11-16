@@ -17,10 +17,18 @@ export interface Builder {
      * @memberOf Builder
      */
     load(match: string[], exp?: string | RegExp): Promise<Function[]>;
+    /**
+     * register build.
+     *
+     * @memberof Builder
+     */
     register(): void;
     setup(): void;
 }
 
+/**
+ * base builder
+ */
 export abstract class BaseBuilder implements Builder {
     load(match: string[], exp?: string | RegExp): Promise<Function[]> {
         return fileFilter<Function>(match,
