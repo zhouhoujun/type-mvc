@@ -11,7 +11,7 @@ Development.create(gulp, __dirname, {
         loader: 'development-tool-node',
         asserts: {
             ts: {
-                uglify: false,
+                uglify: true,
                 loader: 'development-assert-ts'
             }
         }

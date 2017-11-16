@@ -4,6 +4,7 @@ import { expect } from 'chai';
 import * as gulp from 'gulp';
 import { Get, Post, Put, Delete, Patch, Head, Options, AutoWired, Controller } from '../src';
 
+
 @Controller('/api')
 export class TestRequest {
     @Get('get/:id')
@@ -26,7 +27,26 @@ export class TestRequest {
         return {};
     }
 
+    @AutoWired()
+    car: Car;
 
+
+    get psersonal(): Car {
+        return null;
+    }
+
+
+}
+
+export class Car {
+
+    constructor() {
+
+    }
+
+    put() {
+
+    }
 }
 
 describe('decorator', () => {

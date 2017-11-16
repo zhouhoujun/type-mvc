@@ -159,26 +159,26 @@ export class DefaultInjector extends Injector {
         this.factories.set(key, classFactory);
     }
 
-    protected getParameterMetadata<T>(Class: Type<T>): Injectable[] {
-        let parameters: Injectable[] = Reflect.getMetadata('parameters', Class) || [];
+    protected getParameterMetadata<T>(type: Type<T>): Injectable[] {
+        let parameters: Injectable[] = Reflect.getMetadata('parameters', type) || [];
         return parameters;
     }
 
-    protected getInputMetadata<T>(Class: Type<T>): Input[] {
-        let parameters: Input[] = Reflect.getMetadata('Input', Class) || [];
+    protected getInputMetadata<T>(type: Type<T>): Input[] {
+        let parameters: Input[] = Reflect.getMetadata('Input', type) || [];
         return parameters;
     }
 
-    protected getOuputMetadata<T>(Class: Type<T>): Output[] {
-        let parameters: Output[] = Reflect.getMetadata('Output', Class) || [];
+    protected getOuputMetadata<T>(type: Type<T>): Output[] {
+        let parameters: Output[] = Reflect.getMetadata('Output', type) || [];
         return parameters;
     }
 
     protected registerDependencies<T>(...deps: Token<any>[]) {
-        deps.forEach(DepClass => {
-            let injectableConfig = Reflect.getMetadata('Injectable', DepClass);
+        deps.forEach(Deptype => {
+            let injectableConfig = Reflect.getMetadata('Injectable', Deptype);
             if (injectableConfig) {
-                this.register(DepClass, injectableConfig);
+                this.register(Deptype, injectableConfig);
             }
         });
     }

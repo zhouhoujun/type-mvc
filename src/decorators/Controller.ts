@@ -10,8 +10,6 @@ import { Stream } from 'stream';
  */
 export interface IController {
     context?: MvcContext;
-    view?(viewName: string, model: any);
-    file?(file: string | Buffer | Stream, contentType?: string, fileDownloadName?: string): Promise<Buffer>;
 }
 
 /**
