@@ -38,7 +38,11 @@
     "koa-session": "^3.3.1",
     "koa-static": "^2.0.0",
     "koa-views": "^5.0.2",
+<<<<<<< HEAD
     "type-autofac": "^0.1.1"
+=======
+    "reflect-metadata": "^0.1.10"
+>>>>>>> f5d28224fe07a05d2b1bb4d9aac2eab383953203
   },
   "devDependencies": {
     "bluebird": "^3.4.1",
