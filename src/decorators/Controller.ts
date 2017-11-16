@@ -1,25 +1,21 @@
-import { TypeDecorator, makeDecorator, makePropDecorator } from './decorators';
-import { MvcContext } from '../MvcContext';
-import { Buffer } from 'buffer';
-import { Stream } from 'stream';
+import { createClassDecorator, IClassDecorator, ClassMetadata } from 'type-autofac';
+
 
 /**
- * Type of the Controller metadata.
+ * controller metadata
  *
- * @stable
+ * @export
+ * @interface ControllerMetadata
+ * @extends {ClassMetadata}
  */
-export interface IController {
-    context?: MvcContext;
-}
-
-/**
- * Type of the Controller decorator / constructor function.
- *
- * @stable
- */
-export interface ControllerDecorator {
-    (routePrefix?: string): TypeDecorator;
-    new (routePrefix?: string): IController;
+export interface ControllerMetadata extends ClassMetadata {
+    /**
+     * route prefix.
+     *
+     * @type {string}
+     * @memberof ControllerMetadata
+     */
+    routePrefix?: string;
 }
 
 
@@ -27,8 +23,7 @@ export interface ControllerDecorator {
 /**
  * Controller decorator and metadata.
  *
- * @stable
- * @Annotation
+ * @Controller
  */
-export const Controller: ControllerDecorator = makeDecorator('Controller', { routePrefix: undefined }) as ControllerDecorator;
+export const Controller: IClassDecorator = createClassDecorator<ControllerMetadata>('Controller');
 

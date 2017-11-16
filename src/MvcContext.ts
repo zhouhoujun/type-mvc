@@ -1,5 +1,6 @@
 import { Context } from 'koa';
-import { Injector } from './di';
+import { IContainer } from 'type-autofac'
+
 /**
  * mvc Context.
  * @export
@@ -17,7 +18,7 @@ export interface MvcContext extends Context {
     render?(viewName: string, model?: any);
 
     /**
-     * injector service.
+     * IContainer.
      */
-    injector?: Injector;
+    container?: IContainer;
 }

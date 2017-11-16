@@ -5,7 +5,7 @@ import { Middleware, Request, Response, Context } from 'koa';
 import { MvcContext } from './MvcContext';
 import { Configuration } from './Configuration';
 import { Defer, createDefer, MvcMiddleware, AsyncMiddleware, MiddlewareFactory, Type } from './util';
-import { Injector } from './di';
+import { IContainer } from 'type-autofac';
 import * as path from 'path';
 import * as _ from 'lodash';
 
@@ -21,7 +21,7 @@ const convert = require('koa-convert');
  */
 export class WebHostBuilder {
     private startup: Defer<Koa>;
-    private injector: Defer<Injector>;
+    private container: Defer<IContainer>;
     private middlewares: MvcMiddleware[];
     private configuration: Defer<Configuration>;
 
@@ -37,18 +37,18 @@ export class WebHostBuilder {
     }
 
     /**
-     * user custom Injector.
+     * user custom IContainer.
      *
-     * @param {(Injector | Promise<Injector>)} [injector]
+     * @param {(IContainer | Promise<IContainer>)} [injector]
      * @returns
      *
      * @memberOf WebHostBuilder
      */
-    useInjector(injector?: Injector | Promise<Injector>) {
-        if (this.injector) {
-            this.injector = createDefer<Injector>();
+    useContainer(injector?: IContainer | Promise<IContainer>) {
+        if (this.container) {
+            this.container = createDefer<IContainer>();
         }
-        this.injector.resolve(injector || Injector.instance);
+        this.container.resolve(injector || IContainer.instance);
         return this;
     }
 
@@ -143,16 +143,16 @@ export class WebHostBuilder {
     build(): WebHostBuilder {
         this.startup = createDefer<Koa>();
         this.useConfiguration();
-        if (!this.injector) {
-            this.useInjector();
+        if (!this.container) {
+            this.useContainer();
         }
         let cfg: Configuration;
-        let injector: Injector;
-        Promise.all([this.config, this.injector.promise])
+        let injector: IContainer;
+        Promise.all([this.config, this.container.promise])
             .then(data => {
                 cfg = data[0];
                 injector = data[1];
-                return this.initInjector(cfg, injector);
+                return this.initIContainer(cfg, injector);
             })
             .then(() => this.setupMiddwares(cfg, injector))
             .then(() => this.loadController(cfg, injector))
@@ -182,21 +182,21 @@ export class WebHostBuilder {
      */
     protected createMvcMiddleware() {
         return async (ctx: MvcContext, next) => {
-            ctx.injector = await this.injector.promise;
+            ctx.injector = await this.container.promise;
             await next();
         }
     }
 
-    protected async initInjector(config: Configuration, injector: Injector): Promise<Injector> {
+    protected async initIContainer(config: Configuration, injector: IContainer): Promise<IContainer> {
         injector.registerSingleton(Configuration, config);
         return injector;
     }
 
-    protected async loadController(config: Configuration, injector: Injector): Promise<Koa> {
+    protected async loadController(config: Configuration, injector: IContainer): Promise<Koa> {
         return this.app;
     }
 
-    protected async setupMiddwares(config: Configuration, injector: Injector): Promise<Koa> {
+    protected async setupMiddwares(config: Configuration, injector: IContainer): Promise<Koa> {
         let middlewares = await Promise.all(this.middlewares.map(m => {
             if (m && _.isFunction(m['createMiddleware'])) {
                 return Promise.resolve(m['createMiddleware'](config, injector) as AsyncMiddleware)

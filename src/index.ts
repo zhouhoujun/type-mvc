@@ -1,5 +1,4 @@
 export * from './util';
-export * from './di';
 export * from './decorators';
 export * from './router';
 
