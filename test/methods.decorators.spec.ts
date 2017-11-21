@@ -1,10 +1,11 @@
 import 'mocha';
 import { expect } from 'chai';
 import * as gulp from 'gulp';
-import { Get, Post, Put, Delete, Patch, Head, Options, Controller } from '../src';
+import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization } from '../src';
 import { AutoWired } from 'type-autofac';
 
 
+@Authorization
 @Controller('/api')
 export class TestRequest {
     @Get('get/:id')
@@ -22,6 +23,7 @@ export class TestRequest {
         return {};
     }
 
+    @Authorization
     @Delete('del/:id')
     delTest() {
         return {};
@@ -44,6 +46,7 @@ export class Car {
 
     }
 
+    @Authorization
     put() {
 
     }

@@ -10,9 +10,8 @@ import { RouteMetadata } from './metadata/RouteMetadata';
  * @interface IRouteDecorator
  * @template T
  */
-export interface IRouteDecorator<T extends RouteMetadata> {
-    (metadata: T | string): MethodDecorator;
-    (target: Function, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>): void;
+export interface IRouteDecorator<T extends RouteMetadata> extends IMethodDecorator<T> {
+    (route: string): MethodDecorator;
 }
 
 /**
@@ -22,9 +21,8 @@ export interface IRouteDecorator<T extends RouteMetadata> {
  * @interface IRouteMethodDecorator
  * @template T
  */
-export interface IRouteMethodDecorator<T extends RouteMetadata> {
-    (metadata: T | string, method?: RequestMethod): MethodDecorator;
-    (target: Function, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>): void;
+export interface IRouteMethodDecorator<T extends RouteMetadata> extends IMethodDecorator<T> {
+    (route: string, method?: RequestMethod): MethodDecorator;
 }
 
 /**

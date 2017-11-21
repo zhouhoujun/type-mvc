@@ -8,8 +8,8 @@ import { ControllerMetadata } from './metadata/ControllerMetadata';
  * @interface IControllerDecorator
  * @template T
  */
-export interface IControllerDecorator<T extends ControllerMetadata> {
-    (metadata: T | string): ClassDecorator;
+export interface IControllerDecorator<T extends ControllerMetadata> extends IClassDecorator<T> {
+    (routePrefix?: string): ClassDecorator;
     (target: Function): void;
 }
 
