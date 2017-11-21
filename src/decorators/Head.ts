@@ -1,8 +1,9 @@
-import { createMethodDecorator, IMethodDecorator, MethodMetadata } from 'type-autofac';
-import { RequestMethod } from '../util';
+import { MethodMetadata } from 'type-autofac';
+import { RequestMethod } from '../RequestMethod';
+import { createRouteDecorator, IRouteDecorator } from './Route';
 
 export interface HeadMetadata extends MethodMetadata {
     route?: RegExp | string;
 }
 
-export const Head: IMethodDecorator = createMethodDecorator<HeadMetadata>('Head');
+export const Head: IRouteDecorator<HeadMetadata> = createRouteDecorator<HeadMetadata>('Head', RequestMethod.Head);

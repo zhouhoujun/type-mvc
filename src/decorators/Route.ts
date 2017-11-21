@@ -1,7 +1,6 @@
 import { createMethodDecorator, IMethodDecorator, MethodMetadata } from 'type-autofac';
 import { RequestMethod } from '../RequestMethod';
 import { RouteMetadata } from './metadata/RouteMetadata';
-import { Request } from 'express';
 
 
 export interface IRouteDecorator<T extends RouteMetadata> {

@@ -1,4 +1,6 @@
-import { IMap } from './util';
+import { ObjectMap } from 'type-autofac';
+
+
 
 export interface MiddlewareOptions {
     /**
@@ -36,7 +38,7 @@ export class Configuration {
      * @type {IMap<any>}
      * @memberOf Configuration
      */
-    setting?: IMap<any> = {};
+    setting?: ObjectMap<any> = {};
 
     /**
      * List of directories from where to "require" all your middlewares.

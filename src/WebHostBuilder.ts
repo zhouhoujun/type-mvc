@@ -1,10 +1,9 @@
 import * as Koa from 'koa';
-import * as chalk from 'chalk';
 import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
 import { MvcContext } from './MvcContext';
 import { Configuration } from './Configuration';
-import { Defer, createDefer, MvcMiddleware, AsyncMiddleware, MiddlewareFactory, Type } from './util';
+import { Defer, createDefer, MvcMiddleware, AsyncMiddleware, MiddlewareFactory } from './util';
 import { IContainer, ContainerBuilder, LoadOptions, IContainerBuilder } from 'type-autofac';
 import * as path from 'path';
 
@@ -111,7 +110,7 @@ export class WebHostBuilder {
             });
             if (!config) {
                 config = {};
-                console.log(chalk.yellow('your app has not config file.'));
+                console.log('your app has not config file.');
             }
             this.configuration.resolve(Object.assign(new Configuration(), config));
         }

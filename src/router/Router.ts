@@ -1,11 +1,17 @@
 import { Injectable } from 'type-autofac';
 
+export interface IRouter {
 
+}
 
 @Injectable
 export class Router {
 
-    default() {
+    constructor() {
+
+    }
+
+    route(route: string, action: Function) {
 
     }
 }
