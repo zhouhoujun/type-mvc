@@ -6,7 +6,9 @@ import { Stream } from 'stream';
 import * as path from 'path';
 import { createDefer } from './util';
 
-import { IController, Get, AutoWired } from './decorators';
+import { Controller, Get } from './decorators';
+import { IController } from './IController';
+import { AutoWired } from 'type-autofac';
 
 
 /**
@@ -30,7 +32,7 @@ export abstract class BaseController implements IController {
     file(file: string | Buffer | Stream, contentType?: string, fileDownloadName?: string): Promise<Buffer> {
         let defer = createDefer<Buffer>();
         if (file instanceof String) {
-            let confige = this.context.injector.get<Configuration>();
+            let confige = this.context.container.get(Configuration);
             let filepath = path.join(confige.rootdir, file);
             if (existsSync(filepath)) {
                 readFile(filepath, contentType || 'utf8', (err, data) => {

@@ -1,23 +1,5 @@
-import { createClassDecorator, IClassDecorator, ClassMetadata } from 'type-autofac';
-
-
-/**
- * controller metadata
- *
- * @export
- * @interface ControllerMetadata
- * @extends {ClassMetadata}
- */
-export interface ControllerMetadata extends ClassMetadata {
-    /**
-     * route prefix.
-     *
-     * @type {string}
-     * @memberof ControllerMetadata
-     */
-    routePrefix?: string;
-}
-
+import { createClassDecorator, IClassDecorator, TypeMetadata } from 'type-autofac';
+import { ControllerMetadata } from './metadata/ControllerMetadata';
 
 
 /**
@@ -25,5 +7,16 @@ export interface ControllerMetadata extends ClassMetadata {
  *
  * @Controller
  */
-export const Controller: IClassDecorator = createClassDecorator<ControllerMetadata>('Controller');
+export const Controller: IClassDecorator<ControllerMetadata> =
+    createClassDecorator<ControllerMetadata>('Controller', (...args: any[]) => {
+        let metadata;
+        if (args.length > 0 && args[0]) {
+            if (typeof args[0] === 'string') {
+                metadata = {
+                    routePrefix: args[0],
+                } as ControllerMetadata;
+            }
+        }
+        return metadata;
+    });
 
