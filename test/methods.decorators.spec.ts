@@ -1,8 +1,8 @@
-import "reflect-metadata";
 import 'mocha';
 import { expect } from 'chai';
 import * as gulp from 'gulp';
-import { Get, Post, Put, Delete, Patch, Head, Options, AutoWired, Controller } from '../src';
+import { Get, Post, Put, Delete, Patch, Head, Options, Controller } from '../src';
+import { AutoWired } from 'type-autofac';
 
 
 @Controller('/api')
@@ -27,7 +27,7 @@ export class TestRequest {
         return {};
     }
 
-    @AutoWired()
+    @AutoWired
     car: Car;
 
 

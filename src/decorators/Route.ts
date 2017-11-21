@@ -3,7 +3,26 @@ import { RequestMethod } from '../RequestMethod';
 import { RouteMetadata } from './metadata/RouteMetadata';
 
 
+/**
+ * route decorator type define.
+ *
+ * @export
+ * @interface IRouteDecorator
+ * @template T
+ */
 export interface IRouteDecorator<T extends RouteMetadata> {
+    (metadata: T | string): MethodDecorator;
+    (target: Function, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>): void;
+}
+
+/**
+ * custom define Request method. route decorator type define.
+ *
+ * @export
+ * @interface IRouteMethodDecorator
+ * @template T
+ */
+export interface IRouteMethodDecorator<T extends RouteMetadata> {
     (metadata: T | string, method?: RequestMethod): MethodDecorator;
     (target: Function, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>): void;
 }
@@ -32,4 +51,4 @@ export function createRouteDecorator<T extends RouteMetadata>(name: string, meth
     return createMethodDecorator<RouteMetadata>('Route', routeAdapter);
 }
 
-export const Route: IRouteDecorator<RouteMetadata> = createRouteDecorator<RouteMetadata>('Route');
+export const Route: IRouteMethodDecorator<RouteMetadata> = createRouteDecorator<RouteMetadata>('Route');
