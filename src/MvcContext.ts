@@ -1,5 +1,5 @@
 import { Context } from 'koa'
-import { IContainer } from 'type-autofac'
+import { IContainer, ObjectMap } from 'type-autofac'
 
 /**
  * mvc Context.
@@ -7,18 +7,6 @@ import { IContainer } from 'type-autofac'
  * @interface MvcContext
  * @extends {Context}
  */
-export interface MvcContext extends Context {
-    /**
-     * view render.
-     * @param {string} viewName
-     * @param {*} [model]
-     *
-     * @memberOf MvcContext
-     */
-    render?(viewName: string, model?: any);
+export interface MvcContext extends Context, ObjectMap<any> {
 
-    /**
-     * IContainer.
-     */
-    container?: IContainer;
 }

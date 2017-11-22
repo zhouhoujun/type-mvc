@@ -1,6 +1,7 @@
 export * from './ControllerMetadata';
 export * from './DeleteMetadata';
 export * from './RouteMetadata';
+export * from './RouterMetadata';
 export * from './GetMetadata';
 export * from './HeadMetadata';
 export * from './OptionsMetadata';

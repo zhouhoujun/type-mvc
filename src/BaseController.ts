@@ -4,11 +4,11 @@ import { Configuration } from './Configuration';
 import { Buffer } from 'buffer';
 import { Stream } from 'stream';
 import * as path from 'path';
-import { createDefer } from './util';
 
 import { Controller, Get } from './decorators';
 import { IController } from './IController';
 import { AutoWired } from 'type-autofac';
+import { Defer } from './util';
 
 
 /**
@@ -30,7 +30,7 @@ export abstract class BaseController implements IController {
     }
 
     file(file: string | Buffer | Stream, contentType?: string, fileDownloadName?: string): Promise<Buffer> {
-        let defer = createDefer<Buffer>();
+        let defer = Defer.create<Buffer>();
         if (file instanceof String) {
             let confige = this.context.container.get(Configuration);
             let filepath = path.join(confige.rootdir, file);

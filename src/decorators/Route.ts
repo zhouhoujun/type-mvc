@@ -1,6 +1,6 @@
 import { createMethodDecorator, IMethodDecorator, MethodMetadata, MetadataExtends } from 'type-autofac';
 import { RequestMethod } from '../RequestMethod';
-import { RouteMetadata } from './metadata/RouteMetadata';
+import { RouteMetadata } from './metadata';
 import { isString, isNumber } from 'util';
 
 

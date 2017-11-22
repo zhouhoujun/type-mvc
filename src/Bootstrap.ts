@@ -6,12 +6,13 @@ import { Defer } from './util';
 import { IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token } from 'type-autofac';
 import * as path from 'path';
 import { isString } from 'util';
-import { IMiddleware } from './middlewares/MvcMiddleware';
+import { IMiddleware } from './middlewares';
 import { Application } from './Application';
-import { MvcMiddleware } from './index';
+import { ContextMiddleware } from './middlewares/ContextMiddleware';
+import { MvcRouter } from './router';
 
-const serveStatic = require('Application-static');
-const convert = require('Application-convert');
+// const serveStatic = require('koa-static');
+// const convert = require('koa-convert');
 
 
 /**
@@ -33,7 +34,10 @@ export class Bootstrap {
      * @memberof WebApplication
      */
     constructor(private rootdir: string, protected appType?: Type<Application>) {
-        this.middlewares = [this.createMvcMiddleware()];
+        this.middlewares = [
+            ContextMiddleware,
+            MvcRouter
+        ];
         this.appType = this.appType || Application;
     }
 
@@ -164,23 +168,23 @@ export class Bootstrap {
         return this;
     }
 
-    /**
-     * user static files.
-     *
-     * @param {(string | string[])} paths
-     * @returns {Bootstrap}
-     *
-     * @memberOf WebHostBuilder
-     */
-    useStatic(paths: string | string[]): Bootstrap {
-        let ps = isString(paths) ? [paths] : paths;
-        ps.forEach(p => {
-            let mid = convert(serveStatic(path.join(this.rootdir, p))) as Middleware;
-            this.middlewares.push(mid);
-        });
+    // /**
+    //  * user static files.
+    //  *
+    //  * @param {(string | string[])} paths
+    //  * @returns {Bootstrap}
+    //  *
+    //  * @memberOf WebHostBuilder
+    //  */
+    // useStatic(paths: string | string[]): Bootstrap {
+    //     let ps = isString(paths) ? [paths] : paths;
+    //     ps.forEach(p => {
+    //         let mid = convert(serveStatic(path.join(this.rootdir, p))) as Middleware;
+    //         this.middlewares.push(mid);
+    //     });
 
-        return this;
-    }
+    //     return this;
+    // }
 
     /**
      * build application.
@@ -214,19 +218,17 @@ export class Bootstrap {
         return app;
     }
 
-    /**
-     * create mvc middleware.
-     */
-    protected createMvcMiddleware() {
-        return async (ctx: MvcContext, next) => {
-            ctx.container = await this.container.promise;
-            await next();
-        }
-    }
 
     protected async initIContainer(config: Configuration, container: IContainer): Promise<IContainer> {
         container.registerSingleton(Configuration, config);
+        // register self.
+        container.register('IContainer', () => container);
         container.register(this.appType);
+        if (this.middlewares) {
+            await this.builder.loadModule(container, {
+                modules: this.middlewares.filter(m => isClass(m)) as Type<any>[]
+            });
+        }
         if (config.middlewares) {
             let modules = await this.builder.loadModule(container, {
                 files: config.middlewares
@@ -255,7 +257,7 @@ export class Bootstrap {
 
     protected async setupMiddwares(config: Configuration, container: IContainer): Promise<Application> {
         let app = container.get(this.appType);
-        await Promise.all(this.middlewares.map(m => {
+        await Promise.all(config.useMiddlewares.map(m => {
             if (!m) {
                 return null;
             }

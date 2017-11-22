@@ -1,5 +1,5 @@
 import { createClassDecorator, IClassDecorator, TypeMetadata, Type, isClass, Registration, ArgsIterator, isClassMetadata } from 'type-autofac';
-import { ControllerMetadata } from './metadata/ControllerMetadata';
+import { ControllerMetadata } from './metadata';
 import { isString } from 'util';
 
 /**

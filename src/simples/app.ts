@@ -1,10 +1,10 @@
 import { Bootstrap } from '../index';
 
 
-let app = Bootstrap.create(__dirname);
-app.useConfiguration()
+Bootstrap.create(__dirname)
+    .useConfiguration()
     // .useContainerBuilder()
     // .useContainer()
-    .run()
+    .run();
 
 
