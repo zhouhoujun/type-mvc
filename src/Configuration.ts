@@ -1,4 +1,4 @@
-import { ObjectMap } from 'type-autofac';
+import { ObjectMap, Injectable, Singleton, Token } from 'type-autofac';
 
 
 
@@ -19,8 +19,13 @@ export interface MiddlewareOptions {
  * @export
  * @interface Configuration
  */
+@Singleton
+@Injectable
 export class Configuration {
-    port? = 3000;
+    constructor() {
+
+    }
+    port?= 3000;
     /**
      * system file root directory.
      */
@@ -41,9 +46,25 @@ export class Configuration {
     setting?: ObjectMap<any> = {};
 
     /**
-     * List of directories from where to "require" all your middlewares.
+     * ontrollers match path
      */
-    middlewares?: (string | MiddlewareOptions)[] = [];
+    middlewares?: string | string[] = ['./middlewares/**/*{.js,.ts}'];
+
+    /**
+     * use middlewars. if not config will load all.
+     *
+     * @type {Token<any>[]}
+     * @memberof Configuration
+     */
+    useMiddlewares?: Token<any>[] = [];
+
+    /**
+     * use controllers. if not config will load all.
+     *
+     * @type {Token<any>[]}
+     * @memberof Configuration
+     */
+    useControllers?: Token<any>[] = [];
 
     /**
      * controllers match. default `./controllers/*{.js,.ts}`.

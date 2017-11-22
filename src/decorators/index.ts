@@ -8,4 +8,5 @@ export * from './Post';
 export * from './Put';
 export * from './Route';
 export * from './Authorization';
+export * from './Middleware';
 export * from './metadata';

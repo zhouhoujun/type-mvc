@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import * as gulp from 'gulp';
 import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization } from '../src';
 import { AutoWired } from 'type-autofac';
+import { Middleware } from '../src/decorators/index';
 
 
 @Authorization
@@ -40,13 +41,12 @@ export class TestRequest {
 
 }
 
+@Middleware
 export class Car {
 
     constructor() {
 
     }
-
-    @Authorization
     put() {
 
     }

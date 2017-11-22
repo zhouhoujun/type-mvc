@@ -1,33 +1,45 @@
 /**
- * promise defer.
+ * defer
  *
  * @export
- * @interface Defer
+ * @class Defer
  * @template T
  */
-export interface Defer<T> {
-  promise: Promise<T>;
-  resolve: (value?: T | PromiseLike<T>) => void;
-  reject: (reason?) => void;
-}
+export class Defer<T> {
+    static create<T>(then?: (val: T) => T | PromiseLike<T>): Defer<T> {
+        let defer = new Defer<T>();
+        if (then) {
+            defer.promise = defer.promise.then(then);
+            return defer;
+        } else {
+            return defer;
+        }
 
+    }
+    /**
+     * promise.
+     *
+     * @type {Promise<T>}
+     * @memberof Defer
+     */
+    promise: Promise<T>
+    /**
+     * resolve.
+     *
+     * @memberof Defer
+     */
+    resolve: (value?: T | PromiseLike<T>) => void;
+    /**
+     * reject.
+     *
+     * @memberof Defer
+     */
+    reject: (reason?: any) => void;
 
-/**
- * create promise defer.
- *
- * @export
- * @template T
- * @param {(((value: T) => T | PromiseLike<T>))} [then]
- * @returns {Defer<T>}
- */
-export function createDefer<T>(then?: ((value: T) => T | PromiseLike<T>)): Defer<T> {
-  let defer = {} as Defer<T>;
-  defer.promise = new Promise<T>((resolve, reject) => {
-    defer.resolve = resolve;
-    defer.reject = reject;
-  });
-  if (then) {
-    defer.promise = defer.promise.then(then);
-  }
-  return defer;
+    constructor() {
+        this.promise = new Promise<T>((resolve, reject) => {
+            this.resolve = resolve;
+            this.reject = reject;
+        });
+    }
 }

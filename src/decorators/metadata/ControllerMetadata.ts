@@ -1,4 +1,4 @@
-import { TypeMetadata } from 'type-autofac';
+import { ClassMetadata } from 'type-autofac';
 
 
 /**
@@ -8,7 +8,7 @@ import { TypeMetadata } from 'type-autofac';
  * @interface ControllerMetadata
  * @extends {ClassMetadata}
  */
-export interface ControllerMetadata extends TypeMetadata {
+export interface ControllerMetadata extends ClassMetadata {
     /**
      * route prefix.
      *

@@ -1,5 +1,6 @@
 src
 test
+lib/simples
 gulpfile.ts
 tsconfig.json
 tslint.json

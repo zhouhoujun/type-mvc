@@ -1,4 +1,5 @@
 import { fileFilter } from '../util';
+import { isString } from 'util';
 
 /**
  * build.
@@ -32,7 +33,7 @@ export abstract class BaseBuilder implements Builder {
     load(match: string[], exp?: string | RegExp): Promise<Function[]> {
         return fileFilter<Function>(match,
             it => {
-                let reg = typeof exp === 'string' ? new RegExp(exp) : exp;
+                let reg = isString(exp) ? new RegExp(exp) : exp;
                 return reg.test(it);
             },
             file => require(file) as Function);

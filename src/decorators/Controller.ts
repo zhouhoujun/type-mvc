@@ -1,5 +1,6 @@
-import { createClassDecorator, IClassDecorator, TypeMetadata } from 'type-autofac';
+import { createClassDecorator, IClassDecorator, TypeMetadata, Type, isClass, Registration, ArgsIterator, isClassMetadata } from 'type-autofac';
 import { ControllerMetadata } from './metadata/ControllerMetadata';
+import { isString } from 'util';
 
 /**
  * Controller decorator define.
@@ -9,7 +10,7 @@ import { ControllerMetadata } from './metadata/ControllerMetadata';
  * @template T
  */
 export interface IControllerDecorator<T extends ControllerMetadata> extends IClassDecorator<T> {
-    (routePrefix?: string): ClassDecorator;
+    (routePrefix: string, provide?: Registration<any> | string, alias?: string): ClassDecorator;
     (target: Function): void;
 }
 
@@ -19,15 +20,13 @@ export interface IControllerDecorator<T extends ControllerMetadata> extends ICla
  * @Controller
  */
 export const Controller: IControllerDecorator<ControllerMetadata> =
-    createClassDecorator<ControllerMetadata>('Controller', (...args: any[]) => {
-        let metadata;
-        if (args.length > 0 && args[0]) {
-            if (typeof args[0] === 'string') {
-                metadata = {
-                    routePrefix: args[0],
-                } as ControllerMetadata;
+    createClassDecorator<ControllerMetadata>('Controller', (args: ArgsIterator) => {
+        args.next<ControllerMetadata>({
+            isMetadata: (arg) => isClassMetadata(arg, ['routePrefix']),
+            match: (arg) => isString(arg),
+            setMetadata: (metadata, arg) => {
+                metadata.routePrefix = arg;
             }
-        }
-        return metadata;
-    });
+        });
+    }) as IControllerDecorator<ControllerMetadata>;
 
