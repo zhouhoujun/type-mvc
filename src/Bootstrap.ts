@@ -5,7 +5,7 @@ import { Configuration } from './Configuration';
 import { Defer } from './util';
 import { IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token } from 'type-autofac';
 import * as path from 'path';
-import { isString } from 'util';
+import { isString, isSymbol } from 'util';
 import { IMiddleware } from './middlewares';
 import { Application } from './Application';
 import { ContextMiddleware } from './middlewares/ContextMiddleware';
@@ -201,7 +201,7 @@ export class Bootstrap {
                 return this.initIContainer(cfg, container);
             })
             .then(() => this.setupMiddwares(cfg, container))
-            .then(() => this.setupController(cfg, container))
+            .then(() => this.setupRoutes(cfg, container))
             .then(() => container.get(this.appType));
 
     }
@@ -250,7 +250,8 @@ export class Bootstrap {
         return container;
     }
 
-    protected async setupController(config: Configuration, container: IContainer) {
+    protected async setupRoutes(config: Configuration, container: IContainer) {
+        container.get(MvcRouter);
         config.useControllers
         return;
     }
@@ -261,9 +262,8 @@ export class Bootstrap {
             if (!m) {
                 return null;
             }
-            if (isClass(m)) {
-                container.register(m as Type<any>);
-                let middleware = container.get(m as Type<any>) as IMiddleware;
+            if (isClass(m) || isString(m) || isSymbol(m)) {
+                let middleware = container.get(m as Token<any>) as IMiddleware;
                 if (middleware.setup) {
                     middleware.setup();
                 }
