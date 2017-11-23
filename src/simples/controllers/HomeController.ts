@@ -1,12 +1,12 @@
-import { Controller, Get, MvcContext, MvcContextName } from '../../index';
+import { Controller, Get, IContext, ContextName } from '../../index';
 import { Inject } from 'type-autofac';
 
 
 @Controller('/home')
 export class HomeController {
 
-    @Inject(MvcContextName)
-    context: MvcContext;
+    @Inject(ContextName)
+    context: IContext;
     constructor() {
 
     }

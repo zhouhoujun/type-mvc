@@ -7,7 +7,7 @@ export * from './Patch';
 export * from './Post';
 export * from './Put';
 export * from './Route';
-export * from './Router';
+// export * from './Router';
 export * from './Authorization';
 export * from './Middleware';
 export * from './metadata';

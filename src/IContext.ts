@@ -2,11 +2,12 @@ import { Context } from 'koa'
 import { IContainer, ObjectMap } from 'type-autofac'
 
 /**
- * mvc Context.
+ * mvc IContext.
  * @export
- * @interface MvcContext
+ * @interface IContext
  * @extends {Context}
  */
-export interface MvcContext extends Context, ObjectMap<any> {
+export interface IContext extends Context, ObjectMap<any> {
 
 }
+

@@ -1,2 +1,2 @@
 
-export type KoaNext = () => Promise<any>;
+export type Next = () => Promise<any>;

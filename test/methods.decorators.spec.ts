@@ -17,7 +17,7 @@ export class Car {
     }
 }
 
-// @Authorization
+@Authorization
 @Controller('/api')
 export class TestRequest {
     @Get('get/:id')

@@ -1,4 +1,4 @@
-import { MvcRouter } from '../index';
+import { Router } from '../index';
 import { createRouteDecorator, IRouteDecorator } from './Route';
 import { RequestMethod } from '../RequestMethod';
 import { DeleteMetadata } from './metadata';

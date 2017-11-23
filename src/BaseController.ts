@@ -1,4 +1,4 @@
-import { MvcContext } from './MvcContext';
+import { IContext } from './IContext';
 import { existsSync, readFile } from 'fs';
 import { Configuration } from './Configuration';
 import { Buffer } from 'buffer';
@@ -6,9 +6,9 @@ import { Stream } from 'stream';
 import * as path from 'path';
 
 import { Controller, Get } from './decorators';
-import { IController } from './IController';
 import { AutoWired } from 'type-autofac';
 import { Defer } from './util';
+import { ContextName } from './index';
 
 
 /**
@@ -17,9 +17,9 @@ import { Defer } from './util';
  * @export
  * @class Controller
  */
-export abstract class BaseController implements IController {
-    @AutoWired('MvcContext')
-    context: MvcContext;
+export abstract class BaseController {
+    @AutoWired(ContextName)
+    context: IContext;
 
     view(viewName: string, model: any) {
         if (!this.context.render) {

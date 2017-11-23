@@ -1,18 +1,6 @@
 import { ObjectMap, Injectable, Singleton, Token } from 'type-autofac';
 
 
-
-export interface MiddlewareOptions {
-    /**
-     * middleware package name or directory.
-     *
-     * @type {string}
-     * @memberOf MiddlewareOptions
-     */
-    middleware: string;
-    options?: any;
-}
-
 /**
  * mvc configuration
  *

@@ -1,6 +1,6 @@
 import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
-import { MvcContext } from './MvcContext';
+import { IContext } from './IContext';
 import { Configuration } from './Configuration';
 import { Defer, ContainerName } from './util';
 import { IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token } from 'type-autofac';
@@ -9,8 +9,7 @@ import { isString, isSymbol } from 'util';
 import { IMiddleware } from './middlewares';
 import { Application } from './Application';
 import { ContextMiddleware } from './middlewares/ContextMiddleware';
-import { MvcRouter } from './router';
-import { MvcRoute } from './router/MvcRoute';
+import { Router, IRoute } from './router';
 
 // const serveStatic = require('koa-static');
 // const convert = require('koa-convert');
@@ -37,7 +36,7 @@ export class Bootstrap {
     constructor(private rootdir: string, protected appType?: Type<Application>) {
         this.middlewares = [
             ContextMiddleware,
-            MvcRouter
+            Router
         ];
         this.appType = this.appType || Application;
     }
@@ -252,12 +251,10 @@ export class Bootstrap {
         return container;
     }
 
-    protected async setupRoutes(config: Configuration, container: IContainer) {
-        let router = container.get(MvcRouter);
-        config.useControllers.forEach(ctrlType => {
-            router.routes();
-        });
-        return;
+    protected setupRoutes(config: Configuration, container: IContainer) {
+        let router = container.get(Router);
+        router.register(config.useControllers);
+        return router;
     }
 
     protected setupMiddwares(config: Configuration, container: IContainer): Application {

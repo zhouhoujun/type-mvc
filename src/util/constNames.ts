@@ -1,4 +1,4 @@
 
-export const MvcContextName = 'MvcContext';
+export const ContextName = 'IContext';
 
 export const ContainerName = 'IContainer';
