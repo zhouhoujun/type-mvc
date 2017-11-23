@@ -2,7 +2,7 @@ import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
 import { MvcContext } from './MvcContext';
 import { Configuration } from './Configuration';
-import { Defer } from './util';
+import { Defer, ContainerName } from './util';
 import { IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token } from 'type-autofac';
 import * as path from 'path';
 import { isString, isSymbol } from 'util';
@@ -222,7 +222,7 @@ export class Bootstrap {
     protected async initIContainer(config: Configuration, container: IContainer): Promise<IContainer> {
         container.registerSingleton(Configuration, config);
         // register self.
-        container.register('IContainer', () => container);
+        container.register(ContainerName, () => container);
         container.register(this.appType);
         if (this.middlewares) {
             await this.builder.loadModule(container, {
@@ -256,9 +256,9 @@ export class Bootstrap {
         return;
     }
 
-    protected async setupMiddwares(config: Configuration, container: IContainer): Promise<Application> {
+    protected setupMiddwares(config: Configuration, container: IContainer): Application {
         let app = container.get(this.appType);
-        await Promise.all(config.useMiddlewares.map(m => {
+        config.useMiddlewares.map(m => {
             if (!m) {
                 return null;
             }
@@ -273,7 +273,7 @@ export class Bootstrap {
                 return m;
             }
             return null;
-        }));
+        });
 
         return app;
     }

@@ -22,6 +22,9 @@ export class MvcRouter implements IMiddleware {
     }
 
     setup() {
+        this.app.use(async (ctx, next) => {
+
+        });
 
     }
 
