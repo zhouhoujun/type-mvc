@@ -29,10 +29,10 @@ export class Router implements IMiddleware {
     }
 
     setup() {
-        this.app.use(async (ctx, next) => {
-            this.root.math(ctx)
-                .naviage(this.app.container, ctx, next);
-        });
+        // this.app.use(async (ctx, next) => {
+        //     this.root.math(ctx)
+        //         .naviage(this.app.container, ctx, next);
+        // });
 
     }
 

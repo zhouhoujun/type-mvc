@@ -3,7 +3,7 @@ import { Middleware, Request, Response, Context } from 'koa';
 import { IContext } from './IContext';
 import { Configuration } from './Configuration';
 import { Defer, ContainerName } from './util';
-import { IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token } from 'type-autofac';
+import { IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token, toAbsolutePath } from 'type-autofac';
 import * as path from 'path';
 import { isString, isSymbol } from 'util';
 import { IMiddleware } from './middlewares';
@@ -187,39 +187,50 @@ export class Bootstrap {
     // }
 
     /**
-     * build application.
-     * @returns {Bootstrap}
-     * @memberOf WebHostBuilder
-     */
-    protected build(): Promise<Application> {
-        let cfg: Configuration;
-        let container: IContainer;
-        return Promise.all([this.getConfiguration(), this.getContainer()])
-            .then(data => {
-                cfg = data[0];
-                container = data[1];
-                return this.initIContainer(cfg, container);
-            })
-            .then(() => this.setupMiddwares(cfg, container))
-            .then(() => this.setupRoutes(cfg, container))
-            .then(() => container.get(this.appType));
-
-    }
-
-    /**
      * run service.
      * @returns {Application}
      * @memberOf WebHostBuilder
      */
     async run() {
         let app = await this.build();
-        let config = await this.configuration.promise;
+        let config = app.container.get(Configuration);
         app.listen(config.port || app.env['port']);
+        console.log('service listen on port: ', config.port || app.env['port']);
         return app;
     }
 
 
+    /**
+     * build application.
+     * @returns {Bootstrap}
+     * @memberOf WebHostBuilder
+     */
+    protected async build(): Promise<Application> {
+        let cfg: Configuration = await this.getConfiguration();
+        let container: IContainer = await this.getContainer();
+        await this.initIContainer(cfg, container);
+
+        let app = this.setupMiddwares(cfg, container);
+        this.setupRoutes(cfg, container);
+        return app;
+
+        // let cfg: Configuration;
+        // let container: IContainer;
+        // return Promise.all([this.getConfiguration(), this.getContainer()])
+        //     .then(data => {
+        //         cfg = data[0];
+        //         container = data[1];
+        //         return this.initIContainer(cfg, container);
+        //     })
+        //     .then(() => this.setupMiddwares(cfg, container))
+        //     .then(() => this.setupRoutes(cfg, container))
+        //     .then(() => container.get(this.appType));
+
+    }
+
+
     protected async initIContainer(config: Configuration, container: IContainer): Promise<IContainer> {
+        config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
         container.registerSingleton(Configuration, config);
         // register self.
         container.register(ContainerName, () => container);
@@ -232,6 +243,7 @@ export class Bootstrap {
         }
         if (config.middlewares) {
             let modules = await this.builder.loadModule(container, {
+                basePath: config.rootdir,
                 files: config.middlewares
             });
             if (!config.useMiddlewares || config.useMiddlewares.length < 1) {
