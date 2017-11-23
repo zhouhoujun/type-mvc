@@ -8,12 +8,6 @@ Development.create(gulp, __dirname, [
         dist: 'lib',
         buildDist: 'build',
         testSrc: 'test/**/*.spec.ts',
-        loader: 'development-tool-node',
-        asserts: {
-            ts: {
-                uglify: true,
-                loader: 'development-assert-ts'
-            }
-        }
+        loader: 'development-tool-node'
     }
 ]).start();

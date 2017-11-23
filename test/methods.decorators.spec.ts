@@ -2,11 +2,22 @@ import 'mocha';
 import { expect } from 'chai';
 import * as gulp from 'gulp';
 import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization } from '../src';
-import { AutoWired } from 'type-autofac';
-import { Middleware } from '../src/decorators/index';
+import { AutoWired, Inject, Injectable } from 'type-autofac';
+import { Middleware } from '../src/decorators';
 
 
-@Authorization
+@Injectable
+export class Car {
+
+    constructor() {
+
+    }
+    put() {
+
+    }
+}
+
+// @Authorization
 @Controller('/api')
 export class TestRequest {
     @Get('get/:id')
@@ -41,18 +52,13 @@ export class TestRequest {
 
 }
 
-@Middleware
-export class Car {
 
-    constructor() {
-
-    }
-    put() {
-
-    }
-}
 
 describe('decorator', () => {
+
+    before(() => {
+
+    })
 
     it('get', () => {
 

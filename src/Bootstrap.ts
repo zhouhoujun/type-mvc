@@ -10,6 +10,7 @@ import { IMiddleware } from './middlewares';
 import { Application } from './Application';
 import { ContextMiddleware } from './middlewares/ContextMiddleware';
 import { MvcRouter } from './router';
+import { MvcRoute } from './router/MvcRoute';
 
 // const serveStatic = require('koa-static');
 // const convert = require('koa-convert');
@@ -224,6 +225,7 @@ export class Bootstrap {
         // register self.
         container.register(ContainerName, () => container);
         container.register(this.appType);
+
         if (this.middlewares) {
             await this.builder.loadModule(container, {
                 modules: this.middlewares.filter(m => isClass(m)) as Type<any>[]
@@ -251,8 +253,10 @@ export class Bootstrap {
     }
 
     protected async setupRoutes(config: Configuration, container: IContainer) {
-        container.get(MvcRouter);
-        config.useControllers
+        let router = container.get(MvcRouter);
+        config.useControllers.forEach(ctrlType => {
+            router.routes();
+        });
         return;
     }
 

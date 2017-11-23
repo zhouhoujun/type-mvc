@@ -12,6 +12,7 @@ export class Logger implements IMiddleware {
     setup() {
         this.app.use(async (ctx, next) => {
             let begin = new Date();
+            console.log('begin at:', begin);
             await next();
             let end = new Date();
 
