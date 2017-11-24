@@ -2,12 +2,17 @@ import { IComponent, Composite, Type, IContainer } from 'type-autofac';
 import { IContext } from '../IContext';
 import { Next } from '../util';
 import { IRoute, RouteAction } from './IRoute';
+import { notFoundRoute } from './NotFoundRoute';
 
 
-
-
-
-
+/**
+ * base route.
+ *
+ * @export
+ * @class BaseRoute
+ * @extends {Composite}
+ * @implements {IRoute}
+ */
 export class BaseRoute extends Composite implements IRoute {
     constructor(route: string, private action?: RouteAction) {
         super(route);
@@ -25,6 +30,9 @@ export class BaseRoute extends Composite implements IRoute {
         } else {
             return next();
         }
+    }
+    empty(): IComponent {
+        return notFoundRoute;
     }
 
 }

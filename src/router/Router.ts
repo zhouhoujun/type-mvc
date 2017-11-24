@@ -8,8 +8,15 @@ import { IRoute } from './IRoute';
 import { magenta } from 'chalk';
 import { BaseRoute } from './BaseRoute';
 import { RouteBuilder } from './RouteBuilder';
+import { RouterMiddleware } from '../util';
 
-@Middleware
+export interface IRouter extends IMiddleware {
+    routes(map: IRoute);
+
+    register(controllers: Token<any>[]);
+}
+
+@Middleware(RouterMiddleware)
 export class Router implements IMiddleware {
 
     private root: IRoute;
@@ -29,10 +36,11 @@ export class Router implements IMiddleware {
     }
 
     setup() {
-        // this.app.use(async (ctx, next) => {
-        //     this.root.math(ctx)
-        //         .naviage(this.app.container, ctx, next);
-        // });
+        this.app.use(async (ctx, next) => {
+            console.log(new Date(), ': ', ctx.url);
+            return this.root.math(ctx)
+                .naviage(this.app.container, ctx, next);
+        });
 
     }
 

@@ -7,18 +7,17 @@ import * as path from 'path';
 
 import { Controller, Get } from './decorators';
 import { AutoWired } from 'type-autofac';
-import { Defer } from './util';
-import { ContextName } from './index';
+import { Defer, ContextSymbol } from './util';
 
 
 /**
- * MVC Controller.
+ * Base Controller.
  *
  * @export
  * @class Controller
  */
 export abstract class BaseController {
-    @AutoWired(ContextName)
+    @AutoWired(ContextSymbol)
     context: IContext;
 
     view(viewName: string, model: any) {

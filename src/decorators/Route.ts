@@ -1,4 +1,4 @@
-import { createMethodDecorator, IMethodDecorator, MethodMetadata, MetadataExtends } from 'type-autofac';
+import { createMethodDecorator, IMethodDecorator, MethodMetadata, MetadataExtends, isClassMetadata } from 'type-autofac';
 import { RequestMethod } from '../RequestMethod';
 import { RouteMetadata } from './metadata';
 import { isString, isNumber } from 'util';
@@ -36,25 +36,10 @@ export interface IRouteMethodDecorator<T extends RouteMetadata> extends IMethodD
  * @param { MetadataExtends<T>} [metaExtends]
  */
 export function createRouteDecorator<T extends RouteMetadata>(name: string, method?: RequestMethod, metaExtends?: MetadataExtends<T>): IRouteDecorator<T> {
-    let routeAdapter = (...args: any[]) => {
-        let metadata;
-        if (args.length > 0 && args[0]) {
-            if (isString(args[0])) {
-                metadata = {
-                    route: args[0],
-                    method: isNumber(args[1]) ? args[1] : RequestMethod.Get
-                } as T;
-            }
-        }
-        return metadata;
-    };
-
     return createMethodDecorator<RouteMetadata>('Route',
         args => {
             args.next<RouteMetadata>({
-                isMetadata: (arg) => {
-                    return arg && isString(arg.route)
-                },
+                isMetadata: (arg) => isClassMetadata(arg, ['route', 'method']),
                 match: (arg) => isString(arg),
                 setMetadata: (metadata, arg) => {
                     metadata.route = arg;

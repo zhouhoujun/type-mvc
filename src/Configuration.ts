@@ -1,5 +1,8 @@
 import { ObjectMap, Injectable, Singleton, Token } from 'type-autofac';
-
+import {
+    ContainerSymbol, ContextSymbol, SessionMiddleware,
+    ContextMiddleware, LogMiddleware, RouterMiddleware
+} from './util';
 
 /**
  * mvc configuration
@@ -17,7 +20,15 @@ export class Configuration {
     /**
      * system file root directory.
      */
-    rootdir?= './';
+    rootdir?= '';
+
+    /**
+     * contents path of files, static files. default in 'public'
+     *
+     * @type {(string | string[])}
+     * @memberof Configuration
+     */
+    contents?: string | string[] = 'public';
     /**
      * web site base url path. route prefix.
      *
@@ -34,9 +45,51 @@ export class Configuration {
     setting?: ObjectMap<any> = {};
 
     /**
-     * ontrollers match path
+     * some middleware befor custom middleware to deal with http request.
+     *
+     * @type {Token<any>[]}
+     * @memberof Configuration
+     */
+    beforeMiddlewares?: Token<any>[] = [
+        LogMiddleware,
+        /**
+         * this is container
+         */
+        ContextMiddleware,
+        SessionMiddleware,
+        ContextMiddleware
+
+    ];
+
+    /**
+     * the router middleware.
+     *
+     * @type {Token<any>}
+     * @memberof Configuration
+     */
+    routerMiddlewate?: Token<any> = RouterMiddleware;
+
+    /**
+     * custom middleware match path
      */
     middlewares?: string | string[] = ['./middlewares/**/*{.js,.ts}'];
+
+    /**
+     * some middleware after custom, router middleware to deal with http request.
+     *
+     * @type {Token<any>[]}
+     * @memberof Configuration
+     */
+    afterMiddlewares?: Token<any>[] = [
+    ];
+
+    /**
+     * exclude some middlewares
+     *
+     * @type {Token<any>[]}
+     * @memberof Configuration
+     */
+    excludeMiddlewares?: Token<any>[] = [];
 
     /**
      * use middlewars. if not config will load all.
@@ -46,13 +99,6 @@ export class Configuration {
      */
     useMiddlewares?: Token<any>[] = [];
 
-    /**
-     * use controllers. if not config will load all.
-     *
-     * @type {Token<any>[]}
-     * @memberof Configuration
-     */
-    useControllers?: Token<any>[] = [];
 
     /**
      * controllers match. default `./controllers/*{.js,.ts}`.
@@ -61,4 +107,12 @@ export class Configuration {
      * @memberOf Configuration
      */
     controllers?: string | string[] = ['./controllers/**/*{.js,.ts}']
+
+    /**
+     * use controllers. if not config will load all.
+     *
+     * @type {Token<any>[]}
+     * @memberof Configuration
+     */
+    useControllers?: Token<any>[] = [];
 }

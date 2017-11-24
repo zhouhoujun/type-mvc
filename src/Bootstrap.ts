@@ -2,14 +2,15 @@ import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
 import { IContext } from './IContext';
 import { Configuration } from './Configuration';
-import { Defer, ContainerName } from './util';
+import { Defer, ContainerSymbol, ContentMiddleware, ContextMiddleware, LogMiddleware, SessionMiddleware } from './util';
 import { IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token, toAbsolutePath } from 'type-autofac';
 import * as path from 'path';
 import { isString, isSymbol } from 'util';
 import { IMiddleware } from './middlewares';
 import { Application } from './Application';
-import { ContextMiddleware } from './middlewares/ContextMiddleware';
-import { Router, IRoute } from './router';
+import { } from './middlewares';
+import { Router, IRoute, IRouter } from './router';
+import { registerDefaults } from './registerDefaults';
 
 // const serveStatic = require('koa-static');
 // const convert = require('koa-convert');
@@ -34,10 +35,7 @@ export class Bootstrap {
      * @memberof WebApplication
      */
     constructor(private rootdir: string, protected appType?: Type<Application>) {
-        this.middlewares = [
-            ContextMiddleware,
-            Router
-        ];
+        this.middlewares = [];
         this.appType = this.appType || Application;
     }
 
@@ -168,24 +166,6 @@ export class Bootstrap {
         return this;
     }
 
-    // /**
-    //  * user static files.
-    //  *
-    //  * @param {(string | string[])} paths
-    //  * @returns {Bootstrap}
-    //  *
-    //  * @memberOf WebHostBuilder
-    //  */
-    // useStatic(paths: string | string[]): Bootstrap {
-    //     let ps = isString(paths) ? [paths] : paths;
-    //     ps.forEach(p => {
-    //         let mid = convert(serveStatic(path.join(this.rootdir, p))) as Middleware;
-    //         this.middlewares.push(mid);
-    //     });
-
-    //     return this;
-    // }
-
     /**
      * run service.
      * @returns {Application}
@@ -195,6 +175,7 @@ export class Bootstrap {
         let app = await this.build();
         let config = app.container.get(Configuration);
         app.listen(config.port || app.env['port']);
+        console.log(app.toJSON());
         console.log('service listen on port: ', config.port || app.env['port']);
         return app;
     }
@@ -209,23 +190,12 @@ export class Bootstrap {
         let cfg: Configuration = await this.getConfiguration();
         let container: IContainer = await this.getContainer();
         await this.initIContainer(cfg, container);
-
-        let app = this.setupMiddwares(cfg, container);
+        let app = container.get(this.appType);
+        this.setupMiddwares(app, container, cfg.beforeMiddlewares, cfg.excludeMiddlewares);
+        this.setupMiddwares(app, container, cfg.useMiddlewares, cfg.excludeMiddlewares.concat(cfg.afterMiddlewares));
         this.setupRoutes(cfg, container);
+        this.setupMiddwares(app, container, cfg.afterMiddlewares, cfg.excludeMiddlewares);
         return app;
-
-        // let cfg: Configuration;
-        // let container: IContainer;
-        // return Promise.all([this.getConfiguration(), this.getContainer()])
-        //     .then(data => {
-        //         cfg = data[0];
-        //         container = data[1];
-        //         return this.initIContainer(cfg, container);
-        //     })
-        //     .then(() => this.setupMiddwares(cfg, container))
-        //     .then(() => this.setupRoutes(cfg, container))
-        //     .then(() => container.get(this.appType));
-
     }
 
 
@@ -233,14 +203,16 @@ export class Bootstrap {
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
         container.registerSingleton(Configuration, config);
         // register self.
-        container.register(ContainerName, () => container);
+        container.register(ContainerSymbol, () => container);
         container.register(this.appType);
 
+        // custom use.
         if (this.middlewares) {
             await this.builder.loadModule(container, {
                 modules: this.middlewares.filter(m => isClass(m)) as Type<any>[]
             });
         }
+        // custom config.
         if (config.middlewares) {
             let modules = await this.builder.loadModule(container, {
                 basePath: config.rootdir,
@@ -252,6 +224,9 @@ export class Bootstrap {
                 config.useMiddlewares = this.middlewares.concat(config.useMiddlewares);
             }
         }
+        // register default
+        this.registerDefaults(container);
+
         if (config.controllers) {
             let controllers = await this.builder.loadModule(container, {
                 files: config.controllers
@@ -263,31 +238,35 @@ export class Bootstrap {
         return container;
     }
 
-    protected setupRoutes(config: Configuration, container: IContainer) {
-        let router = container.get(Router);
-        router.register(config.useControllers);
-        return router;
+    protected registerDefaults(container: IContainer) {
+        registerDefaults(container);
     }
 
-    protected setupMiddwares(config: Configuration, container: IContainer): Application {
-        let app = container.get(this.appType);
-        config.useMiddlewares.map(m => {
+
+    protected setupRoutes(config: Configuration, container: IContainer) {
+        let router: IRouter = container.get(config.routerMiddlewate || Router);
+        router.register(config.useControllers);
+    }
+    protected setupMiddwares(app: Application, container: IContainer, middlewares: Token<any>[], excludes: Token<any>[]) {
+        middlewares.forEach(m => {
             if (!m) {
-                return null;
+                return;
+            }
+            if (excludes && excludes.length > 0 && excludes.indexOf(m) > 0) {
+                return;
             }
             if (isClass(m) || isString(m) || isSymbol(m)) {
                 let middleware = container.get(m as Token<any>) as IMiddleware;
                 if (middleware.setup) {
                     middleware.setup();
                 }
-                return middleware;
+
             } else if (isFunction(m)) {
                 app.use(m as Middleware);
-                return m;
             }
-            return null;
-        });
 
+        });
         return app;
     }
+
 }

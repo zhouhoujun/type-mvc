@@ -1,11 +1,11 @@
-import { Controller, Get, IContext, ContextName } from '../../index';
+import { Controller, Get, IContext, ContextSymbol } from '../../index';
 import { Inject } from 'type-autofac';
 
 
 @Controller('/home')
 export class HomeController {
 
-    @Inject(ContextName)
+    @Inject(ContextSymbol)
     context: IContext;
     constructor() {
 

@@ -1,3 +1,3 @@
 export * from './defer';
-export * from './constNames';
+export * from './symbols';
 export * from './types';

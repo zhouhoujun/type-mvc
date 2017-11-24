@@ -1,12 +1,19 @@
 import * as Koa from 'koa';
-import { Injectable, Singleton, IContainer, AutoWired } from 'type-autofac';
-import { ContainerName } from './util';
+import { Injectable, Singleton, IContainer, AutoWired, Inject } from 'type-autofac';
+import { ContainerSymbol } from './index';
 
-@Injectable
+
+/**
+ * Application of type mvc.
+ *
+ * @export
+ * @class Application
+ * @extends {Koa}
+ */
 @Singleton
 export class Application extends Koa {
 
-    @AutoWired(ContainerName)
+    @Inject(ContainerSymbol)
     container: IContainer;
 
 }
