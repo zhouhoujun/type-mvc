@@ -35,7 +35,7 @@ export class Configuration {
      * @type {string}
      * @memberOf Configuration
      */
-    routePrefix?= './';
+    routePrefix?= '';
     /**
      * key value setting.
      *

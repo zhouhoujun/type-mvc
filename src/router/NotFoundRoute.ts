@@ -5,11 +5,14 @@ import { IContext } from '../IContext';
 
 
 export class NotFoundRoute extends NullComponent implements IRoute {
-    math(ctx: IContext): IRoute {
+    name: string;
+    url: string;
+    parent?: IComponent;
+    match(ctx: IContext): IRoute {
         return notFoundRoute;
     }
-    naviage(container: IContainer, ctx: IContext, next: () => Promise<any>) {
-        return next();
+    async  navigate(container: IContainer, ctx: IContext) {
+        throw 'not found test';
     }
     empty(): IComponent {
         return notFoundRoute;

@@ -8,10 +8,9 @@ import * as path from 'path';
 import { isString, isSymbol } from 'util';
 import { IMiddleware } from './middlewares';
 import { Application } from './Application';
-import { } from './middlewares';
 import { Router, IRoute, IRouter } from './router';
 import { registerDefaults } from './registerDefaults';
-
+import { registerDecorators } from './decorators';
 // const serveStatic = require('koa-static');
 // const convert = require('koa-convert');
 
@@ -200,6 +199,7 @@ export class Bootstrap {
 
 
     protected async initIContainer(config: Configuration, container: IContainer): Promise<IContainer> {
+        this.registerExtendDecorators(container);
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
         container.registerSingleton(Configuration, config);
         // register self.
@@ -238,6 +238,11 @@ export class Bootstrap {
         return container;
     }
 
+
+    protected registerExtendDecorators(container: IContainer) {
+        registerDecorators(container);
+    }
+
     protected registerDefaults(container: IContainer) {
         registerDefaults(container);
     }
@@ -245,7 +250,8 @@ export class Bootstrap {
 
     protected setupRoutes(config: Configuration, container: IContainer) {
         let router: IRouter = container.get(config.routerMiddlewate || Router);
-        router.register(config.useControllers);
+        console.log('router', router);
+        router.register(...config.useControllers);
     }
     protected setupMiddwares(app: Application, container: IContainer, middlewares: Token<any>[], excludes: Token<any>[]) {
         middlewares.forEach(m => {

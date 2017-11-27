@@ -1,3 +1,5 @@
+import { IContainer, ActionBuilder, ActionType } from 'type-autofac';
+
 export * from './Controller';
 export * from './Delete';
 export * from './Get';
@@ -11,3 +13,17 @@ export * from './Route';
 export * from './Authorization';
 export * from './Middleware';
 export * from './metadata';
+
+import { Controller, Authorization, Middleware } from './';
+export function registerDecorators(container: IContainer) {
+    let builder = new ActionBuilder();
+    container.registerDecorator(Controller,
+        builder.build(Controller.toString(), container.getDecoratorType(Controller), ActionType.provider));
+
+    container.registerDecorator(Authorization,
+        builder.build(Authorization.toString(), container.getDecoratorType(Authorization), ActionType.provider));
+
+    container.registerDecorator(Middleware,
+        builder.build(Middleware.toString(), container.getDecoratorType(Middleware), ActionType.provider));
+}
+

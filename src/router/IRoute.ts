@@ -8,6 +8,8 @@ export interface RouteAction {
 }
 
 export interface IRoute extends IComponent {
-    math(ctx: IContext): IRoute;
-    naviage(container: IContainer, ctx: IContext, next: Next);
+    url: string;
+    match(ctx: IContext | string): IRoute;
+
+    navigate(container: IContainer, ctx: IContext);
 }

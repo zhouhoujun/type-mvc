@@ -5,7 +5,7 @@ import {
     DefaultBodyParserMiddleware
 } from './middlewares';
 import { IContainer } from 'type-autofac';
-import { ContentMiddleware, ContextMiddleware, LogMiddleware, SessionMiddleware, BodyParserMiddleware, RouteMiddleware } from './util';
+import { ContentMiddleware, ContextMiddleware, LogMiddleware, SessionMiddleware, BodyParserMiddleware } from './util';
 import { Router } from './router';
 
 

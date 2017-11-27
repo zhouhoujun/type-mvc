@@ -14,7 +14,7 @@ export class Logger implements IMiddleware {
             let start = Date.now();
             await next();
             const ms = Date.now() - start;
-            console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
+            console.log(`mylog: ${ctx.method} ${ctx.url} - ${ms}ms`);
             let end = new Date();
         });
     }
