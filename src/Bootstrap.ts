@@ -2,7 +2,7 @@ import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
 import { IContext } from './IContext';
 import { Configuration } from './Configuration';
-import { Defer, ContainerSymbol, ContentMiddleware, ContextMiddleware, LogMiddleware, SessionMiddleware } from './util';
+import { Defer, symbols } from './util';
 import { IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token, toAbsolutePath } from 'type-autofac';
 import * as path from 'path';
 import { isString, isSymbol } from 'util';
@@ -203,7 +203,6 @@ export class Bootstrap {
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
         container.registerSingleton(Configuration, config);
         // register self.
-        container.register(ContainerSymbol, () => container);
         container.register(this.appType);
 
         // custom use.

@@ -1,3 +1,5 @@
 export * from './defer';
-export * from './symbols';
+
 export * from './types';
+import * as allsymbol from './symbols';
+export const symbols = allsymbol;

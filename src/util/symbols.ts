@@ -1,7 +1,7 @@
 
-export const ContextSymbol = Symbol('IContext');
+export const IContext = Symbol('IContext');
 
-export const ContainerSymbol = Symbol('IContainer');
+export const IContainer = Symbol('IContainer');
 
 
 /**

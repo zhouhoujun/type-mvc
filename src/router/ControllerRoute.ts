@@ -4,6 +4,7 @@ import { IContext } from '../IContext';
 import { Next } from '../util';
 import { Get, GetMetadata, RouteMetadata } from '../decorators';
 import { IRoute } from './IRoute';
+import { Authorization } from '../index';
 
 
 export class ControllerRoute extends BaseRoute {
@@ -32,6 +33,7 @@ export class ControllerRoute extends BaseRoute {
                     meta = allGets[name].find(route => route.route === routMethod);
                 }
                 if (meta && meta.propertyKey) {
+                    let hasAuth = Reflect.hasMetadata(Authorization.toString(), ctrl, meta.propertyKey);
                     container.execMethod(meta.propertyKey, this.controller, ctrl);
                 } else {
                     let notFound = this.empty() as IRoute;
