@@ -1,4 +1,4 @@
-import { ClassMetadata, IClassDecorator, createClassDecorator } from 'type-autofac';
+import { ClassMetadata, IClassDecorator, createClassDecorator } from 'tsioc';
 
 
 export const Middleware: IClassDecorator<ClassMetadata> = createClassDecorator<ClassMetadata>('Middleware', null, (metadata) => {

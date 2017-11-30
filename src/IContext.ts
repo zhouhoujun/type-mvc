@@ -1,5 +1,5 @@
 import { Context } from 'koa'
-import { IContainer, ObjectMap } from 'type-autofac'
+import { IContainer, ObjectMap } from 'tsioc'
 
 /**
  * mvc IContext.

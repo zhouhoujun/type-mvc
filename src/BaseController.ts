@@ -6,8 +6,8 @@ import { Stream } from 'stream';
 import * as path from 'path';
 
 import { Controller, Get } from './decorators';
-import { AutoWired } from 'type-autofac';
-import { Defer, ContextSymbol } from './util';
+import { AutoWired } from 'tsioc';
+import { Defer, symbols } from './util';
 
 
 /**
@@ -17,7 +17,7 @@ import { Defer, ContextSymbol } from './util';
  * @class Controller
  */
 export abstract class BaseController {
-    @AutoWired(ContextSymbol)
+    @AutoWired(symbols.IContext)
     context: IContext;
 
     view(viewName: string, model: any) {

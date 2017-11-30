@@ -4,7 +4,7 @@ import {
     DefaultContentMiddleware, DefaultSessionMiddleware,
     DefaultBodyParserMiddleware
 } from './middlewares';
-import { IContainer } from 'type-autofac';
+import { IContainer } from 'tsioc';
 import { symbols } from './util';
 import { Router } from './router';
 

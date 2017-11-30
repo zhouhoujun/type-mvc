@@ -1,4 +1,4 @@
-import { Bootstrap, RouterMiddleware } from '../index';
+import { Bootstrap } from '../index';
 
 Bootstrap.create(__dirname)
     .useConfiguration()

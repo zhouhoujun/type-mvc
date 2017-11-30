@@ -1,4 +1,4 @@
-import { IContainer, ActionBuilder, ActionType } from 'type-autofac';
+import { IContainer, ActionBuilder, ActionType } from 'tsioc';
 
 export * from './Controller';
 export * from './Delete';

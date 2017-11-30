@@ -1,4 +1,4 @@
-import { IComponent, Composite, Type, IContainer } from 'type-autofac';
+import { IComponent, Composite, Type, IContainer } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next } from '../util';
 import { IRoute, RouteAction } from './IRoute';

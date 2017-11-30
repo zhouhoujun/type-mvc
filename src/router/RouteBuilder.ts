@@ -1,5 +1,5 @@
 import { IRoute } from './IRoute';
-import { Token, Injectable, getTypeMetadata, isClass } from 'type-autofac';
+import { Token, Injectable, getTypeMetadata, isClass } from 'tsioc';
 import { IRouter } from './Router';
 import { Controller, ControllerMetadata } from '../decorators';
 import { ControllerRoute } from './ControllerRoute';
@@ -16,7 +16,7 @@ export class RouteBuilder {
         let contrkey = Controller.toString();
         controllers.forEach(ctrl => {
             if (isClass(ctrl)) {
-                let ctrlmetadatas = getTypeMetadata<ControllerMetadata>(ctrl, contrkey);
+                let ctrlmetadatas = getTypeMetadata<ControllerMetadata>(contrkey, ctrl);
                 ctrlmetadatas.forEach(ctlmeta => {
                     if (!ctlmeta) {
                         return;

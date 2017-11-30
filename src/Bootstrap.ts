@@ -3,7 +3,7 @@ import { Middleware, Request, Response, Context } from 'koa';
 import { IContext } from './IContext';
 import { Configuration } from './Configuration';
 import { Defer, symbols } from './util';
-import { IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token, toAbsolutePath } from 'type-autofac';
+import { IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token, toAbsolutePath } from 'tsioc';
 import * as path from 'path';
 import { isString, isSymbol } from 'util';
 import { IMiddleware } from './middlewares';

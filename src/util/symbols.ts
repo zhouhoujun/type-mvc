@@ -1,9 +1,6 @@
 
 export const IContext = Symbol('IContext');
 
-export const IContainer = Symbol('IContainer');
-
-
 /**
  * context middlwware is provider for context of request.
  * it is a symbol id, you can register yourself middleware for this.

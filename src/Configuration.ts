@@ -1,8 +1,5 @@
-import { ObjectMap, Injectable, Singleton, Token } from 'type-autofac';
-import {
-    ContainerSymbol, ContextSymbol, SessionMiddleware,
-    ContextMiddleware, LogMiddleware, RouterMiddleware
-} from './util';
+import { ObjectMap, Injectable, Singleton, Token } from 'tsioc';
+import { symbols } from './util';
 
 /**
  * mvc configuration
@@ -21,6 +18,18 @@ export class Configuration {
      * system file root directory.
      */
     rootdir?= '';
+
+    session? = {
+        key: 'typemvc:sess', /** (string) cookie key (default is koa:sess) */
+        /** (number || 'session') maxAge in ms (default is 1 days) */
+        /** 'session' will result in a cookie that expires when session/browser is closed */
+        /** Warning: If a session cookie is stolen, this cookie will never expire */
+        maxAge: 86400000,
+        overwrite: true, /** (boolean) can overwrite or not (default true) */
+        httpOnly: true, /** (boolean) httpOnly or not (default true) */
+        signed: true, /** (boolean) signed or not (default true) */
+        rolling: false/** (boolean) Force a session identifier cookie to be set on every response. The expiration is reset to the original maxAge, resetting the expiration countdown. default is false **/
+    };
 
     /**
      * contents path of files, static files. default in 'public'
@@ -51,13 +60,13 @@ export class Configuration {
      * @memberof Configuration
      */
     beforeMiddlewares?: Token<any>[] = [
-        LogMiddleware,
+        symbols.LogMiddleware,
         /**
          * this is container
          */
-        ContextMiddleware,
-        SessionMiddleware,
-        ContextMiddleware
+        symbols.ContextMiddleware,
+        symbols.SessionMiddleware,
+        symbols.BodyParserMiddleware
 
     ];
 
@@ -67,7 +76,7 @@ export class Configuration {
      * @type {Token<any>}
      * @memberof Configuration
      */
-    routerMiddlewate?: Token<any> = RouterMiddleware;
+    routerMiddlewate?: Token<any> = symbols.RouterMiddleware;
 
     /**
      * custom middleware match path

@@ -3,12 +3,12 @@ import { Configuration } from '../Configuration';
 import { Middleware } from '../decorators';
 import { RequestMethod } from '../RequestMethod';
 import { IMiddleware } from '../middlewares';
-import { ObjectMap, ActionComponent, Token } from 'type-autofac';
+import { ObjectMap, ActionComponent, Token } from 'tsioc';
 import { IRoute } from './IRoute';
 import { magenta } from 'chalk';
 import { BaseRoute } from './BaseRoute';
 import { RouteBuilder } from './RouteBuilder';
-import { RouterMiddleware } from '../util';
+import { symbols } from '../util';
 
 export interface IRouter extends IMiddleware {
     routes(map: IRoute);
@@ -18,7 +18,7 @@ export interface IRouter extends IMiddleware {
     getRoot(): IRoute;
 }
 
-@Middleware(RouterMiddleware)
+@Middleware(symbols.RouterMiddleware)
 export class Router implements IRouter, IMiddleware {
 
     private root: IRoute;

@@ -1,4 +1,4 @@
-import { MethodMetadata } from 'type-autofac';
+import { MethodMetadata } from 'tsioc';
 import { RequestMethod } from '../../RequestMethod';
 
 /**

@@ -1,5 +1,5 @@
 import { BaseRoute } from './BaseRoute';
-import { Type, IContainer, getMethodMetadata } from 'type-autofac';
+import { Type, IContainer, getMethodMetadata } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next } from '../util';
 import { Get, GetMetadata, RouteMetadata } from '../decorators';
@@ -23,7 +23,7 @@ export class ControllerRoute extends BaseRoute {
         }
         switch (ctx.method) {
             case 'GET':
-                let allGets = getMethodMetadata<RouteMetadata>(this.controller, Get);
+                let allGets = getMethodMetadata<RouteMetadata>(Get, this.controller);
                 console.log('Get', allGets);
                 let meta;
                 for (let name in allGets) {
@@ -34,7 +34,7 @@ export class ControllerRoute extends BaseRoute {
                 }
                 if (meta && meta.propertyKey) {
                     let hasAuth = Reflect.hasMetadata(Authorization.toString(), ctrl, meta.propertyKey);
-                    container.execMethod(meta.propertyKey, this.controller, ctrl);
+                    await container.invoke(this.controller, meta.propertyKey, ctrl);
                 } else {
                     let notFound = this.empty() as IRoute;
                     return await notFound.navigate(container, ctx);

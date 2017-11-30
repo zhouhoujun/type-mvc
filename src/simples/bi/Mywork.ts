@@ -1,4 +1,4 @@
-import { Injectable } from 'type-autofac';
+import { Injectable } from 'tsioc';
 
 
 @Injectable

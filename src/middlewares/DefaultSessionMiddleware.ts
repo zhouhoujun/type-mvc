@@ -1,21 +1,19 @@
-import { IContainer, Injectable, Inject } from 'type-autofac';
+import { IContainer, Injectable, Inject } from 'tsioc';
 import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
-import { ContextSymbol, SessionMiddleware } from '../util';
+import { symbols } from '../util';
+import { Configuration } from '../Configuration';
 
+const session = require('koa-session');
 
-@Middleware(SessionMiddleware)
+@Middleware(symbols.SessionMiddleware)
 export class DefaultSessionMiddleware implements IMiddleware {
 
-    constructor(private app: Application) {
+    constructor(private app: Application, private config: Configuration) {
     }
     setup() {
-        this.app.use(async (ctx, next) => {
-            this.app.container.unregister(ContextSymbol);
-            this.app.container.bindProvider(ContextSymbol, () => ctx);
-            return next();
-        });
+        this.app.use(session(this.config.session, this.app));
     }
 
 }

@@ -1,4 +1,4 @@
-// import { ClassMetadata, IClassDecorator, createClassDecorator, Registration, ArgsIterator, isClassMetadata } from 'type-autofac';
+// import { ClassMetadata, IClassDecorator, createClassDecorator, Registration, ArgsIterator, isClassMetadata } from 'tsioc';
 // import { IRouteDecorator, createRouteDecorator } from './Route';
 // import { RouterMetadata } from './metadata';
 // import { isString } from 'util';

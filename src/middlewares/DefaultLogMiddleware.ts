@@ -1,11 +1,11 @@
-import { IContainer, Injectable, Inject } from 'type-autofac';
+import { IContainer, Injectable, Inject } from 'tsioc';
 import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
-import { LogMiddleware } from '../util';
+import { symbols } from '../util';
 const logger = require('koa-logger')
 
-@Middleware(LogMiddleware)
+@Middleware(symbols.LogMiddleware)
 export class DefaultLogMiddleware implements IMiddleware {
 
     constructor(private app: Application) {

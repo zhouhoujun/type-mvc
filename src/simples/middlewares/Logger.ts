@@ -1,5 +1,5 @@
 import { Middleware, IMiddleware, Application, Configuration } from '../../index';
-import { IContainer, Injectable } from 'type-autofac';
+import { IContainer, Injectable } from 'tsioc';
 
 
 @Middleware({ provide: 'logger' })

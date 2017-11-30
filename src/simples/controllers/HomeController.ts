@@ -1,11 +1,11 @@
-import { Controller, Get, IContext, ContextSymbol } from '../../index';
-import { Inject } from 'type-autofac';
+import { Controller, Get, IContext, symbols } from '../../index';
+import { Inject } from 'tsioc';
 import { Mywork } from '../bi/Mywork';
 
 @Controller('/home')
 export class HomeController {
 
-    @Inject(ContextSymbol)
+    @Inject(symbols.IContext)
     context: IContext;
     constructor(private work: Mywork) {
 

@@ -1,4 +1,4 @@
-import { createClassDecorator, IClassDecorator, TypeMetadata, Type, isClass, Registration, ArgsIterator, isClassMetadata } from 'type-autofac';
+import { createClassDecorator, IClassDecorator, TypeMetadata, Type, isClass, Registration, ArgsIterator, isClassMetadata } from 'tsioc';
 import { ControllerMetadata } from './metadata';
 import { isString } from 'util';
 

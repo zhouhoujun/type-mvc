@@ -1,4 +1,4 @@
-import { MethodMetadata } from 'type-autofac';
+import { MethodMetadata } from 'tsioc';
 export interface OptionsMetadata extends MethodMetadata {
     route?: RegExp | string;
 }

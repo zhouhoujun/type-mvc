@@ -1,4 +1,4 @@
-import { ClassMetadata } from 'type-autofac';
+import { ClassMetadata } from 'tsioc';
 
 
 /**

@@ -1,4 +1,4 @@
-import { IComponent, IContainer } from 'type-autofac';
+import { IComponent, IContainer } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next } from '../index';
 

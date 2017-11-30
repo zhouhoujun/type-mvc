@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
-import { Injectable, Singleton, IContainer, AutoWired, Inject } from 'type-autofac';
-import { ContainerSymbol } from './index';
+import { Injectable, Singleton, IContainer, AutoWired, Inject } from 'tsioc';
+import { symbols } from './util';
 
 
 /**
@@ -13,7 +13,7 @@ import { ContainerSymbol } from './index';
 @Singleton
 export class Application extends Koa {
 
-    @Inject(ContainerSymbol)
+    @Inject(symbols.IContainer)
     container: IContainer;
 
 }
