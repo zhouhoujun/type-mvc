@@ -31,7 +31,7 @@ export class Router implements IRouter, IMiddleware {
     }
 
     register(...controllers: Token<any>[]) {
-        console.log('register controllers', ...controllers);
+        console.log('register controllers', controllers);
         this.builder.build(this, ...controllers)
             .forEach(route => {
                 this.root.add(route);

@@ -1,6 +1,7 @@
 import { NullComponent, IComponent, IContainer } from 'tsioc';
 import { IRoute } from './IRoute';
 import { IContext } from '../IContext';
+import { NotFoundError } from '../errors/index';
 
 
 
@@ -11,8 +12,8 @@ export class NotFoundRoute extends NullComponent implements IRoute {
     match(ctx: IContext): IRoute {
         return notFoundRoute;
     }
-    async  navigate(container: IContainer, ctx: IContext) {
-        throw 'not found test';
+    async navigate(container: IContainer, ctx: IContext) {
+        return Promise.reject(new NotFoundError());
     }
     empty(): IComponent {
         return notFoundRoute;

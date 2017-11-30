@@ -61,7 +61,7 @@ export class BaseRoute extends Composite implements IRoute {
         return route;
     }
 
-    async navigate(container: IContainer, ctx: IContext) {
+    async navigate(container: IContainer, ctx: IContext): Promise<any> {
 
     }
     empty(): IComponent {

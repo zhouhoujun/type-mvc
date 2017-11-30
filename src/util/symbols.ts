@@ -1,5 +1,13 @@
+import { symbols } from 'tsioc';
 
 export const IContext = Symbol('IContext');
+
+/**
+ * Authorization
+ * it is a symbol id, you can register yourself middleware for this.
+ */
+export const IAuthorization = Symbol('IAuthorization');
+
 
 /**
  * context middlwware is provider for context of request.
