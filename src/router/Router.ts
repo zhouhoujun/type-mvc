@@ -6,7 +6,7 @@ import { IMiddleware } from '../middlewares';
 import { ObjectMap, ActionComponent, Token } from 'tsioc';
 import { IRoute } from './IRoute';
 import { magenta } from 'chalk';
-import { BaseRoute } from './BaseRoute';
+import { RootRoute } from './RootRoute';
 import { RouteBuilder } from './RouteBuilder';
 import { symbols } from '../util';
 
@@ -23,7 +23,7 @@ export class Router implements IRouter, IMiddleware {
 
     private root: IRoute;
     constructor(private builder: RouteBuilder, private app: Application, private config: Configuration) {
-        this.root = new BaseRoute(config.routePrefix);
+        this.root = new RootRoute(config.routePrefix);
     }
 
     routes(map: IRoute) {
@@ -31,20 +31,15 @@ export class Router implements IRouter, IMiddleware {
     }
 
     register(...controllers: Token<any>[]) {
-        console.log('register controllers', controllers);
-        this.builder.build(this, ...controllers)
-            .forEach(route => {
-                this.root.add(route);
-            });
+        this.builder.build(this, ...controllers);
     }
 
 
     setup() {
         console.log('has setup router');
         this.app.use(async (ctx, next) => {
-            console.log('router:::', ctx.url);
-            await this.root.match(ctx).navigate(this.app.container, ctx);
-            await next();
+            console.log('router:', ctx.url);
+            return this.root.navigating(this.app.container, ctx);
         });
 
     }

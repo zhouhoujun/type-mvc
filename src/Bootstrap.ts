@@ -173,8 +173,7 @@ export class Bootstrap {
     async run() {
         let app = await this.build();
         let config = app.container.get(Configuration);
-        app.listen(config.port || app.env['port']);
-        console.log(app.toJSON());
+        app.listen(config.port || process.env.PORT);
         console.log('service listen on port: ', config.port || app.env['port']);
         return app;
     }
@@ -228,8 +227,10 @@ export class Bootstrap {
 
         if (config.controllers) {
             let controllers = await this.builder.loadModule(container, {
+                basePath: config.rootdir,
                 files: config.controllers
             });
+            console.log('controllers:', controllers);
             if (!config.useControllers || config.useControllers.length < 1) {
                 config.useControllers = controllers;
             }
@@ -249,8 +250,8 @@ export class Bootstrap {
 
     protected setupRoutes(config: Configuration, container: IContainer) {
         let router: IRouter = container.get(config.routerMiddlewate || Router);
-        console.log('router', router);
         router.register(...config.useControllers);
+        router.setup();
     }
     protected setupMiddwares(app: Application, container: IContainer, middlewares: Token<any>[], excludes: Token<any>[]) {
         middlewares.forEach(m => {

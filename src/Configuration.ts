@@ -115,7 +115,7 @@ export class Configuration {
      * @type {(string | string[])}
      * @memberOf Configuration
      */
-    controllers?: string | string[] = ['./controllers/**/*{.js,.ts}']
+    controllers?: string | string[] = ['./controllers/**/*{.js,.ts}'];
 
     /**
      * use controllers. if not config will load all.

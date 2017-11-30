@@ -11,5 +11,5 @@ export interface IRoute extends IComponent {
     url: string;
     match(ctx: IContext | string): IRoute;
 
-    navigate(container: IContainer, ctx: IContext);
+    navigating(container: IContainer, ctx: IContext): Promise<any>
 }

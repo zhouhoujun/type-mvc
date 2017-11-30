@@ -16,7 +16,7 @@ export class ControllerRoute extends BaseRoute {
         super(route);
     }
 
-    async navigate(container: IContainer, ctx: IContext): Promise<any> {
+    async navigating(container: IContainer, ctx: IContext): Promise<any> {
 
         let requrl = ctx.url;
         let routMethod = '';
