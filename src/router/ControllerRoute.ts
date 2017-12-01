@@ -1,5 +1,5 @@
 import { BaseRoute } from './BaseRoute';
-import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token } from 'tsioc';
+import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next } from '../util';
 import { Get, GetMetadata, RouteMetadata } from '../decorators';
@@ -8,6 +8,7 @@ import { Authorization } from '../decorators';
 import { symbols } from '../util';
 import { IAuthorization } from '../auth';
 import { UnauthorizedError, NotFoundError, HttpError, BadRequestError } from '../errors/index';
+import { isUndefined, isBoolean } from 'util';
 
 
 export class ControllerRoute extends BaseRoute {
@@ -27,16 +28,16 @@ export class ControllerRoute extends BaseRoute {
         try {
             switch (ctx.method) {
                 case 'GET':
-                    respone = await this.invoke(container, Get, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createGetProvider(meta, params, ctrl, ctx));
+                    respone = await this.invoke(container, Get, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
                     break;
                 case 'POST':
-                    respone = await this.invoke(container, Get, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createPostProvider(meta, params, ctrl, ctx));
+                    respone = await this.invoke(container, Get, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
                     break;
                 case 'Put':
-                    respone = await this.invoke(container, Get, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createPutProvider(meta, params, ctrl, ctx));
+                    respone = await this.invoke(container, Get, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
                     break;
                 case 'DElETE':
-                    respone = await this.invoke(container, Get, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createDeleteProvider(meta, params, ctrl, ctx));
+                    respone = await this.invoke(container, Get, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
                     break;
             }
             ctx.body = respone;
@@ -50,33 +51,71 @@ export class ControllerRoute extends BaseRoute {
         }
     }
 
-    createProvider(meta: RouteMetadata, params: Token<any>[], ctrl: any, ctx: IContext): AsyncParamProvider[] {
-        return []
-    }
-
-    createGetProvider(meta: RouteMetadata, params: Token<any>[], ctrl: any, ctx: IContext): AsyncParamProvider[] {
+    createProvider(container: IContainer, meta: RouteMetadata, params: Token<any>[], ctrl: any, ctx: IContext): AsyncParamProvider[] {
         if (params && params.length) {
             if (this.isRestUri(meta.route)) {
                 let url = meta.route.substr(0, meta.route.indexOf('/:')) + '/';
                 let querystring = ctx.url.replace(url, '');
-                let restParam = querystring.substr(0, querystring.indexOf('/'));
-                
+                let paramVal = querystring.substr(0, querystring.indexOf('/'));
+                let body = ctx.request['body'] || {};
+                return params.map((p, idx) => {
+                    try {
+                        if (!this.isBaseType(p)) {
+                            let val = container.get(p);
+                            for (let n in val) {
+                                if (!isUndefined(body[n])) {
+                                    val[n] = body[n];
+                                }
+                            }
+                            return {
+                                value: val,
+                                index: idx
+                            }
+                        } else {
+                            let val;
+                            if (paramVal !== null) {
+                                if (p === String) {
+                                    val = paramVal;
+                                } else if (p === Boolean) {
+                                    val = new Boolean(paramVal);
+                                } else if (p === Number) {
+                                    val = new Number(paramVal);
+                                } else if (p === Date) {
+                                    val = new Date(paramVal);
+                                }
+                                paramVal = null;
+                            }
+                            return {
+                                value: val,
+                                index: idx
+                            }
+                        }
+                    } catch (err) {
+                        throw new BadRequestError(err.toString());
+                    }
+                });
             }
         }
-        return []
+        return [];
     }
 
-    createPostProvider(meta: RouteMetadata, params: Token<any>[], ctrl: any, ctx: IContext): AsyncParamProvider[] {
-        return []
+    isBaseType(p) {
+        if (!isClass(p)) {
+            return true;
+        }
+
+        if (!isFunction(p)) {
+            return true;
+        }
+
+        if (p === Boolean || p === String || p === Number) {
+            return true;
+        }
+
+        return false;
+
     }
 
-    createPutProvider(meta: RouteMetadata, params: Token<any>[], ctrl: any, ctx: IContext): AsyncParamProvider[] {
-        return []
-    }
-
-    createDeleteProvider(meta: RouteMetadata, params: Token<any>[], ctrl: any, ctx: IContext): AsyncParamProvider[] {
-        return []
-    }
 
     protected isRestUri(uri: string) {
         return /\/:/.test(uri || '');

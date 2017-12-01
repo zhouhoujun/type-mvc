@@ -2,7 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import * as gulp from 'gulp';
 import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization } from '../src';
-import { AutoWired, Inject, Injectable } from 'type-autofac';
+import { AutoWired, Inject, Injectable } from 'tsioc';
 import { Middleware } from '../src/decorators';
 
 
