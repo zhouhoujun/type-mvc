@@ -2,7 +2,7 @@ import { BaseRoute } from './BaseRoute';
 import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next } from '../util';
-import { Get, GetMetadata, RouteMetadata } from '../decorators';
+import { Get, GetMetadata, RouteMetadata, Post, Put, Delete } from '../decorators';
 import { IRoute } from './IRoute';
 import { Authorization } from '../decorators';
 import { symbols } from '../util';
@@ -27,13 +27,15 @@ export class ControllerRoute extends BaseRoute {
                     respone = await this.invoke(container, Get, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
                     break;
                 case 'POST':
-                    respone = await this.invoke(container, Get, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
+                    respone = await this.invoke(container, Post, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
                     break;
                 case 'Put':
-                    respone = await this.invoke(container, Get, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
+                    respone = await this.invoke(container, Put, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
                     break;
                 case 'DElETE':
-                    respone = await this.invoke(container, Get, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
+                    respone = await this.invoke(container, Delete, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
+                    break;
+                default:
                     break;
             }
             ctx.body = respone;
