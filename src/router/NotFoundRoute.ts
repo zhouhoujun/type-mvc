@@ -13,7 +13,7 @@ export class NotFoundRoute extends NullComponent implements IRoute {
         return notFoundRoute;
     }
     async navigating(container: IContainer, ctx: IContext) {
-        return Promise.reject(new NotFoundError());
+        return new NotFoundError();
     }
     empty(): IComponent {
         return notFoundRoute;

@@ -12,7 +12,7 @@ import { isString, isNumber } from 'util';
  * @template T
  */
 export interface IRouteDecorator<T extends RouteMetadata> extends IMethodDecorator<T> {
-    (route: string): MethodDecorator;
+    (route: string, contentType?: string): MethodDecorator;
 }
 
 /**
@@ -23,7 +23,7 @@ export interface IRouteDecorator<T extends RouteMetadata> extends IMethodDecorat
  * @template T
  */
 export interface IRouteMethodDecorator<T extends RouteMetadata> extends IMethodDecorator<T> {
-    (route: string, method?: RequestMethod): MethodDecorator;
+    (route: string, contentType?: string, method?: RequestMethod): MethodDecorator;
 }
 
 /**
@@ -43,6 +43,13 @@ export function createRouteDecorator<T extends RouteMetadata>(name: string, meth
                 match: (arg) => isString(arg),
                 setMetadata: (metadata, arg) => {
                     metadata.route = arg;
+                }
+            });
+
+            args.next<RouteMetadata>({
+                match: (arg) => isString(arg),
+                setMetadata: (metadata, arg) => {
+                    metadata.contentType = arg;
                 }
             });
 

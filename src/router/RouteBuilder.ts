@@ -23,14 +23,15 @@ export class RouteBuilder {
                         return;
                     }
                     let prefix = ctlmeta.routePrefix;
+                    if (prefix && !/^\//.test(prefix)) {
+                        prefix = '/' + prefix;
+                    }
                     let route = root.match(prefix);
                     let ctrlRoute = new ControllerRoute(prefix, ctrl);
                     if (route.isEmpty()) {
                         root.add(new ControllerRoute(prefix, ctrl));
-                        console.log('add to root route', ctrlRoute);
                     } else {
                         route.add(new ControllerRoute(prefix, ctrl));
-                        console.log('add to route', ctrlRoute);
                     }
                 });
             }

@@ -9,6 +9,26 @@ import { RequestMethod } from '../../RequestMethod';
  * @extends {MethodMetadata}
  */
 export interface RouteMetadata extends MethodMetadata {
-    route?: RegExp | string;
+    /**
+     * route.
+     *
+     * @type {string}
+     * @memberof RouteMetadata
+     */
+    route?: string;
+
+    /**
+     * http content type.
+     *
+     * @type {string}
+     * @memberof RouteMetadata
+     */
+    contentType?: string;
+    /**
+     * request method.
+     *
+     * @type {RequestMethod}
+     * @memberof RouteMetadata
+     */
     method?: RequestMethod;
 }

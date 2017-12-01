@@ -46,8 +46,8 @@ export abstract class BaseRoute extends Composite implements IRoute {
     match(ctx: IContext | string) {
         let prefix: string = isString(ctx) ? ctx : ctx.url;
         let route = this.find((r: IRoute) => {
-            console.log('r', r, 'prefix:', prefix);
-            return r.url === prefix
+            console.log('r', r.url, 'prefix:', prefix);
+            return  r.url && prefix && prefix.indexOf(r.url) === 0;
         });
         return route;
     }

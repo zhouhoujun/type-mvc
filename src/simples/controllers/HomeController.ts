@@ -13,11 +13,23 @@ export class HomeController {
 
     @Get('')
     index() {
+        console.log('home index invorked', this.work);
         return this.work.workA();
     }
 
-    @Get('sub')
+    @Get('/sub')
     sub() {
         return this.work.workB();
+    }
+
+    @Get('/test/:id')
+    parmtest(id: number) {
+        if (id === 1) {
+            return this.work.workA();
+        } else if (id === 2) {
+            return this.work.workB();
+        } else {
+            return 'notFound';
+        }
     }
 }
