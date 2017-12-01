@@ -36,7 +36,6 @@ export class Router implements IRouter, IMiddleware {
 
 
     setup() {
-        console.log('has setup router');
         this.app.use(async (ctx, next) => {
             return this.root.navigating(this.app.container, ctx);
         });

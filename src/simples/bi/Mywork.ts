@@ -11,4 +11,12 @@ export class Mywork {
     workB() {
         return 'doing work B';
     }
+
+    find(name: string) {
+        return {
+            name: name,
+            sex: 'man',
+            age: 10000
+        }
+    }
 }

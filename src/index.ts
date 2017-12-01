@@ -3,6 +3,8 @@ export * from './decorators';
 export * from './router';
 export * from './middlewares';
 
+export * from './errors';
+
 export * from './Application';
 export * from './Configuration';
 export * from './BaseController';

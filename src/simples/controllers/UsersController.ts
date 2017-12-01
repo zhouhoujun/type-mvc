@@ -1,8 +1,8 @@
-import { Controller, Get, IContext, symbols } from '../../index';
+import { Controller, Get, Post, IContext, symbols } from '../../index';
 import { Inject } from 'tsioc';
 import { Mywork } from '../bi/Mywork';
 
-@Controller('/home')
+@Controller('/users')
 export class HomeController {
 
     @Inject(symbols.IContext)
@@ -22,6 +22,17 @@ export class HomeController {
         return this.work.workB();
     }
 
+    @Get('/:name')
+    getPerson(name: string) {
+        return this.work.find(name);
+    }
+
+    @Get('/find/:name')
+    query(name: string, @Inject(symbols.IContext) ctx) {
+        console.log(ctx);
+        return this.work.find(name);
+    }
+
     @Get('/test/:id')
     parmtest(id: number) {
         if (id === 1) {
@@ -32,4 +43,12 @@ export class HomeController {
             return 'notFound';
         }
     }
+
+    @Post('/posttest/:id')
+    postTest(id: number) {
+        return {
+            id: id
+        }
+    }
+
 }

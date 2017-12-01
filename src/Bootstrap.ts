@@ -230,7 +230,6 @@ export class Bootstrap {
                 basePath: config.rootdir,
                 files: config.controllers
             });
-            console.log('controllers:', controllers);
             if (!config.useControllers || config.useControllers.length < 1) {
                 config.useControllers = controllers;
             }

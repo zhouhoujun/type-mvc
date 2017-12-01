@@ -19,11 +19,7 @@ export class ControllerRoute extends BaseRoute {
 
     async navigating(container: IContainer, ctx: IContext): Promise<any> {
 
-        let requrl = ctx.url;
-        let routPath = '';
-        if (this.url !== requrl) {
-            routPath = requrl.substr(requrl.lastIndexOf('/'));
-        }
+        let routPath = ctx.url.replace(this.url, '');
         let respone;
         try {
             switch (ctx.method) {
@@ -55,10 +51,10 @@ export class ControllerRoute extends BaseRoute {
         if (params && params.length) {
             if (this.isRestUri(meta.route)) {
                 let url = meta.route.substr(0, meta.route.indexOf('/:')) + '/';
-                let querystring = ctx.url.replace(url, '');
-                let paramVal = querystring.substr(0, querystring.indexOf('/'));
+                let querystring = ctx.url.replace(this.url + url, '');
+                let paramVal = querystring.indexOf('/') > 0 ? querystring.substr(0, querystring.indexOf('/')) : querystring;
                 let body = ctx.request['body'] || {};
-                return params.map((p, idx) => {
+                let providers = params.map((p, idx) => {
                     try {
                         if (!this.isBaseType(p)) {
                             let val = container.get(p);
@@ -71,6 +67,7 @@ export class ControllerRoute extends BaseRoute {
                                 value: val,
                                 index: idx
                             }
+
                         } else {
                             let val;
                             if (paramVal !== null) {
@@ -79,7 +76,7 @@ export class ControllerRoute extends BaseRoute {
                                 } else if (p === Boolean) {
                                     val = new Boolean(paramVal);
                                 } else if (p === Number) {
-                                    val = new Number(paramVal);
+                                    val = parseFloat(paramVal);
                                 } else if (p === Date) {
                                     val = new Date(paramVal);
                                 }
@@ -94,21 +91,22 @@ export class ControllerRoute extends BaseRoute {
                         throw new BadRequestError(err.toString());
                     }
                 });
+                return providers;
             }
         }
         return [];
     }
 
     isBaseType(p) {
-        if (!isClass(p)) {
-            return true;
-        }
-
-        if (!isFunction(p)) {
+        if (!isToken(p)) {
             return true;
         }
 
         if (p === Boolean || p === String || p === Number) {
+            return true;
+        }
+
+        if (!isFunction(p)) {
             return true;
         }
 
@@ -123,26 +121,30 @@ export class ControllerRoute extends BaseRoute {
 
     async invoke(container: IContainer, decorator: Function, routPath: string, provider: (meta: RouteMetadata, params: Token<any>[], ctrl: any) => AsyncParamProvider[]) {
         let decoratorName = decorator.toString();
-        let allMethods = getMethodMetadata<RouteMetadata>(decoratorName, this.controller);
+        let methodMaps = getMethodMetadata<RouteMetadata>(decoratorName, this.controller);
         let meta;
-        for (let name in allMethods) {
-            if (meta) {
-                break;
+        let allMethods: RouteMetadata[] = [];
+        for (let name in methodMaps) {
+            allMethods = allMethods.concat(methodMaps[name]);
+        }
+        allMethods = allMethods.sort((ra, rb) => (rb.route || '').length - (ra.route || '').length);
+
+        meta = allMethods.find(route => {
+            let uri = route.route || '';
+            if (uri === routPath) {
+                return true;
             }
-            meta = allMethods[name].find(route => {
-                let uri = route.route || '';
-                if (uri === routPath) {
+            if (this.isRestUri(uri)) {
+                let idex = uri.indexOf('/:');
+                let url = uri.substr(0, idex);
+                if (url !== routPath && routPath.indexOf(url) === 0) {
                     return true;
                 }
-                if (this.isRestUri(uri)) {
-                    let url = uri.substr(0, uri.indexOf('/:'));
-                    if (url !== routPath && routPath.indexOf(url) === 0) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-        }
+            }
+            return false;
+        });
+
+
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
             if (container.has(symbols.IAuthorization)) {

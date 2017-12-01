@@ -17,7 +17,6 @@ export class RouteBuilder {
         controllers.forEach(ctrl => {
             if (isClass(ctrl)) {
                 let ctrlmetadatas = getTypeMetadata<ControllerMetadata>(contrkey, ctrl);
-                console.log('ctrlmetadatas', ctrlmetadatas);
                 ctrlmetadatas.forEach(ctlmeta => {
                     if (!ctlmeta) {
                         return;
