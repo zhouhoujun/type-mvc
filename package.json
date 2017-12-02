@@ -8,10 +8,10 @@
     "prepublish": "gulp start --release"
   },
   "keywords": [
-    "typescript",
     "mvc",
-    "decorators",
-    "di",
+    "tsioc",
+    "ioc",
+    "server",
     "frameworker",
     "koa"
   ],
