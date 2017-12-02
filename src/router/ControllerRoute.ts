@@ -35,8 +35,6 @@ export class ControllerRoute extends BaseRoute {
                 case 'DElETE':
                     respone = await this.invoke(container, Delete, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
                     break;
-                default:
-                    break;
             }
             ctx.body = respone;
         } catch (err) {
@@ -133,6 +131,9 @@ export class ControllerRoute extends BaseRoute {
 
         meta = allMethods.find(route => {
             let uri = route.route || '';
+            if (/\/\s*$/.test(routPath)) {
+                routPath = routPath.substr(0, routPath.lastIndexOf('/'));
+            }
             if (uri === routPath) {
                 return true;
             }
@@ -145,7 +146,6 @@ export class ControllerRoute extends BaseRoute {
             }
             return false;
         });
-
 
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
