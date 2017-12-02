@@ -3,7 +3,7 @@
 This repo is for distribution on `npm`. The source for this module is in the
 [main repo](https://github.com/zhouhoujun/type-mvc).
 
-type-mvc is base on koa, with typescript. type and decorators mvc frameworker on server. base on ioc [`tsioc`](https://www.npmjs.com/package/tsioc).
+type-mvc is base on koa, with typescript. type and decorators mvc frameworker on server. base on ioc [`tsioc`](https://www.npmjs.com/package/tsioc). help you develop your project easily.
 
 
 
