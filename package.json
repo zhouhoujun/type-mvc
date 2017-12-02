@@ -34,7 +34,7 @@
     "koa-session": "^5.5.1",
     "koa-static": "^4.0.2",
     "koa-views": "^6.1.2",
-    "tsioc": "^0.4.12"
+    "tsioc": "^0.4.13"
   },
   "devDependencies": {
     "bluebird": "^3.4.1",
