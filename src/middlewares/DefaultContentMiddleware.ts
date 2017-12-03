@@ -16,7 +16,6 @@ export class DefaultContentMiddleware implements IMiddleware {
         let contents = this.config.contents || ['./public'];
         contents.forEach(content => {
             let staticPath = toAbsolutePath(this.config.rootdir, content);
-            console.log('staticPath', staticPath, this.config);
             this.app.use(serve(staticPath));
         })
     }

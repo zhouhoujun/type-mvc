@@ -160,7 +160,6 @@ export class ControllerRoute extends BaseRoute {
             let params = container.getMethodParameters(this.controller, ctrl, meta.propertyKey);
             let response: any = await container.invoke(this.controller, meta.propertyKey, ctrl, ...provider(meta, params, ctrl));
 
-            console.log('response:', response);
             let contentType: string = meta.contentType;
             if (isString(response)) {
                 contentType = contentType || 'text/html';

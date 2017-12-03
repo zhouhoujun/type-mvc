@@ -39,10 +39,10 @@ export class Router implements IRouter, IMiddleware {
         this.app.use(async (ctx, next) => {
             await next();
             if (!ctx.status || ctx.status === 404) {
-                if (!/\.\w+$/.test(ctx.url)) {
-                    return this.root.navigating(this.app.container, ctx);
-                }
-                return;
+                // if (!/\.\w+$/.test(ctx.url)) {
+                return this.root.navigating(this.app.container, ctx);
+                // }
+                // return;
             } else {
                 return;
             }
