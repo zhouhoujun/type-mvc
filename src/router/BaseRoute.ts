@@ -1,9 +1,10 @@
-import { IComponent, Composite, Type, IContainer } from 'tsioc';
+import { IComponent, Composite, Type, IContainer, Mode } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next } from '../util';
 import { IRoute, RouteAction } from './IRoute';
 import { notFoundRoute } from './NotFoundRoute';
 import { isString } from 'util';
+import { RootRoute } from '../index';
 
 
 /**
@@ -38,16 +39,28 @@ export abstract class BaseRoute extends Composite implements IRoute {
         //     super.add(node);
         // }
         // return this;
-        node.url = this.url + node.url;
+        let baseUrl = this.cutEmptyPath(this.url, true);
+
+        node.url = baseUrl + node.url;
         super.add(node)
         return this;
+    }
+
+    cutEmptyPath(routPath: string, foreNull = false): string {
+        if (foreNull && routPath === '/') {
+            return '';
+        }
+        if (/\/\s*$/.test(routPath)) {
+            return routPath.substr(0, routPath.lastIndexOf('/'));
+        }
+        return routPath;
     }
 
     match(ctx: IContext | string) {
         let prefix: string = isString(ctx) ? ctx : ctx.url;
         let route = this.find((r: IRoute) => {
-            return  r.url && prefix && prefix.indexOf(r.url) === 0;
-        });
+            return r.url && prefix && prefix.indexOf(r.url) === 0;
+        }, Mode.traverseLast);
         return route;
     }
 

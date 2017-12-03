@@ -198,9 +198,9 @@ export class Bootstrap {
 
 
     protected async initIContainer(config: Configuration, container: IContainer): Promise<IContainer> {
-        this.registerExtendDecorators(container);
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
         container.registerSingleton(Configuration, config);
+        this.registerExtendDecorators(container);
         // register self.
         container.register(this.appType);
 

@@ -4,6 +4,7 @@ export * from './router';
 export * from './middlewares';
 
 export * from './errors';
+export * from './restults';
 
 export * from './Application';
 export * from './Configuration';

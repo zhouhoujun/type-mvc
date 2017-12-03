@@ -3,7 +3,7 @@ import { Inject } from 'tsioc';
 import { Mywork } from '../bi/Mywork';
 
 @Controller('/users')
-export class HomeController {
+export class UserController {
 
     @Inject(symbols.IContext)
     context: IContext;

@@ -3,7 +3,7 @@ import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
 import { symbols } from '../util';
-import { Configuration } from '../index';
+import { Configuration } from '../Configuration';
 import { isString } from 'util';
 const serve = require('koa-static');
 
@@ -13,9 +13,11 @@ export class DefaultContentMiddleware implements IMiddleware {
     constructor(private app: Application, private config: Configuration) {
     }
     setup() {
-        let contents = isString(this.config.contents) ? [this.config.contents] : this.config.contents;
+        let contents = this.config.contents || ['./public'];
         contents.forEach(content => {
-            this.app.use(serve(toAbsolutePath(this.config.rootdir, content)));
+            let staticPath = toAbsolutePath(this.config.rootdir, content);
+            console.log('staticPath', staticPath, this.config);
+            this.app.use(serve(staticPath));
         })
     }
 

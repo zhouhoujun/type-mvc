@@ -8,7 +8,6 @@ import { symbols } from './util';
  * @interface Configuration
  */
 @Singleton
-@Injectable
 export class Configuration {
     constructor() {
 
@@ -19,7 +18,7 @@ export class Configuration {
      */
     rootdir?= '';
 
-    session? = {
+    session?= {
         key: 'typemvc:sess', /** (string) cookie key (default is koa:sess) */
         /** (number || 'session') maxAge in ms (default is 1 days) */
         /** 'session' will result in a cookie that expires when session/browser is closed */
@@ -37,7 +36,7 @@ export class Configuration {
      * @type {(string | string[])}
      * @memberof Configuration
      */
-    contents?: string | string[] = 'public';
+    contents?: string[] = ['./public'];
     /**
      * web site base url path. route prefix.
      *
@@ -60,13 +59,16 @@ export class Configuration {
      * @memberof Configuration
      */
     beforeMiddlewares?: Token<any>[] = [
+        symbols.BodyParserMiddleware,
+        symbols.JsonMiddleware,
         symbols.LogMiddleware,
+        symbols.ContentMiddleware,
         /**
          * this is container
          */
         symbols.ContextMiddleware,
         symbols.SessionMiddleware,
-        symbols.BodyParserMiddleware
+        symbols.ViewsMiddleware
 
     ];
 
@@ -79,7 +81,7 @@ export class Configuration {
     routerMiddlewate?: Token<any> = symbols.RouterMiddleware;
 
     /**
-     * custom middleware match path
+     * custom middleware match path, './middlewares/\*\*\/*{.js,.ts}' in your project.
      */
     middlewares?: string | string[] = ['./middlewares/**/*{.js,.ts}'];
 
@@ -110,7 +112,7 @@ export class Configuration {
 
 
     /**
-     * controllers match. default `./controllers/*{.js,.ts}`.
+     * controllers match. default `./controllers/\*\*\/*{.js,.ts}` in your project..
      *
      * @type {(string | string[])}
      * @memberOf Configuration
@@ -124,4 +126,23 @@ export class Configuration {
      * @memberof Configuration
      */
     useControllers?: Token<any>[] = [];
+
+
+    /**
+     * views folder, default `./views` in your project.
+     *
+     * @memberof Configuration
+     */
+    views?= './views';
+
+    /**
+     * render view options.
+     *
+     * @memberof Configuration
+     */
+    viewsOptions?= {
+        extension: 'ejs',
+        map: { html: 'nunjucks' }
+    };
+
 }

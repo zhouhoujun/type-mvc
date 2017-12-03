@@ -12,9 +12,11 @@ export class NotFoundRoute extends NullComponent implements IRoute {
     match(ctx: IContext): IRoute {
         return notFoundRoute;
     }
+
     async navigating(container: IContainer, ctx: IContext) {
-        return new NotFoundError();
+
     }
+
     empty(): IComponent {
         return notFoundRoute;
     }

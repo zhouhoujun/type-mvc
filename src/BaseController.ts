@@ -8,6 +8,7 @@ import * as path from 'path';
 import { Controller, Get } from './decorators';
 import { AutoWired } from 'tsioc';
 import { Defer, symbols } from './util';
+import { ViewResult, ResultValue, FileResult } from './restults';
 
 
 /**
@@ -17,39 +18,12 @@ import { Defer, symbols } from './util';
  * @class Controller
  */
 export abstract class BaseController {
-    @AutoWired(symbols.IContext)
-    context: IContext;
 
-    view(viewName: string, model: any) {
-        if (!this.context.render) {
-            return Promise.reject('view engin middleware no configed!');
-        } else {
-            return this.context.render(viewName, model);
-        }
+    view(viewName: string, model?: object) {
+        return new ViewResult(viewName, model);
     }
 
-    file(file: string | Buffer | Stream, contentType?: string, fileDownloadName?: string): Promise<Buffer> {
-        let defer = Defer.create<Buffer>();
-        if (file instanceof String) {
-            let confige = this.context.container.get(Configuration);
-            let filepath = path.join(confige.rootdir, file);
-            if (existsSync(filepath)) {
-                readFile(filepath, contentType || 'utf8', (err, data) => {
-                    if (err) {
-                        defer.reject(err);
-                    } else {
-                        defer.resolve(new Buffer(data));
-                    }
-                });
-            }
-        } else if (file instanceof Buffer) {
-            defer.resolve(file);
-        } else if (file instanceof Stream) {
-            file.once('end', (data) => {
-                defer.resolve(new Buffer(data));
-            })
-                .once('error', defer.reject);
-        }
-        return defer.promise;
+    file(file: string | Buffer | Stream, contentType?: string, fileDownloadName?: string) {
+        return new FileResult(file, contentType, fileDownloadName);
     }
 }

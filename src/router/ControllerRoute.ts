@@ -8,7 +8,10 @@ import { Authorization } from '../decorators';
 import { symbols } from '../util';
 import { IAuthorization } from '../auth';
 import { UnauthorizedError, NotFoundError, HttpError, BadRequestError } from '../errors/index';
-import { isUndefined, isBoolean } from 'util';
+import { isUndefined, isBoolean, isString, isObject, isArray } from 'util';
+import { JsonResult } from '../restults/JsonResult';
+import { ViewResult } from '../restults/ViewResult';
+import { FileResult } from '../restults/FileResult';
 
 
 export class ControllerRoute extends BaseRoute {
@@ -18,25 +21,21 @@ export class ControllerRoute extends BaseRoute {
     }
 
     async navigating(container: IContainer, ctx: IContext): Promise<any> {
-
-        let routPath = ctx.url.replace(this.url, '');
-        let respone;
         try {
             switch (ctx.method) {
                 case 'GET':
-                    respone = await this.invoke(container, Get, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
+                    await this.invoke(ctx, container, Get, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
                     break;
                 case 'POST':
-                    respone = await this.invoke(container, Post, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
+                    await this.invoke(ctx, container, Post, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
                     break;
                 case 'Put':
-                    respone = await this.invoke(container, Put, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
+                    await this.invoke(ctx, container, Put, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
                     break;
                 case 'DElETE':
-                    respone = await this.invoke(container, Delete, routPath, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
+                    await this.invoke(ctx, container, Delete, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
                     break;
             }
-            ctx.body = respone;
         } catch (err) {
             if (err instanceof HttpError) {
                 ctx.status = err.code;
@@ -119,10 +118,12 @@ export class ControllerRoute extends BaseRoute {
         return /\/:/.test(uri || '');
     }
 
-    async invoke(container: IContainer, decorator: Function, routPath: string, provider: (meta: RouteMetadata, params: Token<any>[], ctrl: any) => AsyncParamProvider[]) {
+    async invoke(ctx: IContext, container: IContainer, decorator: Function, provider: (meta: RouteMetadata, params: Token<any>[], ctrl: any) => AsyncParamProvider[]) {
         let decoratorName = decorator.toString();
+        let routPath = this.cutEmptyPath(ctx.url.replace(this.url, ''));
         let methodMaps = getMethodMetadata<RouteMetadata>(decoratorName, this.controller);
-        let meta;
+        let meta: RouteMetadata;
+
         let allMethods: RouteMetadata[] = [];
         for (let name in methodMaps) {
             allMethods = allMethods.concat(methodMaps[name]);
@@ -131,9 +132,7 @@ export class ControllerRoute extends BaseRoute {
 
         meta = allMethods.find(route => {
             let uri = route.route || '';
-            if (/\/\s*$/.test(routPath)) {
-                routPath = routPath.substr(0, routPath.lastIndexOf('/'));
-            }
+
             if (uri === routPath) {
                 return true;
             }
@@ -159,7 +158,28 @@ export class ControllerRoute extends BaseRoute {
                 }
             }
             let params = container.getMethodParameters(this.controller, ctrl, meta.propertyKey);
-            return container.invoke(this.controller, meta.propertyKey, ctrl, ...provider(meta, params, ctrl));
+            let response: any = await container.invoke(this.controller, meta.propertyKey, ctrl, ...provider(meta, params, ctrl));
+
+            console.log('response:', response);
+            let contentType: string = meta.contentType;
+            if (isString(response)) {
+                contentType = contentType || 'text/html';
+                ctx.response.body = response;
+            } else if (isArray(response) && response instanceof Uint8Array) {
+                ctx.response.body = Buffer.from(response);
+            } else if (isObject(response)) {
+                if (response instanceof JsonResult) {
+                    await response.sendValue(ctx, container);
+                } else if (response instanceof ViewResult) {
+                    await response.sendValue(ctx, container);
+                } else if (response instanceof FileResult) {
+                    await response.sendValue(ctx, container);
+                } else {
+                    contentType = contentType || 'application/json';
+                    ctx.type = contentType;
+                    ctx.response.body = response;
+                }
+            }
         } else {
             throw new NotFoundError();
         }

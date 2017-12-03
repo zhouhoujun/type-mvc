@@ -41,8 +41,22 @@ export const LogMiddleware = Symbol('LogMiddleware');
  */
 export const RouterMiddleware = Symbol('RouterMiddleware');
 
+
+/**
+ * json middlwware is deal with request body as json for some requests.
+ * it is a symbol id, you can register yourself middleware for this.
+ */
+export const JsonMiddleware = Symbol('JsonMiddleware');
+
 /**
  * Body Parse middlwware is deal with request body for requests.
  * it is a symbol id, you can register yourself middleware for this.
  */
 export const BodyParserMiddleware = Symbol('BodyParserMiddleware');
+
+
+/**
+ * view middlwware is render html for requests.
+ * it is a symbol id, you can register yourself middleware for this.
+ */
+export const ViewsMiddleware = Symbol('ViewsMiddleware');

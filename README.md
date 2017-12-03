@@ -50,9 +50,8 @@ define as:
 import { Controller, Get, Post, IContext, symbols } from 'type-mvc';
 import { Inject } from 'tsioc';
 import { Mywork } from '../bi/Mywork';
-
 @Controller('/users')
-export class HomeController {
+export class UserController {
 
     @Inject(symbols.IContext)
     context: IContext;
@@ -101,6 +100,23 @@ export class HomeController {
     }
 
 }
+
+
+@Controller('/')
+export class HomeController extends BaseController {
+
+    @Inject(symbols.IContext)
+    context: IContext;
+    constructor() {
+        super();
+    }
+
+    @Get('')
+    index(): ResultValue {
+        return this.view('index.html');
+    }
+}
+
 
 ```
 
