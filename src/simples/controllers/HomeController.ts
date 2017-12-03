@@ -15,4 +15,14 @@ export class HomeController extends BaseController {
     index(): ResultValue {
         return this.view('index.html');
     }
+
+    @Get('/index2')
+    home2(): ResultValue {
+        return this.view('index2.html');
+    }
+
+    @Post('/goto/:pageName')
+    gotoPage(pageName: string): ResultValue {
+        return this.redirect( '/' + pageName);
+    }
 }

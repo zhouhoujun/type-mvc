@@ -51,7 +51,10 @@ export abstract class BaseRoute extends Composite implements IRoute {
             return '';
         }
         if (/\/\s*$/.test(routPath)) {
-            return routPath.substr(0, routPath.lastIndexOf('/'));
+            routPath = routPath.substr(0, routPath.lastIndexOf('/'));
+        }
+        if (/\?\S*$/.test(routPath)) {
+            routPath = routPath.substr(0, routPath.lastIndexOf('?'));
         }
         return routPath;
     }

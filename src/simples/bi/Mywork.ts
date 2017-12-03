@@ -19,4 +19,7 @@ export class Mywork {
             age: 10000
         }
     }
+    save(user: any) {
+        return user;
+    }
 }

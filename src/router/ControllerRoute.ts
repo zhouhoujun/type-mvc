@@ -1,17 +1,15 @@
 import { BaseRoute } from './BaseRoute';
-import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction } from 'tsioc';
+import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction, getPropertyMetadata } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next } from '../util';
-import { Get, GetMetadata, RouteMetadata, Post, Put, Delete } from '../decorators';
+import { Get, GetMetadata, RouteMetadata, Post, Put, Delete, Field } from '../decorators';
 import { IRoute } from './IRoute';
 import { Authorization } from '../decorators';
 import { symbols } from '../util';
 import { IAuthorization } from '../auth';
 import { UnauthorizedError, NotFoundError, HttpError, BadRequestError } from '../errors/index';
 import { isUndefined, isBoolean, isString, isObject, isArray } from 'util';
-import { JsonResult } from '../restults/JsonResult';
-import { ViewResult } from '../restults/ViewResult';
-import { FileResult } from '../restults/FileResult';
+import { JsonResult, ResultValue, ViewResult, FileResult } from '../restults';
 
 
 export class ControllerRoute extends BaseRoute {
@@ -48,51 +46,62 @@ export class ControllerRoute extends BaseRoute {
 
     createProvider(container: IContainer, meta: RouteMetadata, params: Token<any>[], ctrl: any, ctx: IContext): AsyncParamProvider[] {
         if (params && params.length) {
+            let paramVal = null;
             if (this.isRestUri(meta.route)) {
-                let url = meta.route.substr(0, meta.route.indexOf('/:')) + '/';
-                let querystring = ctx.url.replace(this.url + url, '');
-                let paramVal = querystring.indexOf('/') > 0 ? querystring.substr(0, querystring.indexOf('/')) : querystring;
-                let body = ctx.request['body'] || {};
-                let providers = params.map((p, idx) => {
-                    try {
-                        if (!this.isBaseType(p)) {
-                            let val = container.get(p);
-                            for (let n in val) {
-                                if (!isUndefined(body[n])) {
-                                    val[n] = body[n];
-                                }
-                            }
-                            return {
-                                value: val,
-                                index: idx
-                            }
+                let route = meta.route.substr(0, meta.route.indexOf('/:')) + '/';
+                let baseURL = this.cutEmptyPath(this.url, true);
+                let routeUrl = this.cutEmptyPath(ctx.url.replace(baseURL, ''));
 
-                        } else {
-                            let val;
-                            if (paramVal !== null) {
-                                if (p === String) {
-                                    val = paramVal;
-                                } else if (p === Boolean) {
-                                    val = new Boolean(paramVal);
-                                } else if (p === Number) {
-                                    val = parseFloat(paramVal);
-                                } else if (p === Date) {
-                                    val = new Date(paramVal);
-                                }
-                                paramVal = null;
-                            }
-                            return {
-                                value: val,
-                                index: idx
+                let querystring = routeUrl.replace(route, '');
+                paramVal = querystring.indexOf('/') > 0 ? querystring.substr(0, querystring.indexOf('/')) : querystring;
+
+            }
+            let body = ctx.request['body'] || {};
+            console.log('request body:', body);
+            let providers = params.map((p, idx) => {
+                try {
+                    if (isClass(p)) {
+                        let meta = getPropertyMetadata(Field, p);
+                        let val = container.get(p);
+                        for (let n in meta) {
+                            if (!isUndefined(body[n])) {
+                                val[n] = body[n];
                             }
                         }
-                    } catch (err) {
-                        throw new BadRequestError(err.toString());
+                        console.log('result model:', val);
+                        return {
+                            value: val,
+                            index: idx
+                        }
+
+                    } else if (!this.isBaseType(p)) {
+                        let val;
+                        if (paramVal !== null) {
+                            if (p === String) {
+                                val = paramVal;
+                            } else if (p === Boolean) {
+                                val = new Boolean(paramVal);
+                            } else if (p === Number) {
+                                val = parseFloat(paramVal);
+                            } else if (p === Date) {
+                                val = new Date(paramVal);
+                            }
+                            paramVal = null;
+                        }
+                        return {
+                            value: val,
+                            index: idx
+                        }
+                    } else {
+                        return null;
                     }
-                });
-                return providers;
-            }
+                } catch (err) {
+                    throw new BadRequestError(err.toString());
+                }
+            });
+            return providers.filter(p => p !== null);
         }
+
         return [];
     }
 
@@ -120,7 +129,8 @@ export class ControllerRoute extends BaseRoute {
 
     async invoke(ctx: IContext, container: IContainer, decorator: Function, provider: (meta: RouteMetadata, params: Token<any>[], ctrl: any) => AsyncParamProvider[]) {
         let decoratorName = decorator.toString();
-        let routPath = this.cutEmptyPath(ctx.url.replace(this.url, ''));
+        let baseURL = this.cutEmptyPath(this.url, true);
+        let routPath = this.cutEmptyPath(ctx.url.replace(baseURL, ''));
         let methodMaps = getMethodMetadata<RouteMetadata>(decoratorName, this.controller);
         let meta: RouteMetadata;
 
@@ -128,23 +138,26 @@ export class ControllerRoute extends BaseRoute {
         for (let name in methodMaps) {
             allMethods = allMethods.concat(methodMaps[name]);
         }
+
         allMethods = allMethods.sort((ra, rb) => (rb.route || '').length - (ra.route || '').length);
 
-        meta = allMethods.find(route => {
-            let uri = route.route || '';
-
-            if (uri === routPath) {
-                return true;
-            }
-            if (this.isRestUri(uri)) {
-                let idex = uri.indexOf('/:');
-                let url = uri.substr(0, idex);
-                if (url !== routPath && routPath.indexOf(url) === 0) {
-                    return true;
+        meta = allMethods.find(route => (route.route || '') === routPath);
+        if (!meta) {
+            meta = allMethods.find(route => {
+                let uri = route.route || '';
+                // if (uri === routPath) {
+                //     return true;
+                // }
+                if (this.isRestUri(uri)) {
+                    let idex = uri.indexOf('/:');
+                    let url = uri.substr(0, idex);
+                    if (url !== routPath && routPath.indexOf(url) === 0) {
+                        return true;
+                    }
                 }
-            }
-            return false;
-        });
+                return false;
+            });
+        }
 
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
@@ -167,16 +180,13 @@ export class ControllerRoute extends BaseRoute {
             } else if (isArray(response) && response instanceof Uint8Array) {
                 ctx.response.body = Buffer.from(response);
             } else if (isObject(response)) {
-                if (response instanceof JsonResult) {
-                    await response.sendValue(ctx, container);
-                } else if (response instanceof ViewResult) {
-                    await response.sendValue(ctx, container);
-                } else if (response instanceof FileResult) {
+                if (response instanceof ResultValue) {
                     await response.sendValue(ctx, container);
                 } else {
                     contentType = contentType || 'application/json';
                     ctx.type = contentType;
                     ctx.response.body = response;
+                    ctx.redirect
                 }
             }
         } else {

@@ -19,8 +19,13 @@
 
         <div>
             <button id="reqA">测试</button>
+            <button id="redirect">服务器挑战测试</button>
         </div>
         <code id="repA"></code>
+
+        <form action="/goto/index2">
+            <input type="submit" value="服务器挑战测试" ></input>
+        </form>
     </div>
     <script>
         $(function () {
@@ -28,7 +33,14 @@
             $('#reqA').click(function () {
                 $.getJSON('/users/zh', function (data) {
                     console.log('respone data:', data);
-                    $('#repA').text(data.name);
+                    $('#repA').text(JSON.stringify(data));
+                });
+            });
+
+            $('#redirect').click(function(){
+                $.post('/users/add', {name: 'test', sex:'man', age:500}, (data)=>{
+                    console.log('post respone data:', data);
+                    $('#repA').text(JSON.stringify(data));
                 });
             });
         });

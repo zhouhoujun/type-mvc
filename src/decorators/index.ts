@@ -11,6 +11,8 @@ export * from './Put';
 export * from './Route';
 // export * from './Router';
 export * from './Authorization';
+export * from './Model';
+export * from './Field';
 export * from './Middleware';
 export * from './metadata';
 

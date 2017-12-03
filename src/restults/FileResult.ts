@@ -6,6 +6,7 @@ import { Configuration } from '../Configuration';
 import { IContainer } from 'tsioc';
 import { existsSync, readFile } from 'fs';
 import { join } from 'path';
+import { BadRequestError } from '../index';
 
 
 /**
@@ -15,7 +16,7 @@ import { join } from 'path';
  * @class FileResult
  */
 export class FileResult extends ResultValue {
-    constructor(private file: string | Buffer | Stream, contentType?: string, fileDownloadName?: string) {
+    constructor(private file: string | Buffer | Stream, contentType?: string, private fileDownloadName?: string) {
         super(contentType);
     }
 
@@ -43,6 +44,14 @@ export class FileResult extends ResultValue {
             })
                 .once('error', defer.reject);
         }
-        return defer.promise;
+        return defer.promise
+            .then(buffer => {
+                if (this.fileDownloadName) {
+                    ctx.attachment(this.fileDownloadName);
+                }
+                ctx.body = buffer;
+            }, err => {
+                throw new BadRequestError(err.toString())
+            });
     }
 }

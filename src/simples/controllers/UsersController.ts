@@ -1,7 +1,16 @@
-import { Controller, Get, Post, IContext, symbols } from '../../index';
+import { Controller, Get, Post, IContext, symbols, Model, Field } from '../../index';
 import { Inject } from 'tsioc';
 import { Mywork } from '../bi/Mywork';
 
+@Model
+export class User {
+    @Field
+    name: string;
+    @Field
+    sex: string;
+    @Field
+    age: number;
+}
 @Controller('/users')
 export class UserController {
 
@@ -15,6 +24,14 @@ export class UserController {
     index() {
         console.log('home index invorked', this.work);
         return this.work.workA();
+    }
+
+
+    @Post('/add')
+    addUser(user: User, @Inject(symbols.IContext) ctx: IContext) {
+        console.log('user:', User);
+        console.log('request body', ctx.request['body']);
+        return this.work.save(user);
     }
 
     @Get('/sub')
