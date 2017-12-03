@@ -47,9 +47,21 @@ default setting load controllers in your project folder
 define as:
 
 ```ts
-import { Controller, Get, Post, IContext, symbols } from 'type-mvc';
+import { Controller, Get, Post, IContext, symbols, Model, Field } from '../../index';
 import { Inject } from 'tsioc';
 import { Mywork } from '../bi/Mywork';
+
+// define Model
+@Model
+export class User {
+    @Field
+    name: string;
+    @Field
+    sex: string;
+    @Field
+    age: number;
+}
+
 @Controller('/users')
 export class UserController {
 
@@ -63,6 +75,14 @@ export class UserController {
     index() {
         console.log('home index invorked', this.work);
         return this.work.workA();
+    }
+
+
+    @Post('/add')
+    addUser(user: User, @Inject(symbols.IContext) ctx: IContext) {
+        console.log('user:', User);
+        console.log('request body', ctx.request['body']);
+        return this.work.save(user);
     }
 
     @Get('/sub')
@@ -114,6 +134,16 @@ export class HomeController extends BaseController {
     @Get('')
     index(): ResultValue {
         return this.view('index.html');
+    }
+
+    @Get('/index2')
+    home2(): ResultValue {
+        return this.view('index2.html');
+    }
+
+    @Post('/goto/:pageName')
+    gotoPage(pageName: string): ResultValue {
+        return this.redirect( '/' + pageName);
     }
 }
 
