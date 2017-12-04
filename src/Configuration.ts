@@ -153,4 +153,11 @@ export class Configuration {
         map: { html: 'nunjucks' }
     };
 
+    /**
+     * log config extentsion.
+     *
+     * @type {*}
+     * @memberof Configuration
+     */
+    logConfig: any;
 }
