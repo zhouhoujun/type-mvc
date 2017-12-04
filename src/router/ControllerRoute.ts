@@ -60,7 +60,7 @@ export class ControllerRoute extends BaseRoute {
             console.log('request body:', body);
             let providers = params.map((p, idx) => {
                 try {
-                    if (isClass(p)) {
+                    if (isClass(p) && !this.isBaseType(p)) {
                         let meta = getPropertyMetadata(Field, p);
                         let val = container.get(p);
                         for (let n in meta) {
@@ -74,7 +74,7 @@ export class ControllerRoute extends BaseRoute {
                             index: idx
                         }
 
-                    } else if (!this.isBaseType(p)) {
+                    } else if (this.isBaseType(p)) {
                         let val;
                         if (paramVal !== null) {
                             if (p === String) {
