@@ -44,6 +44,9 @@ Bootstrap.create(__dirname)
 default setting load controllers in your project folder
 `/controllers`
 
+Each Controller action should return type `ResultValue`, have provide `FileResult`, `JsonResult`,
+`RedirectResult`, `ViewResult`. also, you can extend with `BaseController`, it has implements some mothod to create the `ResultValue` types.
+
 define as:
 
 ```ts
