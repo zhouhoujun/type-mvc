@@ -44,7 +44,7 @@ Bootstrap.create(__dirname)
 default setting load controllers in your project folder
 `/controllers`
 
-Each Controller action should return type `ResultValue`, have provide `FileResult`, `JsonResult`,
+Each Controller action should return type `ResultValue`, the action can be `async` or `sync`. Have provide `FileResult`, `JsonResult`,
 `RedirectResult`, `ViewResult`. also, you can extend with `BaseController`, it has implements some mothod to create the `ResultValue` types.
 
 define as:
@@ -82,7 +82,7 @@ export class UserController {
 
 
     @Post('/add')
-    addUser(user: User, @Inject(symbols.IContext) ctx: IContext) {
+    async addUser(user: User, @Inject(symbols.IContext) ctx: IContext) {
         console.log('user:', User);
         console.log('request body', ctx.request['body']);
         return this.work.save(user);

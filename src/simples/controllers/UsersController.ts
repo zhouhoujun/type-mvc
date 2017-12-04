@@ -1,6 +1,7 @@
 import { Controller, Get, Post, IContext, symbols, Model, Field } from '../../index';
 import { Inject } from 'tsioc';
 import { Mywork } from '../bi/Mywork';
+import { async } from 'q';
 
 @Model
 export class User {
@@ -28,7 +29,7 @@ export class UserController {
 
 
     @Post('/add')
-    addUser(user: User, @Inject(symbols.IContext) ctx: IContext) {
+    async addUser(user: User, @Inject(symbols.IContext) ctx: IContext) {
         console.log('user:', User);
         console.log('request body', ctx.request['body']);
         return this.work.save(user);
