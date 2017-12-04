@@ -1,17 +1,8 @@
 import { Controller, Get, Post, IContext, symbols, Model, Field } from '../../index';
 import { Inject } from 'tsioc';
 import { Mywork } from '../bi/Mywork';
-import { async } from 'q';
+import { User } from '../models';
 
-@Model
-export class User {
-    @Field
-    name: string;
-    @Field
-    sex: string;
-    @Field
-    age: number;
-}
 @Controller('/users')
 export class UserController {
 

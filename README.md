@@ -38,25 +38,11 @@ Bootstrap.create(__dirname)
 
 ```
 
-
-### Define Controller
-
-default setting load controllers in your project folder
-`/controllers`
-
- * Each Controller action should return type `ResultValue`, also you can return object, it deal with JsonResult. type string deal with ViewResult.
- * The action can be `async` or `sync`. Have provide `FileResult`, `JsonResult`,
-`RedirectResult`, `ViewResult`. 
- * Also, you can extend with `BaseController`, it has implements some mothod to create the `ResultValue` types.
-
-define as:
+### Define Model
 
 ```ts
-import { Controller, Get, Post, IContext, symbols, Model, Field } from '../../index';
-import { Inject } from 'tsioc';
-import { Mywork } from '../bi/Mywork';
+import { Model, Field } from 'type-mvc';
 
-// define Model
 @Model
 export class User {
     @Field
@@ -66,6 +52,27 @@ export class User {
     @Field
     age: number;
 }
+```
+
+### Define Controller
+
+default setting load controllers in your project folder
+`/controllers`
+
+ * Each Controller action should return type `ResultValue`, also you can return object, it deal with JsonResult. return string deal with ViewResult.
+ * The action can be `async` or `sync`. Have provide `FileResult`, `JsonResult`,
+`RedirectResult`, `ViewResult`.
+ * Also, you can extend with `BaseController`, it has implements some mothod to create the `ResultValue` types.
+ * Model can auto create in action, it auto load value from request body.
+
+define as:
+
+```ts
+import { Controller, Get, Post, IContext, symbols, Model, Field } from 'type-mvc';
+import { Inject } from 'tsioc';
+import { Mywork } from '../bi/Mywork';
+import { User } from '../models';
+
 
 @Controller('/users')
 export class UserController {
