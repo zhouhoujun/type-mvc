@@ -45,12 +45,20 @@ export class Configuration {
      */
     routePrefix?= '';
     /**
-     * key value setting.
+     * custom config key value setting.
      *
      * @type {IMap<any>}
      * @memberOf Configuration
      */
     setting?: ObjectMap<any> = {};
+
+    /**
+     * custom config connections.
+     *
+     * @type {ObjectMap<any>}
+     * @memberof Configuration
+     */
+    connections?: ObjectMap<any> = {};
 
     /**
      * some middleware befor custom middleware to deal with http request.

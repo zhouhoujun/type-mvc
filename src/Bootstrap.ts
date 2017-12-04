@@ -11,6 +11,7 @@ import { Application } from './Application';
 import { Router, IRoute, IRouter } from './router';
 import { registerDefaults } from './registerDefaults';
 import { registerDecorators } from './decorators';
+import { execFileSync } from 'child_process';
 // const serveStatic = require('koa-static');
 // const convert = require('koa-convert');
 
@@ -111,6 +112,8 @@ export class Bootstrap {
         if (isString(config)) {
             if (existsSync(config)) {
                 excfg = require(config) as Configuration;
+            } else if (execFileSync(path.join(this.rootdir, config))) {
+                excfg = require(path.join(this.rootdir, config)) as Configuration;
             } else {
                 console.log(`config file: ${config} not exists.`)
             }
