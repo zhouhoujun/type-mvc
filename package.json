@@ -1,9 +1,9 @@
 {
   "name": "type-mvc",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "type-mvc is base on koa, with typescript. type and decorators mvc frameworker on server.",
   "main": "./lib/index.js",
-  "typings": "./lib/index",
+  "typings": "./lib/index.d.ts",
   "scripts": {
     "prepublish": "gulp start --release"
   },
