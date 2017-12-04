@@ -64,6 +64,7 @@ default setting load controllers in your project folder
 `RedirectResult`, `ViewResult`.
  * Also, you can extend with `BaseController`, it has implements some mothod to create the `ResultValue` types.
  * Model can auto create in action, it auto load value from request body.
+ * Reset full api param can auto loader via param provider.
 
 define as:
 
