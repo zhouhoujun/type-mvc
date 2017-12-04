@@ -175,7 +175,7 @@ export class Bootstrap {
      */
     async run() {
         let app = await this.build();
-        let config = app.container.get<IConfiguration>(symbols.IConfiguration);
+        let config = app.container.get(Configuration);
         app.listen(config.port || process.env.PORT);
         console.log('service listen on port: ', config.port || app.env['port']);
         return app;
