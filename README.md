@@ -44,8 +44,10 @@ Bootstrap.create(__dirname)
 default setting load controllers in your project folder
 `/controllers`
 
-Each Controller action should return type `ResultValue`, the action can be `async` or `sync`. Have provide `FileResult`, `JsonResult`,
-`RedirectResult`, `ViewResult`. also, you can extend with `BaseController`, it has implements some mothod to create the `ResultValue` types.
+ * Each Controller action should return type `ResultValue`, also you can return object, it deal with JsonResult. type string deal with ViewResult.
+ * The action can be `async` or `sync`. Have provide `FileResult`, `JsonResult`,
+`RedirectResult`, `ViewResult`. 
+ * Also, you can extend with `BaseController`, it has implements some mothod to create the `ResultValue` types.
 
 define as:
 
