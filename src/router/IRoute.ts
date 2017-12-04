@@ -1,6 +1,6 @@
 import { IComponent, IContainer } from 'tsioc';
 import { IContext } from '../IContext';
-import { Next } from '../index';
+import { Next } from '../util';
 
 
 export interface RouteAction {
@@ -10,6 +10,6 @@ export interface RouteAction {
 export interface IRoute extends IComponent {
     url: string;
     match(ctx: IContext | string): IRoute;
-
-    navigating(container: IContainer, ctx: IContext): Promise<any>
+    options(container: IContainer, ctx: IContext, next: Next): Promise<any>;
+    navigating(container: IContainer, ctx: IContext): Promise<any>;
 }

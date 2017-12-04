@@ -1,5 +1,6 @@
 import { ObjectMap, Injectable, Singleton, Token } from 'tsioc';
 import { symbols } from './util';
+import { RequestMethod } from './RequestMethod';
 
 
 export interface ISessionConfig {
@@ -154,6 +155,23 @@ export interface IConfiguration {
     logConfig?: any;
 }
 
+export interface CorsOptions {
+    credentials?: boolean;
+    exposeHeaders?: string;
+    keepHeadersOnError?: boolean;
+    allowMethods?: string | RequestMethod[];
+
+    allowHeaders?: string | string[];
+
+    /**
+     * for global default.
+     *
+     * @type {number}
+     * @memberof CorsOptions
+     */
+    maxAge?: number;
+}
+
 /**
  * mvc configuration
  *
@@ -224,6 +242,7 @@ export class Configuration implements IConfiguration {
         symbols.JsonMiddleware,
         symbols.LogMiddleware,
         symbols.ContentMiddleware,
+        symbols.CorsMiddleware,
         /**
          * this is container
          */
@@ -313,4 +332,12 @@ export class Configuration implements IConfiguration {
      * @memberof Configuration
      */
     logConfig?: any;
+
+    /**
+     * global cors default options.
+     *
+     * @type {CorsOptions}
+     * @memberof Configuration
+     */
+    corsOptions?: CorsOptions;
 }

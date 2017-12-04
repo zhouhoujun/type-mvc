@@ -6,3 +6,4 @@ export * from './DefaultJsonMiddleware';
 export * from './DefaultLogMiddleware';
 export * from './DefaultBodyParserMiddleware';
 export * from './DefaultViewsMiddleware';
+export * from './DefaultCorsMiddleware';

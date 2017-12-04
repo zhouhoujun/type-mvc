@@ -8,3 +8,4 @@ export * from './OptionsMetadata';
 export * from './PatchMetadata';
 export * from './PostMetadata';
 export * from './PutMetadata';
+export * from './CorsMetadata';

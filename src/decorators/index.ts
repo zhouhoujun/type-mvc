@@ -9,6 +9,7 @@ export * from './Patch';
 export * from './Post';
 export * from './Put';
 export * from './Route';
+export * from './Cors';
 // export * from './Router';
 export * from './Authorization';
 export * from './Model';

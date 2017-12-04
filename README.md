@@ -65,16 +65,17 @@ default setting load controllers in your project folder
  * Also, you can extend with `BaseController`, it has implements some mothod to create the `ResultValue` types.
  * Model can auto create in action, it auto load value from request body.
  * Reset full api param can auto loader via param provider.
+ * Cors by `@Cors` decorator in class or method.
 
 define as:
 
 ```ts
-import { Controller, Get, Post, IContext, symbols, Model, Field } from 'type-mvc';
+import { Controller, Get, Post, IContext, symbols, Model, Field, Cors } from 'type-mvc';
 import { Inject } from 'tsioc';
 import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
 
-
+@Cors
 @Controller('/users')
 export class UserController {
 
@@ -90,7 +91,7 @@ export class UserController {
         return this.work.workA();
     }
 
-
+    @Cors({ allowMethods: [RequestMethod.Post] })
     @Post('/add')
     async addUser(user: User, @Inject(symbols.IContext) ctx: IContext) {
         console.log('user:', User);

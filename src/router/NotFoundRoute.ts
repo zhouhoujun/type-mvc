@@ -2,6 +2,7 @@ import { NullComponent, IComponent, IContainer } from 'tsioc';
 import { IRoute } from './IRoute';
 import { IContext } from '../IContext';
 import { NotFoundError } from '../errors/index';
+import { Next } from '../util';
 
 
 
@@ -13,6 +14,9 @@ export class NotFoundRoute extends NullComponent implements IRoute {
         return notFoundRoute;
     }
 
+    async options(container: IContainer, ctx: IContext, next: Next) {
+        return next();
+    }
     async navigating(container: IContainer, ctx: IContext) {
 
     }

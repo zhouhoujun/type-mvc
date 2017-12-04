@@ -1,8 +1,10 @@
-import { Controller, Get, Post, IContext, symbols, Model, Field } from '../../index';
+import { Controller, Get, Post, IContext, symbols, Model, Field, Cors } from '../../index';
 import { Inject } from 'tsioc';
 import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
+import { RequestMethod } from '../../RequestMethod';
 
+@Cors
 @Controller('/users')
 export class UserController {
 
@@ -18,7 +20,7 @@ export class UserController {
         return this.work.workA();
     }
 
-
+    @Cors({ allowMethods: [RequestMethod.Post] })
     @Post('/add')
     async addUser(user: User, @Inject(symbols.IContext) ctx: IContext) {
         console.log('user:', User);
@@ -31,6 +33,7 @@ export class UserController {
         return this.work.workB();
     }
 
+    @Cors
     @Get('/:name')
     getPerson(name: string) {
         return this.work.find(name);

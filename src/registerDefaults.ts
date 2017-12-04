@@ -4,7 +4,8 @@ import {
     DefaultContentMiddleware, DefaultSessionMiddleware,
     DefaultBodyParserMiddleware,
     DefaultViewsMiddleware,
-    DefaultJsonMiddleware
+    DefaultJsonMiddleware,
+    DefaultCorsMiddleware
 } from './middlewares';
 import { IContainer } from 'tsioc';
 import { symbols } from './util';
@@ -18,5 +19,6 @@ export function registerDefaults(container: IContainer) {
     container.register(symbols.SessionMiddleware, DefaultSessionMiddleware);
     container.register(symbols.BodyParserMiddleware, DefaultBodyParserMiddleware);
     container.register(symbols.ViewsMiddleware, DefaultViewsMiddleware);
+    container.register(symbols.CorsMiddleware, DefaultCorsMiddleware);
     container.register(Router);
 }

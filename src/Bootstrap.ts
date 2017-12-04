@@ -24,7 +24,7 @@ export class Bootstrap {
 
     private container: Defer<IContainer>;
     private middlewares: Token<any>[];
-    private configuration: Defer<Configuration>;
+    private configDefer: Defer<Configuration>;
     private builder: IContainerBuilder;
     /**
      * Creates an instance of WebApplication.
@@ -105,7 +105,10 @@ export class Bootstrap {
      * @memberOf WebHostBuilder
      */
     useConfiguration(config?: string | IConfiguration): Bootstrap {
-        this.configuration = Defer.create<Configuration>();
+        if (!this.configDefer) {
+            this.configDefer = Defer.create<Configuration>();
+            this.configDefer.resolve(new Configuration());
+        }
         let excfg: IConfiguration;
         if (isString(config)) {
             if (existsSync(config)) {
@@ -131,14 +134,13 @@ export class Bootstrap {
                 return true;
             });
             if (!config) {
-                config = {};
                 console.log('your app has not config file.');
             }
-            this.configuration.resolve(Object.assign(new Configuration(), config));
+            excfg = config;
         }
 
         if (excfg) {
-            this.configuration.promise = this.configuration.promise
+            this.configDefer.promise = this.configDefer.promise
                 .then(cfg => {
                     cfg = Object.assign(cfg || {}, excfg || {});
                     return cfg;
@@ -149,10 +151,10 @@ export class Bootstrap {
     }
 
     getConfiguration(): Promise<Configuration> {
-        if (!this.configuration) {
+        if (!this.configDefer) {
             this.useConfiguration();
         }
-        return this.configuration.promise;
+        return this.configDefer.promise;
     }
 
     /**

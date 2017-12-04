@@ -42,10 +42,16 @@ export const LogMiddleware = Symbol('LogMiddleware');
 
 
 /**
- * log middlwware is deal with route for requests.
+ * route middlwware is deal with route for requests.
  * it is a symbol id, you can register yourself middleware for this.
  */
 export const RouterMiddleware = Symbol('RouterMiddleware');
+
+/**
+ * Cors middlwware is deal with route cors for requests.
+ * it is a symbol id, you can register yourself middleware for this.
+ */
+export const CorsMiddleware = Symbol('CorsMiddleware');
 
 
 /**

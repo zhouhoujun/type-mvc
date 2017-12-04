@@ -5,7 +5,6 @@ import { RequestMethod } from '../RequestMethod';
 import { IMiddleware } from '../middlewares';
 import { ObjectMap, ActionComponent, Token } from 'tsioc';
 import { IRoute } from './IRoute';
-import { magenta } from 'chalk';
 import { RootRoute } from './RootRoute';
 import { RouteBuilder } from './RouteBuilder';
 import { symbols } from '../util';
@@ -37,12 +36,15 @@ export class Router implements IRouter, IMiddleware {
 
     setup() {
         this.app.use(async (ctx, next) => {
+            if (!ctx.status || ctx.status === 404) {
+                return this.root.options(this.app.container, ctx, next);
+            }
+        });
+
+        this.app.use(async (ctx, next) => {
             await next();
             if (!ctx.status || ctx.status === 404) {
-                // if (!/\.\w+$/.test(ctx.url)) {
                 return this.root.navigating(this.app.container, ctx);
-                // }
-                // return;
             } else {
                 return;
             }

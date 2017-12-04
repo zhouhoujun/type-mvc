@@ -67,6 +67,7 @@ export abstract class BaseRoute extends Composite implements IRoute {
         return route;
     }
 
+    abstract async options(container: IContainer, ctx: IContext, next: Next): Promise<any>;
     abstract async navigating(container: IContainer, ctx: IContext): Promise<any>;
     empty(): IComponent {
         return notFoundRoute;
