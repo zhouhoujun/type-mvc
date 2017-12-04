@@ -8,6 +8,12 @@ export const IContext = Symbol('IContext');
  */
 export const IAuthorization = Symbol('IAuthorization');
 
+/**
+ * Configuration
+ * it is a symbol id, you can register yourself middleware for this.
+ */
+export const IConfiguration = Symbol('IConfiguration');
+
 
 /**
  * context middlwware is provider for context of request.

@@ -6,7 +6,7 @@ import { Configuration } from '../Configuration';
 import { IContainer } from 'tsioc';
 import { existsSync, readFile } from 'fs';
 import { join } from 'path';
-import { BadRequestError } from '../index';
+import { BadRequestError } from '../errors';
 
 
 /**

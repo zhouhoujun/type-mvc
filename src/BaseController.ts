@@ -1,6 +1,5 @@
 import { IContext } from './IContext';
 import { existsSync, readFile } from 'fs';
-import { Configuration } from './Configuration';
 import { Buffer } from 'buffer';
 import { Stream } from 'stream';
 import * as path from 'path';
@@ -9,7 +8,7 @@ import { Controller, Get } from './decorators';
 import { AutoWired } from 'tsioc';
 import { Defer, symbols } from './util';
 import { ViewResult, ResultValue, FileResult } from './restults';
-import { RedirectResult } from './index';
+import { RedirectResult, JsonResult } from './index';
 
 
 /**
@@ -20,15 +19,33 @@ import { RedirectResult } from './index';
  */
 export abstract class BaseController {
 
-    view(viewName: string, model?: object) {
+    /**
+     * respone view result.
+     *
+     * @param {string} viewName
+     * @param {object} [model]
+     * @returns
+     * @memberof BaseController
+     */
+    view(viewName: string, model?: object): ViewResult {
         return new ViewResult(viewName, model);
     }
 
-    file(file: string | Buffer | Stream, contentType?: string, fileDownloadName?: string) {
+    /**
+     * respone file result.
+     *
+     * @param {(string | Buffer | Stream)} file
+     * @param {string} [contentType]
+     * @param {string} [fileDownloadName]
+     * @returns
+     * @memberof BaseController
+     */
+    file(file: string | Buffer | Stream, contentType?: string, fileDownloadName?: string): FileResult {
         return new FileResult(file, contentType, fileDownloadName);
     }
 
     /**
+     * respone redirect result.
      * Perform a 302 redirect to `url`.
      *
      * The string "back" is special-cased
@@ -46,7 +63,18 @@ export abstract class BaseController {
      * @returns
      * @memberof BaseController
      */
-    redirect(url: string, alt?: string) {
+    redirect(url: string, alt?: string): RedirectResult {
         return new RedirectResult(url, alt);
+    }
+
+    /**
+     * respone json result.
+     *
+     * @param {object} data
+     * @returns
+     * @memberof BaseController
+     */
+    json(data: object): JsonResult {
+        return new JsonResult(data);
     }
 }

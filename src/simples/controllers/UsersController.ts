@@ -14,8 +14,8 @@ export class User {
 @Controller('/users')
 export class UserController {
 
-    @Inject(symbols.IContext)
-    context: IContext;
+    // @Inject(symbols.IContext)
+    // context: IContext;
     constructor(private work: Mywork) {
 
     }

@@ -1,7 +1,7 @@
 import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
 import { IContext } from './IContext';
-import { Configuration } from './Configuration';
+import { IConfiguration, Configuration } from './Configuration';
 import { Defer, symbols } from './util';
 import { IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token, toAbsolutePath } from 'tsioc';
 import * as path from 'path';
@@ -12,8 +12,6 @@ import { Router, IRoute, IRouter } from './router';
 import { registerDefaults } from './registerDefaults';
 import { registerDecorators } from './decorators';
 import { execFileSync } from 'child_process';
-// const serveStatic = require('koa-static');
-// const convert = require('koa-convert');
 
 
 /**
@@ -101,19 +99,19 @@ export class Bootstrap {
     /**
      * use custom configuration.
      *
-     * @param {(string | Configuration)} [config]
+     * @param {(string | IConfiguration)} [config]
      * @returns {Bootstrap}
      *
      * @memberOf WebHostBuilder
      */
-    useConfiguration(config?: string | Configuration): Bootstrap {
+    useConfiguration(config?: string | IConfiguration): Bootstrap {
         this.configuration = Defer.create<Configuration>();
-        let excfg: Configuration;
+        let excfg: IConfiguration;
         if (isString(config)) {
             if (existsSync(config)) {
-                excfg = require(config) as Configuration;
+                excfg = require(config) as IConfiguration;
             } else if (execFileSync(path.join(this.rootdir, config))) {
-                excfg = require(path.join(this.rootdir, config)) as Configuration;
+                excfg = require(path.join(this.rootdir, config)) as IConfiguration;
             } else {
                 console.log(`config file: ${config} not exists.`)
             }
@@ -121,13 +119,13 @@ export class Bootstrap {
             excfg = config;
         } else {
             let cfgpath = path.join(this.rootdir, './config');
-            let config: Configuration;
+            let config: IConfiguration;
             ['.js', '.json'].forEach(ext => {
                 if (config) {
                     return false;
                 }
                 if (existsSync(cfgpath + ext)) {
-                    config = require(cfgpath + ext) as Configuration;
+                    config = require(cfgpath + ext) as IConfiguration;
                     return false;
                 }
                 return true;
@@ -175,7 +173,7 @@ export class Bootstrap {
      */
     async run() {
         let app = await this.build();
-        let config = app.container.get(Configuration);
+        let config = app.container.get<IConfiguration>(symbols.IConfiguration);
         app.listen(config.port || process.env.PORT);
         console.log('service listen on port: ', config.port || app.env['port']);
         return app;
@@ -203,6 +201,7 @@ export class Bootstrap {
     protected async initIContainer(config: Configuration, container: IContainer): Promise<IContainer> {
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
         container.registerSingleton(Configuration, config);
+        container.registerSingleton(symbols.IConfiguration, config);
         this.registerExtendDecorators(container);
         // register self.
         container.register(this.appType);
@@ -250,7 +249,7 @@ export class Bootstrap {
     }
 
 
-    protected setupRoutes(config: Configuration, container: IContainer) {
+    protected setupRoutes(config: IConfiguration, container: IContainer) {
         let router: IRouter = container.get(config.routerMiddlewate || Router);
         router.register(...config.useControllers);
         router.setup();

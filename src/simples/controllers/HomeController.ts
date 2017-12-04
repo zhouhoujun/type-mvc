@@ -5,8 +5,8 @@ import { Mywork } from '../bi/Mywork';
 @Controller('/')
 export class HomeController extends BaseController {
 
-    @Inject(symbols.IContext)
-    context: IContext;
+    // @Inject(symbols.IContext)
+    // context: IContext;
     constructor() {
         super();
     }
