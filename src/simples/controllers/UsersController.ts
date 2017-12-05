@@ -20,7 +20,7 @@ export class UserController {
         return this.work.workA();
     }
 
-    @Cors({ allowMethods: [RequestMethod.Post] })
+    @Cors([RequestMethod.Post])
     @Post('/add')
     async addUser(user: User, @Inject(symbols.IContext) ctx: IContext) {
         console.log('user:', user);

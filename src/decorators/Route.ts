@@ -1,4 +1,4 @@
-import { createMethodDecorator, IMethodDecorator, MethodMetadata, MetadataExtends, isClassMetadata } from 'tsioc';
+import { createMethodDecorator, IMethodDecorator, MethodMetadata, MetadataExtends, isClassMetadata, MetadataAdapter } from 'tsioc';
 import { RequestMethod } from '../RequestMethod';
 import { RouteMetadata } from './metadata';
 import { isString, isNumber } from 'util';
@@ -35,9 +35,14 @@ export interface IRouteMethodDecorator<T extends RouteMetadata> extends IMethodD
  * @param {RequestMethod} [method]
  * @param { MetadataExtends<T>} [metaExtends]
  */
-export function createRouteDecorator<T extends RouteMetadata>(name: string, method?: RequestMethod, metaExtends?: MetadataExtends<T>): IRouteDecorator<T> {
-    return createMethodDecorator<RouteMetadata>('Route',
+export function createRouteDecorator<T extends RouteMetadata>(name: string,
+    method?: RequestMethod,
+    adapter?: MetadataAdapter, metaExtends?: MetadataExtends<T>): IRouteDecorator<T> {
+    return createMethodDecorator<RouteMetadata>(name,
         args => {
+            if (adapter) {
+                adapter(args);
+            }
             args.next<RouteMetadata>({
                 isMetadata: (arg) => isClassMetadata(arg, ['route', 'method']),
                 match: (arg) => isString(arg),

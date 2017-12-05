@@ -159,7 +159,7 @@ export interface CorsOptions {
     credentials?: boolean;
     exposeHeaders?: string;
     keepHeadersOnError?: boolean;
-    allowMethods?: string | RequestMethod[];
+    allowMethods?: string | (string | RequestMethod)[];
 
     allowHeaders?: string | string[];
 

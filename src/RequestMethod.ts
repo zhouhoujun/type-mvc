@@ -1,3 +1,5 @@
+import { isString } from 'util';
+
 
 /**
  * request method.
@@ -19,7 +21,10 @@ export enum RequestMethod {
  * @param {RequestMethod} [method]
  * @returns {string}
  */
-export function methodToString(method?: RequestMethod): string {
+export function methodToString(method?: string | RequestMethod): string {
+    if (isString(method)) {
+        return method.toUpperCase();
+    }
     switch (method) {
         case RequestMethod.Get:
             return 'GET';
