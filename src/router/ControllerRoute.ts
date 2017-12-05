@@ -38,8 +38,8 @@ export class ControllerRoute extends BaseRoute {
                 ctx.message = err.message;
             } else {
                 ctx.status = 500;
+                console.error(err);
             }
-            console.error(err);
         }
 
     }
