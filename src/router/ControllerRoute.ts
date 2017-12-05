@@ -159,7 +159,6 @@ export class ControllerRoute extends BaseRoute {
                     contentType = contentType || 'application/json';
                     ctx.type = contentType;
                     ctx.response.body = response;
-                    ctx.redirect
                 }
             }
 
