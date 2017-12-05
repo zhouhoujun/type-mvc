@@ -23,6 +23,22 @@ npm install type-mvc
 
 ## Documentation
 
+If you want use `ts-node` to run, need config `tsconfig.json` target gt than `es6`, eg.
+
+``` json
+{
+        "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "lib": ["dom", "es2015", "es2017"],
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "declaration": true,
+        ...
+    },
+}
+```
+
 ## Start 
 
 create application
