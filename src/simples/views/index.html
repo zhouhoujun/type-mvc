@@ -24,7 +24,7 @@
         <code id="repA"></code>
 
         <form action="/goto/index2">
-            <input type="submit" value="（server redirect）服务器挑战测试" ></input>
+            <input type="submit" value="（server redirect）服务器挑战测试"></input>
         </form>
     </div>
     <script>
@@ -37,8 +37,8 @@
                 });
             });
 
-            $('#redirect').click(function(){
-                $.post('/users/add', {name: 'test', sex:'man', age:500}, (data)=>{
+            $('#redirect').click(function () {
+                $.post('/users/add', { name: 'test', sex: 'man', age: 500 }, (data) => {
                     console.log('post respone data:', data);
                     $('#repA').text(JSON.stringify(data));
                 });

@@ -1,8 +1,8 @@
 import { BaseRoute } from './BaseRoute';
-import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction, getPropertyMetadata, getTypeMetadata } from 'tsioc';
+import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction, getPropertyMetadata, getTypeMetadata, PropertyMetadata } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next, Defer } from '../util';
-import { Get, GetMetadata, RouteMetadata, Post, Put, Delete, Field, Cors, CorsMetadata, Options } from '../decorators';
+import { Get, GetMetadata, RouteMetadata, Post, Put, Delete, Field, Cors, CorsMetadata, Options, Model } from '../decorators';
 import { IRoute } from './IRoute';
 import { Authorization } from '../decorators';
 import { symbols } from '../util';
@@ -12,6 +12,7 @@ import { isUndefined, isBoolean, isString, isObject, isArray, isNumber } from 'u
 import { JsonResult, ResultValue, ViewResult, FileResult } from '../restults';
 import { RequestMethod, methodToString, parseRequestMethod } from '../RequestMethod';
 import { Configuration, InternalServerError } from '../index';
+import { ModelParser } from './ModelParser';
 
 export class ControllerRoute extends BaseRoute {
 
@@ -195,6 +196,9 @@ export class ControllerRoute extends BaseRoute {
     }
 
     protected createProvider(container: IContainer, meta: RouteMetadata, params: Token<any>[], ctrl: any, ctx: IContext): AsyncParamProvider[] {
+
+        let parser = container.get(ModelParser);
+
         if (params && params.length) {
             let paramVal = null;
             if (this.isRestUri(meta.route)) {
@@ -209,33 +213,15 @@ export class ControllerRoute extends BaseRoute {
             let body = ctx.request['body'] || {};
             let providers = params.map((p, idx) => {
                 try {
-                    if (isClass(p) && !this.isBaseType(p)) {
-                        let meta = getPropertyMetadata(Field, p);
-                        let val = container.get(p);
-                        for (let n in meta) {
-                            if (!isUndefined(body[n])) {
-                                val[n] = body[n];
-                            }
-                        }
+                    if (isClass(p) && Reflect.hasOwnMetadata(Model.toString(), p)) {
+                        let val = parser.parseModel(p, body);
                         return {
                             value: val,
                             index: idx
                         }
 
-                    } else if (this.isBaseType(p)) {
-                        let val;
-                        if (paramVal !== null) {
-                            if (p === String) {
-                                val = paramVal;
-                            } else if (p === Boolean) {
-                                val = new Boolean(paramVal);
-                            } else if (p === Number) {
-                                val = parseFloat(paramVal);
-                            } else if (p === Date) {
-                                val = new Date(paramVal);
-                            }
-                            paramVal = null;
-                        }
+                    } else if (parser.isBaseType(p)) {
+                        let val = parser.parseBaseType(p, paramVal);
                         return {
                             value: val,
                             index: idx
@@ -251,23 +237,6 @@ export class ControllerRoute extends BaseRoute {
         }
 
         return [];
-    }
-
-    protected isBaseType(p) {
-        if (!isToken(p)) {
-            return true;
-        }
-
-        if (p === Boolean || p === String || p === Number) {
-            return true;
-        }
-
-        if (!isFunction(p)) {
-            return true;
-        }
-
-        return false;
-
     }
 
 

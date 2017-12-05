@@ -9,7 +9,8 @@ import {
 } from './middlewares';
 import { IContainer } from 'tsioc';
 import { symbols } from './util';
-import { Router } from './router';
+import { Router, ModelParser } from './router';
+import { BaseController } from './BaseController';
 
 export function registerDefaults(container: IContainer) {
     container.register(symbols.ContentMiddleware, DefaultContentMiddleware);
@@ -20,5 +21,7 @@ export function registerDefaults(container: IContainer) {
     container.register(symbols.BodyParserMiddleware, DefaultBodyParserMiddleware);
     container.register(symbols.ViewsMiddleware, DefaultViewsMiddleware);
     container.register(symbols.CorsMiddleware, DefaultCorsMiddleware);
+    container.register(ModelParser);
+    container.register(BaseController);
     container.register(Router);
 }
