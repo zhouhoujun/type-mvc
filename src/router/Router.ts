@@ -42,11 +42,8 @@ export class Router implements IRouter, IMiddleware {
         });
 
         this.app.use(async (ctx, next) => {
-            await next();
             if (!ctx.status || ctx.status === 404) {
-                return this.root.navigating(this.app.container, ctx);
-            } else {
-                return;
+                return this.root.navigating(this.app.container, ctx, next);
             }
         });
 

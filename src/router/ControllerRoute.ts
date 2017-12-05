@@ -11,7 +11,7 @@ import { UnauthorizedError, NotFoundError, HttpError, BadRequestError } from '..
 import { isUndefined, isBoolean, isString, isObject, isArray, isNumber } from 'util';
 import { JsonResult, ResultValue, ViewResult, FileResult } from '../restults';
 import { RequestMethod, methodToString, parseRequestMethod } from '../RequestMethod';
-import { Configuration } from '../index';
+import { Configuration, InternalServerError } from '../index';
 
 export class ControllerRoute extends BaseRoute {
 
@@ -23,7 +23,7 @@ export class ControllerRoute extends BaseRoute {
         await this.invokeOption(ctx, container, next);
     }
 
-    async navigating(container: IContainer, ctx: IContext): Promise<any> {
+    async navigating(container: IContainer, ctx: IContext, next: Next): Promise<any> {
         try {
             let decorator = this.getDecoratorByMethod(ctx.method);
             if (decorator !== Options) {
@@ -31,14 +31,17 @@ export class ControllerRoute extends BaseRoute {
             } else {
                 throw new BadRequestError();
             }
+            return next();
         } catch (err) {
             if (err instanceof HttpError) {
                 ctx.status = err.code;
-                ctx.response.status = err.code;
-                ctx.response.message = err.message;
+                ctx.message = err.message;
+            } else {
+                ctx.status = 500;
             }
-            console.log(err.toString());
+            console.error(err);
         }
+
     }
 
     async invokeOption(ctx: IContext, container: IContainer, next: Next) {
@@ -143,6 +146,7 @@ export class ControllerRoute extends BaseRoute {
                     }
                 }
             }
+
             let params = container.getMethodParameters(this.controller, ctrl, meta.propertyKey);
             let response: any = await container.invoke(this.controller, meta.propertyKey, ctrl, ...provider(meta, params, ctrl));
 

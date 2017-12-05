@@ -17,8 +17,8 @@ export class NotFoundRoute extends NullComponent implements IRoute {
     async options(container: IContainer, ctx: IContext, next: Next) {
         return next();
     }
-    async navigating(container: IContainer, ctx: IContext) {
-
+    async navigating(container: IContainer, ctx: IContext, next: Next) {
+        return next();
     }
 
     empty(): IComponent {
