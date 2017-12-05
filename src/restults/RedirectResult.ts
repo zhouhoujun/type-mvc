@@ -7,8 +7,8 @@ export class RedirectResult extends ResultValue {
         super('text/html');
     }
     async sendValue(ctx: IContext, container: IContainer) {
-        ctx.type = this.contentType;
+        // ctx.type = this.contentType;
         console.log('redirect url:', this.url);
-        return this.alt ? ctx.redirect(this.url, this.alt) : ctx.redirect(this.url);
+        return ctx.redirect(this.url, this.alt);
     }
 }

@@ -2,7 +2,7 @@ import { BaseRoute } from './BaseRoute';
 import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction, getPropertyMetadata, getTypeMetadata, PropertyMetadata } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next, Defer } from '../util';
-import { Get, GetMetadata, RouteMetadata, Post, Put, Delete, Field, Cors, CorsMetadata, Options, Model } from '../decorators';
+import { Get, GetMetadata, RouteMetadata, Post, Put, Delete, Field, Cors, CorsMetadata, Options, Model, Route } from '../decorators';
 import { IRoute } from './IRoute';
 import { Authorization } from '../decorators';
 import { symbols } from '../util';
@@ -26,9 +26,8 @@ export class ControllerRoute extends BaseRoute {
 
     async navigating(container: IContainer, ctx: IContext, next: Next): Promise<any> {
         try {
-            let decorator = this.getDecoratorByMethod(ctx.method);
-            if (decorator !== Options) {
-                await this.invoke(ctx, container, decorator, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
+            if (ctx.method !== 'OPTIONS') {
+                await this.invoke(ctx, container, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
             } else {
                 throw new BadRequestError();
             }
@@ -90,7 +89,7 @@ export class ControllerRoute extends BaseRoute {
             let methodCors = getMethodMetadata<CorsMetadata>(Cors, this.controller);
             let method = parseRequestMethod(ctx.get('Access-Control-Request-Method'));
 
-            let meta = this.getRouteMetaData(ctx, container, this.getDecoratorByMethod(method));
+            let meta = this.getRouteMetaData(ctx, container);
 
             if (meta && meta.propertyKey) {
                 let corsmetas = getMethodMetadata<CorsMetadata>(Cors, this.controller)[meta.propertyKey] || [];
@@ -134,8 +133,8 @@ export class ControllerRoute extends BaseRoute {
 
         }
     }
-    async invoke(ctx: IContext, container: IContainer, decorator: Function, provider: (meta: RouteMetadata, params: Token<any>[], ctrl: any) => AsyncParamProvider[]) {
-        let meta = this.getRouteMetaData(ctx, container, decorator);
+    async invoke(ctx: IContext, container: IContainer, provider: (meta: RouteMetadata, params: Token<any>[], ctrl: any) => AsyncParamProvider[]) {
+        let meta = this.getRouteMetaData(ctx, container);
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
             if (container.has(symbols.IAuthorization)) {
@@ -170,29 +169,6 @@ export class ControllerRoute extends BaseRoute {
         } else {
             throw new NotFoundError();
         }
-    }
-
-    protected getDecoratorByMethod(method?: string | RequestMethod): Function {
-        if (isNumber(method)) {
-            method = methodToString(method);
-        } else {
-            method = (method || '').toLowerCase();
-        }
-        switch (method) {
-            case 'GET':
-                return Get
-            case 'POST':
-                return Post;
-            case 'Put':
-                return Put;
-            case 'DElETE':
-                return Delete;
-            case 'OPTIONS':
-                return Options;
-            default:
-                return Get;
-        }
-
     }
 
     protected createProvider(container: IContainer, meta: RouteMetadata, params: Token<any>[], ctrl: any, ctx: IContext): AsyncParamProvider[] {
@@ -245,8 +221,8 @@ export class ControllerRoute extends BaseRoute {
     }
 
 
-    protected getRouteMetaData(ctx: IContext, container: IContainer, decorator: Function) {
-        let decoratorName = decorator.toString();
+    protected getRouteMetaData(ctx: IContext, container: IContainer) {
+        let decoratorName = Route.toString();
         let baseURL = this.cutEmptyPath(this.url, true);
         let routPath = this.cutEmptyPath(ctx.url.replace(baseURL, ''));
         let methodMaps = getMethodMetadata<RouteMetadata>(decoratorName, this.controller);
@@ -256,6 +232,8 @@ export class ControllerRoute extends BaseRoute {
         for (let name in methodMaps) {
             allMethods = allMethods.concat(methodMaps[name]);
         }
+        let requestMethod = parseRequestMethod(ctx.method);
+        allMethods = allMethods.filter(m => m && m.method === requestMethod);
 
         allMethods = allMethods.sort((ra, rb) => (rb.route || '').length - (ra.route || '').length);
 

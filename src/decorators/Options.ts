@@ -3,4 +3,4 @@ import { createRouteDecorator, IRouteDecorator } from './Route';
 import { OptionsMetadata } from './metadata/index';
 
 
-export const Options: IRouteDecorator<OptionsMetadata> = createRouteDecorator<OptionsMetadata>('Options', RequestMethod.Options);
+export const Options: IRouteDecorator<OptionsMetadata> = createRouteDecorator<OptionsMetadata>(RequestMethod.Options);

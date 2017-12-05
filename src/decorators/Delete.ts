@@ -5,4 +5,4 @@ import { DeleteMetadata } from './metadata';
 
 
 
-export const Delete: IRouteDecorator<DeleteMetadata> = createRouteDecorator<DeleteMetadata>('Delete', RequestMethod.Delete);
+export const Delete: IRouteDecorator<DeleteMetadata> = createRouteDecorator<DeleteMetadata>(RequestMethod.Delete);

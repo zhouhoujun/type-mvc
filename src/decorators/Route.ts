@@ -31,14 +31,13 @@ export interface IRouteMethodDecorator<T extends RouteMetadata> extends IMethodD
  *
  * @export
  * @template T
- * @param {string} name
  * @param {RequestMethod} [method]
  * @param { MetadataExtends<T>} [metaExtends]
  */
-export function createRouteDecorator<T extends RouteMetadata>(name: string,
+export function createRouteDecorator<T extends RouteMetadata>(
     method?: RequestMethod,
     adapter?: MetadataAdapter, metaExtends?: MetadataExtends<T>): IRouteDecorator<T> {
-    return createMethodDecorator<RouteMetadata>(name,
+    return createMethodDecorator<RouteMetadata>('Route',
         args => {
             if (adapter) {
                 adapter(args);
@@ -74,4 +73,4 @@ export function createRouteDecorator<T extends RouteMetadata>(name: string,
         }) as IRouteDecorator<T>;
 }
 
-export const Route: IRouteMethodDecorator<RouteMetadata> = createRouteDecorator<RouteMetadata>('Route') as IRouteMethodDecorator<RouteMetadata>;
+export const Route: IRouteMethodDecorator<RouteMetadata> = createRouteDecorator<RouteMetadata>() as IRouteMethodDecorator<RouteMetadata>;

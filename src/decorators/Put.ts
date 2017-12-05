@@ -3,5 +3,5 @@ import { createRouteDecorator, IRouteDecorator } from './Route';
 import { PutMetadata } from './metadata';
 
 
-export const Put: IRouteDecorator<PutMetadata> = createRouteDecorator<PutMetadata>('Put', RequestMethod.Put);
+export const Put: IRouteDecorator<PutMetadata> = createRouteDecorator<PutMetadata>(RequestMethod.Put);
 

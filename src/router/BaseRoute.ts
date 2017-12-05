@@ -23,22 +23,6 @@ export abstract class BaseRoute extends Composite implements IRoute {
     }
 
     add(node: IRoute): IRoute {
-        // if (this.url.indexOf(node.url) === 0) {
-        //     super.add(node);
-        // } else if (node.url.indexOf(this.url) === 0) {
-        //     let parent = this.parent;
-        //     let child = this;
-        //     if (parent) {
-        //         node.parent = parent;
-        //         parent.add(node);
-        //     }
-        //     child.parent = node;
-        //     node.add(child);
-        // } else {
-        //     node.url = this.url + node.url;
-        //     super.add(node);
-        // }
-        // return this;
         let baseUrl = this.cutEmptyPath(this.url, true);
 
         node.url = baseUrl + node.url;
