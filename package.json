@@ -9,10 +9,12 @@
   },
   "keywords": [
     "mvc",
-    "tsioc",
-    "ioc",
-    "server",
     "frameworker",
+    "web",
+    "app",
+    "ioc",
+    "tsioc",
+    "server",
     "koa"
   ],
   "author": "houjun",
