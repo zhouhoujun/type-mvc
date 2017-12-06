@@ -29,7 +29,7 @@ export class ControllerRoute extends BaseRoute {
             if (ctx.method !== 'OPTIONS') {
                 await this.invoke(ctx, container, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
             } else {
-                throw new BadRequestError();
+                await new BadRequestError();
             }
             return next();
         } catch (err) {
@@ -89,7 +89,7 @@ export class ControllerRoute extends BaseRoute {
             let methodCors = getMethodMetadata<CorsMetadata>(Cors, this.controller);
             let method = parseRequestMethod(ctx.get('Access-Control-Request-Method'));
 
-            let meta = this.getRouteMetaData(ctx, container);
+            let meta = this.getRouteMetaData(ctx, container, method);
 
             if (meta && meta.propertyKey) {
                 let corsmetas = getMethodMetadata<CorsMetadata>(Cors, this.controller)[meta.propertyKey] || [];
@@ -134,7 +134,7 @@ export class ControllerRoute extends BaseRoute {
         }
     }
     async invoke(ctx: IContext, container: IContainer, provider: (meta: RouteMetadata, params: Token<any>[], ctrl: any) => AsyncParamProvider[]) {
-        let meta = this.getRouteMetaData(ctx, container);
+        let meta = this.getRouteMetaData(ctx, container, parseRequestMethod(ctx.method));
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
             if (container.has(symbols.IAuthorization)) {
@@ -221,7 +221,7 @@ export class ControllerRoute extends BaseRoute {
     }
 
 
-    protected getRouteMetaData(ctx: IContext, container: IContainer) {
+    protected getRouteMetaData(ctx: IContext, container: IContainer, requestMethod: RequestMethod) {
         let decoratorName = Route.toString();
         let baseURL = this.cutEmptyPath(this.url, true);
         let routPath = this.cutEmptyPath(ctx.url.replace(baseURL, ''));
@@ -232,7 +232,6 @@ export class ControllerRoute extends BaseRoute {
         for (let name in methodMaps) {
             allMethods = allMethods.concat(methodMaps[name]);
         }
-        let requestMethod = parseRequestMethod(ctx.method);
         allMethods = allMethods.filter(m => m && m.method === requestMethod);
 
         allMethods = allMethods.sort((ra, rb) => (rb.route || '').length - (ra.route || '').length);
