@@ -10,7 +10,7 @@ export interface ICorsDecorator<T extends CorsMetadata> extends IClassMethodDeco
 export function createCorsDecorator<T extends CorsMetadata>(name: string,
     adapter?: MetadataAdapter,
     metadataExtends?: MetadataExtends<T>): ICorsDecorator<T> {
-    return createClassMethodDecorator<CorsMetadata>('Cors',
+    return createClassMethodDecorator<CorsMetadata>(name,
         args => {
             if (adapter) {
                 adapter(args);
