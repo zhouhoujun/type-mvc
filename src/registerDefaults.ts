@@ -3,9 +3,10 @@ import {
     DefaultLogMiddleware, DefaultContextMiddleware,
     DefaultContentMiddleware, DefaultSessionMiddleware,
     DefaultBodyParserMiddleware,
+    DefaultCorsMiddleware,
     DefaultViewsMiddleware,
-    DefaultJsonMiddleware,
-    DefaultCorsMiddleware
+    DefaultJsonMiddleware
+
 } from './middlewares';
 import { IContainer } from 'tsioc';
 import { symbols } from './util';

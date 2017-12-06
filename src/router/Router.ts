@@ -8,6 +8,7 @@ import { IRoute } from './IRoute';
 import { RootRoute } from './RootRoute';
 import { RouteBuilder } from './RouteBuilder';
 import { symbols } from '../util';
+const compose = require('koa-compose');
 
 export interface IRouter extends IMiddleware {
     routes(map: IRoute);
@@ -35,17 +36,24 @@ export class Router implements IRouter, IMiddleware {
 
 
     setup() {
-        this.app.use(async (ctx, next) => {
-            if (!ctx.status || ctx.status === 404) {
-                return this.root.options(this.app.container, ctx, next);
-            }
-        });
 
         this.app.use(async (ctx, next) => {
             if (!ctx.status || ctx.status === 404) {
                 return this.root.navigating(this.app.container, ctx, next);
             }
         });
+        // let stack = [];
+        // stack.push(async (ctx, next) => {
+        //     if (!ctx.status || ctx.status === 404) {
+        //         return this.root.options(this.app.container, ctx, next);
+        //     }
+        // });
+        // stack.push(async (ctx, next) => {
+        //     if (!ctx.status || ctx.status === 404) {
+        //         return this.root.navigating(this.app.container, ctx, next);
+        //     }
+        // })
+        // this.app.use(compose(stack));
 
     }
 

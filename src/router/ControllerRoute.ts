@@ -11,7 +11,7 @@ import { UnauthorizedError, NotFoundError, HttpError, BadRequestError } from '..
 import { isUndefined, isBoolean, isString, isObject, isArray, isNumber } from 'util';
 import { JsonResult, ResultValue, ViewResult, FileResult } from '../restults';
 import { RequestMethod, methodToString, parseRequestMethod } from '../RequestMethod';
-import { Configuration, InternalServerError } from '../index';
+import { Configuration } from '../Configuration';
 import { ModelParser } from './ModelParser';
 
 export class ControllerRoute extends BaseRoute {
@@ -26,10 +26,14 @@ export class ControllerRoute extends BaseRoute {
 
     async navigating(container: IContainer, ctx: IContext, next: Next): Promise<any> {
         try {
+            // if (ctx.method === 'OPTIONS') {
+            //     await this.invokeOption(ctx, container, () => this.navigating(container, ctx, next));
+            // }
+            // await this.invoke(ctx, container, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
             if (ctx.method !== 'OPTIONS') {
                 await this.invoke(ctx, container, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
             } else {
-                await new BadRequestError();
+                throw new BadRequestError('Bad Request, Cors error.');
             }
             return next();
         } catch (err) {
@@ -61,11 +65,14 @@ export class ControllerRoute extends BaseRoute {
 
         let config = container.get(Configuration);
         let options = config.corsOptions || {};
-        if (ctx.method !== 'OPTIONS') {
 
+        if (ctx.method !== 'OPTIONS') {
+            // let coremeta = this.getCorsMeta(ctx, container, ctx.get('Access-Control-Request-Method'));
+            // if (coremeta) {
+            //     options = Object.assign({}, options, coremeta);
+            // }
 
             set('Access-Control-Allow-Origin', origin);
-
             if (options.credentials === true) {
                 set('Access-Control-Allow-Credentials', 'true');
             }
@@ -82,56 +89,75 @@ export class ControllerRoute extends BaseRoute {
                 throw err;
             });
         } else {
-            if (!ctx.get('Access-Control-Request-Method')) {
-                // this not preflight request, ignore it
+            let coremeta = this.getCorsMeta(ctx, container, ctx.get('Access-Control-Request-Method'));
+            console.log('coremeta', coremeta);
+            if (!coremeta) {
                 return next();
             }
-            let methodCors = getMethodMetadata<CorsMetadata>(Cors, this.controller);
-            let method = parseRequestMethod(ctx.get('Access-Control-Request-Method'));
+            options = Object.assign({}, options, coremeta);
+            ctx.set('Access-Control-Allow-Origin', origin);
 
-            let meta = this.getRouteMetaData(ctx, container, method);
-
-            if (meta && meta.propertyKey) {
-                let corsmetas = getMethodMetadata<CorsMetadata>(Cors, this.controller)[meta.propertyKey] || [];
-                if (corsmetas.length < 1) {
-                    corsmetas = getTypeMetadata<CorsMetadata>(Cors, this.controller);
-                }
-                if (corsmetas.length) {
-                    options = Object.assign({}, options, corsmetas[0]);
-                    ctx.set('Access-Control-Allow-Origin', origin);
-
-                    if (options.credentials === true) {
-                        ctx.set('Access-Control-Allow-Credentials', 'true');
-                    }
-
-                    let maxAge = String(options.maxAge);
-                    if (maxAge) {
-                        ctx.set('Access-Control-Max-Age', maxAge);
-                    }
-
-                    let allowsM: string = isArray(options.allowMethods) ? options.allowMethods.map(m => methodToString(m)).join(',') : options.allowMethods;
-                    allowsM = allowsM || 'GET,HEAD,PUT,POST,DELETE,PATCH';
-                    if (allowsM) {
-                        ctx.set('Access-Control-Allow-Methods', allowsM);
-                    }
-
-                    let allowH = isArray(options.allowHeaders) ? options.allowHeaders.join(',') : options.allowHeaders;
-                    if (!allowH) {
-                        allowH = ctx.get('Access-Control-Request-Headers');
-                    }
-                    if (allowH) {
-                        ctx.set('Access-Control-Allow-Headers', allowH);
-                    }
-
-                    ctx.status = 204;
-                    return;
-                }
-
+            if (options.credentials === true) {
+                ctx.set('Access-Control-Allow-Credentials', 'true');
             }
 
-            return next();
+            let maxAge = String(options.maxAge);
+            if (maxAge) {
+                ctx.set('Access-Control-Max-Age', maxAge);
+            }
 
+            let allowsM: string = isArray(options.allowMethods) ? options.allowMethods.map(m => methodToString(m)).join(',') : options.allowMethods;
+            allowsM = allowsM || 'GET,HEAD,PUT,POST,DELETE,PATCH';
+            if (allowsM) {
+                ctx.set('Access-Control-Allow-Methods', allowsM);
+            }
+
+            let allowH = isArray(options.allowHeaders) ? options.allowHeaders.join(',') : options.allowHeaders;
+            if (!allowH) {
+                allowH = ctx.get('Access-Control-Request-Headers');
+            }
+            if (allowH) {
+                ctx.set('Access-Control-Allow-Headers', allowH);
+            }
+
+            ctx.status = 204;
         }
+    }
+
+
+    getCorsMeta(ctx: IContext, container: IContainer, reqMethod: string): CorsMetadata {
+        if (!reqMethod) {
+            return null;
+        }
+
+        let methodCors = getMethodMetadata<CorsMetadata>(Cors, this.controller);
+        let method = parseRequestMethod(reqMethod);
+
+        let meta = this.getRouteMetaData(ctx, container, method);
+
+        if (meta && meta.propertyKey) {
+            let corsmetas = getMethodMetadata<CorsMetadata>(Cors, this.controller)[meta.propertyKey] || [];
+            if (corsmetas.length < 1) {
+                corsmetas = getTypeMetadata<CorsMetadata>(Cors, this.controller);
+            }
+            if (corsmetas.length) {
+                return corsmetas.find(cor => {
+                    console.log('find CorsMetadata:', cor);
+                    if (!cor.allowMethods) {
+                        return true;
+                    }
+                    if (cor.allowMethods) {
+                        if (isString(cor.allowMethods)) {
+                            return cor.allowMethods.toUpperCase().indexOf(reqMethod) >= 0;
+                        } else if (isArray(cor.allowMethods)) {
+                            return cor.allowMethods.some(c => methodToString(c) === reqMethod);
+                        }
+                    }
+                    return false;
+                });
+            }
+        }
+        return null;
     }
     async invoke(ctx: IContext, container: IContainer, provider: (meta: RouteMetadata, params: Token<any>[], ctrl: any) => AsyncParamProvider[]) {
         let meta = this.getRouteMetaData(ctx, container, parseRequestMethod(ctx.method));
