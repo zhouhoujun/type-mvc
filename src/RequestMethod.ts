@@ -41,7 +41,7 @@ export function methodToString(method?: string | RequestMethod): string {
         case RequestMethod.Patch:
             return 'PATCH';
         default:
-            return 'GET';
+            return '';
     }
 }
 
@@ -70,6 +70,6 @@ export function parseRequestMethod(method?: string): RequestMethod {
         case 'PATCH':
             return RequestMethod.Patch;
         default:
-            return RequestMethod.Get;
+            return null;
     }
 }

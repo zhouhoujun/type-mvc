@@ -1,13 +1,12 @@
 import { BaseRoute } from './BaseRoute';
 import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction, getPropertyMetadata, getTypeMetadata, PropertyMetadata } from 'tsioc';
 import { IContext } from '../IContext';
-import { Next, Defer } from '../util';
+import { Next, Defer, symbols } from '../util';
 import { Get, GetMetadata, RouteMetadata, Post, Put, Delete, Field, Cors, CorsMetadata, Options, Model, Route } from '../decorators';
 import { IRoute } from './IRoute';
 import { Authorization } from '../decorators';
-import { symbols } from '../util';
 import { IAuthorization } from '../auth';
-import { UnauthorizedError, NotFoundError, HttpError, BadRequestError } from '../errors/index';
+import { UnauthorizedError, NotFoundError, HttpError, BadRequestError, ForbiddenError } from '../errors/index';
 import { isUndefined, isBoolean, isString, isObject, isArray, isNumber } from 'util';
 import { JsonResult, ResultValue, ViewResult, FileResult } from '../restults';
 import { RequestMethod, methodToString, parseRequestMethod } from '../RequestMethod';
@@ -21,19 +20,25 @@ export class ControllerRoute extends BaseRoute {
     }
 
     async options(container: IContainer, ctx: IContext, next: Next): Promise<any> {
-        await this.invokeOption(ctx, container, next);
+        try {
+            await this.invokeOption(ctx, container, next);
+        } catch (err) {
+            if (err instanceof HttpError) {
+                ctx.status = err.code;
+                ctx.message = err.message;
+            } else {
+                ctx.status = 500;
+                console.error(err);
+            }
+        }
     }
 
     async navigating(container: IContainer, ctx: IContext, next: Next): Promise<any> {
         try {
-            // if (ctx.method === 'OPTIONS') {
-            //     await this.invokeOption(ctx, container, () => this.navigating(container, ctx, next));
-            // }
-            // await this.invoke(ctx, container, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
             if (ctx.method !== 'OPTIONS') {
                 await this.invoke(ctx, container, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
             } else {
-                throw new BadRequestError('Bad Request, Cors error.');
+                throw new ForbiddenError();
             }
             return next();
         } catch (err) {
@@ -67,11 +72,6 @@ export class ControllerRoute extends BaseRoute {
         let options = config.corsOptions || {};
 
         if (ctx.method !== 'OPTIONS') {
-            // let coremeta = this.getCorsMeta(ctx, container, ctx.get('Access-Control-Request-Method'));
-            // if (coremeta) {
-            //     options = Object.assign({}, options, coremeta);
-            // }
-
             set('Access-Control-Allow-Origin', origin);
             if (options.credentials === true) {
                 set('Access-Control-Allow-Credentials', 'true');
@@ -90,7 +90,7 @@ export class ControllerRoute extends BaseRoute {
             });
         } else {
             let coremeta = this.getCorsMeta(ctx, container, ctx.get('Access-Control-Request-Method'));
-            console.log('coremeta', coremeta);
+            // console.log('coremeta', coremeta);
             if (!coremeta) {
                 return next();
             }
@@ -106,13 +106,15 @@ export class ControllerRoute extends BaseRoute {
                 ctx.set('Access-Control-Max-Age', maxAge);
             }
 
-            let allowsM: string = isArray(options.allowMethods) ? options.allowMethods.map(m => methodToString(m)).join(',') : options.allowMethods;
+            let allowsM: string = isArray(options.allowMethods) ?
+                options.allowMethods.map(m => methodToString(m)).filter(m => !!m).join(',')
+                : options.allowMethods;
             allowsM = allowsM || 'GET,HEAD,PUT,POST,DELETE,PATCH';
             if (allowsM) {
                 ctx.set('Access-Control-Allow-Methods', allowsM);
             }
 
-            let allowH = isArray(options.allowHeaders) ? options.allowHeaders.join(',') : options.allowHeaders;
+            let allowH = isArray(options.allowHeaders) ? options.allowHeaders.filter(m => !!m).join(',') : options.allowHeaders;
             if (!allowH) {
                 allowH = ctx.get('Access-Control-Request-Headers');
             }
