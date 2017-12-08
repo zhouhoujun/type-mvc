@@ -206,12 +206,12 @@ export class ControllerRoute extends BaseRoute {
         if (params && params.length) {
             let paramVal = null;
             if (this.isRestUri(meta.route)) {
-                let route = meta.route.substr(0, meta.route.indexOf('/:')) + '/';
+                let route = meta.route.substring(0, meta.route.indexOf('/:')) + '/';
                 let baseURL = this.cutEmptyPath(this.url, true);
                 let routeUrl = this.cutEmptyPath(ctx.url.replace(baseURL, ''));
 
                 let querystring = routeUrl.replace(route, '');
-                paramVal = querystring.indexOf('/') > 0 ? querystring.substr(0, querystring.indexOf('/')) : querystring;
+                paramVal = querystring.indexOf('/') > 0 ? querystring.substring(0, querystring.indexOf('/')) : querystring;
 
             }
             let body = ctx.request['body'] || {};
@@ -273,7 +273,7 @@ export class ControllerRoute extends BaseRoute {
                 // }
                 if (this.isRestUri(uri)) {
                     let idex = uri.indexOf('/:');
-                    let url = uri.substr(0, idex);
+                    let url = uri.substring(0, idex);
                     if (url !== routPath && routPath.indexOf(url) === 0) {
                         return true;
                     }

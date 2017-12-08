@@ -19,7 +19,7 @@ export abstract class BaseRoute extends Composite implements IRoute {
     url: string;
     constructor(route: string) {
         super(route);
-        this.url = route.substr(0);
+        this.url = route.substring(0);
     }
 
     add(node: IRoute): IRoute {
@@ -35,10 +35,10 @@ export abstract class BaseRoute extends Composite implements IRoute {
             return '';
         }
         if (/\/\s*$/.test(routPath)) {
-            routPath = routPath.substr(0, routPath.lastIndexOf('/'));
+            routPath = routPath.substring(0, routPath.lastIndexOf('/'));
         }
         if (/\?\S*$/.test(routPath)) {
-            routPath = routPath.substr(0, routPath.lastIndexOf('?'));
+            routPath = routPath.substring(0, routPath.lastIndexOf('?'));
         }
         return routPath;
     }
