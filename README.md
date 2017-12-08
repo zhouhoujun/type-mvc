@@ -68,6 +68,14 @@ export class User {
     @Field
     age: number;
 }
+
+@Model
+export class AccountUser extends {
+    @Field
+    account: string;
+    @Field
+    passwd: string;
+}
 ```
 
 ### Define Controller
