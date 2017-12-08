@@ -70,7 +70,7 @@ export class User {
 }
 
 @Model
-export class AccountUser extends {
+export class AccountUser extends User {
     @Field
     account: string;
     @Field
