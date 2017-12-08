@@ -76,6 +76,13 @@ export class AccountUser extends User {
     @Field
     passwd: string;
 }
+
+@Model
+export class ShoppingCart{
+    @Field
+    owner: User;
+    ....
+}
 ```
 
 ### Define Controller
