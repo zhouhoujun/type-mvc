@@ -175,7 +175,9 @@ export class ControllerRoute extends BaseRoute {
                 }
             }
 
-            let params = container.getMethodParameters(this.controller, ctrl, meta.propertyKey);
+            let lifeScope = container.getLifeScope();
+
+            let params = lifeScope.getMethodParameters(this.controller, ctrl, meta.propertyKey);
             let response: any = await container.invoke(this.controller, meta.propertyKey, ctrl, ...provider(meta, params, ctrl));
 
             let contentType: string = meta.contentType;
