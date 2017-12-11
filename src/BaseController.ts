@@ -5,7 +5,7 @@ import { Stream } from 'stream';
 import * as path from 'path';
 
 import { Controller, Get } from './decorators';
-import { AutoWired, Injectable } from 'tsioc';
+import { AutoWired, Injectable, Inject } from 'tsioc';
 import { Defer, symbols } from './util';
 import { ViewResult, ResultValue, FileResult } from './restults';
 import { RedirectResult, JsonResult } from './index';
@@ -19,6 +19,10 @@ import { RedirectResult, JsonResult } from './index';
  */
 @Injectable
 export class BaseController {
+
+
+    @Inject(symbols.IContext)
+    protected context: IContext;
 
     constructor() {
 

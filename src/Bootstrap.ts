@@ -238,6 +238,15 @@ export class Bootstrap {
                 config.useControllers = controllers;
             }
         }
+
+        if (config.aop) {
+            let aops = await this.builder.loadModule(container, {
+                basePath: config.rootdir,
+                files: config.aop
+            });
+
+            config.usedAops = aops;
+        }
         return container;
     }
 

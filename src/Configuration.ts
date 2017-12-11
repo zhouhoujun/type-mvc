@@ -1,4 +1,4 @@
-import { ObjectMap, Injectable, Singleton, Token } from 'tsioc';
+import { ObjectMap, Injectable, Singleton, Token, Type } from 'tsioc';
 import { symbols } from './util';
 import { RequestMethod } from './RequestMethod';
 
@@ -132,6 +132,9 @@ export interface IConfiguration {
     useControllers?: Token<any>[];
 
 
+    aop?: string | string[];
+
+    usedAops?: Token<any>[];
     /**
      * views folder, default `./views` in your project.
      *
@@ -307,6 +310,22 @@ export class Configuration implements IConfiguration {
      */
     useControllers?: Token<any>[] = [];
 
+
+    /**
+     * custom aop services. default './aop/\*\*\/*{.js,.ts}'
+     *
+     * @type {(string | string[])}
+     * @memberof Configuration
+     */
+    aop?: string | string[] = ['./aop/**/*{.js,.ts}'];
+
+    /**
+     * used aop
+     *
+     * @type {Token<any>[]}
+     * @memberof Configuration
+     */
+    usedAops?: Token<any>[] = [];
 
     /**
      * views folder, default `./views` in your project.
