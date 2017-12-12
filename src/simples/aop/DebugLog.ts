@@ -1,15 +1,18 @@
 import { Aspect, Around, Joinpoint, Before } from 'tsioc';
+import { isRegExp } from 'util';
 
 
 @Aspect
 export class DebugLog {
-    @Around('execution(*Controller.*)')
-    log(joinPoint: Joinpoint) {
-        console.log('aspect append log, method name:', joinPoint.fullName, ' state:', joinPoint.state, ' Args:', joinPoint.args ,  ' returning:', joinPoint.returning, ' throwing:', joinPoint.throwing);
+
+    // @Before(/\w+Controller.\w+/)
+    @Before('execution(*)')
+    beforlog(joinPoint: Joinpoint) {
+        console.log('aspect Before log:', joinPoint.fullName);
     }
 
-    @Before(/Controller.\*$/)
-    Beforlog(joinPoint: Joinpoint) {
-        console.log('aspect Befor log:', joinPoint.fullName);
+    @Around('execution(*Controller.*)')
+    log(joinPoint: Joinpoint) {
+        console.log('aspect Around log, method name:', joinPoint.fullName, ' state:', joinPoint.state, ' Args:', joinPoint.args, ' returning:', joinPoint.returning, ' throwing:', joinPoint.throwing);
     }
 }
