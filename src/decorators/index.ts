@@ -17,7 +17,9 @@ export * from './Field';
 export * from './Middleware';
 export * from './metadata';
 
-import { Controller, Authorization, Middleware } from './';
+import { Authorization } from './Authorization';
+import { Controller } from './Controller';
+import { Middleware } from './Middleware';
 import { symbols } from '../util';
 export function registerDecorators(container: IContainer) {
     let lifeScope = container.getLifeScope();
