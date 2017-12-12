@@ -9,10 +9,10 @@
   },
   "keywords": [
     "mvc",
+    "AOP",
+    "ioc",
     "frameworker",
     "web",
-    "app",
-    "ioc",
     "tsioc",
     "server",
     "koa"
