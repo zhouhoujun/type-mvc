@@ -5,8 +5,8 @@ import { isRegExp } from 'util';
 @Aspect
 export class DebugLog {
 
-    // @Before(/\w+Controller.\w+/)
-    @Before('execution(*)')
+    @Before(/\w+Controller.\w+/)
+    // @Before('execution(*)')
     beforlog(joinPoint: Joinpoint) {
         console.log('aspect Before log:', joinPoint.fullName);
     }
