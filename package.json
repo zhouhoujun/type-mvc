@@ -1,6 +1,6 @@
 {
   "name": "type-mvc",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "type-mvc is base on koa, with typescript. type and decorators mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
