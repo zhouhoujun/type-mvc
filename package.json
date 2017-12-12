@@ -1,7 +1,7 @@
 {
   "name": "type-mvc",
-  "version": "0.3.4",
-  "description": "type-mvc is base on koa, with typescript. type and decorators mvc frameworker on server.",
+  "version": "0.3.5",
+  "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
   "scripts": {
@@ -40,7 +40,7 @@
     "koa-static": "^4.0.2",
     "koa-views": "^6.1.2",
     "nunjucks": "^3.0.1",
-    "tsioc": "^0.6.8"
+    "tsioc": "^0.6.9"
   },
   "devDependencies": {
     "bluebird": "^3.4.1",
