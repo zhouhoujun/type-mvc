@@ -1,5 +1,5 @@
 import { BaseRoute } from './BaseRoute';
-import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction, getPropertyMetadata, getTypeMetadata, PropertyMetadata } from 'tsioc';
+import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction, getPropertyMetadata, getTypeMetadata, PropertyMetadata, isPromise } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next, Defer, symbols } from '../util';
 import { Get, GetMetadata, RouteMetadata, Post, Put, Delete, Field, Cors, CorsMetadata, Options, Model, Route } from '../decorators';
@@ -7,7 +7,7 @@ import { IRoute } from './IRoute';
 import { Authorization } from '../decorators';
 import { IAuthorization } from '../auth';
 import { UnauthorizedError, NotFoundError, HttpError, BadRequestError, ForbiddenError } from '../errors/index';
-import { isUndefined, isBoolean, isString, isObject, isArray, isNumber } from 'util';
+import { isUndefined, isBoolean, isString, isObject, isArray, isNumber, isBuffer, isDate } from 'util';
 import { JsonResult, ResultValue, ViewResult, FileResult } from '../restults';
 import { RequestMethod, methodToString, parseRequestMethod } from '../RequestMethod';
 import { Configuration } from '../Configuration';
@@ -180,19 +180,17 @@ export class ControllerRoute extends BaseRoute {
             let params = lifeScope.getMethodParameters(this.controller, ctrl, meta.propertyKey);
             let response: any = await container.invoke(this.controller, meta.propertyKey, ctrl, ...provider(meta, params, ctrl));
 
+            if (isPromise(response)) {
+                response = await response;
+            }
             let contentType: string = meta.contentType;
-            if (isString(response)) {
-                contentType = contentType || 'text/html';
-                ctx.response.body = response;
-            } else if (isArray(response) && response instanceof Uint8Array) {
-                ctx.response.body = Buffer.from(response);
+            if (isString(response) || isBoolean(response) || isNumber(response) || isArray(response) || isDate(response) || isBuffer(response)) {
+                ctx.body = isBuffer(response) ? Buffer.from(response) : response;
             } else if (isObject(response)) {
                 if (response instanceof ResultValue) {
                     await response.sendValue(ctx, container);
                 } else {
-                    contentType = contentType || 'application/json';
-                    ctx.type = contentType;
-                    ctx.response.body = response;
+                    ctx.body = response;
                 }
             }
 
