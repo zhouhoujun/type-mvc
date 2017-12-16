@@ -1,5 +1,5 @@
 import { BaseRoute } from './BaseRoute';
-import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction, getPropertyMetadata, getTypeMetadata, PropertyMetadata, isPromise } from 'tsioc';
+import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction, getPropertyMetadata, getTypeMetadata, PropertyMetadata, isPromise, IParameter } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next, Defer, symbols } from '../util';
 import { Get, GetMetadata, RouteMetadata, Post, Put, Delete, Field, Cors, CorsMetadata, Options, Model, Route } from '../decorators';
@@ -36,7 +36,7 @@ export class ControllerRoute extends BaseRoute {
     async navigating(container: IContainer, ctx: IContext, next: Next): Promise<any> {
         try {
             if (ctx.method !== 'OPTIONS') {
-                await this.invoke(ctx, container, (meta: RouteMetadata, params: Token<any>[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
+                await this.invoke(ctx, container, (meta: RouteMetadata, params: IParameter[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
             } else {
                 throw new ForbiddenError();
             }
@@ -161,7 +161,7 @@ export class ControllerRoute extends BaseRoute {
         }
         return null;
     }
-    async invoke(ctx: IContext, container: IContainer, provider: (meta: RouteMetadata, params: Token<any>[], ctrl: any) => AsyncParamProvider[]) {
+    async invoke(ctx: IContext, container: IContainer, provider: (meta: RouteMetadata, params: IParameter[], ctrl: any) => AsyncParamProvider[]) {
         let meta = this.getRouteMetaData(ctx, container, parseRequestMethod(ctx.method));
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
@@ -199,7 +199,7 @@ export class ControllerRoute extends BaseRoute {
         }
     }
 
-    protected createProvider(container: IContainer, meta: RouteMetadata, params: Token<any>[], ctrl: any, ctx: IContext): AsyncParamProvider[] {
+    protected createProvider(container: IContainer, meta: RouteMetadata, params: IParameter[], ctrl: any, ctx: IContext): AsyncParamProvider[] {
 
         let parser = container.get(ModelParser);
 
@@ -215,20 +215,21 @@ export class ControllerRoute extends BaseRoute {
 
             }
             let body = ctx.request['body'] || {};
-            let providers = params.map((p, idx) => {
+            let providers = params.map((param, idx) => {
                 try {
-                    if (isClass(p) && Reflect.hasOwnMetadata(Model.toString(), p)) {
-                        let val = parser.parseModel(p, body);
+                    let ptype = param.type;
+                    if (isClass(ptype) && Reflect.hasOwnMetadata(Model.toString(), ptype)) {
+                        let val = parser.parseModel(ptype, body);
                         return {
                             value: val,
-                            index: idx
+                            index: ptype.name || idx
                         }
 
-                    } else if (parser.isBaseType(p)) {
-                        let val = parser.parseBaseType(p, paramVal);
+                    } else if (parser.isBaseType(ptype)) {
+                        let val = parser.parseBaseType(ptype, paramVal);
                         return {
                             value: val,
-                            index: idx
+                            index: param.name || idx
                         }
                     } else {
                         return null;
