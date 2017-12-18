@@ -221,15 +221,14 @@ export class ControllerRoute extends BaseRoute {
             let providers = params.map((param, idx) => {
                 try {
                     let ptype = param.type;
-                    if (isClass(ptype) && Reflect.hasOwnMetadata(Model.toString(), ptype)) {
+                    if (isClass(ptype) && parser.isModel(ptype)) {
                         let val = parser.parseModel(ptype, body);
                         return {
                             value: val,
                             index: param.name || idx
                         }
 
-                    } else {
-
+                    } else if (!isToken(ptype)) {
                         let paramVal = restParams[param.name];
                         if (isUndefined(paramVal)) {
                             paramVal = ctx.request.query[param.name];
@@ -243,6 +242,8 @@ export class ControllerRoute extends BaseRoute {
                         } else {
                             return null;
                         }
+                    } else {
+                        return null;
                     }
                 } catch (err) {
                     throw new BadRequestError(err.toString());

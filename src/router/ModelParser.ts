@@ -1,19 +1,35 @@
-import { Type, getPropertyMetadata, PropertyMetadata, isToken, isFunction, IContainer, Inject, symbols as iocSymbols, isClass, Singleton } from 'tsioc';
+import { Type, getPropertyMetadata, PropertyMetadata, isToken, isFunction, IContainer, Inject, symbols as iocSymbols, isClass, Singleton, ObjectMap } from 'tsioc';
 import { isUndefined } from 'util';
 import { Field, Model } from '../decorators';
+import { Configuration } from '../Configuration';
 
 @Singleton
 export class ModelParser {
 
-    constructor( @Inject(iocSymbols.IContainer) private container: IContainer) {
+    constructor( @Inject(iocSymbols.IContainer) private container: IContainer, private config: Configuration) {
 
     }
 
     isModel(type: Type<any>): boolean {
-        return Reflect.hasOwnMetadata(Model.toString(), type)
+        if (this.config.modelOptions) {
+            return Reflect.hasOwnMetadata(this.config.modelOptions.classMetaname, type);
+        } else {
+            return Reflect.hasOwnMetadata(Model.toString(), type);
+        }
     }
+
+    protected getPropertyMeta(type: Type<any>): ObjectMap<PropertyMetadata[]> {
+        let meta;
+        if (this.config.modelOptions) {
+            meta = getPropertyMetadata<PropertyMetadata>(this.config.modelOptions.fieldMetaname, type);
+        } else {
+            meta = getPropertyMetadata<PropertyMetadata>(Field, type);
+        }
+        return meta;
+    }
+
     parseModel(type: Type<any>, objMap: object) {
-        let meta = getPropertyMetadata<PropertyMetadata>(Field, type);
+        let meta = this.getPropertyMeta(type);
         let result = this.container.get(type);
         for (let n in meta) {
             let propmetas = meta[n];

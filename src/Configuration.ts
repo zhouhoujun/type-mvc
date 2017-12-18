@@ -29,6 +29,17 @@ export interface IViewOptions {
     map?: ObjectMap<any>;
 }
 
+/**
+ * model options
+ *
+ * @export
+ * @interface ModelOptions
+ */
+export interface ModelOptions {
+    classMetaname: string;
+    fieldMetaname: string;
+}
+
 export interface IConfiguration {
 
     port?: number;
@@ -149,6 +160,9 @@ export interface IConfiguration {
      */
     viewsOptions?: IViewOptions;
 
+
+    modelOptions?: ModelOptions;
+
     /**
      * log config extentsion.
      *
@@ -235,7 +249,7 @@ export class Configuration implements IConfiguration {
     connections?: ObjectMap<any> = {};
 
     /**
-     * some middleware befor custom middleware to deal with http request.
+     * some middleware befor router middleware to deal with http request.
      *
      * @type {Token<any>[]}
      * @memberof Configuration
@@ -269,7 +283,7 @@ export class Configuration implements IConfiguration {
     middlewares?: string | string[] = ['./middlewares/**/*{.js,.ts}'];
 
     /**
-     * some middleware after custom, router middleware to deal with http request.
+     * some middleware after router middleware to deal with http request.
      *
      * @type {Token<any>[]}
      * @memberof Configuration
@@ -343,6 +357,9 @@ export class Configuration implements IConfiguration {
         extension: 'ejs',
         map: { html: 'nunjucks' }
     };
+
+
+    modelOptions?: ModelOptions = null;
 
     /**
      * log config extentsion.
