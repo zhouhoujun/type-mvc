@@ -73,7 +73,7 @@ export class ModelParser {
             return true;
         }
 
-        if (p === Boolean || p === String || p === Number) {
+        if (p === Boolean || p === String || p === Number || p === Date) {
             return true;
         }
 

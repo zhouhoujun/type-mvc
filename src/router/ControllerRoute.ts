@@ -228,7 +228,7 @@ export class ControllerRoute extends BaseRoute {
                             index: param.name || idx
                         }
 
-                    } else if (!isToken(ptype)) {
+                    } else if (parser.isBaseType(ptype)) {
                         let paramVal = restParams[param.name];
                         if (isUndefined(paramVal)) {
                             paramVal = ctx.request.query[param.name];
