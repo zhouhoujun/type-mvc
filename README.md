@@ -57,6 +57,19 @@ Bootstrap.create(__dirname)
 
 ### Define Model
 
+* third ORM Model:  Configuration ModelOptions in your config file. like:
+
+```ts
+{
+    ...
+    modelOptions: <ModelOptions>{
+        classMetaname: 'Model Class Metadata Name',
+        fieldMetaname: 'Model Filed Metadata Name',
+    }
+    ...
+}
+```
+
 ```ts
 import { Model, Field } from 'type-mvc';
 
