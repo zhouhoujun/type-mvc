@@ -19,9 +19,10 @@ npm install type-mvc
 
 ```
 
-
-
 ## Documentation
+
+* v0.3.10 Add Feature: 
+    Restfull params or Query String params can auto set to Controller action(Controller method) via the name of param matched.
 
 If you want use `ts-node` to run, need config `tsconfig.json` target gt than `es6`, eg.
 
@@ -95,7 +96,7 @@ default setting load controllers in your project folder
 `RedirectResult`, `ViewResult`.
  * Also, you can extend with `BaseController`, it has implements some mothod to create the `ResultValue` types.
  * Model can auto create in action, it auto load value from request body.
- * Reset full api param can auto loader via param provider.
+ * Restfull params or Query String params can auto set to Controller action(Controller method) via the name of param matched. 
  * Cors by `@Cors` decorator in class or method.
 
 define as:
