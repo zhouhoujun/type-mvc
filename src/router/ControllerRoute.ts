@@ -1,5 +1,5 @@
 import { BaseRoute } from './BaseRoute';
-import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction, getPropertyMetadata, getTypeMetadata, PropertyMetadata, isPromise, IParameter } from 'tsioc';
+import { Type, IContainer, getMethodMetadata, AsyncParamProvider, Token, isToken, Container, isClass, isFunction, getPropertyMetadata, getTypeMetadata, PropertyMetadata, isPromise, IParameter, ParamProvider } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next, Defer, symbols } from '../util';
 import { Get, GetMetadata, RouteMetadata, Post, Put, Delete, Field, Cors, CorsMetadata, Options, Model, Route } from '../decorators';
@@ -204,14 +204,17 @@ export class ControllerRoute extends BaseRoute {
         let parser = container.get(ModelParser);
 
         if (params && params.length) {
-            let paramVal = null;
+            let restParams: any = {};
             if (this.isRestUri(meta.route)) {
-                let route = meta.route.substring(0, meta.route.indexOf('/:')) + '/';
+                let routes = meta.route.split('/').map(r => r.trim());
+                let restParamNames = routes.filter(d => /^\S*:/.test(d)); // .map(rest => rest.substring(1));
                 let baseURL = this.cutEmptyPath(this.url, true);
-                let routeUrl = this.cutEmptyPath(ctx.url.replace(baseURL, ''));
+                let routeUrls = this.cutEmptyPath(ctx.url.replace(baseURL, '')).split('/');
 
-                let querystring = routeUrl.replace(route, '');
-                paramVal = querystring.indexOf('/') > 0 ? querystring.substring(0, querystring.indexOf('/')) : querystring;
+                restParamNames.forEach(pname => {
+                    let val = routeUrls[routes.indexOf(pname)];
+                    restParams[pname.substring(1)] = val;
+                });
 
             }
             let body = ctx.request['body'] || {};
@@ -222,17 +225,24 @@ export class ControllerRoute extends BaseRoute {
                         let val = parser.parseModel(ptype, body);
                         return {
                             value: val,
-                            index: ptype.name || idx
-                        }
-
-                    } else if (parser.isBaseType(ptype)) {
-                        let val = parser.parseBaseType(ptype, paramVal);
-                        return {
-                            value: val,
                             index: param.name || idx
                         }
+
                     } else {
-                        return null;
+
+                        let paramVal = restParams[param.name];
+                        if (isUndefined(paramVal)) {
+                            paramVal = ctx.request.query[param.name];
+                        }
+                        if (!isUndefined(paramVal)) {
+                            let val = parser.parseBaseType(ptype, paramVal);
+                            return {
+                                value: val,
+                                index: param.name || idx
+                            }
+                        } else {
+                            return null;
+                        }
                     }
                 } catch (err) {
                     throw new BadRequestError(err.toString());

@@ -22,7 +22,7 @@ export class HomeController extends BaseController {
     }
 
     @Post('/goto/:pageName')
-    gotoPage(pageName: string): ResultValue {
-        return this.redirect( '/' + pageName);
+    gotoPage(date: Date, pageName: string): ResultValue {
+        return this.redirect('/' + pageName);
     }
 }

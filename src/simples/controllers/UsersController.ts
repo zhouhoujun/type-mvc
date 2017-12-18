@@ -40,7 +40,7 @@ export class UserController {
     }
 
     @Get('/find/:name')
-    query(name: string, @Inject(symbols.IContext) ctx) {
+    query(@Inject(symbols.IContext) ctx, name: string) {
         console.log(ctx);
         return this.work.find(name);
     }
