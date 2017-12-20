@@ -21,24 +21,9 @@ npm install type-mvc
 
 ## Documentation
 
-* v0.3.10 Add Feature: 
-    Restfull params or Query String params can auto set to Controller action(Controller method) via the name of param matched.
+* v0.3.10 New Feature:
+    1. Restfull params or Query String params can auto set to Controller action(Controller method) via the name of param matched.
 
-If you want use `ts-node` to run, need config `tsconfig.json` target gt than `es6`, eg.
-
-``` json
-{
-        "compilerOptions": {
-        "module": "commonjs",
-        "target": "es6",
-        "lib": ["dom", "es2015", "es2017"],
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "declaration": true,
-        ...
-    },
-}
-```
 
 ## Start 
 
