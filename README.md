@@ -21,6 +21,8 @@ npm install type-mvc
 
 ## Documentation
 
+* v0.3.12 New Feature:
+    1. es5 support. enable config https http server.
 * v0.3.10 New Feature:
     1. Restfull params or Query String params can auto set to Controller action(Controller method) via the name of param matched.
 
