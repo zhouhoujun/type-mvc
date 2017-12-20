@@ -1,6 +1,6 @@
 import { ObjectMap, Injectable, Singleton, Token, Type } from 'tsioc';
 import { symbols } from './util';
-import { RequestMethod } from './RequestMethod';
+import { RequestMethod } from './core';
 import { ServerOptions } from 'https';
 // import { ServerOptions as Http2Options } from 'http2';
 

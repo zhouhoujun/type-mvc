@@ -1,16 +1,11 @@
 import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
-import { IContext } from './IContext';
 import { IConfiguration, Configuration } from './Configuration';
 import { Defer, symbols } from './util';
 import { IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token, toAbsolutePath } from 'tsioc';
 import * as path from 'path';
 import { isString, isSymbol } from 'util';
-import { IMiddleware } from './middlewares';
-import { Application } from './Application';
-import { Router, IRoute, IRouter } from './router';
-import { registerDefaults } from './registerDefaults';
-import { registerDecorators } from './decorators';
+import { Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter } from './core';
 import { execFileSync } from 'child_process';
 
 
@@ -204,7 +199,7 @@ export class Bootstrap {
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
         container.registerSingleton(Configuration, config);
         container.registerSingleton(symbols.IConfiguration, config);
-        this.registerExtendDecorators(container);
+        this.registerDefaults(container);
         // register app.
         container.register(this.appType);
 
@@ -227,7 +222,7 @@ export class Bootstrap {
             }
         }
         // register default
-        this.registerDefaults(container);
+        this.registerDefaultMiddlewars(container);
 
         if (config.controllers) {
             let controllers = await this.builder.loadModule(container, {
@@ -251,8 +246,8 @@ export class Bootstrap {
     }
 
 
-    protected registerExtendDecorators(container: IContainer) {
-        registerDecorators(container);
+    protected registerDefaultMiddlewars(container: IContainer) {
+        registerDefaultMiddlewars(container);
     }
 
     protected registerDefaults(container: IContainer) {

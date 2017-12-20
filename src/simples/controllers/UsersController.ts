@@ -2,7 +2,7 @@ import { Controller, Get, Post, IContext, symbols, Model, Field, Cors } from '..
 import { Inject } from 'tsioc';
 import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
-import { RequestMethod } from '../../RequestMethod';
+import { RequestMethod } from '../../index';
 
 @Cors
 @Controller('/users')
