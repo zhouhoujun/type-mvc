@@ -1,6 +1,8 @@
 import { ObjectMap, Injectable, Singleton, Token, Type } from 'tsioc';
 import { symbols } from './util';
 import { RequestMethod } from './RequestMethod';
+import { ServerOptions } from 'https';
+// import { ServerOptions as Http2Options } from 'http2';
 
 
 export interface ISessionConfig {
@@ -42,6 +44,13 @@ export interface ModelOptions {
 
 export interface IConfiguration {
 
+    /**
+     * https server options.
+     *
+     * @type {ServerOptions}
+     * @memberof IConfiguration
+     */
+    httpsOptions?: ServerOptions;
     port?: number;
     /**
      * system file root directory.

@@ -13,7 +13,7 @@ export class DefaultSessionMiddleware implements IMiddleware {
     constructor(private app: Application, private config: Configuration) {
     }
     setup() {
-        this.app.use(session(this.config.session, this.app));
+        this.app.use(session(this.config.session, this.app.getKoa()));
     }
 
 }

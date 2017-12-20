@@ -176,8 +176,8 @@ export class Bootstrap {
     async run() {
         let app = await this.build();
         let config = app.container.get(Configuration);
-        app.listen(config.port || process.env.PORT);
-        console.log('service listen on port: ', config.port || app.env['port']);
+        app.getServer().listen(config.port || process.env.PORT);
+        console.log('service listen on port: ', config.port);
         return app;
     }
 
@@ -205,7 +205,7 @@ export class Bootstrap {
         container.registerSingleton(Configuration, config);
         container.registerSingleton(symbols.IConfiguration, config);
         this.registerExtendDecorators(container);
-        // register self.
+        // register app.
         container.register(this.appType);
 
         // custom use.
