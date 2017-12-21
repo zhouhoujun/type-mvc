@@ -51,6 +51,20 @@ export interface IConfiguration {
      * @memberof IConfiguration
      */
     httpsOptions?: ServerOptions;
+
+    /**
+     * server hostname
+     *
+     * @type {string}
+     * @memberof IConfiguration
+     */
+    hostname?: string;
+    /**
+     * server port.
+     *
+     * @type {number}
+     * @memberof IConfiguration
+     */
     port?: number;
     /**
      * system file root directory.

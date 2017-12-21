@@ -7,7 +7,9 @@ import * as path from 'path';
 import { isString, isSymbol } from 'util';
 import { Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter } from './core';
 import { execFileSync } from 'child_process';
-
+import * as http from 'http';
+// import * as http2 from 'http2';
+import * as https from 'https';
 
 /**
  * Bootstrap
@@ -165,14 +167,23 @@ export class Bootstrap {
 
     /**
      * run service.
-     * @returns {Application}
-     * @memberOf WebHostBuilder
+     *
+     * @param {Function} [listener]
+     * @returns
+     * @memberof Bootstrap
      */
-    async run() {
+    async run(listener?: Function) {
         let app = await this.build();
-        let config = app.container.get(Configuration);
-        app.getServer().listen(config.port || process.env.PORT);
-        console.log('service listen on port: ', config.port);
+        let config = app.container.get<IConfiguration>(Configuration);
+        let server = app.getServer();
+        let port = config.port || parseInt(process.env.PORT || '0');
+        if (config.hostname) {
+            server.listen(port, config.hostname, listener);
+        } else {
+            server.listen(port, listener);
+        }
+
+        console.log('service listen on port: ', port);
         return app;
     }
 

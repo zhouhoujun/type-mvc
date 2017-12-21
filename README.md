@@ -21,6 +21,8 @@ npm install type-mvc
 
 ## Documentation
 
+* v0.3.17 New Feature:
+    1. add hostname for http or https to listen.
 * v0.3.12 New Feature:
     1. es5 support. enable config https http server.
 * v0.3.10 New Feature:
