@@ -22,13 +22,15 @@ import { IContainer, CoreActions } from 'tsioc';
 import { symbols } from '../util';
 import { Router, ModelParser } from './router';
 import { BaseController } from './BaseController';
-import { Controller, Authorization, Middleware } from './decorators';
+import { Controller, Authorization, Middleware, Model } from './decorators';
+import { Configuration } from '../Configuration';
 
 export function registerDefaults(container: IContainer) {
     let lifeScope = container.getLifeScope();
     lifeScope.registerDecorator(Controller, CoreActions.bindProvider);
     lifeScope.registerDecorator(Authorization, CoreActions.bindProvider);
     lifeScope.registerDecorator(Middleware, CoreActions.bindProvider);
+    lifeScope.registerDecorator(Model, CoreActions.bindProvider);
     container.register(ModelParser);
     container.register(BaseController);
 }

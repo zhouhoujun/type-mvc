@@ -37,7 +37,7 @@ export class ControllerRoute extends BaseRoute {
     async navigating(container: IContainer, ctx: IContext, next: Next): Promise<any> {
         try {
             if (ctx.method !== 'OPTIONS') {
-                await this.invoke(ctx, container, (meta: RouteMetadata, params: IParameter[], ctrl) => this.createProvider(container, meta, params, ctrl, ctx));
+                await this.invoke(ctx, container);
             } else {
                 throw new ForbiddenError();
             }
@@ -162,7 +162,7 @@ export class ControllerRoute extends BaseRoute {
         }
         return null;
     }
-    async invoke(ctx: IContext, container: IContainer, provider: (meta: RouteMetadata, params: IParameter[], ctrl: any) => AsyncParamProvider[]) {
+    async invoke(ctx: IContext, container: IContainer) {
         let meta = this.getRouteMetaData(ctx, container, parseRequestMethod(ctx.method));
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
@@ -179,7 +179,8 @@ export class ControllerRoute extends BaseRoute {
             let lifeScope = container.getLifeScope();
 
             let params = lifeScope.getMethodParameters(this.controller, ctrl, meta.propertyKey);
-            let response: any = await container.invoke(this.controller, meta.propertyKey, ctrl, ...provider(meta, params, ctrl));
+            let providers = this.createProvider(container, ctx, ctrl, meta, params);
+            let response: any = await container.invoke(this.controller, meta.propertyKey, ctrl, ...providers);
 
             if (isPromise(response)) {
                 response = await response;
@@ -200,7 +201,7 @@ export class ControllerRoute extends BaseRoute {
         }
     }
 
-    protected createProvider(container: IContainer, meta: RouteMetadata, params: IParameter[], ctrl: any, ctx: IContext): AsyncParamProvider[] {
+    protected createProvider(container: IContainer, ctx: IContext, ctrl: any, meta: RouteMetadata, params: IParameter[]): AsyncParamProvider[] {
 
         let parser = container.get(ModelParser);
 
@@ -224,6 +225,7 @@ export class ControllerRoute extends BaseRoute {
                     let ptype = param.type;
                     if (isClass(ptype) && parser.isModel(ptype)) {
                         let val = parser.parseModel(ptype, body);
+                        console.log('body:', body, 'parse:', val, 'query', ctx.request.query)
                         return {
                             value: val,
                             index: param.name || idx
