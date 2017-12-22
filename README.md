@@ -20,7 +20,9 @@ npm install type-mvc
 ```
 
 ## Documentation
-
+* v0.3.18 New Feature:
+    1. update tsioc to improvement method invoker.
+    2. fix Model not register bug. get Model return empty object.
 * v0.3.17 New Feature:
     1. add hostname for http or https to listen.
 * v0.3.12 New Feature:
