@@ -280,11 +280,11 @@ export class Configuration implements IConfiguration {
     beforeMiddlewares?: Token<any>[] = [
         symbols.BodyParserMiddleware,
         symbols.JsonMiddleware,
-        symbols.ContextMiddleware,
         symbols.LogMiddleware,
-        symbols.ContentMiddleware,
-        symbols.CorsMiddleware,
         symbols.SessionMiddleware,
+        symbols.ContentMiddleware,
+        symbols.ContextMiddleware,
+        symbols.CorsMiddleware,
         symbols.ViewsMiddleware
 
     ];

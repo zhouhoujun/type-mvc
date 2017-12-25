@@ -20,6 +20,8 @@ npm install type-mvc
 ```
 
 ## Documentation
+* v0.3.19 New Feature:
+    Fix bug, reset context middleware order to fix 500 error, when some time request.
 * v0.3.18 New Feature:
     1. update tsioc to improvement method invoker.
     2. fix Model not register bug. get Model return empty object.
