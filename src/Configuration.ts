@@ -44,6 +44,9 @@ export interface ModelOptions {
 
 export interface IConfiguration {
 
+    routeUrlRegExp?: RegExp;
+    isRouteUrl?(ctxUrl: string): boolean;
+
     /**
      * https server options.
      *
@@ -222,6 +225,11 @@ export interface CorsOptions {
 export class Configuration implements IConfiguration {
     constructor() {
 
+    }
+
+    routeUrlRegExp = /\/((\w|%|\.))+.\w+$/;
+    isRouteUrl?(ctxUrl: string): boolean {
+        return !this.routeUrlRegExp.test(ctxUrl);
     }
     port?= 3000;
     /**

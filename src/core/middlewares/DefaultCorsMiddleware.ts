@@ -16,7 +16,7 @@ export class DefaultCorsMiddleware implements IMiddleware {
     }
     setup() {
         this.app.use(async (ctx, next) => {
-            if (!ctx.status || ctx.status === 404) {
+            if ((!ctx.status || ctx.status === 404) && this.config.isRouteUrl(ctx.url)) {
                 return this.router.getRoot().options(this.app.container, ctx, next);
             }
         });
