@@ -227,7 +227,7 @@ export class Configuration implements IConfiguration {
 
     }
 
-    routeUrlRegExp = /\/((\w|%|\.))+.\w+$/;
+    routeUrlRegExp? = /\/((\w|%|\.))+.\w+$/;
     isRouteUrl?(ctxUrl: string): boolean {
         return !this.routeUrlRegExp.test(ctxUrl);
     }
