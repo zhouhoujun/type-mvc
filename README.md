@@ -20,6 +20,9 @@ npm install type-mvc
 ```
 
 ## Documentation
+* v0.3.20 New Feature：
+    1. Router and Cors middleware will check url is right route or not.
+    add default route Url check in Configuartion.   isRouteUrl method and routeUrlRegExp field.
 * v0.3.19 New Feature:
     Fix bug, reset context middleware order to fix 500 error, when some time request.
 * v0.3.18 New Feature:
