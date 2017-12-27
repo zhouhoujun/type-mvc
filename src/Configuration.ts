@@ -44,7 +44,28 @@ export interface ModelOptions {
 
 export interface IConfiguration {
 
+    /**
+     * aseert url match regexp.
+     *
+     * @type {RegExp}
+     * @memberof IConfiguration
+     */
+    assertUrlRegExp?: RegExp;
+
+    /**
+     * route url match  regexp.
+     *
+     * @type {RegExp}
+     * @memberof IConfiguration
+     */
     routeUrlRegExp?: RegExp;
+    /**
+     * is Route url or not. default will exclude assert url.
+     *
+     * @param {string} ctxUrl
+     * @returns {boolean}
+     * @memberof IConfiguration
+     */
     isRouteUrl?(ctxUrl: string): boolean;
 
     /**
@@ -227,9 +248,14 @@ export class Configuration implements IConfiguration {
 
     }
 
-    routeUrlRegExp? = /\/((\w|%|\.))+.\w+$/;
+    assertUrlRegExp?= /\/((\w|%|\.))+.\w+$/;
+    routeUrlRegExp?= null;
     isRouteUrl?(ctxUrl: string): boolean {
-        return !this.routeUrlRegExp.test(ctxUrl);
+        let flag = !this.assertUrlRegExp.test(ctxUrl);
+        if (flag && this.routeUrlRegExp) {
+            return this.routeUrlRegExp.test(ctxUrl);
+        }
+        return flag;
     }
     port?= 3000;
     /**
