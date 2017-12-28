@@ -20,6 +20,8 @@ npm install type-mvc
 ```
 
 ## Documentation
+
+* v0.4.1  fix assertUrlRegExp bug.
 * v0.3.20 New Feature：
     1. Router and Cors middleware will check url is right route or not.
     add default route Url check in Configuartion.   isRouteUrl method and routeUrlRegExp field.
