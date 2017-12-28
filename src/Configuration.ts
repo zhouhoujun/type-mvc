@@ -248,7 +248,7 @@ export class Configuration implements IConfiguration {
 
     }
 
-    assertUrlRegExp?= /\/((\w|%|\.))+.\w+$/;
+    assertUrlRegExp?= /\/((\w|%|\.))+\.\w+$/;
     routeUrlRegExp?= null;
     isRouteUrl?(ctxUrl: string): boolean {
         let flag = !this.assertUrlRegExp.test(ctxUrl);
