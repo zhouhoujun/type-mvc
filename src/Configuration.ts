@@ -257,6 +257,18 @@ export class Configuration implements IConfiguration {
         }
         return flag;
     }
+
+    /**
+     * hostname.
+     *
+     * @memberof Configuration
+     */
+    hostname?= '';
+    /**
+     * port
+     *
+     * @memberof Configuration
+     */
     port?= 3000;
     /**
      * system file root directory.
