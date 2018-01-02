@@ -1,5 +1,4 @@
-import { Type, getPropertyMetadata, PropertyMetadata, isToken, isFunction, IContainer, Inject, symbols as iocSymbols, isClass, Singleton, ObjectMap } from 'tsioc';
-import { isUndefined } from 'util';
+import { Type, getPropertyMetadata, PropertyMetadata, isToken, isFunction, isUndefined, IContainer, Inject, symbols as iocSymbols, isClass, Singleton, ObjectMap } from 'tsioc';
 import { Field, Model } from '../decorators';
 import { Configuration } from '../../Configuration';
 

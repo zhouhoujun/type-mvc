@@ -1,7 +1,6 @@
-import { createMethodDecorator, IMethodDecorator, MethodMetadata, MetadataExtends, isClassMetadata, MetadataAdapter } from 'tsioc';
+import { createMethodDecorator, IMethodDecorator, MethodMetadata, MetadataExtends, isClassMetadata, MetadataAdapter, isString, isNumber } from 'tsioc';
 import { RequestMethod } from '../RequestMethod';
 import { RouteMetadata } from '../metadata';
-import { isString, isNumber } from 'util';
 
 
 /**

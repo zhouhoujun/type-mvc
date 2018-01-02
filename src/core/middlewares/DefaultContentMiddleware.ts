@@ -1,10 +1,9 @@
-import { IContainer, Injectable, Inject, toAbsolutePath } from 'tsioc';
+import { IContainer, Injectable, Inject, isString, toAbsolutePath } from 'tsioc';
 import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
 import { symbols } from '../../util';
 import { Configuration } from '../../Configuration';
-import { isString } from 'util';
 const serve = require('koa-static');
 
 @Middleware(symbols.ContentMiddleware)

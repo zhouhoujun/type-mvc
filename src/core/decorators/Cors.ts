@@ -1,5 +1,4 @@
 import { IClassMethodDecorator, createClassMethodDecorator, ClassMethodDecorator, Type, MetadataAdapter, MetadataExtends } from 'tsioc';
-import { match } from 'minimatch';
 import { isArray, isNumber, isString, isUndefined } from 'util';
 import { CorsMetadata } from '../metadata';
 import { RequestMethod } from '../RequestMethod';

@@ -1,5 +1,4 @@
-import { Aspect, Around, Joinpoint, Before } from 'tsioc';
-import { isRegExp } from 'util';
+import { Aspect, Around, Joinpoint, Before, isRegExp } from 'tsioc';
 
 
 @Aspect

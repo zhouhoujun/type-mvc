@@ -1,10 +1,9 @@
-import { IComponent, Composite, Type, IContainer, Mode } from 'tsioc';
+import { IComponent, Composite, Type, IContainer, Mode, isString } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next } from '../../util';
 import { IRoute, RouteAction } from './IRoute';
 import { notFoundRoute } from './NotFoundRoute';
-import { isString } from 'util';
-import { RootRoute } from '../index';
+import { RootRoute } from './RootRoute';
 
 
 /**
