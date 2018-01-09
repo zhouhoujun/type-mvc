@@ -39,7 +39,7 @@
     "koa-static": "^4.0.2",
     "koa-views": "^6.1.3",
     "nunjucks": "^3.0.1",
-    "tsioc": "^1.2.1"
+    "tsioc": "^1.2.2"
   },
   "devDependencies": {
     "bluebird": "^3.4.1",
