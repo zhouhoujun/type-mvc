@@ -280,7 +280,7 @@ export class Bootstrap {
             }
             if (isClass(m) || isString(m) || isSymbol(m)) {
                 let middleware = container.get(m as Token<any>) as IMiddleware;
-                if (middleware.setup) {
+                if (isFunction(middleware.setup)) {
                     middleware.setup();
                 }
 

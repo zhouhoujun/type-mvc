@@ -3,7 +3,7 @@ import { Type, IContainer, getMethodMetadata, AsyncParamProvider,
      Token, isToken, Container, isClass, isFunction,
      getPropertyMetadata, getTypeMetadata, PropertyMetadata, isPromise,
      isUndefined,  isString, isObject, isArray, isNumber,
-     IParameter, ParamProvider } from 'tsioc';
+     IParameter, ParamProvider, hasClassMetadata, hasMethodMetadata } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next, Defer, symbols } from '../../util';
 import { Get, Post, Put, Delete, Field, Cors, Options, Model, Route } from '../decorators';
@@ -171,7 +171,7 @@ export class ControllerRoute extends BaseRoute {
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
             if (container.has(symbols.IAuthorization)) {
-                let hasAuth = Reflect.hasMetadata(Authorization.toString(), ctrl, meta.propertyKey);
+                let hasAuth = hasClassMetadata(Authorization, ctrl) || hasMethodMetadata(Authorization, ctrl,  meta.propertyKey);
                 if (hasAuth) {
                     let auth = container.get<IAuthorization>(symbols.IAuthorization);
                     if (!auth.isAuth()) {
