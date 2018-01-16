@@ -2,12 +2,12 @@ import { IContainer, Injectable, Inject } from 'tsioc';
 import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
-import { symbols } from '../../util';
+import { mvcSymbols } from '../../util';
 import { Configuration } from '../../Configuration';
 
 const session = require('koa-session');
 
-@Middleware(symbols.SessionMiddleware)
+@Middleware(mvcSymbols.SessionMiddleware)
 export class DefaultSessionMiddleware implements IMiddleware {
 
     constructor(private app: Application, private config: Configuration) {

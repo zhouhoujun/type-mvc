@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
-import { Injectable, Singleton, IContainer, AutoWired, Inject, symbols as iocSymbols, Type } from 'tsioc';
-import { symbols } from '../util';
+import { Injectable, Singleton, IContainer, AutoWired, Inject, symbols, Type } from 'tsioc';
+import { mvcSymbols } from '../util';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
@@ -30,7 +30,7 @@ export class Application {
 
     getServer() {
         if (!this.server) {
-            let cfg = this.container.get<IConfiguration>(symbols.IConfiguration);
+            let cfg = this.container.get<IConfiguration>(mvcSymbols.IConfiguration);
             if (cfg.httpsOptions) {
                 this.server = https.createServer(cfg.httpsOptions, this.koa.callback);
             } else {
@@ -44,7 +44,7 @@ export class Application {
         this.getKoa().use(middleware);
     }
 
-    @Inject(iocSymbols.IContainer)
+    @Inject(symbols.IContainer)
     container: IContainer;
 
 }

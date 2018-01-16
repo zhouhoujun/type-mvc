@@ -4,11 +4,11 @@ import { Middleware } from '../decorators';
 import { RequestMethod } from '../RequestMethod';
 import { IMiddleware } from '../middlewares';
 import { ObjectMap, ActionComponent, Token } from 'tsioc';
-import { symbols } from '../../util';
+import { mvcSymbols } from '../../util';
 import { Router } from '../router';
 
 
-@Middleware(symbols.CorsMiddleware)
+@Middleware(mvcSymbols.CorsMiddleware)
 export class DefaultCorsMiddleware implements IMiddleware {
 
     constructor(private app: Application, private router: Router, private config: Configuration) {

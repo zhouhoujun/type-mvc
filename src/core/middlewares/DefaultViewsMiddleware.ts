@@ -2,12 +2,12 @@ import { IContainer, Injectable, Inject, toAbsolutePath } from 'tsioc';
 import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
-import { symbols } from '../../util';
+import { mvcSymbols } from '../../util';
 import { Configuration } from '../../Configuration';
 
 const views = require('koa-views');
 
-@Middleware(symbols.ViewsMiddleware)
+@Middleware(mvcSymbols.ViewsMiddleware)
 export class DefaultViewsMiddleware implements IMiddleware {
 
     constructor(private app: Application, private config: Configuration) {

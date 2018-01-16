@@ -2,11 +2,11 @@ import { IContainer, Injectable, Inject, isString, toAbsolutePath } from 'tsioc'
 import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
-import { symbols } from '../../util';
+import { mvcSymbols } from '../../util';
 import { Configuration } from '../../Configuration';
 const serve = require('koa-static');
 
-@Middleware(symbols.ContentMiddleware)
+@Middleware(mvcSymbols.ContentMiddleware)
 export class DefaultContentMiddleware implements IMiddleware {
 
     constructor(private app: Application, private config: Configuration) {

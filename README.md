@@ -21,6 +21,14 @@ npm install type-mvc
 
 ## Documentation
 
+* v0.5.0 
+    1. add Log aop aspect service. for Log easy.  default user console to log, can config `logLib`,`logConfig` in your `config.js` to use third logger lib. eg. `{ logLib: 'log4js', logConfig:{...} }`.
+    has implements log4js adapter [see code]()
+
+    2. DebugAspect, config `debug: true`,  in your `config.js`, will auto log debug info.
+    2. AnnotationLogerAspect @annotation(Logger), logger some state via @Logger decorator config. 
+    2. add Annotation Auth aspect service `AuthAspect` to support yourself auth check easy.
+
 * v0.4.1  fix assertUrlRegExp bug.
 * v0.3.20 New Feature：
     1. Router and Cors middleware will check url is right route or not.

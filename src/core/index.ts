@@ -19,7 +19,7 @@ import {
 
 } from './middlewares';
 import { IContainer, CoreActions } from 'tsioc';
-import { symbols } from '../util';
+import { mvcSymbols } from '../util/index';
 import { Router, ModelParser } from './router';
 import { BaseController } from './BaseController';
 import { Controller, Authorization, Middleware, Model } from './decorators';
@@ -36,13 +36,13 @@ export function registerDefaults(container: IContainer) {
 }
 
 export function registerDefaultMiddlewars(container: IContainer) {
-    container.register(symbols.ContentMiddleware, DefaultContentMiddleware);
-    container.register(symbols.ContextMiddleware, DefaultContextMiddleware);
-    container.register(symbols.JsonMiddleware, DefaultJsonMiddleware);
-    container.register(symbols.LogMiddleware, DefaultLogMiddleware);
-    container.register(symbols.SessionMiddleware, DefaultSessionMiddleware);
-    container.register(symbols.BodyParserMiddleware, DefaultBodyParserMiddleware);
-    container.register(symbols.ViewsMiddleware, DefaultViewsMiddleware);
-    container.register(symbols.CorsMiddleware, DefaultCorsMiddleware);
+    container.register(mvcSymbols.ContentMiddleware, DefaultContentMiddleware);
+    container.register(mvcSymbols.ContextMiddleware, DefaultContextMiddleware);
+    container.register(mvcSymbols.JsonMiddleware, DefaultJsonMiddleware);
+    container.register(mvcSymbols.LogMiddleware, DefaultLogMiddleware);
+    container.register(mvcSymbols.SessionMiddleware, DefaultSessionMiddleware);
+    container.register(mvcSymbols.BodyParserMiddleware, DefaultBodyParserMiddleware);
+    container.register(mvcSymbols.ViewsMiddleware, DefaultViewsMiddleware);
+    container.register(mvcSymbols.CorsMiddleware, DefaultCorsMiddleware);
     container.register(Router);
 }

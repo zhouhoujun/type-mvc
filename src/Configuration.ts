@@ -1,5 +1,5 @@
 import { ObjectMap, Injectable, Singleton, Token, Type } from 'tsioc';
-import { symbols } from './util';
+import { mvcSymbols } from './util/index';
 import { RequestMethod } from './core';
 import { ServerOptions } from 'https';
 // import { ServerOptions as Http2Options } from 'http2';
@@ -189,7 +189,12 @@ export interface IConfiguration {
      */
     useControllers?: Token<any>[];
 
-
+    /**
+     * aspect service path. default: './aop'
+     *
+     * @type {(string | string[])}
+     * @memberof IConfiguration
+     */
     aop?: string | string[];
 
     usedAops?: Token<any>[];
@@ -209,6 +214,22 @@ export interface IConfiguration {
 
 
     modelOptions?: ModelOptions;
+
+
+    /**
+     * log lib name. for require dynamic.
+     *
+     * @type {string}
+     * @memberof IConfiguration
+     */
+    logLib?: string;
+
+    /**
+     * in debug log. defult false.
+     *
+     * @memberof IConfiguration
+     */
+    debug?: boolean;
 
     /**
      * log config extentsion.
@@ -324,14 +345,14 @@ export class Configuration implements IConfiguration {
      * @memberof Configuration
      */
     beforeMiddlewares?: Token<any>[] = [
-        symbols.BodyParserMiddleware,
-        symbols.JsonMiddleware,
-        symbols.LogMiddleware,
-        symbols.SessionMiddleware,
-        symbols.ContentMiddleware,
-        symbols.ContextMiddleware,
-        symbols.CorsMiddleware,
-        symbols.ViewsMiddleware
+        mvcSymbols.BodyParserMiddleware,
+        mvcSymbols.JsonMiddleware,
+        mvcSymbols.LogMiddleware,
+        mvcSymbols.SessionMiddleware,
+        mvcSymbols.ContentMiddleware,
+        mvcSymbols.ContextMiddleware,
+        mvcSymbols.CorsMiddleware,
+        mvcSymbols.ViewsMiddleware
 
     ];
 
@@ -341,7 +362,7 @@ export class Configuration implements IConfiguration {
      * @type {Token<any>}
      * @memberof Configuration
      */
-    routerMiddlewate?: Token<any> = symbols.RouterMiddleware;
+    routerMiddlewate?: Token<any> = mvcSymbols.RouterMiddleware;
 
     /**
      * custom middleware match path, './middlewares/\*\*\/*{.js,.ts}' in your project.
@@ -426,6 +447,21 @@ export class Configuration implements IConfiguration {
 
 
     modelOptions?: ModelOptions = null;
+
+    /**
+     * log lib name. for require dynamic.
+     *
+     * @type {string}
+     * @memberof Configuration
+     */
+    logLib?: string;
+
+    /**
+     * in debug log. defult false.
+     *
+     * @memberof Configuration
+     */
+    debug? = false;
 
     /**
      * log config extentsion.

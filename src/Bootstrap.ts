@@ -1,7 +1,7 @@
 import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
 import { IConfiguration, Configuration } from './Configuration';
-import { Defer, symbols } from './util';
+import { Defer, mvcSymbols } from './util/index';
 import { isString, isSymbol, IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token, toAbsolutePath } from 'tsioc';
 import * as path from 'path';
 import { Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter } from './core';
@@ -9,6 +9,10 @@ import { execFileSync } from 'child_process';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
+
+import * as logs from './logs/index';
+
+import { AuthAspect, AnnotationLogerAspect, DebugAspect } from './aop/index';
 
 /**
  * Bootstrap
@@ -208,10 +212,17 @@ export class Bootstrap {
     protected async initIContainer(config: Configuration, container: IContainer): Promise<IContainer> {
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
         container.registerSingleton(Configuration, config);
-        container.registerSingleton(symbols.IConfiguration, config);
+        container.registerSingleton(mvcSymbols.IConfiguration, config);
         this.registerDefaults(container);
         // register app.
         container.register(this.appType);
+        this.builder.snycLoadModule(container, { modules: [logs] });
+
+        container.register(AnnotationLogerAspect);
+        if (config.debug) {
+            container.register(DebugAspect);
+        }
+        container.register(AuthAspect);
 
         // custom use.
         if (this.middlewares) {

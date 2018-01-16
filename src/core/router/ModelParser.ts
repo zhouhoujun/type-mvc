@@ -1,11 +1,11 @@
-import { Type, getPropertyMetadata, PropertyMetadata, isToken, isFunction, isUndefined, IContainer, Inject, symbols as iocSymbols, isClass, Singleton, ObjectMap } from 'tsioc';
+import { Type, getPropertyMetadata, PropertyMetadata, isToken, isFunction, isUndefined, IContainer, Inject, symbols, isClass, Singleton, ObjectMap } from 'tsioc';
 import { Field, Model } from '../decorators';
 import { Configuration } from '../../Configuration';
 
 @Singleton
 export class ModelParser {
 
-    constructor( @Inject(iocSymbols.IContainer) private container: IContainer, private config: Configuration) {
+    constructor( @Inject(symbols.IContainer) private container: IContainer, private config: Configuration) {
 
     }
 

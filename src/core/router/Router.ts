@@ -7,7 +7,7 @@ import { ObjectMap, ActionComponent, Token } from 'tsioc';
 import { IRoute } from './IRoute';
 import { RootRoute } from './RootRoute';
 import { RouteBuilder } from './RouteBuilder';
-import { symbols } from '../../util';
+import { mvcSymbols } from '../../util';
 const compose = require('koa-compose');
 
 export interface IRouter extends IMiddleware {
@@ -18,7 +18,7 @@ export interface IRouter extends IMiddleware {
     getRoot(): IRoute;
 }
 
-@Middleware(symbols.RouterMiddleware)
+@Middleware(mvcSymbols.RouterMiddleware)
 export class Router implements IRouter, IMiddleware {
 
     private root: IRoute;

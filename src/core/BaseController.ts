@@ -6,7 +6,7 @@ import * as path from 'path';
 
 import { Controller, Get } from './decorators';
 import { AutoWired, Injectable, Inject } from 'tsioc';
-import { Defer, symbols } from '../util';
+import { Defer, mvcSymbols } from '../util';
 import { ViewResult, FileResult, RedirectResult, JsonResult } from './results';
 
 
@@ -20,7 +20,7 @@ import { ViewResult, FileResult, RedirectResult, JsonResult } from './results';
 export class BaseController {
 
 
-    @Inject(symbols.IContext)
+    @Inject(mvcSymbols.IContext)
     protected context: IContext;
 
     constructor() {

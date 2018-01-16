@@ -1,18 +1,20 @@
 import { BaseRoute } from './BaseRoute';
-import { Type, IContainer, getMethodMetadata, AsyncParamProvider,
-     Token, isToken, Container, isClass, isFunction,
-     getPropertyMetadata, getTypeMetadata, PropertyMetadata, isPromise,
-     isUndefined,  isString, isObject, isArray, isNumber,
-     IParameter, ParamProvider, hasClassMetadata, hasMethodMetadata } from 'tsioc';
+import {
+    Type, IContainer, getMethodMetadata,
+    Token, isToken, Container, isClass, isFunction,
+    getPropertyMetadata, getTypeMetadata, PropertyMetadata, isPromise,
+    isUndefined, isString, isObject, isArray, isNumber,
+    IParameter, Provider, hasClassMetadata, hasMethodMetadata, Providers
+} from 'tsioc';
 import { IContext } from '../IContext';
-import { Next, Defer, symbols } from '../../util';
+import { Next, Defer, mvcSymbols } from '../../util';
 import { Get, Post, Put, Delete, Field, Cors, Options, Model, Route } from '../decorators';
 import { GetMetadata, CorsMetadata, RouteMetadata } from '../metadata'
 import { IRoute } from './IRoute';
 import { Authorization } from '../decorators';
 import { IAuthorization } from '../IAuthorization';
 import { UnauthorizedError, NotFoundError, HttpError, BadRequestError, ForbiddenError } from '../../errors';
-import { isBoolean,  isBuffer, isDate } from 'util';
+import { isBoolean, isBuffer, isDate } from 'util';
 import { JsonResult, ResultValue, ViewResult, FileResult } from '../results';
 import { RequestMethod, methodToString, parseRequestMethod } from '../RequestMethod';
 import { Configuration } from '../../Configuration';
@@ -170,10 +172,10 @@ export class ControllerRoute extends BaseRoute {
         let meta = this.getRouteMetaData(ctx, container, parseRequestMethod(ctx.method));
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
-            if (container.has(symbols.IAuthorization)) {
-                let hasAuth = hasClassMetadata(Authorization, ctrl) || hasMethodMetadata(Authorization, ctrl,  meta.propertyKey);
+            if (container.has(mvcSymbols.IAuthorization)) {
+                let hasAuth = hasClassMetadata(Authorization, ctrl) || hasMethodMetadata(Authorization, ctrl, meta.propertyKey);
                 if (hasAuth) {
-                    let auth = container.get<IAuthorization>(symbols.IAuthorization);
+                    let auth = container.get<IAuthorization>(mvcSymbols.IAuthorization);
                     if (!auth.isAuth()) {
                         throw new UnauthorizedError();
                     }
@@ -205,7 +207,7 @@ export class ControllerRoute extends BaseRoute {
         }
     }
 
-    protected createProvider(container: IContainer, ctx: IContext, ctrl: any, meta: RouteMetadata, params: IParameter[]): AsyncParamProvider[] {
+    protected createProvider(container: IContainer, ctx: IContext, ctrl: any, meta: RouteMetadata, params: IParameter[]): Providers[] {
 
         let parser = container.get(ModelParser);
 
@@ -229,11 +231,7 @@ export class ControllerRoute extends BaseRoute {
                     let ptype = param.type;
                     if (isClass(ptype) && parser.isModel(ptype)) {
                         let val = parser.parseModel(ptype, body);
-                        console.log('body:', body, 'parse:', val, 'query', ctx.request.query)
-                        return {
-                            value: val,
-                            index: param.name || idx
-                        }
+                        return Provider.createParam(param.name || ptype, val, idx)
 
                     } else if (parser.isBaseType(ptype)) {
                         let paramVal = restParams[param.name];
@@ -242,10 +240,7 @@ export class ControllerRoute extends BaseRoute {
                         }
                         if (!isUndefined(paramVal)) {
                             let val = parser.parseBaseType(ptype, paramVal);
-                            return {
-                                value: val,
-                                index: param.name || idx
-                            }
+                            return Provider.createParam(param.name, val, idx);
                         } else {
                             return null;
                         }

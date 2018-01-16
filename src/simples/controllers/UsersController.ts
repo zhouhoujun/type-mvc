@@ -1,4 +1,4 @@
-import { Controller, Get, Post, IContext, symbols, Model, Field, Cors } from '../../index';
+import { Controller, Get, Post, IContext, mvcSymbols, Model, Field, Cors } from '../../index';
 import { Inject } from 'tsioc';
 import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
@@ -22,7 +22,7 @@ export class UserController {
 
     @Cors([RequestMethod.Post])
     @Post('/add')
-    async addUser(user: User, @Inject(symbols.IContext) ctx: IContext) {
+    async addUser(user: User, @Inject(mvcSymbols.IContext) ctx: IContext) {
         console.log('user:', user);
         console.log('request body', ctx.request['body']);
         return this.work.save(user);
@@ -40,7 +40,7 @@ export class UserController {
     }
 
     @Get('/find/:name')
-    query(@Inject(symbols.IContext) ctx, name: string) {
+    query(@Inject(mvcSymbols.IContext) ctx, name: string) {
         console.log(ctx);
         return this.work.find(name);
     }
