@@ -1,7 +1,8 @@
-import { Injectable, Singleton } from 'tsioc';
+import { Injectable, Singleton, NonePointcut } from 'tsioc';
 import { ILoggerManger } from './ILoggerManger';
 import { ILogger } from './ILogger';
 
+@NonePointcut
 @Singleton
 @Injectable('console')
 export class ConsoleLogManager implements ILoggerManger {
@@ -27,21 +28,21 @@ export class ConsoleLog implements ILogger {
         console.log(...args);
     }
     trace(message: string, ...args: any[]): void {
-        console.trace(...args);
+        console.trace(message, ...args);
     }
     debug(message: string, ...args: any[]): void {
-        console.debug(...args);
+        console.debug(message, ...args);
     }
     info(message: string, ...args: any[]): void {
-        console.info(...args);
+        console.info(message, ...args);
     }
     warn(message: string, ...args: any[]): void {
-        console.warn(...args);
+        console.warn(message, ...args);
     }
     error(message: string, ...args: any[]): void {
-        console.error(...args);
+        console.error(message, ...args);
     }
     fatal(message: string, ...args: any[]): void {
-        console.error(...args);
+        console.error(message, ...args);
     }
 }

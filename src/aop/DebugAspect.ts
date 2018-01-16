@@ -21,14 +21,14 @@ export class DebugAspect {
             case JoinpointState.Before:
             case JoinpointState.After:
             case JoinpointState.AfterReturning:
-                this.logger.debug(joinPoint.fullName, joinPoint.state, joinPoint.args, joinPoint.returning);
+                this.logger.debug(this.config.logFormat, joinPoint.fullName, joinPoint.state, joinPoint.args, joinPoint.returning, joinPoint.throwing);
                 break;
             case JoinpointState.Pointcut:
-                this.logger.info(joinPoint.fullName, joinPoint.state, joinPoint.args, joinPoint.returning);
+                this.logger.info(this.config.logFormat, joinPoint.fullName, joinPoint.state, joinPoint.args, joinPoint.returning, joinPoint.throwing);
                 break;
 
             case JoinpointState.AfterThrowing:
-                this.logger.error(joinPoint.fullName, joinPoint.state, joinPoint.args, joinPoint.returning);
+                this.logger.error(this.config.logFormat, joinPoint.fullName, joinPoint.state, joinPoint.args, joinPoint.returning, joinPoint.throwing);
                 break;
 
         }

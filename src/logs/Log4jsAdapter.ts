@@ -1,7 +1,8 @@
-import { Injectable, Singleton } from 'tsioc';
+import { Injectable, Singleton, NonePointcut } from 'tsioc';
 import { ILoggerManger } from './ILoggerManger';
 import { ILogger } from './ILogger';
 
+@NonePointcut
 @Singleton
 @Injectable('log4js')
 export class Log4jsAdapter implements ILoggerManger {

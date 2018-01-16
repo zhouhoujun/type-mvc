@@ -225,6 +225,13 @@ export interface IConfiguration {
     logLib?: string;
 
     /**
+     * log format.
+     *
+     * @type {string}
+     * @memberof IConfiguration
+     */
+    logFormat?: string;
+    /**
      * in debug log. defult false.
      *
      * @memberof IConfiguration
@@ -462,6 +469,8 @@ export class Configuration implements IConfiguration {
      * @memberof Configuration
      */
     debug? = false;
+
+    logFormat? = 'method: %s    state: %s   args:%s     returning: %s   error: %s';
 
     /**
      * log config extentsion.

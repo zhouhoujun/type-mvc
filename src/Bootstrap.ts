@@ -109,37 +109,36 @@ export class Bootstrap {
             this.configDefer = Defer.create<Configuration>();
             this.configDefer.resolve(new Configuration());
         }
-        let excfg: IConfiguration;
+        let cfgmodeles: IConfiguration;
         if (isString(config)) {
             if (existsSync(config)) {
-                excfg = require(config) as IConfiguration;
+                cfgmodeles = require(config) as IConfiguration;
             } else if (execFileSync(path.join(this.rootdir, config))) {
-                excfg = require(path.join(this.rootdir, config)) as IConfiguration;
+                cfgmodeles = require(path.join(this.rootdir, config)) as IConfiguration;
             } else {
                 console.log(`config file: ${config} not exists.`)
             }
         } else if (config) {
-            excfg = config;
+            cfgmodeles = config;
         } else {
             let cfgpath = path.join(this.rootdir, './config');
-            let config: IConfiguration;
-            ['.js', '.json'].forEach(ext => {
-                if (config) {
+            ['.js', '.ts', '.json'].forEach(ext => {
+                if (cfgmodeles) {
                     return false;
                 }
                 if (existsSync(cfgpath + ext)) {
-                    config = require(cfgpath + ext) as IConfiguration;
+                    cfgmodeles = require(cfgpath + ext);
                     return false;
                 }
                 return true;
             });
-            if (!config) {
+            if (!cfgmodeles) {
                 console.log('your app has not config file.');
             }
-            excfg = config;
         }
 
-        if (excfg) {
+        if (cfgmodeles) {
+            let excfg = (cfgmodeles['default'] ? cfgmodeles['default'] : cfgmodeles) as IConfiguration;
             this.configDefer.promise = this.configDefer.promise
                 .then(cfg => {
                     cfg = Object.assign(cfg || {}, excfg || {});
@@ -216,13 +215,6 @@ export class Bootstrap {
         this.registerDefaults(container);
         // register app.
         container.register(this.appType);
-        this.builder.snycLoadModule(container, { modules: [logs] });
-
-        container.register(AnnotationLogerAspect);
-        if (config.debug) {
-            container.register(DebugAspect);
-        }
-        container.register(AuthAspect);
 
         // custom use.
         if (this.middlewares) {
@@ -254,6 +246,14 @@ export class Bootstrap {
                 config.useControllers = controllers;
             }
         }
+
+        this.builder.snycLoadModule(container, { modules: [logs] });
+
+        container.register(AnnotationLogerAspect);
+        if (config.debug) {
+            container.register(DebugAspect);
+        }
+        container.register(AuthAspect);
 
         if (config.aop) {
             let aops = await this.builder.loadModule(container, {
