@@ -1,4 +1,4 @@
-import { IContainer, Injectable, Inject } from 'tsioc';
+import { IContainer, Injectable, Inject, NonePointcut } from 'tsioc';
 import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
@@ -7,6 +7,7 @@ import { Configuration } from '../../Configuration';
 
 const session = require('koa-session');
 
+@NonePointcut
 @Middleware(mvcSymbols.SessionMiddleware)
 export class DefaultSessionMiddleware implements IMiddleware {
 

@@ -1,4 +1,4 @@
-import { IContainer, Injectable, Inject, toAbsolutePath } from 'tsioc';
+import { IContainer, Injectable, Inject, toAbsolutePath, NonePointcut } from 'tsioc';
 import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
@@ -7,6 +7,7 @@ import { Configuration } from '../../Configuration';
 
 const views = require('koa-views');
 
+@NonePointcut
 @Middleware(mvcSymbols.ViewsMiddleware)
 export class DefaultViewsMiddleware implements IMiddleware {
 

@@ -3,11 +3,11 @@ import { Configuration } from '../../Configuration';
 import { Middleware } from '../decorators';
 import { RequestMethod } from '../RequestMethod';
 import { IMiddleware } from '../middlewares';
-import { ObjectMap, ActionComponent, Token } from 'tsioc';
+import { ObjectMap, ActionComponent, Token, NonePointcut } from 'tsioc';
 import { mvcSymbols } from '../../util';
 import { Router } from '../router';
 
-
+@NonePointcut
 @Middleware(mvcSymbols.CorsMiddleware)
 export class DefaultCorsMiddleware implements IMiddleware {
 

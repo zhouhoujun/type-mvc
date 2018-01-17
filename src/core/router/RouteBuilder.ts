@@ -1,10 +1,12 @@
 import { IRoute } from './IRoute';
-import { Token, Injectable, getTypeMetadata, isClass } from 'tsioc';
+import { Token, Injectable, getTypeMetadata, isClass, NonePointcut } from 'tsioc';
 import { IRouter } from './Router';
 import { Controller } from '../decorators';
 import { ControllerRoute } from './ControllerRoute';
 import { ControllerMetadata } from '../metadata';
 
+
+@NonePointcut
 @Injectable
 export class RouteBuilder {
 
