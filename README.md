@@ -21,6 +21,10 @@ npm install type-mvc
 
 ## Documentation
 
+* v0.5.3
+
+    1. fix bug in nuix linux load .d.ts file raise error, set default comfig  load module with !./**/*.d.ts exclude.
+
 * v0.5.1 
     1. add Log aop aspect service. for Log easy.  default user console to log, can config `logLib`,`logConfig` in your `config.js` to use third logger lib. eg. `{ logLib: 'log4js', logConfig:{...} }`.
     has implements log4js adapter [see code](https://github.com/zhouhoujun/type-mvc/blob/master/src/logs/Log4jsAdapter.ts)
