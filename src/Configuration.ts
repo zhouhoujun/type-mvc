@@ -372,9 +372,9 @@ export class Configuration implements IConfiguration {
     routerMiddlewate?: Token<any> = mvcSymbols.RouterMiddleware;
 
     /**
-     * custom middleware match path, './middlewares/\*\*\/*{.js,.ts}' in your project.
+     * custom middleware match path, './middlewares/\*\*\/*{.js,.ts}', '!.\/**\/*.d.ts\' in your project.
      */
-    middlewares?: string | string[] = ['./middlewares/**/*{.js,.ts}'];
+    middlewares?: string | string[] = ['./middlewares/**/*{.js,.ts}', '!./**/*.d.ts'];
 
     /**
      * some middleware after router middleware to deal with http request.
@@ -403,12 +403,12 @@ export class Configuration implements IConfiguration {
 
 
     /**
-     * controllers match. default `./controllers/\*\*\/*{.js,.ts}` in your project..
+     * controllers match. default `./controllers/\*\*\/*{.js,.ts}`, '!.\/**\/*.d.ts\' in your project..
      *
      * @type {(string | string[])}
      * @memberOf Configuration
      */
-    controllers?: string | string[] = ['./controllers/**/*{.js,.ts}'];
+    controllers?: string | string[] = ['./controllers/**/*{.js,.ts}', '!./**/*.d.ts'];
 
     /**
      * use controllers. if not config will load all.
@@ -420,12 +420,12 @@ export class Configuration implements IConfiguration {
 
 
     /**
-     * custom aop services. default './aop/\*\*\/*{.js,.ts}'
+     * custom aop services. default './aop/\*\*\/*{.js,.ts}', '!.\/**\/*.d.ts\'
      *
      * @type {(string | string[])}
      * @memberof Configuration
      */
-    aop?: string | string[] = ['./aop/**/*{.js,.ts}'];
+    aop?: string | string[] = ['./aop/**/*{.js,.ts}', '!./**/*.d.ts'];
 
     /**
      * used aop
