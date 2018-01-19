@@ -470,7 +470,7 @@ export class Configuration implements IConfiguration {
      */
     debug? = false;
 
-    logFormat? = 'method: %s    state: %s   args:%s     returning: %s   error: %s';
+    logFormat? = 'method: %s    state: %s   args:%o     returning: %o   error: %o';
 
     /**
      * log config extentsion.

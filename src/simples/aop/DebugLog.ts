@@ -1,17 +1,17 @@
-// import { Aspect, Around, Joinpoint, Before, isRegExp } from 'tsioc';
+import { Aspect, Around, Joinpoint, Before, isRegExp } from 'tsioc';
 
 
-// @Aspect
-// export class DebugLog {
+@Aspect
+export class DebugLog {
 
-//     @Before(/\w+Controller.\w+/)
-//     // @Before('execution(*)')
-//     beforlog(joinPoint: Joinpoint) {
-//         console.log('aspect Before log:', joinPoint.fullName);
-//     }
+    @Before(/\w+Controller.\w+/)
+    // @Before('execution(*)')
+    beforlog(joinPoint: Joinpoint) {
+        console.log('aspect Before log:', joinPoint.fullName);
+    }
 
-//     @Around('execution(*Controller.*)')
-//     log(joinPoint: Joinpoint) {
-//         console.log('aspect Around log, method name:', joinPoint.fullName, ' state:', joinPoint.state, ' Args:', joinPoint.args, ' returning:', joinPoint.returning, ' throwing:', joinPoint.throwing);
-//     }
-// }
+    @Around('execution(*.*)')
+    log(joinPoint: Joinpoint) {
+        console.log('aspect Around log, method name:', joinPoint.fullName, ' state:', joinPoint.state, ' Args:', joinPoint.args, ' returning:', joinPoint.returning, ' throwing:', joinPoint.throwing);
+    }
+}
