@@ -31,7 +31,8 @@ export class ConsoleLog implements ILogger {
         console.trace(message, ...args);
     }
     debug(message: string, ...args: any[]): void {
-        console.debug(message, ...args);
+        // console.debug in nuix will not console.
+        console.info(message, ...args);
     }
     info(message: string, ...args: any[]): void {
         console.info(message, ...args);
