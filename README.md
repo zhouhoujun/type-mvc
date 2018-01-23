@@ -21,6 +21,10 @@ npm install type-mvc
 
 ## Documentation
 
+* 0.5.5
+    1. fix ConsoleLog error console.debug in nuix will not console.
+    2. update components for route.
+    
 * v0.5.3
 
     1. fix bug in nuix linux load .d.ts file raise error, set default comfig  load module with !./**/*.d.ts exclude.
