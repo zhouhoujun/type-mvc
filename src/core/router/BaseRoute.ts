@@ -1,4 +1,4 @@
-import { IComponent, Composite, Type, IContainer, Mode, isString } from 'tsioc';
+import { GComposite, Type, IContainer, Mode, isString } from 'tsioc';
 import { IContext } from '../IContext';
 import { Next } from '../../util';
 import { IRoute, RouteAction } from './IRoute';
@@ -14,14 +14,14 @@ import { RootRoute } from './RootRoute';
  * @extends {Composite}
  * @implements {IRoute}
  */
-export abstract class BaseRoute extends Composite implements IRoute {
+export abstract class BaseRoute extends GComposite<IRoute> implements IRoute {
     url: string;
     constructor(route: string) {
         super(route);
         this.url = route.substring(0);
     }
 
-    add(node: IRoute): IRoute {
+    add(node: IRoute): this {
         let baseUrl = this.cutEmptyPath(this.url, true);
 
         node.url = baseUrl + node.url;
@@ -52,7 +52,7 @@ export abstract class BaseRoute extends Composite implements IRoute {
 
     abstract async options(container: IContainer, ctx: IContext, next: Next): Promise<any>;
     abstract async navigating(container: IContainer, ctx: IContext, next: Next): Promise<any>;
-    empty(): IComponent {
+    empty(): IRoute {
         return notFoundRoute;
     }
 

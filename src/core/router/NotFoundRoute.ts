@@ -9,9 +9,8 @@ import { Next } from '../../util';
 export class NotFoundRoute extends NullComponent implements IRoute {
     name: string;
     url: string;
-    parent?: IComponent;
     match(ctx: IContext): IRoute {
-        return notFoundRoute;
+        return notFoundRoute as IRoute;
     }
 
     async options(container: IContainer, ctx: IContext, next: Next) {
@@ -21,7 +20,7 @@ export class NotFoundRoute extends NullComponent implements IRoute {
         return next();
     }
 
-    empty(): IComponent {
+    empty(): IRoute {
         return notFoundRoute;
     }
 }
