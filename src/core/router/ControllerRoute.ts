@@ -151,7 +151,7 @@ export class ControllerRoute extends BaseRoute {
             }
             if (corsmetas.length) {
                 return corsmetas.find(cor => {
-                    console.log('find CorsMetadata:', cor);
+                    // console.log('find CorsMetadata:', cor);
                     if (!cor.allowMethods) {
                         return true;
                     }

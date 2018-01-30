@@ -42,19 +42,6 @@ export class Router implements IRouter, IMiddleware {
                 return this.root.navigating(this.app.container, ctx, next);
             }
         });
-        // let stack = [];
-        // stack.push(async (ctx, next) => {
-        //     if (!ctx.status || ctx.status === 404) {
-        //         return this.root.options(this.app.container, ctx, next);
-        //     }
-        // });
-        // stack.push(async (ctx, next) => {
-        //     if (!ctx.status || ctx.status === 404) {
-        //         return this.root.navigating(this.app.container, ctx, next);
-        //     }
-        // })
-        // this.app.use(compose(stack));
-
     }
 
     getRoot(): IRoute {
