@@ -3,7 +3,7 @@ import { Stream } from 'stream';
 import { IContext } from '../IContext';
 import { Defer } from '../../util';
 import { Configuration } from '../../Configuration';
-import { IContainer } from 'tsioc';
+import { IContainer, isString } from 'tsioc';
 import { existsSync, readFile } from 'fs';
 import { join } from 'path';
 import { BadRequestError } from '../../errors';
@@ -25,7 +25,7 @@ export class FileResult extends ResultValue {
         let file = this.file;
         let contentType = this.contentType;
         let confige = container.get(Configuration);
-        if (file instanceof String) {
+        if (isString(file)) {
             let filepath = join(confige.rootdir, file);
             if (existsSync(filepath)) {
                 readFile(filepath, contentType || 'utf8', (err, data) => {
