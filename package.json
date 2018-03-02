@@ -1,6 +1,6 @@
 {
   "name": "type-mvc",
-  "version": "0.5.8",
+  "version": "0.5.9",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -27,9 +27,9 @@
     "url": "git+https://github.com/zhouhoujun/type-mvc.git"
   },
   "dependencies": {
-    "@types/koa": "^2.0.43",
+    "@types/koa": "^2.0.44",
     "ejs": "^2.5.7",
-    "koa": "^2.4.1",
+    "koa": "^2.5.0",
     "koa-bodyparser": "^4.2.0",
     "koa-compose": "^4.0.0",
     "koa-convert": "^1.2.0",
@@ -37,8 +37,9 @@
     "koa-logger": "^3.1.0",
     "koa-session": "^5.8.1",
     "koa-static": "^4.0.2",
-    "koa-views": "^6.1.3",
-    "nunjucks": "^3.0.1"
+    "koa-views": "^6.1.4",
+    "nunjucks": "^3.1.2",
+    "tsioc": "^1.3.18"
   },
   "devDependencies": {
     "bluebird": "^3.4.1",
@@ -54,7 +55,6 @@
     "lodash": "^4.13.1",
     "through2": "^2.0.3",
     "ts-node": "^4.1.0",
-    "tsioc": "^1.3.15",
     "tslint": "^5.0.0",
     "tslint-stylish": "^2.1.0",
     "typescript": "^2.7.1",
