@@ -5,7 +5,7 @@
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
   "scripts": {
-    "prepublish": "type-task"
+    "prepublish": "ts-node taskfile.ts"
   },
   "keywords": [
     "mvc",
