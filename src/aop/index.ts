@@ -1,4 +1,3 @@
 
-export * from './DebugAspect';
-export * from './AnnotationLogerAspect';
+export * from './DebugLogAspect';
 export * from './AuthAspect';

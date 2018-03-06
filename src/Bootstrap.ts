@@ -10,9 +10,9 @@ import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
 
-import * as logs from './logs/index';
+// import * as logs from './logs/index';
 
-import { AuthAspect, AnnotationLogerAspect, DebugAspect } from './aop/index';
+import { AuthAspect, DebugLogAspect } from './aop/index';
 
 /**
  * Bootstrap
@@ -247,11 +247,8 @@ export class Bootstrap {
             }
         }
 
-        this.builder.snycLoadModule(container, { modules: [logs] });
-
-        container.register(AnnotationLogerAspect);
         if (config.debug) {
-            container.register(DebugAspect);
+            container.register(DebugLogAspect);
         }
         container.register(AuthAspect);
 
