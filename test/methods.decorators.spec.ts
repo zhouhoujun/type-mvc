@@ -1,6 +1,5 @@
 import 'mocha';
 import { expect } from 'chai';
-import * as gulp from 'gulp';
 import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization, Middleware } from '../src';
 import { AutoWired, Inject, Injectable } from 'tsioc';
 

@@ -215,36 +215,12 @@ export interface IConfiguration {
 
     modelOptions?: ModelOptions;
 
-
-    /**
-     * log lib name. for require dynamic.
-     *
-     * @type {string}
-     * @memberof IConfiguration
-     */
-    logLib?: string;
-
-    /**
-     * log format.
-     *
-     * @type {string}
-     * @memberof IConfiguration
-     */
-    logFormat?: string;
     /**
      * in debug log. defult false.
      *
      * @memberof IConfiguration
      */
     debug?: boolean;
-
-    /**
-     * log config extentsion.
-     *
-     * @type {*}
-     * @memberof Configuration
-     */
-    logConfig?: any;
 }
 
 export interface CorsOptions {
@@ -469,16 +445,6 @@ export class Configuration implements IConfiguration {
      * @memberof Configuration
      */
     debug? = false;
-
-    logFormat? = 'method: %s    state: %s   args:%o     returning: %o   error: %o';
-
-    /**
-     * log config extentsion.
-     *
-     * @type {*}
-     * @memberof Configuration
-     */
-    logConfig?: any;
 
     /**
      * global cors default options.
