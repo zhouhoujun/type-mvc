@@ -1,8 +1,8 @@
 import { NullComponent, IComponent, IContainer } from 'tsioc';
 import { IRoute } from './IRoute';
 import { IContext } from '../IContext';
-import { NotFoundError } from '../../errors';
-import { Next } from '../../util';
+import { NotFoundError } from '../../errors/index';
+import { Next } from '../../util/index';
 
 
 

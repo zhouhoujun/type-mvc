@@ -17,12 +17,12 @@ import {
     DefaultViewsMiddleware,
     DefaultJsonMiddleware
 
-} from './middlewares';
+} from './middlewares/index';
 import { IContainer, CoreActions } from 'tsioc';
 import { mvcSymbols } from '../util/index';
-import { Router, ModelParser } from './router';
+import { Router, ModelParser } from './router/index';
 import { BaseController } from './BaseController';
-import { Controller, Authorization, Middleware, Model } from './decorators';
+import { Controller, Authorization, Middleware, Model } from './decorators/index';
 
 export function registerDefaults(container: IContainer) {
     let lifeScope = container.getLifeScope();

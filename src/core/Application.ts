@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
 import { Injectable, Singleton, IContainer, AutoWired, Inject, symbols, Type } from 'tsioc';
-import { mvcSymbols } from '../util';
+import { mvcSymbols } from '../util/index';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';

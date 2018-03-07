@@ -1,6 +1,5 @@
-import { IClassMethodDecorator, createClassMethodDecorator, ClassMethodDecorator, Type, MetadataAdapter, MetadataExtends } from 'tsioc';
-import { isArray, isNumber, isString, isUndefined } from 'util';
-import { CorsMetadata } from '../metadata';
+import { isArray, isNumber, isString, isUndefined, IClassMethodDecorator, createClassMethodDecorator, ClassMethodDecorator, Type, MetadataAdapter, MetadataExtends } from 'tsioc';
+import { CorsMetadata } from '../metadata/index';
 import { RequestMethod } from '../RequestMethod';
 
 export interface ICorsDecorator<T extends CorsMetadata> extends IClassMethodDecorator<T> {

@@ -1,7 +1,7 @@
 import { BaseRoute } from './BaseRoute';
 import { IContainer } from 'tsioc';
 import { IContext } from '../IContext';
-import { Next } from '../../util';
+import { Next } from '../../util/index';
 
 
 export class RootRoute extends BaseRoute {

@@ -1,6 +1,6 @@
 import { GComposite, Type, IContainer, Mode, isString } from 'tsioc';
 import { IContext } from '../IContext';
-import { Next } from '../../util';
+import { Next } from '../../util/index';
 import { IRoute, RouteAction } from './IRoute';
 import { notFoundRoute } from './NotFoundRoute';
 import { RootRoute } from './RootRoute';

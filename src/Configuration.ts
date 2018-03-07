@@ -1,7 +1,7 @@
 import { Singleton, ObjectMap, Token } from 'tsioc';
 import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
 import { mvcSymbols } from './util/index';
-import { RequestMethod } from './core';
+import { RequestMethod } from './core/index';
 import { ServerOptions } from 'https';
 
 /**

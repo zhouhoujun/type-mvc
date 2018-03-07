@@ -4,10 +4,10 @@ import { Buffer } from 'buffer';
 import { Stream } from 'stream';
 import * as path from 'path';
 
-import { Controller, Get } from './decorators';
+import { Controller, Get } from './decorators/index';
 import { AutoWired, Injectable, Inject } from 'tsioc';
-import { Defer, mvcSymbols } from '../util';
-import { ViewResult, FileResult, RedirectResult, JsonResult } from './results';
+import { Defer, mvcSymbols } from '../util/index';
+import { ViewResult, FileResult, RedirectResult, JsonResult } from './results/index';
 
 
 /**

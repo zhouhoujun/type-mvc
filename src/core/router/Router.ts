@@ -1,13 +1,13 @@
 import { Application } from '../Application';
 import { IConfiguration } from '../../IConfiguration';
-import { Middleware } from '../decorators';
+import { Middleware } from '../decorators/index';
 import { RequestMethod } from '../RequestMethod';
-import { IMiddleware } from '../middlewares';
+import { IMiddleware } from '../middlewares/index';
 import { ObjectMap, ActionComponent, Token, Inject } from 'tsioc';
 import { IRoute } from './IRoute';
 import { RootRoute } from './RootRoute';
 import { RouteBuilder } from './RouteBuilder';
-import { mvcSymbols } from '../../util';
+import { mvcSymbols } from '../../util/index';
 const compose = require('koa-compose');
 
 export interface IRouter extends IMiddleware {

@@ -1,12 +1,12 @@
 import { ResultValue } from './ResultValue';
 import { Stream } from 'stream';
 import { IContext } from '../IContext';
-import { Defer, mvcSymbols } from '../../util';
+import { Defer, mvcSymbols } from '../../util/index';
 import { IConfiguration } from '../../IConfiguration';
 import { IContainer, isString } from 'tsioc';
 import { existsSync, readFile } from 'fs';
 import { join } from 'path';
-import { BadRequestError } from '../../errors';
+import { BadRequestError } from '../../errors/index';
 
 
 /**

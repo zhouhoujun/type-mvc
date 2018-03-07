@@ -1,7 +1,7 @@
 import { Type, getPropertyMetadata, PropertyMetadata, isToken, isFunction, isUndefined, IContainer, Inject, symbols, isClass, Singleton, ObjectMap, NonePointcut } from 'tsioc';
-import { Field, Model } from '../decorators';
+import { Field, Model } from '../decorators/index';
 import { IConfiguration } from '../../IConfiguration';
-import { mvcSymbols } from '../..';
+import { mvcSymbols } from '../../util/index';
 
 @NonePointcut
 @Singleton

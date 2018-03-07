@@ -1,6 +1,6 @@
 import { RequestMethod } from '../RequestMethod';
 import { createRouteDecorator, IRouteDecorator } from './Route';
-import { PutMetadata } from '../metadata';
+import { PutMetadata } from '../metadata/index';
 
 
 export const Put: IRouteDecorator<PutMetadata> = createRouteDecorator<PutMetadata>(RequestMethod.Put);

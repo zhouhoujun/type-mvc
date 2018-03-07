@@ -1,9 +1,9 @@
 import { IRoute } from './IRoute';
 import { Token, Injectable, getTypeMetadata, isClass, NonePointcut } from 'tsioc';
 import { IRouter } from './Router';
-import { Controller } from '../decorators';
+import { Controller } from '../decorators/index';
 import { ControllerRoute } from './ControllerRoute';
-import { ControllerMetadata } from '../metadata';
+import { ControllerMetadata } from '../metadata/index';
 
 
 @NonePointcut

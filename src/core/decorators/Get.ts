@@ -1,6 +1,6 @@
 import { createRouteDecorator, IRouteDecorator } from './Route';
 import { RequestMethod } from '../RequestMethod';
-import { GetMetadata } from '../metadata';
+import { GetMetadata } from '../metadata/index';
 
 
 

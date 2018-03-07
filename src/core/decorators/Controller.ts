@@ -1,5 +1,5 @@
 import { createClassDecorator, IClassDecorator, TypeMetadata, Type, isClass, isString, Registration, ArgsIterator, isClassMetadata } from 'tsioc';
-import { ControllerMetadata } from '../metadata';
+import { ControllerMetadata } from '../metadata/index';
 
 /**
  * Controller decorator define.

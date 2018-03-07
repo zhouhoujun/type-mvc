@@ -2,7 +2,7 @@ import { IContainer, Injectable, Inject, toAbsolutePath, NonePointcut } from 'ts
 import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
-import { mvcSymbols } from '../../util';
+import { mvcSymbols } from '../../util/index';
 import { IConfiguration } from '../../IConfiguration';
 
 const views = require('koa-views');

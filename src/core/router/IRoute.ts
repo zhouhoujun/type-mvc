@@ -1,6 +1,6 @@
 import { GComponent, IContainer } from 'tsioc';
 import { IContext } from '../IContext';
-import { Next } from '../../util';
+import { Next } from '../../util/index';
 
 
 export interface RouteAction {

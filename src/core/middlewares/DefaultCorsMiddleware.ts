@@ -4,7 +4,7 @@ import { Middleware } from '../decorators';
 import { RequestMethod } from '../RequestMethod';
 import { IMiddleware } from '../middlewares';
 import { ObjectMap, ActionComponent, Token, NonePointcut, Inject } from 'tsioc';
-import { mvcSymbols } from '../../util';
+import { mvcSymbols } from '../../util/index';
 import { Router } from '../router';
 
 @NonePointcut
