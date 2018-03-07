@@ -3,7 +3,7 @@ import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
 import { mvcSymbols } from '../../util';
-import { Configuration } from '../../Configuration';
+import { IConfiguration } from '../../IConfiguration';
 
 const views = require('koa-views');
 
@@ -11,7 +11,7 @@ const views = require('koa-views');
 @Middleware(mvcSymbols.ViewsMiddleware)
 export class DefaultViewsMiddleware implements IMiddleware {
 
-    constructor(private app: Application, private config: Configuration) {
+    constructor(private app: Application, @Inject(mvcSymbols.IConfiguration) private config: IConfiguration) {
     }
     setup() {
         let viewPath = toAbsolutePath(this.config.rootdir, this.config.views);

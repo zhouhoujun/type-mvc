@@ -3,14 +3,14 @@ import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
 import { mvcSymbols } from '../../util';
-import { Configuration } from '../../Configuration';
+import { IConfiguration } from '../../IConfiguration';
 const serve = require('koa-static');
 
 @NonePointcut
 @Middleware(mvcSymbols.ContentMiddleware)
 export class DefaultContentMiddleware implements IMiddleware {
 
-    constructor(private app: Application, private config: Configuration) {
+    constructor(private app: Application, @Inject(mvcSymbols.IConfiguration) private config: IConfiguration) {
     }
     setup() {
         let contents = this.config.contents || ['./public'];

@@ -1,8 +1,9 @@
 import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
-import { IConfiguration, Configuration } from './Configuration';
+import { IConfiguration } from './IConfiguration';
+import { Configuration } from './Configuration';
 import { Defer, mvcSymbols } from './util/index';
-import { isString, isSymbol, IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token, toAbsolutePath } from 'tsioc';
+import { isString, isSymbol, symbols, IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token, toAbsolutePath } from 'tsioc';
 import * as path from 'path';
 import { Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter } from './core';
 import { execFileSync } from 'child_process';
@@ -24,7 +25,7 @@ export class Bootstrap {
 
     private container: Defer<IContainer>;
     private middlewares: Token<any>[];
-    private configDefer: Defer<Configuration>;
+    private configDefer: Defer<IConfiguration>;
     private builder: IContainerBuilder;
     /**
      * Creates an instance of WebApplication.
@@ -106,7 +107,7 @@ export class Bootstrap {
      */
     useConfiguration(config?: string | IConfiguration): Bootstrap {
         if (!this.configDefer) {
-            this.configDefer = Defer.create<Configuration>();
+            this.configDefer = Defer.create<IConfiguration>();
             this.configDefer.resolve(new Configuration());
         }
         let cfgmodeles: IConfiguration;
@@ -149,7 +150,7 @@ export class Bootstrap {
         return this;
     }
 
-    getConfiguration(): Promise<Configuration> {
+    getConfiguration(): Promise<IConfiguration> {
         if (!this.configDefer) {
             this.useConfiguration();
         }
@@ -176,7 +177,7 @@ export class Bootstrap {
      */
     async run(listener?: Function) {
         let app = await this.build();
-        let config = app.container.get<IConfiguration>(Configuration);
+        let config = app.container.get<IConfiguration>(mvcSymbols.IConfiguration);
         let server = app.getServer();
         let port = config.port || parseInt(process.env.PORT || '0');
         if (config.hostname) {
@@ -196,7 +197,7 @@ export class Bootstrap {
      * @memberOf WebHostBuilder
      */
     protected async build(): Promise<Application> {
-        let cfg: Configuration = await this.getConfiguration();
+        let cfg: IConfiguration = await this.getConfiguration();
         let container: IContainer = await this.getContainer();
         await this.initIContainer(cfg, container);
         let app = container.get(this.appType);
@@ -208,9 +209,8 @@ export class Bootstrap {
     }
 
 
-    protected async initIContainer(config: Configuration, container: IContainer): Promise<IContainer> {
+    protected async initIContainer(config: IConfiguration, container: IContainer): Promise<IContainer> {
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
-        container.registerSingleton(Configuration, config);
         container.registerSingleton(mvcSymbols.IConfiguration, config);
         this.registerDefaults(container);
         // register app.
@@ -245,6 +245,10 @@ export class Bootstrap {
             if (!config.useControllers || config.useControllers.length < 1) {
                 config.useControllers = controllers;
             }
+        }
+
+        if (config.logConfig) {
+            container.registerSingleton(symbols.LogConfigure, config.logConfig);
         }
 
         if (config.debug) {

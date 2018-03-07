@@ -1,4 +1,4 @@
-import { Task, ITask, taskSymbols, TaskContainer, AbstractTask, TaskElement, TaskComponent, ITaskComponent, IConfigure, PipeComponent, IPipeTaskProvider, TaskModule, ITransform, Src } from 'type-task';
+import { Task, ITask, taskSymbols, TaskContainer, AbstractTask, TaskElement, PipeElement, ITaskComponent, IConfigure, PipeComponent, IPipeTaskProvider, TaskModule, ITransform, Src } from 'type-task';
 import * as mocha from 'gulp-mocha';
 
 const del = require('del');
@@ -12,7 +12,7 @@ import { classAnnotations } from 'typescript-class-annotations';
 @TaskModule({
     providers: <IPipeTaskProvider>{
         name: 'tscomp',
-        src: 'src/!(cli)/*.ts',
+        src: ['src/**/*.ts', '!src/cli/**'],
         dest: 'lib',
         pipes: [
             (ctx) => cache('typescript'),
@@ -39,10 +39,10 @@ import { classAnnotations } from 'typescript-class-annotations';
             ]
         }
     },
-    task: PipeComponent
+    task: PipeElement
 })
 class TsCompile extends TaskElement {
-    constructor(name: string, private src: Src, private dest?: Src) {
+    constructor(name: string, private src?: Src, private dest?: Src) {
         super(name);
     }
 
@@ -54,10 +54,6 @@ class TsCompile extends TaskElement {
             this.config.providers.dest = this.dest;
         }
     }
-
-    execute(data?: any): Promise<any> {
-        return del(['lib/**']);
-    }
 }
 
 
@@ -68,9 +64,12 @@ class TsCompile extends TaskElement {
         awaitPiped: true,
         pipes: [() => mocha()]
     },
-    task: PipeComponent
+    task: PipeElement
 })
 class TestTask extends TaskElement {
+    execute(data?: any): Promise<any> {
+        return del(['lib/**', 'bin/**']);
+    }
 }
 
 TaskContainer.create(__dirname)

@@ -17,7 +17,7 @@ import { UnauthorizedError, NotFoundError, HttpError, BadRequestError, Forbidden
 import { isBoolean, isBuffer, isDate } from 'util';
 import { JsonResult, ResultValue, ViewResult, FileResult } from '../results';
 import { RequestMethod, methodToString, parseRequestMethod } from '../RequestMethod';
-import { Configuration } from '../../Configuration';
+import { IConfiguration } from '../../IConfiguration';
 import { ModelParser } from './ModelParser';
 
 export class ControllerRoute extends BaseRoute {
@@ -75,7 +75,7 @@ export class ControllerRoute extends BaseRoute {
         };
 
 
-        let config = container.get(Configuration);
+        let config = container.get<IConfiguration>(mvcSymbols.IConfiguration);
         let options = config.corsOptions || {};
 
         if (ctx.method !== 'OPTIONS') {

@@ -4,7 +4,7 @@ import { mvcSymbols } from '../util';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
-import { IConfiguration } from '../Configuration';
+import { IConfiguration } from '../IConfiguration';
 /**
  * Application of type mvc.
  *

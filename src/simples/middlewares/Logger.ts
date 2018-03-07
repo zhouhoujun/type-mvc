@@ -1,11 +1,11 @@
-import { Middleware, IMiddleware, Application, Configuration } from '../../index';
-import { IContainer, Injectable } from 'tsioc';
+import { Middleware, IMiddleware, Application, IConfiguration, mvcSymbols } from '../../index';
+import { IContainer, Injectable, Inject } from 'tsioc';
 
 
 @Middleware({ provide: 'logger' })
 export class Logger implements IMiddleware {
 
-    constructor(private app: Application, private config: Configuration) {
+    constructor(private app: Application, @Inject(mvcSymbols.IConfiguration) private config: IConfiguration) {
 
     }
 

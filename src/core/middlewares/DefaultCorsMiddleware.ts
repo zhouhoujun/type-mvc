@@ -1,9 +1,9 @@
 import { Application } from '../Application';
-import { Configuration } from '../../Configuration';
+import { IConfiguration } from '../../IConfiguration';
 import { Middleware } from '../decorators';
 import { RequestMethod } from '../RequestMethod';
 import { IMiddleware } from '../middlewares';
-import { ObjectMap, ActionComponent, Token, NonePointcut } from 'tsioc';
+import { ObjectMap, ActionComponent, Token, NonePointcut, Inject } from 'tsioc';
 import { mvcSymbols } from '../../util';
 import { Router } from '../router';
 
@@ -11,7 +11,7 @@ import { Router } from '../router';
 @Middleware(mvcSymbols.CorsMiddleware)
 export class DefaultCorsMiddleware implements IMiddleware {
 
-    constructor(private app: Application, private router: Router, private config: Configuration) {
+    constructor(private app: Application, private router: Router, @Inject(mvcSymbols.IConfiguration) private config: IConfiguration) {
 
     }
     setup() {

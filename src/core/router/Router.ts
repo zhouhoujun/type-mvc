@@ -1,9 +1,9 @@
 import { Application } from '../Application';
-import { Configuration } from '../../Configuration';
+import { IConfiguration } from '../../IConfiguration';
 import { Middleware } from '../decorators';
 import { RequestMethod } from '../RequestMethod';
 import { IMiddleware } from '../middlewares';
-import { ObjectMap, ActionComponent, Token } from 'tsioc';
+import { ObjectMap, ActionComponent, Token, Inject } from 'tsioc';
 import { IRoute } from './IRoute';
 import { RootRoute } from './RootRoute';
 import { RouteBuilder } from './RouteBuilder';
@@ -22,7 +22,7 @@ export interface IRouter extends IMiddleware {
 export class Router implements IRouter, IMiddleware {
 
     private root: IRoute;
-    constructor(private builder: RouteBuilder, private app: Application, private config: Configuration) {
+    constructor(private builder: RouteBuilder, private app: Application, @Inject(mvcSymbols.IConfiguration) private config: IConfiguration) {
         this.root = new RootRoute(config.routePrefix);
     }
 

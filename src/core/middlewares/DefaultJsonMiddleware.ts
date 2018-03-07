@@ -3,7 +3,7 @@ import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
 import { mvcSymbols } from '../../util';
-import { Configuration } from '../../Configuration';
+import { IConfiguration } from '../../IConfiguration';
 
 import * as json from 'koa-json';
 
@@ -11,7 +11,7 @@ import * as json from 'koa-json';
 @Middleware(mvcSymbols.JsonMiddleware)
 export class DefaultJsonMiddleware implements IMiddleware {
 
-    constructor(private app: Application, private config: Configuration) {
+    constructor(private app: Application, @Inject(mvcSymbols.IConfiguration) private config: IConfiguration) {
     }
     setup() {
         this.app.use(json());

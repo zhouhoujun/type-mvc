@@ -23,7 +23,6 @@ import { mvcSymbols } from '../util/index';
 import { Router, ModelParser } from './router';
 import { BaseController } from './BaseController';
 import { Controller, Authorization, Middleware, Model } from './decorators';
-import { Configuration } from '../Configuration';
 
 export function registerDefaults(container: IContainer) {
     let lifeScope = container.getLifeScope();

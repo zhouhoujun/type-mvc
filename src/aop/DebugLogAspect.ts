@@ -1,8 +1,6 @@
 import { Aspect, Singleton, Inject, IContainer, symbols, Around, Joinpoint, JoinpointState, ILoggerManger, ILogger, LoggerAspect  } from 'tsioc';
 import { mvcSymbols } from '../index';
-import { IConfiguration } from '../Configuration';
-// import { ILoggerManger, ILogger } from '../logs/index';
-
+import { IConfiguration } from '../IConfiguration';
 
 @Singleton
 @Aspect
