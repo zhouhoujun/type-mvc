@@ -196,14 +196,6 @@ export class Configuration implements IConfiguration {
     modelOptions?: ModelOptions = null;
 
     /**
-     * log lib name. for require dynamic.
-     *
-     * @type {string}
-     * @memberof Configuration
-     */
-    logLib?: string;
-
-    /**
      * in debug log. defult false.
      *
      * @memberof Configuration
