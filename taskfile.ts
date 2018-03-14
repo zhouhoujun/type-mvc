@@ -1,4 +1,4 @@
-import { Task, ITask, taskSymbols, TaskContainer, AbstractTask, TaskElement, PipeElement, ITaskComponent, IConfigure, PipeComponent, IPipeTaskProvider, TaskModule, ITransform, Src } from 'type-task';
+import { Task, ITask, taskSymbols, TaskContainer, AbstractTask, TaskElement, PipeElement, ITaskComponent, IConfigure, PipeComponent, IPipeElementProvider, TaskModule, ITransform, Src } from 'type-task';
 import * as mocha from 'gulp-mocha';
 
 const del = require('del');
@@ -10,7 +10,7 @@ const uglify = require('gulp-uglify');
 import { classAnnotations } from 'typescript-class-annotations';
 
 @TaskModule({
-    providers: <IPipeTaskProvider>{
+    providers: <IPipeElementProvider>{
         name: 'tscomp',
         src: ['src/**/*.ts', '!src/cli/**'],
         dest: 'lib',
@@ -22,7 +22,7 @@ import { classAnnotations } from 'typescript-class-annotations';
         ],
         destPipes: {
             js: [
-                (ctx, transform) => {
+                (ctx, config,  transform) => {
                     let trans: ITransform = transform.js;
                     trans.changeAsOrigin = true;
                     return trans;
@@ -31,7 +31,7 @@ import { classAnnotations } from 'typescript-class-annotations';
                 (ctx) => sourcemaps.write('./sourcemaps')
             ],
             dts: [
-                (ctx, transform) => {
+                (ctx, config, transform) => {
                     let tans: ITransform = transform.dts;
                     tans.changeAsOrigin = true;
                     return tans;
