@@ -1,6 +1,6 @@
 {
   "name": "type-mvc",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -55,7 +55,7 @@
     "ts-node": "^5.0.1",
     "tslint": "^5.0.0",
     "tslint-stylish": "^2.1.0",
-    "type-task": "^0.1.6",
+    "type-task": "^0.2.2",
     "typescript": "^2.7.1",
     "typescript-class-annotations": "^0.1.0",
     "vinyl-buffer": "^1.0.0",
