@@ -14,6 +14,7 @@ import * as https from 'https';
 // import * as logs from './logs/index';
 
 import { AuthAspect, DebugLogAspect } from './aop/index';
+import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
 
 /**
  * Bootstrap
@@ -274,6 +275,7 @@ export class Bootstrap {
 
     protected registerDefaults(container: IContainer) {
         registerDefaults(container);
+        container.register(Log4jsAdapter);
     }
 
 
