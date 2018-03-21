@@ -21,6 +21,10 @@ npm install type-mvc
 
 ## Documentation
 
+* 0.6.3
+    1. update compile task, zip lib.
+    2. update tsioc for fix bug when inherit class with classAnnations
+
 * 0.5.5
     1. fix ConsoleLog error console.debug in nuix will not console.
     2. update components for route.
