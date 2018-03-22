@@ -32,9 +32,9 @@ export class Application {
         if (!this.server) {
             let cfg = this.container.get<IConfiguration>(mvcSymbols.IConfiguration);
             if (cfg.httpsOptions) {
-                this.server = https.createServer(cfg.httpsOptions, this.koa.callback);
+                this.server = https.createServer(cfg.httpsOptions, this.getKoa().callback);
             } else {
-                this.server = http.createServer(this.koa.callback());
+                this.server = http.createServer(this.getKoa().callback());
             }
         }
         return this.server;
