@@ -12,6 +12,6 @@
 
 //     @Around('execution(*.*)')
 //     log(joinPoint: Joinpoint) {
-//         console.log('aspect Around log, method name:', joinPoint.fullName, ' state:', joinPoint.state, ' Args:', joinPoint.args, ' returning:', joinPoint.returning, ' throwing:', joinPoint.throwing);
+//         console.log('aspect Around log, method name:', joinPoint.fullName, ' state:', joinPoint.state, ' Args:', joinPoint.args, ' returning:', joinPoint.returningValue, ' throwing:', joinPoint.throwing);
 //     }
 // }

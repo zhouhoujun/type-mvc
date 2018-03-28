@@ -102,11 +102,10 @@ export class Bootstrap {
      * use custom configuration.
      *
      * @param {(string | IConfiguration)} [config]
-     * @returns {Bootstrap}
-     *
-     * @memberOf WebHostBuilder
+     * @returns {this}
+     * @memberof Bootstrap
      */
-    useConfiguration(config?: string | IConfiguration): Bootstrap {
+    useConfiguration(config?: string | IConfiguration): this {
         if (!this.configDefer) {
             this.configDefer = Defer.create<IConfiguration>();
             this.configDefer.resolve(new Configuration());
@@ -160,11 +159,12 @@ export class Bootstrap {
 
     /**
      * use middleware `fn` or  `MiddlewareFactory`.
-     * @param {MvcMiddleware} middleware
-     * @returns {Bootstrap}
-     * @memberOf WebHostBuilder
+     * 
+     * @param {(IMiddleware | Middleware | Token<any>)} middleware
+     * @returns {this}
+     * @memberof Bootstrap
      */
-    use(middleware: IMiddleware | Middleware | Token<any>): Bootstrap {
+    use(middleware: IMiddleware | Middleware | Token<any>): this {
         this.middlewares.push(middleware as Type<any>);
         return this;
     }
