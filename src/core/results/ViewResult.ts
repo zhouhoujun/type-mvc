@@ -1,6 +1,6 @@
 import { ResultValue } from './ResultValue';
 import { IContext } from '../IContext';
-import { IContainer } from 'tsioc';
+import { IContainer } from '@ts-ioc/core';
 
 
 /**

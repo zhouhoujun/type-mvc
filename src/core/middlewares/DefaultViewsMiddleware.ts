@@ -1,9 +1,11 @@
-import { IContainer, Injectable, Inject, toAbsolutePath, NonePointcut } from 'tsioc';
+import { IContainer, Injectable, Inject } from '@ts-ioc/core';
 import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
 import { mvcSymbols } from '../../util/index';
 import { IConfiguration } from '../../IConfiguration';
+import { NonePointcut } from '@ts-ioc/aop';
+import { toAbsolutePath } from '@ts-ioc/platform-server';
 
 const views = require('koa-views');
 

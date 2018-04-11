@@ -1,4 +1,4 @@
-import { Injectable } from 'tsioc';
+import { Injectable } from '@ts-ioc/core';
 
 
 @Injectable

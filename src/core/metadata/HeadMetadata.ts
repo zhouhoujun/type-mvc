@@ -1,4 +1,4 @@
-import { MethodMetadata } from 'tsioc';
+import { MethodMetadata } from '@ts-ioc/core';
 
 
 export interface HeadMetadata extends MethodMetadata {

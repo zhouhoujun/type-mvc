@@ -1,4 +1,4 @@
-import { symbols } from 'tsioc';
+import { symbols } from '@ts-ioc/core';
 
 export const IContext = Symbol('IContext');
 

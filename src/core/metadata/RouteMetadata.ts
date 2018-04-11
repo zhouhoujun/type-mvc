@@ -1,4 +1,4 @@
-import { MethodMetadata } from 'tsioc';
+import { MethodMetadata } from '@ts-ioc/core';
 import { RequestMethod } from '../RequestMethod';
 
 /**

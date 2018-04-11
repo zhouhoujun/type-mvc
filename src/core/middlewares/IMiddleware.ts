@@ -1,6 +1,6 @@
 import { Middleware } from 'koa';
 import * as Koa from 'koa';
-import { IContainer } from 'tsioc';
+import { IContainer } from '@ts-ioc/core';
 
 /**
  * Middleware inteface

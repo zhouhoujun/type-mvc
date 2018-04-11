@@ -1,4 +1,4 @@
-import { TypeMetadata, IClassMethodDecorator, createClassMethodDecorator, ClassMethodDecorator, isClassMetadata, isString } from 'tsioc';
+import { TypeMetadata, IClassMethodDecorator, createClassMethodDecorator, ClassMethodDecorator, isClassMetadata, isString } from '@ts-ioc/core';
 
 
 export interface AuthorizationMetadata extends TypeMetadata {

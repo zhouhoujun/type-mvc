@@ -1,5 +1,5 @@
 import { Context } from 'koa'
-import { IContainer, ObjectMap } from 'tsioc'
+import { IContainer, ObjectMap } from '@ts-ioc/core'
 
 /**
  * mvc IContext.

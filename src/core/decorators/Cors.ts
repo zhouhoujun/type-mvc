@@ -1,4 +1,4 @@
-import { isArray, isNumber, isString, isUndefined, IClassMethodDecorator, createClassMethodDecorator, ClassMethodDecorator, Type, MetadataAdapter, MetadataExtends } from 'tsioc';
+import { isArray, isNumber, isString, isUndefined, IClassMethodDecorator, createClassMethodDecorator, ClassMethodDecorator, Type, MetadataAdapter, MetadataExtends } from '@ts-ioc/core';
 import { CorsMetadata } from '../metadata/index';
 import { RequestMethod } from '../RequestMethod';
 

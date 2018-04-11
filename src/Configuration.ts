@@ -1,4 +1,4 @@
-import { Singleton, ObjectMap, Token } from 'tsioc';
+import { Singleton, ObjectMap, Token } from '@ts-ioc/core';
 import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
 import { mvcSymbols } from './util/index';
 import { RequestMethod } from './core/index';

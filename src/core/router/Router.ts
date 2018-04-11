@@ -3,7 +3,7 @@ import { IConfiguration } from '../../IConfiguration';
 import { Middleware } from '../decorators/index';
 import { RequestMethod } from '../RequestMethod';
 import { IMiddleware } from '../middlewares/index';
-import { ObjectMap, ActionComponent, Token, Inject } from 'tsioc';
+import { ObjectMap, ActionComponent, Token, Inject } from '@ts-ioc/core';
 import { IRoute } from './IRoute';
 import { RootRoute } from './RootRoute';
 import { RouteBuilder } from './RouteBuilder';

@@ -1,4 +1,5 @@
-import { ObjectMap, Injectable, Singleton, Token, Type, LogConfigure } from 'tsioc';
+import { ObjectMap, Injectable, Singleton, Token, Type } from '@ts-ioc/core';
+import { LogConfigure } from '@ts-ioc/logs';
 import { mvcSymbols } from './util/index';
 import { RequestMethod } from './core';
 import { ServerOptions } from 'https';

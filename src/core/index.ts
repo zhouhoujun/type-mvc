@@ -18,7 +18,7 @@ import {
     DefaultJsonMiddleware
 
 } from './middlewares/index';
-import { IContainer, CoreActions } from 'tsioc';
+import { IContainer, CoreActions } from '@ts-ioc/core';
 import { mvcSymbols } from '../util/index';
 import { Router, ModelParser } from './router/index';
 import { BaseController } from './BaseController';

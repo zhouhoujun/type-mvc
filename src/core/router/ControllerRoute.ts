@@ -1,12 +1,11 @@
 import { BaseRoute } from './BaseRoute';
 import {
     Type, IContainer, getMethodMetadata,
-    Token, isToken, Container, isClass, isFunction,
-    getPropertyMetadata, getTypeMetadata, PropertyMetadata, isPromise,
+    Token, isClass, getPropertyMetadata, getTypeMetadata, PropertyMetadata, isPromise,
     isUndefined, isString, isObject, isArray, isNumber,
     IParameter, Provider, hasClassMetadata, hasMethodMetadata, Providers,
     isBoolean,  isDate
-} from 'tsioc';
+} from '@ts-ioc/core';
 import { IContext } from '../IContext';
 import { Next, Defer, mvcSymbols } from '../../util/index';
 import { Get, Post, Put, Delete, Field, Cors, Options, Model, Route } from '../decorators/index';

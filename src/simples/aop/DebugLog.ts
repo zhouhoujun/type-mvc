@@ -1,4 +1,5 @@
-// import { Aspect, Around, Joinpoint, Before, isRegExp } from 'tsioc';
+// import { isRegExp } from '@ts-ioc/core';
+// import { Aspect, Around, Joinpoint, Before } from '@ts-ioc/aop';
 
 
 // @Aspect

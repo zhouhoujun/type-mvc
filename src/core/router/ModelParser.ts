@@ -1,7 +1,8 @@
-import { Type, getPropertyMetadata, PropertyMetadata, isToken, isFunction, isUndefined, IContainer, Inject, symbols, isClass, Singleton, ObjectMap, NonePointcut } from 'tsioc';
+import { Type, getPropertyMetadata, PropertyMetadata, isToken, isFunction, isUndefined, IContainer, Inject, symbols, isClass, Singleton, ObjectMap } from '@ts-ioc/core';
 import { Field, Model } from '../decorators/index';
 import { IConfiguration } from '../../IConfiguration';
 import { mvcSymbols } from '../../util/index';
+import { NonePointcut } from '@ts-ioc/aop';
 
 @NonePointcut
 @Singleton

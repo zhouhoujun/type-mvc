@@ -1,4 +1,4 @@
-import { Aspect, Pointcut, Joinpoint } from 'tsioc';
+import { Aspect, Pointcut, Joinpoint } from '@ts-ioc/aop';
 
 
 @Aspect

@@ -1,4 +1,4 @@
-import { GComposite, Type, IContainer, Mode, isString } from 'tsioc';
+import { GComposite, Type, IContainer, Mode, isString } from '@ts-ioc/core';
 import { IContext } from '../IContext';
 import { Next } from '../../util/index';
 import { IRoute, RouteAction } from './IRoute';

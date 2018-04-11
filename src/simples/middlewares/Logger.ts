@@ -1,5 +1,5 @@
 import { Middleware, IMiddleware, Application, IConfiguration, mvcSymbols } from '../../index';
-import { IContainer, Injectable, Inject } from 'tsioc';
+import { IContainer, Injectable, Inject } from '@ts-ioc/core';
 
 
 @Middleware({ provide: 'logger' })

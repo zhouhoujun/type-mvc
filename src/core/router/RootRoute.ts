@@ -1,5 +1,5 @@
 import { BaseRoute } from './BaseRoute';
-import { IContainer } from 'tsioc';
+import { IContainer } from '@ts-ioc/core';
 import { IContext } from '../IContext';
 import { Next } from '../../util/index';
 

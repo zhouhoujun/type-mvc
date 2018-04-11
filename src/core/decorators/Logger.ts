@@ -1,4 +1,4 @@
-import { TypeMetadata, IClassMethodDecorator, createClassMethodDecorator, ClassMethodDecorator, isClassMetadata, Express, isString, isFunction } from 'tsioc';
+import { TypeMetadata, IClassMethodDecorator, createClassMethodDecorator, ClassMethodDecorator, isClassMetadata, Express, isString, isFunction } from '@ts-ioc/core';
 
 
 export interface LoggerMetadata extends TypeMetadata {

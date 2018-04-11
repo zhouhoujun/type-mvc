@@ -1,5 +1,5 @@
 import { IContext } from '../IContext';
-import { IContainer } from 'tsioc';
+import { IContainer } from '@ts-ioc/core';
 
 /**
  * controller method return result type.

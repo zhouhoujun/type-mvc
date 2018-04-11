@@ -1,4 +1,7 @@
-import { ILoggerManger, ILogger, Injectable, Singleton, NonePointcut } from 'tsioc';
+
+import { ILoggerManger, ILogger } from '@ts-ioc/logs';
+import { NonePointcut } from '@ts-ioc/aop';
+import { Singleton, Injectable } from '@ts-ioc/core';
 
 @NonePointcut
 @Singleton

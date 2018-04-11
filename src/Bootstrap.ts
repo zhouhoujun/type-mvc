@@ -3,7 +3,8 @@ import { Middleware, Request, Response, Context } from 'koa';
 import { IConfiguration } from './IConfiguration';
 import { Configuration } from './Configuration';
 import { Defer, mvcSymbols } from './util/index';
-import { isString, isSymbol, symbols, IContainer, ContainerBuilder, LoadOptions, IContainerBuilder, isClass, isFunction, Type, Token, toAbsolutePath } from 'tsioc';
+import { isString, isSymbol, symbols, IContainer,  IContainerBuilder, isClass, isFunction, Type, Token, AsyncLoadOptions } from '@ts-ioc/core';
+import { ContainerBuilder, toAbsolutePath } from '@ts-ioc/platform-server';
 import * as path from 'path';
 import { Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter } from './core';
 import { execFileSync } from 'child_process';
@@ -77,7 +78,7 @@ export class Bootstrap {
         return this.container.promise;
     }
 
-    protected createContainer(option?: LoadOptions): Promise<IContainer> {
+    protected createContainer(option?: AsyncLoadOptions): Promise<IContainer> {
         return this.getContainerBuilder().build(option);
     }
 
@@ -159,7 +160,7 @@ export class Bootstrap {
 
     /**
      * use middleware `fn` or  `MiddlewareFactory`.
-     * 
+     *
      * @param {(IMiddleware | Middleware | Token<any>)} middleware
      * @returns {this}
      * @memberof Bootstrap

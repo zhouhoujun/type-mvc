@@ -3,7 +3,7 @@ import { Stream } from 'stream';
 import { IContext } from '../IContext';
 import { Defer, mvcSymbols } from '../../util/index';
 import { IConfiguration } from '../../IConfiguration';
-import { IContainer, isString } from 'tsioc';
+import { IContainer, isString } from '@ts-ioc/core';
 import { existsSync, readFile } from 'fs';
 import { join } from 'path';
 import { BadRequestError } from '../../errors/index';

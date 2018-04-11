@@ -1,9 +1,11 @@
-import { IContainer, Injectable, Inject, isString, toAbsolutePath, NonePointcut } from 'tsioc';
+import { IContainer, Injectable, Inject, isString } from '@ts-ioc/core';
 import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
 import { mvcSymbols } from '../../util/index';
 import { IConfiguration } from '../../IConfiguration';
+import { NonePointcut } from '@ts-ioc/aop';
+import { toAbsolutePath } from '@ts-ioc/platform-server';
 const serve = require('koa-static');
 
 @NonePointcut

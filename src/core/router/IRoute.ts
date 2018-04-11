@@ -1,4 +1,4 @@
-import { GComponent, IContainer } from 'tsioc';
+import { GComponent, IContainer } from '@ts-ioc/core';
 import { IContext } from '../IContext';
 import { Next } from '../../util/index';
 

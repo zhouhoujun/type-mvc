@@ -3,9 +3,10 @@ import { IConfiguration } from '../../IConfiguration';
 import { Middleware } from '../decorators';
 import { RequestMethod } from '../RequestMethod';
 import { IMiddleware } from '../middlewares';
-import { ObjectMap, ActionComponent, Token, NonePointcut, Inject } from 'tsioc';
+import { ObjectMap, ActionComponent, Token, Inject } from '@ts-ioc/core';
 import { mvcSymbols } from '../../util/index';
 import { Router } from '../router';
+import { NonePointcut } from '@ts-ioc/aop';
 
 @NonePointcut
 @Middleware(mvcSymbols.CorsMiddleware)
