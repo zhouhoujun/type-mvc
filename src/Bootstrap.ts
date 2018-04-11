@@ -16,6 +16,8 @@ import * as https from 'https';
 
 import { AuthAspect, DebugLogAspect } from './aop/index';
 import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
+import { AopModule } from '@ts-ioc/aop';
+import { LogModule } from '@ts-ioc/logs';
 
 /**
  * Bootstrap
@@ -201,7 +203,7 @@ export class Bootstrap {
     protected async build(): Promise<Application> {
         let cfg: IConfiguration = await this.getConfiguration();
         let container: IContainer = await this.getContainer();
-        await this.initIContainer(cfg, container);
+        container = await this.initIContainer(cfg, container);
         let app = container.get(this.appType);
         this.setupMiddwares(app, container, cfg.beforeMiddlewares, cfg.excludeMiddlewares);
         this.setupMiddwares(app, container, cfg.useMiddlewares, cfg.excludeMiddlewares.concat(cfg.afterMiddlewares));
@@ -212,6 +214,13 @@ export class Bootstrap {
 
 
     protected async initIContainer(config: IConfiguration, container: IContainer): Promise<IContainer> {
+        if(!container.has(AopModule)){
+            container.register(AopModule);
+        }
+        if(!container.has(LogModule)){
+            container.register(LogModule);
+        }
+        
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
         container.registerSingleton(mvcSymbols.IConfiguration, config);
         this.registerDefaults(container);
@@ -224,6 +233,7 @@ export class Bootstrap {
                 modules: this.middlewares.filter(m => isClass(m)) as Type<any>[]
             });
         }
+
         // custom config.
         if (config.middlewares) {
             let modules = await this.builder.loadModule(container, {

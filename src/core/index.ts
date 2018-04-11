@@ -18,7 +18,7 @@ import {
     DefaultJsonMiddleware
 
 } from './middlewares/index';
-import { IContainer, CoreActions } from '@ts-ioc/core';
+import { IContainer, CoreActions, LifeState } from '@ts-ioc/core';
 import { mvcSymbols } from '../util/index';
 import { Router, ModelParser } from './router/index';
 import { BaseController } from './BaseController';
@@ -26,22 +26,22 @@ import { Controller, Authorization, Middleware, Model } from './decorators/index
 
 export function registerDefaults(container: IContainer) {
     let lifeScope = container.getLifeScope();
-    lifeScope.registerDecorator(Controller, CoreActions.bindProvider);
-    lifeScope.registerDecorator(Authorization, CoreActions.bindProvider);
-    lifeScope.registerDecorator(Middleware, CoreActions.bindProvider);
-    lifeScope.registerDecorator(Model, CoreActions.bindProvider);
+    lifeScope.registerDecorator(Controller, LifeState.onInit, CoreActions.bindProvider);
+    lifeScope.registerDecorator(Authorization, LifeState.onInit, CoreActions.bindProvider);
+    lifeScope.registerDecorator(Middleware, LifeState.onInit, CoreActions.bindProvider);
+    lifeScope.registerDecorator(Model, LifeState.onInit, CoreActions.bindProvider);
     container.register(ModelParser);
     container.register(BaseController);
 }
 
 export function registerDefaultMiddlewars(container: IContainer) {
-    container.register(mvcSymbols.ContentMiddleware, DefaultContentMiddleware);
-    container.register(mvcSymbols.ContextMiddleware, DefaultContextMiddleware);
-    container.register(mvcSymbols.JsonMiddleware, DefaultJsonMiddleware);
-    container.register(mvcSymbols.LogMiddleware, DefaultLogMiddleware);
-    container.register(mvcSymbols.SessionMiddleware, DefaultSessionMiddleware);
-    container.register(mvcSymbols.BodyParserMiddleware, DefaultBodyParserMiddleware);
-    container.register(mvcSymbols.ViewsMiddleware, DefaultViewsMiddleware);
-    container.register(mvcSymbols.CorsMiddleware, DefaultCorsMiddleware);
+    container.register(DefaultContentMiddleware);
+    container.register(DefaultContextMiddleware);
+    container.register(DefaultJsonMiddleware);
+    container.register(DefaultLogMiddleware);
+    container.register(DefaultSessionMiddleware);
+    container.register(DefaultBodyParserMiddleware);
+    container.register(DefaultViewsMiddleware);
+    container.register(DefaultCorsMiddleware);
     container.register(Router);
 }
