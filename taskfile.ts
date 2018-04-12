@@ -15,14 +15,13 @@ import { classAnnotations } from 'typescript-class-annotations';
         src: ['src/**/*.ts', '!src/cli/**'],
         dest: 'lib',
         pipes: [
-            (ctx) => cache('typescript'),
             (ctx) => classAnnotations(),
             sourcemaps.init,
             (ctx) => tsProject()
         ],
         destPipes: {
             js: [
-                (ctx, config,  transform) => {
+                (ctx, config, transform) => {
                     let trans: ITransform = transform.js;
                     trans.changeAsOrigin = true;
                     return trans;
@@ -73,10 +72,14 @@ class TestTask extends TaskElement {
 }
 
 TaskContainer.create(__dirname)
-    .bootstrap([TestTask, TsCompile, {
-        providers: {
-            src: 'src/cli/*.ts',
-            dest: 'bin'
-        },
-        task: TsCompile
-    }]);
+    .bootstrap([
+        TestTask,
+        TsCompile,
+        {
+            providers: {
+                src: 'src/cli/*.ts',
+                dest: 'bin'
+            },
+            task: TsCompile
+        }
+    ]);

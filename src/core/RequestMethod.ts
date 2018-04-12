@@ -1,4 +1,4 @@
-import { isString } from 'tsioc';
+import { isString } from '@ts-ioc/core';
 
 
 /**
