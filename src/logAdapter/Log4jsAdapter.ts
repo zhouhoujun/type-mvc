@@ -1,11 +1,11 @@
 
-import { ILoggerManger, ILogger } from '@ts-ioc/logs';
+import { ILoggerManger, ILogger, LogSymbols } from '@ts-ioc/logs';
 import { NonePointcut } from '@ts-ioc/aop';
 import { Singleton, Injectable } from '@ts-ioc/core';
 
 @NonePointcut
 @Singleton
-@Injectable('log4js')
+@Injectable(LogSymbols.ILoggerManager, 'log4js')
 export class Log4jsAdapter implements ILoggerManger {
     private _log4js: any;
     constructor() {

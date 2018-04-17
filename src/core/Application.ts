@@ -5,6 +5,7 @@ import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
 import { IConfiguration } from '../IConfiguration';
+import { ILogger, ILoggerManger, IConfigureLoggerManager, LogSymbols } from '@ts-ioc/logs';
 /**
  * Application of type mvc.
  *
@@ -12,13 +13,20 @@ import { IConfiguration } from '../IConfiguration';
  * @class Application
  * @extends {Koa}
  */
-@Singleton
+@Singleton(MvcSymbols.Application)
 export class Application {
 
     private server: http.Server | https.Server;
     private koa: Koa;
 
-    constructor() {
+    private _container: IContainer;
+    private _loggerMgr: ILoggerManger;
+    get container() {
+        return this._container;
+    }
+
+    constructor(@Inject(symbols.IContainer) container: IContainer) {
+        this._container = container;
     }
 
     getKoa(): Koa {
@@ -28,9 +36,26 @@ export class Application {
         return this.koa;
     }
 
+    getConfiguration(): IConfiguration {
+        return this.container.get<IConfiguration>(MvcSymbols.IConfiguration);
+    }
+
+    getLoggerManger(): ILoggerManger {
+        if (!this._loggerMgr) {
+            let cfg = this.getConfiguration();
+            this._loggerMgr = this.container.resolve<IConfigureLoggerManager>(LogSymbols.IConfigureLoggerManager, { config: cfg.logConfig })
+        }
+        return this._loggerMgr;
+    }
+
+
+    getLogger(name?: string): ILogger {
+        return this.getLoggerManger().getLogger(name);
+    }
+
     getServer() {
         if (!this.server) {
-            let cfg = this.container.get<IConfiguration>(MvcSymbols.IConfiguration);
+            let cfg = this.getConfiguration();
             if (cfg.httpsOptions) {
                 this.server = https.createServer(cfg.httpsOptions, this.getKoa().callback);
             } else {
@@ -43,8 +68,5 @@ export class Application {
     use(middleware: Koa.Middleware) {
         this.getKoa().use(middleware);
     }
-
-    @Inject(symbols.IContainer)
-    container: IContainer;
 
 }

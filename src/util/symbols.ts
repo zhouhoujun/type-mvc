@@ -4,6 +4,11 @@
 export const MvcSymbols = {
 
     /**
+     * Application symbol.
+     */
+    Application: Symbol('Application'),
+
+    /**
      * MVC Context
      * it is a symbol id, you can register yourself middleware for this.
      */
