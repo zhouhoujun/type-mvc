@@ -81,5 +81,12 @@ TaskContainer.create(__dirname)
                 dest: 'bin'
             },
             task: TsCompile
+        },
+        {
+            providers: {
+                src: ['src/**/*.html', 'src/**/*.js'],
+                dest: 'lib'
+            },
+            task: PipeElement
         }
     ]);
