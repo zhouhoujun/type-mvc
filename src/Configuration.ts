@@ -141,6 +141,13 @@ export class Configuration implements IConfiguration {
      */
     useMiddlewares?: Token<any>[] = [];
 
+    /**
+     * used server Middlewares
+     *
+     * @type {Token<any>[]}
+     * @memberof Configuration
+     */
+    usedServerMiddlewares?: Token<any>[] = [];
 
     /**
      * controllers match. default `./controllers/\*\*\/*{.js,.ts}`, '!.\/**\/*.d.ts\' in your project..
@@ -200,7 +207,7 @@ export class Configuration implements IConfiguration {
      *
      * @memberof Configuration
      */
-    debug? = false;
+    debug?= false;
 
     /**
      * global cors default options.

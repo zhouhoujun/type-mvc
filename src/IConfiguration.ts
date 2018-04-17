@@ -218,6 +218,16 @@ export interface IConfiguration extends ObjectMap<any> {
      * @memberof IConfiguration
      */
     usedAops?: Token<any>[];
+
+
+    /**
+     * used server middlewares.
+     *
+     * @type {Token<any>[]}
+     * @memberof IConfiguration
+     */
+    usedServerMiddlewares?: Token<any>[];
+
     /**
      * views folder, default `./views` in your project.
      *

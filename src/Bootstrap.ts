@@ -317,6 +317,11 @@ export class Bootstrap {
 
             config.usedAops = aops;
         }
+
+        let servers = await this.builder.loadModule(container, { modules: this.beforeSMdls.concat(this.afterSMdls).filter(m => isClass(m)) as Type<any>[] });
+        if (servers && servers.length) {
+            config.usedServerMiddlewares = servers;
+        }
         return container;
     }
 
