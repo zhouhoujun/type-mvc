@@ -1,7 +1,7 @@
 import { Singleton, Inject, IContainer, symbols  } from '@ts-ioc/core';
 import { LoggerAspect } from '@ts-ioc/logs'
 import { Aspect, Around, Joinpoint } from '@ts-ioc/aop';
-import { mvcSymbols } from '../util/index';
+import { MvcSymbols } from '../util/index';
 import { IConfiguration } from '../IConfiguration';
 
 @Singleton

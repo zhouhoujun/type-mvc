@@ -1,14 +1,14 @@
 import { Type, getPropertyMetadata, PropertyMetadata, isToken, isFunction, isUndefined, IContainer, Inject, symbols, isClass, Singleton, ObjectMap } from '@ts-ioc/core';
 import { Field, Model } from '../decorators/index';
 import { IConfiguration } from '../../IConfiguration';
-import { mvcSymbols } from '../../util/index';
+import { MvcSymbols } from '../../util/index';
 import { NonePointcut } from '@ts-ioc/aop';
 
 @NonePointcut
 @Singleton
 export class ModelParser {
 
-    constructor( @Inject(symbols.IContainer) private container: IContainer, @Inject(mvcSymbols.IConfiguration) private config: IConfiguration) {
+    constructor( @Inject(symbols.IContainer) private container: IContainer, @Inject(MvcSymbols.IConfiguration) private config: IConfiguration) {
 
     }
 

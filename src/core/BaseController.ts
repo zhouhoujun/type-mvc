@@ -6,7 +6,7 @@ import * as path from 'path';
 
 import { Controller, Get } from './decorators/index';
 import { AutoWired, Injectable, Inject } from '@ts-ioc/core';
-import { Defer, mvcSymbols } from '../util/index';
+import { Defer, MvcSymbols } from '../util/index';
 import { ViewResult, FileResult, RedirectResult, JsonResult } from './results/index';
 
 
@@ -20,7 +20,7 @@ import { ViewResult, FileResult, RedirectResult, JsonResult } from './results/in
 export class BaseController {
 
 
-    @Inject(mvcSymbols.IContext)
+    @Inject(MvcSymbols.IContext)
     protected context: IContext;
 
     constructor() {

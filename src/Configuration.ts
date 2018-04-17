@@ -1,6 +1,6 @@
 import { Singleton, ObjectMap, Token } from '@ts-ioc/core';
 import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
-import { mvcSymbols } from './util/index';
+import { MvcSymbols } from './util/index';
 import { RequestMethod } from './core/index';
 import { ServerOptions } from 'https';
 
@@ -92,14 +92,14 @@ export class Configuration implements IConfiguration {
      * @memberof Configuration
      */
     beforeMiddlewares?: Token<any>[] = [
-        mvcSymbols.BodyParserMiddleware,
-        mvcSymbols.JsonMiddleware,
-        mvcSymbols.LogMiddleware,
-        mvcSymbols.SessionMiddleware,
-        mvcSymbols.ContentMiddleware,
-        mvcSymbols.ContextMiddleware,
-        mvcSymbols.CorsMiddleware,
-        mvcSymbols.ViewsMiddleware
+        MvcSymbols.BodyParserMiddleware,
+        MvcSymbols.JsonMiddleware,
+        MvcSymbols.LogMiddleware,
+        MvcSymbols.SessionMiddleware,
+        MvcSymbols.ContentMiddleware,
+        MvcSymbols.ContextMiddleware,
+        MvcSymbols.CorsMiddleware,
+        MvcSymbols.ViewsMiddleware
 
     ];
 
@@ -109,7 +109,7 @@ export class Configuration implements IConfiguration {
      * @type {Token<any>}
      * @memberof Configuration
      */
-    routerMiddlewate?: Token<any> = mvcSymbols.RouterMiddleware;
+    routerMiddlewate?: Token<any> = MvcSymbols.RouterMiddleware;
 
     /**
      * custom middleware match path, './middlewares/\*\*\/*{.js,.ts}', '!.\/**\/*.d.ts\' in your project.

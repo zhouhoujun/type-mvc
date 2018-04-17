@@ -21,6 +21,9 @@ npm install type-mvc
 
 ## Documentation
 
+* 1.0.1
+    1. add useServer to add Server Middleware features.
+
 * 0.6.3
     1. update compile task, zip lib.
     2. update tsioc for fix bug when inherit class with classAnnations

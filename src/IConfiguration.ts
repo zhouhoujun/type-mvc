@@ -1,6 +1,6 @@
 import { ObjectMap, Injectable, Singleton, Token, Type } from '@ts-ioc/core';
 import { LogConfigure } from '@ts-ioc/logs';
-import { mvcSymbols } from './util/index';
+import { MvcSymbols } from './util/index';
 import { RequestMethod } from './core';
 import { ServerOptions } from 'https';
 // import { ServerOptions as Http2Options } from 'http2';
@@ -43,7 +43,7 @@ export interface ModelOptions {
     fieldMetaname: string;
 }
 
-export interface IConfiguration {
+export interface IConfiguration extends ObjectMap<any> {
 
     /**
      * aseert url match regexp.
@@ -96,6 +96,12 @@ export interface IConfiguration {
      */
     rootdir?: string;
 
+    /**
+     * session config.
+     *
+     * @type {ISessionConfig}
+     * @memberof IConfiguration
+     */
     session?: ISessionConfig;
 
     /**
@@ -205,6 +211,12 @@ export interface IConfiguration {
      */
     aop?: string | string[];
 
+    /**
+     * used aop aspect.
+     *
+     * @type {Token<any>[]}
+     * @memberof IConfiguration
+     */
     usedAops?: Token<any>[];
     /**
      * views folder, default `./views` in your project.
@@ -220,7 +232,12 @@ export interface IConfiguration {
      */
     viewsOptions?: IViewOptions;
 
-
+    /**
+     * model options.
+     *
+     * @type {ModelOptions}
+     * @memberof IConfiguration
+     */
     modelOptions?: ModelOptions;
 
     /**

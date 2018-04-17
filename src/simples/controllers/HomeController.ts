@@ -1,4 +1,4 @@
-import { Controller, Get, Post, IContext, mvcSymbols, BaseController, ViewResult, ResultValue } from '../../index';
+import { Controller, Get, Post, IContext, MvcSymbols, BaseController, ViewResult, ResultValue } from '../../index';
 import { Inject } from '@ts-ioc/core';
 import { Mywork } from '../bi/Mywork';
 

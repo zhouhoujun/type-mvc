@@ -7,7 +7,7 @@ import {
     isBoolean,  isDate
 } from '@ts-ioc/core';
 import { IContext } from '../IContext';
-import { Next, Defer, mvcSymbols } from '../../util/index';
+import { Next, Defer, MvcSymbols } from '../../util/index';
 import { Get, Post, Put, Delete, Field, Cors, Options, Model, Route } from '../decorators/index';
 import { GetMetadata, CorsMetadata, RouteMetadata } from '../metadata/index'
 import { IRoute } from './IRoute';
@@ -75,7 +75,7 @@ export class ControllerRoute extends BaseRoute {
         };
 
 
-        let config = container.get<IConfiguration>(mvcSymbols.IConfiguration);
+        let config = container.get<IConfiguration>(MvcSymbols.IConfiguration);
         let options = config.corsOptions || {};
 
         if (ctx.method !== 'OPTIONS') {
@@ -172,10 +172,10 @@ export class ControllerRoute extends BaseRoute {
         let meta = this.getRouteMetaData(ctx, container, parseRequestMethod(ctx.method));
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
-            if (container.has(mvcSymbols.IAuthorization)) {
+            if (container.has(MvcSymbols.IAuthorization)) {
                 let hasAuth = hasClassMetadata(Authorization, ctrl) || hasMethodMetadata(Authorization, ctrl, meta.propertyKey);
                 if (hasAuth) {
-                    let auth = container.get<IAuthorization>(mvcSymbols.IAuthorization);
+                    let auth = container.get<IAuthorization>(MvcSymbols.IAuthorization);
                     if (!auth.isAuth()) {
                         throw new UnauthorizedError();
                     }

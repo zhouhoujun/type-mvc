@@ -4,15 +4,15 @@ import { Middleware } from '../decorators';
 import { RequestMethod } from '../RequestMethod';
 import { IMiddleware } from '../middlewares';
 import { ObjectMap, ActionComponent, Token, Inject } from '@ts-ioc/core';
-import { mvcSymbols } from '../../util/index';
+import { MvcSymbols } from '../../util/index';
 import { Router } from '../router';
 import { NonePointcut } from '@ts-ioc/aop';
 
 @NonePointcut
-@Middleware(mvcSymbols.CorsMiddleware)
+@Middleware(MvcSymbols.CorsMiddleware)
 export class DefaultCorsMiddleware implements IMiddleware {
 
-    constructor(private app: Application, private router: Router, @Inject(mvcSymbols.IConfiguration) private config: IConfiguration) {
+    constructor(private app: Application, private router: Router, @Inject(MvcSymbols.IConfiguration) private config: IConfiguration) {
 
     }
     setup() {

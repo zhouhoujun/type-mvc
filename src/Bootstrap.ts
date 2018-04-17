@@ -2,8 +2,8 @@ import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
 import { IConfiguration } from './IConfiguration';
 import { Configuration } from './Configuration';
-import { Defer, mvcSymbols } from './util/index';
-import { isString, isSymbol, symbols, IContainer,  IContainerBuilder, isClass, isFunction, Type, Token, AsyncLoadOptions } from '@ts-ioc/core';
+import { Defer, MvcSymbols } from './util/index';
+import { isString, isSymbol, symbols, IContainer, IContainerBuilder, isClass, isFunction, Type, Token, AsyncLoadOptions, isToken } from '@ts-ioc/core';
 import { ContainerBuilder, toAbsolutePath } from '@ts-ioc/platform-server';
 import * as path from 'path';
 import { Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter } from './core';
@@ -18,6 +18,7 @@ import { AuthAspect, DebugLogAspect } from './aop/index';
 import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
 import { AopModule } from '@ts-ioc/aop';
 import { LogModule } from '@ts-ioc/logs';
+import { IServerMiddleware, ServerMiddleware } from './core/servers/index';
 
 /**
  * Bootstrap
@@ -27,6 +28,8 @@ import { LogModule } from '@ts-ioc/logs';
  */
 export class Bootstrap {
 
+    private beforeSMdls: any[];
+    private afterSMdls: any[];
     private container: Defer<IContainer>;
     private middlewares: Token<any>[];
     private configDefer: Defer<IConfiguration>;
@@ -39,8 +42,12 @@ export class Bootstrap {
      */
     constructor(private rootdir: string, protected appType?: Type<Application>) {
         this.middlewares = [];
+        this.beforeSMdls = [];
+        this.afterSMdls = [];
         this.appType = this.appType || Application;
     }
+
+    static symbols = MvcSymbols
 
     /**
      * create new application.
@@ -73,6 +80,12 @@ export class Bootstrap {
         return this;
     }
 
+    /**
+     * get container of bootstrap.
+     *
+     * @returns
+     * @memberof Bootstrap
+     */
     getContainer() {
         if (!this.container) {
             this.useContainer(this.createContainer());
@@ -85,21 +98,30 @@ export class Bootstrap {
     }
 
 
-
+    /**
+     * use container builder
+     *
+     * @param {IContainerBuilder} builder
+     * @returns
+     * @memberof Bootstrap
+     */
     useContainerBuilder(builder: IContainerBuilder) {
         this.builder = builder;
         return this;
     }
 
+    /**
+     * get container builder.
+     *
+     * @returns
+     * @memberof Bootstrap
+     */
     getContainerBuilder() {
         if (!this.builder) {
             this.builder = new ContainerBuilder();
         }
         return this.builder;
     }
-
-
-
 
     /**
      * use custom configuration.
@@ -153,6 +175,12 @@ export class Bootstrap {
         return this;
     }
 
+    /**
+     * get configuration.
+     *
+     * @returns {Promise<IConfiguration>}
+     * @memberof Bootstrap
+     */
     getConfiguration(): Promise<IConfiguration> {
         if (!this.configDefer) {
             this.useConfiguration();
@@ -172,6 +200,15 @@ export class Bootstrap {
         return this;
     }
 
+    useServer(middleware: ServerMiddleware | Token<IServerMiddleware>, afterMvc = true): this {
+        if (afterMvc) {
+            this.afterSMdls.push(middleware);
+        } else {
+            this.beforeSMdls.push(middleware);
+        }
+        return this;
+    }
+
     /**
      * run service.
      *
@@ -181,7 +218,7 @@ export class Bootstrap {
      */
     async run(listener?: Function) {
         let app = await this.build();
-        let config = app.container.get<IConfiguration>(mvcSymbols.IConfiguration);
+        let config = app.container.get<IConfiguration>(MvcSymbols.IConfiguration);
         let server = app.getServer();
         let port = config.port || parseInt(process.env.PORT || '0');
         if (config.hostname) {
@@ -205,24 +242,28 @@ export class Bootstrap {
         let container: IContainer = await this.getContainer();
         container = await this.initIContainer(cfg, container);
         let app = container.get(this.appType);
+        this.setupServerMiddwares(app, container, this.beforeSMdls);
+
         this.setupMiddwares(app, container, cfg.beforeMiddlewares, cfg.excludeMiddlewares);
         this.setupMiddwares(app, container, cfg.useMiddlewares, cfg.excludeMiddlewares.concat(cfg.afterMiddlewares));
         this.setupRoutes(cfg, container);
         this.setupMiddwares(app, container, cfg.afterMiddlewares, cfg.excludeMiddlewares);
+
+        this.setupServerMiddwares(app, container, this.afterSMdls);
         return app;
     }
 
 
     protected async initIContainer(config: IConfiguration, container: IContainer): Promise<IContainer> {
-        if(!container.has(AopModule)){
+        if (!container.has(AopModule)) {
             container.register(AopModule);
         }
-        if(!container.has(LogModule)){
+        if (!container.has(LogModule)) {
             container.register(LogModule);
         }
-        
+
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
-        container.registerSingleton(mvcSymbols.IConfiguration, config);
+        container.registerSingleton(MvcSymbols.IConfiguration, config);
         this.registerDefaults(container);
         // register app.
         container.register(this.appType);
@@ -260,7 +301,7 @@ export class Bootstrap {
         }
 
         if (config.logConfig) {
-            container.registerSingleton(symbols.LogConfigure, config.logConfig);
+            container.registerSingleton(LogModule.symbols.LogConfigure, config.logConfig);
         }
 
         if (config.debug) {
@@ -289,13 +330,16 @@ export class Bootstrap {
         container.register(Log4jsAdapter);
     }
 
-
     protected setupRoutes(config: IConfiguration, container: IContainer) {
         let router: IRouter = container.get(config.routerMiddlewate || Router);
         router.register(...config.useControllers);
         router.setup();
     }
+
     protected setupMiddwares(app: Application, container: IContainer, middlewares: Token<any>[], excludes: Token<any>[]) {
+        if (!middlewares || middlewares.length < 1) {
+            return app;
+        }
         middlewares.forEach(m => {
             if (!m) {
                 return;
@@ -303,7 +347,7 @@ export class Bootstrap {
             if (excludes && excludes.length > 0 && excludes.indexOf(m) > 0) {
                 return;
             }
-            if (isClass(m) || isString(m) || isSymbol(m)) {
+            if (isToken(m)) {
                 let middleware = container.get(m as Token<any>) as IMiddleware;
                 if (isFunction(middleware.setup)) {
                     middleware.setup();
@@ -317,4 +361,25 @@ export class Bootstrap {
         return app;
     }
 
+    protected setupServerMiddwares(app: Application, container: IContainer, middlewares: (ServerMiddleware | Token<IServerMiddleware>)[]) {
+        if (!middlewares || middlewares.length < 1) {
+            return;
+        }
+        middlewares.forEach(m => {
+            if (!m) {
+                return;
+            }
+
+            if (isToken(m)) {
+                let middleware = container.get(m as Token<any>) as IMiddleware;
+                if (isFunction(middleware.setup)) {
+                    middleware.setup();
+                }
+
+            } else if (isFunction(m)) {
+                m(app, container);
+            }
+
+        })
+    }
 }

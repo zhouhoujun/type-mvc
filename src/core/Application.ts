@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
 import { Injectable, Singleton, IContainer, AutoWired, Inject, symbols, Type } from '@ts-ioc/core';
-import { mvcSymbols } from '../util/index';
+import { MvcSymbols } from '../util/index';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
@@ -30,7 +30,7 @@ export class Application {
 
     getServer() {
         if (!this.server) {
-            let cfg = this.container.get<IConfiguration>(mvcSymbols.IConfiguration);
+            let cfg = this.container.get<IConfiguration>(MvcSymbols.IConfiguration);
             if (cfg.httpsOptions) {
                 this.server = https.createServer(cfg.httpsOptions, this.getKoa().callback);
             } else {

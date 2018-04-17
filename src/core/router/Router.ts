@@ -7,7 +7,7 @@ import { ObjectMap, ActionComponent, Token, Inject } from '@ts-ioc/core';
 import { IRoute } from './IRoute';
 import { RootRoute } from './RootRoute';
 import { RouteBuilder } from './RouteBuilder';
-import { mvcSymbols } from '../../util/index';
+import { MvcSymbols } from '../../util/index';
 const compose = require('koa-compose');
 
 export interface IRouter extends IMiddleware {
@@ -18,11 +18,11 @@ export interface IRouter extends IMiddleware {
     getRoot(): IRoute;
 }
 
-@Middleware(mvcSymbols.RouterMiddleware)
+@Middleware(MvcSymbols.RouterMiddleware)
 export class Router implements IRouter, IMiddleware {
 
     private root: IRoute;
-    constructor(private builder: RouteBuilder, private app: Application, @Inject(mvcSymbols.IConfiguration) private config: IConfiguration) {
+    constructor(private builder: RouteBuilder, private app: Application, @Inject(MvcSymbols.IConfiguration) private config: IConfiguration) {
         this.root = new RootRoute(config.routePrefix);
     }
 

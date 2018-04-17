@@ -1,5 +1,3 @@
 export * from './defer';
-
 export * from './types';
-import * as allsymbol from './symbols';
-export const mvcSymbols = allsymbol;
+export * from './symbols';
