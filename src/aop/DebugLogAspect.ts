@@ -4,6 +4,13 @@ import { Aspect, Around, Joinpoint } from '@ts-ioc/aop';
 import { MvcSymbols } from '../util/index';
 import { IConfiguration } from '../IConfiguration';
 
+/**
+ * debug lod aspect.
+ *
+ * @export
+ * @class DebugLogAspect
+ * @extends {LoggerAspect}
+ */
 @Singleton
 @Aspect
 export class DebugLogAspect extends LoggerAspect {

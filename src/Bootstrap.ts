@@ -21,7 +21,7 @@ import { LogModule } from '@ts-ioc/logs';
 import { IServerMiddleware, ServerMiddleware } from './core/servers/index';
 
 /**
- * Bootstrap
+ * mvc applaction bootstrap.
  *
  * @export
  * @class Bootstrap

@@ -1,8 +1,9 @@
-import { Singleton, ObjectMap, Token } from '@ts-ioc/core';
+import { Singleton, ObjectMap, Token, Type } from '@ts-ioc/core';
 import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
 import { MvcSymbols } from './util/index';
 import { RequestMethod } from './core/index';
 import { ServerOptions } from 'https';
+import { LogConfigure } from '@ts-ioc/logs';
 
 /**
  * mvc configuration
@@ -165,6 +166,13 @@ export class Configuration implements IConfiguration {
      */
     useControllers?: Token<any>[] = [];
 
+    /**
+     * global cors default options.
+     *
+     * @type {CorsOptions}
+     * @memberof Configuration
+     */
+    corsOptions?: CorsOptions;
 
     /**
      * custom aop services. default './aop/\*\*\/*{.js,.ts}', '!.\/**\/*.d.ts\'
@@ -209,11 +217,5 @@ export class Configuration implements IConfiguration {
      */
     debug?= false;
 
-    /**
-     * global cors default options.
-     *
-     * @type {CorsOptions}
-     * @memberof Configuration
-     */
-    corsOptions?: CorsOptions;
+    logConfig?: LogConfigure | Type<LogConfigure>;
 }

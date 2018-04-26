@@ -6,6 +6,12 @@ import { ServerOptions } from 'https';
 // import { ServerOptions as Http2Options } from 'http2';
 
 
+/**
+ * seetion config.
+ *
+ * @export
+ * @interface ISessionConfig
+ */
 export interface ISessionConfig {
     /** (string) cookie key (default is koa:sess) */
     key: string;
@@ -27,6 +33,12 @@ export interface ISessionConfig {
     rolling: boolean;
 }
 
+/**
+ * view options
+ *
+ * @export
+ * @interface IViewOptions
+ */
 export interface IViewOptions {
     extension: string,
     map?: ObjectMap<any>;
@@ -43,6 +55,13 @@ export interface ModelOptions {
     fieldMetaname: string;
 }
 
+/**
+ * Mvc applaction configuration.
+ *
+ * @export
+ * @interface IConfiguration
+ * @extends {ObjectMap<any>}
+ */
 export interface IConfiguration extends ObjectMap<any> {
 
     /**
