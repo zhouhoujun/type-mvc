@@ -376,7 +376,7 @@ export class Bootstrap {
             }
 
             if (isToken(m)) {
-                let middleware = container.get(m as Token<any>) as IMiddleware;
+                let middleware = container.get(m as Token<any>) as IServerMiddleware;
                 if (isFunction(middleware.setup)) {
                     middleware.setup();
                 }
