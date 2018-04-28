@@ -9,7 +9,6 @@ export * from './Put';
 export * from './Route';
 export * from './Cors';
 export * from './Authorization';
-export * from './Logger';
 export * from './Model';
 export * from './Field';
 export * from './Middleware';

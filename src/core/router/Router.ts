@@ -10,6 +10,13 @@ import { RouteBuilder } from './RouteBuilder';
 import { MvcSymbols } from '../../util/index';
 const compose = require('koa-compose');
 
+/**
+ * router
+ *
+ * @export
+ * @interface IRouter
+ * @extends {IMiddleware}
+ */
 export interface IRouter extends IMiddleware {
     routes(map: IRoute);
 

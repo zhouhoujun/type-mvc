@@ -1,6 +1,34 @@
 import { RequestMethod } from '../RequestMethod';
-import { createRouteDecorator, IRouteDecorator } from './Route';
+import { createRouteDecorator } from './Route';
 import { OptionsMetadata } from '../metadata/index';
+import { IMethodDecorator } from '@ts-ioc/core';
 
 
-export const Options: IRouteDecorator<OptionsMetadata> = createRouteDecorator<OptionsMetadata>(RequestMethod.Options);
+
+/**
+ * Options decorator. define the route method as an options.
+ *
+ * @Options
+ *
+ * @export
+ * @interface IOptionsDecorator
+ * @template T
+ */
+export interface IOptionsDecorator<T extends OptionsMetadata> extends IMethodDecorator<T> {
+    /**
+     * Options decorator. define the route method as an options.
+     *
+     * @Options
+     *
+     * @param {string} route route sub path.
+     * @param {string} [contentType] set request contentType.
+     */
+    (route: string, contentType?: string): MethodDecorator;
+}
+
+/**
+ * Options decorator. define the route method as an options.
+ *
+ * @Options
+ */
+export const Options: IOptionsDecorator<OptionsMetadata> = createRouteDecorator<OptionsMetadata>(RequestMethod.Options);

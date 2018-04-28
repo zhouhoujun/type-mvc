@@ -285,16 +285,53 @@ export interface IConfiguration extends ObjectMap<any> {
     logConfig?: LogConfigure | Type<LogConfigure>;
 }
 
+/**
+ * cors options
+ *
+ * @export
+ * @interface CorsOptions
+ */
 export interface CorsOptions {
+    /**
+     * enable Access-Control-Allow-Credentials
+     *
+     * @type {boolean}
+     * @memberof CorsOptions
+     */
     credentials?: boolean;
+    /**
+     * set request Access-Control-Expose-Headers
+     *
+     * @type {string}
+     * @memberof CorsOptions
+     */
     exposeHeaders?: string;
+    /**
+     * keep headers on error.
+     *
+     * @type {boolean}
+     * @memberof CorsOptions
+     */
     keepHeadersOnError?: boolean;
+
+    /**
+     * allow cors request methods
+     *
+     * @type {(string | (string | RequestMethod)[])}
+     * @memberof CorsOptions
+     */
     allowMethods?: string | (string | RequestMethod)[];
 
+    /**
+     * allow cors request headers, 'Access-Control-Request-Headers'
+     *
+     * @type {(string | string[])}
+     * @memberof CorsOptions
+     */
     allowHeaders?: string | string[];
 
     /**
-     * for global default.
+     * set cors cache max age.  Access-Control-Max-Age.
      *
      * @type {number}
      * @memberof CorsOptions

@@ -1,21 +1,29 @@
-import { createClassDecorator, IClassDecorator, TypeMetadata, Type, isClass, isString, Registration, ArgsIterator, isClassMetadata } from '@ts-ioc/core';
+import { createClassDecorator, ITypeDecorator, TypeMetadata, Type, isClass, isString, Registration, ArgsIterator, isClassMetadata } from '@ts-ioc/core';
 import { ControllerMetadata } from '../metadata/index';
 
 /**
- * Controller decorator define.
+ * Controller decorator, define the class as mvc controller.
+ * @Controller
  *
  * @export
  * @interface IControllerDecorator
  * @template T
  */
-export interface IControllerDecorator<T extends ControllerMetadata> extends IClassDecorator<T> {
-    (routePrefix: string, provide?: Registration<any> | string, alias?: string): ClassDecorator;
+export interface IControllerDecorator<T extends ControllerMetadata> extends ITypeDecorator<T> {
+    /**
+     * Controller decorator. define the class as mvc controller.
+     * @Controller
+     *
+     * @param {string} routePrefix route prefix of this controller.
+     * @param {(Registration<any> | symbol | string)} provide define this controller provider for provide.
+     * @param {string} [alias] define this controller provider with alias for provide.
+     */
+    (routePrefix: string, provide?: Registration<any> | symbol | string, alias?: string): ClassDecorator;
     (target: Function): void;
 }
 
 /**
- * Controller decorator and metadata.
- *
+ * Controller decorator, define the class as mvc controller.
  * @Controller
  */
 export const Controller: IControllerDecorator<ControllerMetadata> =
