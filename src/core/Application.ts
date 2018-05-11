@@ -1,3 +1,4 @@
+import { NonePointcut } from '@ts-ioc/aop';
 import * as Koa from 'koa';
 import { Injectable, Singleton, IContainer, AutoWired, Inject, symbols, Type } from '@ts-ioc/core';
 import { MvcSymbols } from '../util/index';
@@ -13,20 +14,21 @@ import { ILogger, ILoggerManger, IConfigureLoggerManager, LogSymbols } from '@ts
  * @class Application
  * @extends {Koa}
  */
+@NonePointcut
 @Singleton(MvcSymbols.Application)
 export class Application {
 
     private server: http.Server | https.Server;
     private koa: Koa;
 
-    private _container: IContainer;
     private _loggerMgr: ILoggerManger;
-    get container() {
-        return this._container;
-    }
 
-    constructor(@Inject(symbols.IContainer) container: IContainer) {
-        this._container = container;
+
+    @Inject(symbols.IContainer)
+    container: IContainer;
+
+    constructor() {
+
     }
 
     getKoa(): Koa {

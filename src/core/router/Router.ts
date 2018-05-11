@@ -3,11 +3,12 @@ import { IConfiguration } from '../../IConfiguration';
 import { Middleware } from '../decorators/index';
 import { RequestMethod } from '../RequestMethod';
 import { IMiddleware } from '../middlewares/index';
-import { ObjectMap, ActionComponent, Token, Inject } from '@ts-ioc/core';
+import { ObjectMap, ActionComponent, Token, Inject, Injectable } from '@ts-ioc/core';
 import { IRoute } from './IRoute';
 import { RootRoute } from './RootRoute';
 import { RouteBuilder } from './RouteBuilder';
 import { MvcSymbols } from '../../util/index';
+import { NonePointcut } from '@ts-ioc/aop';
 const compose = require('koa-compose');
 
 /**
@@ -29,7 +30,9 @@ export interface IRouter extends IMiddleware {
 export class Router implements IRouter, IMiddleware {
 
     private root: IRoute;
-    constructor(private builder: RouteBuilder, private app: Application, @Inject(MvcSymbols.IConfiguration) private config: IConfiguration) {
+    @Inject(MvcSymbols.Application)
+    private app: Application;
+    constructor(private builder: RouteBuilder, @Inject(MvcSymbols.IConfiguration) private config: IConfiguration) {
         this.root = new RootRoute(config.routePrefix);
     }
 

@@ -8,11 +8,19 @@ import { MvcSymbols } from '../../util/index';
 import { Router } from '../router';
 import { NonePointcut } from '@ts-ioc/aop';
 
-@NonePointcut
 @Middleware(MvcSymbols.CorsMiddleware)
 export class DefaultCorsMiddleware implements IMiddleware {
 
-    constructor(private app: Application, private router: Router, @Inject(MvcSymbols.IConfiguration) private config: IConfiguration) {
+    @Inject(MvcSymbols.Application)
+    private app: Application;
+
+    @Inject(MvcSymbols.IConfiguration)
+    private config: IConfiguration;
+
+    @Inject(MvcSymbols.RouterMiddleware)
+    private router: Router;
+
+    constructor() {
 
     }
     setup() {

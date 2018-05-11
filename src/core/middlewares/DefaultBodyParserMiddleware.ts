@@ -6,11 +6,14 @@ import { MvcSymbols } from '../../util/index';
 import { NonePointcut } from '@ts-ioc/aop';
 const bodyParser = require('koa-bodyparser');
 
-@NonePointcut
+
 @Middleware(MvcSymbols.BodyParserMiddleware)
 export class DefaultBodyParserMiddleware implements IMiddleware {
 
-    constructor(private app: Application) {
+    @Inject(MvcSymbols.Application)
+    private app: Application;
+
+    constructor() {
     }
     setup() {
         this.app.use(bodyParser());

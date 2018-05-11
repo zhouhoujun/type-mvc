@@ -10,7 +10,10 @@ const logger = require('koa-logger')
 @Middleware(MvcSymbols.LogMiddleware)
 export class DefaultLogMiddleware implements IMiddleware {
 
-    constructor(private app: Application) {
+    @Inject(MvcSymbols.Application)
+    private app: Application;
+
+    constructor() {
     }
     setup() {
         this.app.use(logger());

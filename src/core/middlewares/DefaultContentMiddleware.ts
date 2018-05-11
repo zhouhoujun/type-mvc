@@ -8,12 +8,18 @@ import { NonePointcut } from '@ts-ioc/aop';
 import { toAbsolutePath } from '@ts-ioc/platform-server';
 const serve = require('koa-static');
 
-@NonePointcut
 @Middleware(MvcSymbols.ContentMiddleware)
 export class DefaultContentMiddleware implements IMiddleware {
 
-    constructor(private app: Application, @Inject(MvcSymbols.IConfiguration) private config: IConfiguration) {
+    @Inject(MvcSymbols.Application)
+    private app: Application;
+
+    @Inject(MvcSymbols.IConfiguration)
+    private config: IConfiguration;
+
+    constructor() {
     }
+
     setup() {
         let contents = this.config.contents || ['./public'];
         contents.forEach((content, idx) => {
