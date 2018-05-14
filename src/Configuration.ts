@@ -17,8 +17,8 @@ export class Configuration implements IConfiguration {
 
     }
 
-    assertUrlRegExp?= /\/((\w|%|\.))+\.\w+$/;
-    routeUrlRegExp?= null;
+    assertUrlRegExp = /\/((\w|%|\.))+\.\w+$/;
+    routeUrlRegExp = null;
     isRouteUrl?(ctxUrl: string): boolean {
         let flag = !this.assertUrlRegExp.test(ctxUrl);
         if (flag && this.routeUrlRegExp) {
@@ -32,19 +32,19 @@ export class Configuration implements IConfiguration {
      *
      * @memberof Configuration
      */
-    hostname?= '';
+    hostname = '';
     /**
      * port
      *
      * @memberof Configuration
      */
-    port?= 3000;
+    port = 3000;
     /**
      * system file root directory.
      */
-    rootdir?= '';
+    rootdir = '';
 
-    session?= {
+    session = {
         key: 'typemvc:sess', /** (string) cookie key (default is koa:sess) */
         /** (number || 'session') maxAge in ms (default is 1 days) */
         /** 'session' will result in a cookie that expires when session/browser is closed */
@@ -69,7 +69,7 @@ export class Configuration implements IConfiguration {
      * @type {string}
      * @memberOf Configuration
      */
-    routePrefix?= '';
+    routePrefix = '';
     /**
      * custom config key value setting.
      *
@@ -195,14 +195,14 @@ export class Configuration implements IConfiguration {
      *
      * @memberof Configuration
      */
-    views?= './views';
+    views = './views';
 
     /**
      * render view options.
      *
      * @memberof Configuration
      */
-    viewsOptions?= {
+    viewsOptions = {
         extension: 'ejs',
         map: { html: 'nunjucks' }
     };
@@ -215,7 +215,7 @@ export class Configuration implements IConfiguration {
      *
      * @memberof Configuration
      */
-    debug?= false;
+    debug = false;
 
     logConfig?: LogConfigure | Type<LogConfigure>;
 }

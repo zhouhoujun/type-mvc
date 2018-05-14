@@ -264,6 +264,7 @@ export class Bootstrap {
 
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
         container.registerSingleton(MvcSymbols.IConfiguration, config);
+        container.registerSingleton(Configuration, config as Configuration);
         this.registerDefaults(container);
         // register app.
         container.register(this.appType);
