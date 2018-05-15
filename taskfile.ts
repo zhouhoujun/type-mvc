@@ -26,7 +26,7 @@ import { classAnnotations } from '@ts-ioc/class-annotations';
                     trans.changeAsOrigin = true;
                     return trans;
                 },
-                (ctx) => uglify(),
+                // (ctx) => uglify(),
                 (ctx) => sourcemaps.write('./sourcemaps')
             ],
             dts: [
