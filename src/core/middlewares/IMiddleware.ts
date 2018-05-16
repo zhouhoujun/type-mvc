@@ -1,6 +1,11 @@
 import { Middleware } from 'koa';
 import * as Koa from 'koa';
-import { IContainer } from '@ts-ioc/core';
+import { IContainer, InjectToken } from '@ts-ioc/core';
+
+/**
+ * Middleware token.
+ */
+export const MiddlewareToken = new InjectToken<IMiddleware>('__MVC_IMiddleware');
 
 /**
  * Middleware inteface

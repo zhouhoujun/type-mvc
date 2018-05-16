@@ -1,6 +1,5 @@
 import { Singleton, ObjectMap, Token } from '@ts-ioc/core';
 import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
-import { MvcSymbols } from './util/index';
 import { RequestMethod } from './core/index';
 import { ServerOptions } from 'https';
 
@@ -109,7 +108,7 @@ export class Configuration implements IConfiguration {
      * @type {Token<any>}
      * @memberof Configuration
      */
-    routerMiddlewate?: Token<any> = MvcSymbols.RouterMiddleware;
+    routerMiddlewate?: Token<any> = RouterMiddlewareToken;
 
     /**
      * custom middleware match path, './middlewares/\*\*\/*{.js,.ts}', '!.\/**\/*.d.ts\' in your project.

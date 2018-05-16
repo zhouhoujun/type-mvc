@@ -1,5 +1,10 @@
 import { Context } from 'koa'
-import { IContainer, ObjectMap } from '@ts-ioc/core'
+import { IContainer, ObjectMap, InjectToken } from '@ts-ioc/core'
+
+/**
+ * context token.
+ */
+export const ContextToken = new InjectToken<IContext>('__MVC_IContext');
 
 /**
  * mvc IContext.

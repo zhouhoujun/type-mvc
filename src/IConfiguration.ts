@@ -1,6 +1,5 @@
-import { ObjectMap, Injectable, Singleton, Token, Type } from '@ts-ioc/core';
+import { ObjectMap, Injectable, Singleton, Token, Type, InjectToken } from '@ts-ioc/core';
 import { LogConfigure } from '@ts-ioc/logs';
-import { MvcSymbols } from './util/index';
 import { RequestMethod } from './core';
 import { ServerOptions } from 'https';
 // import { ServerOptions as Http2Options } from 'http2';
@@ -43,6 +42,18 @@ export interface ModelOptions {
     fieldMetaname: string;
 }
 
+/**
+ * configuration token.
+ */
+export const ConfigurationToken = new InjectToken<IConfiguration>('__MVC_Configuration');
+
+/**
+ * Configuration.
+ * 
+ * @export
+ * @interface IConfiguration
+ * @extends {ObjectMap<any>}
+ */
 export interface IConfiguration extends ObjectMap<any> {
 
     /**

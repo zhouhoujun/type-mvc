@@ -2,17 +2,18 @@ import { IContainer, Injectable, Inject, isString } from '@ts-ioc/core';
 import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
-import { MvcSymbols } from '../../util/index';
-import { IConfiguration } from '../../IConfiguration';
+import { IConfiguration, ConfigurationToken } from '../../IConfiguration';
 import { NonePointcut } from '@ts-ioc/aop';
 import { toAbsolutePath } from '@ts-ioc/platform-server';
+import { MiddlewareToken } from '.';
 const serve = require('koa-static');
 
 @NonePointcut
-@Middleware(MvcSymbols.ContentMiddleware)
+@Middleware(MiddlewareToken, 'BodyParser')
 export class DefaultContentMiddleware implements IMiddleware {
 
-    constructor(private app: Application, @Inject(MvcSymbols.IConfiguration) private config: IConfiguration) {
+    @Inject(ConfigurationToken) private config: IConfiguration;
+    constructor(private app: Application) {
     }
     setup() {
         let contents = this.config.contents || ['./public'];

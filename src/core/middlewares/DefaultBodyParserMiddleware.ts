@@ -2,12 +2,12 @@ import { IContainer, Injectable, Inject } from '@ts-ioc/core';
 import { Middleware } from '../decorators';
 import { IMiddleware } from './IMiddleware';
 import { Application } from '../Application';
-import { MvcSymbols } from '../../util/index';
 import { NonePointcut } from '@ts-ioc/aop';
+import { MiddlewareToken } from '.';
 const bodyParser = require('koa-bodyparser');
 
 @NonePointcut
-@Middleware(MvcSymbols.BodyParserMiddleware)
+@Middleware(MiddlewareToken, 'BodyParser')
 export class DefaultBodyParserMiddleware implements IMiddleware {
 
     constructor(private app: Application) {

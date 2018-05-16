@@ -1,11 +1,16 @@
 import * as Koa from 'koa';
-import { Injectable, Singleton, IContainer, AutoWired, Inject, symbols, Type } from '@ts-ioc/core';
-import { MvcSymbols } from '../util/index';
+import { Injectable, Singleton, IContainer, AutoWired, Inject, symbols, Type, InjectToken } from '@ts-ioc/core';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
 import { IConfiguration } from '../IConfiguration';
-import { ILogger, ILoggerManger, IConfigureLoggerManager, LogSymbols } from '@ts-ioc/logs';
+import { ILogger, ILoggerManager, IConfigureLoggerManager, LogSymbols } from '@ts-ioc/logs';
+
+/**
+ * Application token.
+ */
+export const ApplicationToken = new InjectToken<Application>('__MVC_Application');
+
 /**
  * Application of type mvc.
  *
@@ -13,14 +18,14 @@ import { ILogger, ILoggerManger, IConfigureLoggerManager, LogSymbols } from '@ts
  * @class Application
  * @extends {Koa}
  */
-@Singleton(MvcSymbols.Application)
+@Singleton(ApplicationToken)
 export class Application {
 
     private server: http.Server | https.Server;
     private koa: Koa;
 
     private _container: IContainer;
-    private _loggerMgr: ILoggerManger;
+    private _loggerMgr: ILoggerManager;
     get container() {
         return this._container;
     }
@@ -37,10 +42,10 @@ export class Application {
     }
 
     getConfiguration(): IConfiguration {
-        return this.container.get<IConfiguration>(MvcSymbols.IConfiguration);
+        return this.container.get(ConfigurationToken);
     }
 
-    getLoggerManger(): ILoggerManger {
+    getLoggerManger(): ILoggerManager {
         if (!this._loggerMgr) {
             let cfg = this.getConfiguration();
             this._loggerMgr = this.container.resolve<IConfigureLoggerManager>(LogSymbols.IConfigureLoggerManager, { config: cfg.logConfig })
