@@ -7,17 +7,17 @@ import {
     isBoolean,  isDate
 } from '@ts-ioc/core';
 import { IContext } from '../IContext';
-import { Next, Defer, MvcSymbols } from '../../util/index';
+import { Next } from '../../util/index';
 import { Get, Post, Put, Delete, Field, Cors, Options, Model, Route } from '../decorators/index';
 import { GetMetadata, CorsMetadata, RouteMetadata } from '../metadata/index'
 import { IRoute } from './IRoute';
 import { Authorization } from '../decorators/index';
-import { IAuthorization } from '../IAuthorization';
+import { IAuthorization, AuthorizationToken } from '../IAuthorization';
 import { UnauthorizedError, NotFoundError, HttpError, BadRequestError, ForbiddenError } from '../../errors/index';
 import { isBuffer } from 'util';
 import { JsonResult, ResultValue, ViewResult, FileResult } from '../results/index';
 import { RequestMethod, methodToString, parseRequestMethod } from '../RequestMethod';
-import { IConfiguration } from '../../IConfiguration';
+import { IConfiguration, ConfigurationToken } from '../../IConfiguration';
 import { ModelParser } from './ModelParser';
 
 export class ControllerRoute extends BaseRoute {
@@ -75,7 +75,7 @@ export class ControllerRoute extends BaseRoute {
         };
 
 
-        let config = container.get<IConfiguration>(MvcSymbols.IConfiguration);
+        let config = container.get<IConfiguration>(ConfigurationToken);
         let options = config.corsOptions || {};
 
         if (ctx.method !== 'OPTIONS') {
@@ -172,10 +172,10 @@ export class ControllerRoute extends BaseRoute {
         let meta = this.getRouteMetaData(ctx, container, parseRequestMethod(ctx.method));
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
-            if (container.has(MvcSymbols.IAuthorization)) {
+            if (container.has(AuthorizationToken)) {
                 let hasAuth = hasClassMetadata(Authorization, ctrl) || hasMethodMetadata(Authorization, ctrl, meta.propertyKey);
                 if (hasAuth) {
-                    let auth = container.get<IAuthorization>(MvcSymbols.IAuthorization);
+                    let auth = container.get(AuthorizationToken);
                     if (!auth.isAuth()) {
                         throw new UnauthorizedError();
                     }

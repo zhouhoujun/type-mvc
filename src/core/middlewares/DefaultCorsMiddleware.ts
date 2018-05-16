@@ -1,23 +1,22 @@
-import { Application } from '../Application';
-import { IConfiguration } from '../../IConfiguration';
+import { Application, ApplicationToken } from '../Application';
+import { IConfiguration, ConfigurationToken } from '../../IConfiguration';
 import { Middleware } from '../decorators';
 import { RequestMethod } from '../RequestMethod';
-import { IMiddleware } from '../middlewares';
+import { IMiddleware, CorsMiddlewareToken } from '../middlewares/index';
 import { ObjectMap, ActionComponent, Token, Inject } from '@ts-ioc/core';
-import { MvcSymbols } from '../../util/index';
-import { Router } from '../router';
+import { Router, RouterMiddlewareToken } from '../router/index';
 import { NonePointcut } from '@ts-ioc/aop';
 
-@Middleware(MvcSymbols.CorsMiddleware)
+@Middleware(CorsMiddlewareToken)
 export class DefaultCorsMiddleware implements IMiddleware {
 
-    @Inject(MvcSymbols.Application)
+    @Inject(ApplicationToken)
     private app: Application;
 
-    @Inject(MvcSymbols.IConfiguration)
+    @Inject(ConfigurationToken)
     private config: IConfiguration;
 
-    @Inject(MvcSymbols.RouterMiddleware)
+    @Inject(RouterMiddlewareToken)
     private router: Router;
 
     constructor() {

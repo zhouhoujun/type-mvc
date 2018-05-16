@@ -1,180 +1,190 @@
-/**
- * mvc symbols
- */
-export interface MvcSymbols {
+import { InjectToken } from '@ts-ioc/core';
+import { Application, IRouter, IContext, IAuthorization, IMiddleware, ApplicationToken, ContextToken, AuthorizationToken, ContentMiddlewareToken, SessionMiddlewareToken, LogMiddlewareToken, RouterMiddlewareToken, CorsMiddlewareToken, JsonMiddlewareToken, BodyParserMiddlewareToken, ViewsMiddlewareToken } from './core/index';
+import { IConfiguration, ConfigurationToken } from './IConfiguration';
 
-
-    /**
-     * Application symbol.
-     */
-    Application: symbol;
-
-    /**
-     * MVC Context
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    IContext: symbol;
-
-    /**
-     * Authorization
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    IAuthorization: symbol;
-
-    /**
-     * Configuration
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    IConfiguration: symbol;
-
-
-    /**
-     * context middlwware is provider for context of request.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    ContextMiddleware: symbol;
-
-    /**
-     * content middlwware is static files server.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    ContentMiddleware: symbol;
-
-
-    /**
-     * Session middlwware is deal wtih session connect.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    SessionMiddleware: symbol;
-
-    /**
-     * log middlwware is deal with log for requests.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    LogMiddleware: symbol;
-
-
-    /**
-     * route middlwware is deal with route for requests.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    RouterMiddleware: symbol;
-
-    /**
-     * Cors middlwware is deal with route cors for requests.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    CorsMiddleware: symbol;
-
-
-    /**
-     * json middlwware is deal with request body as json for some requests.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    JsonMiddleware: symbol;
-
-    /**
-     * Body Parse middlwware is deal with request body for requests.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    BodyParserMiddleware: symbol;
-
-
-    /**
-     * view middlwware is render html for requests.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    ViewsMiddleware: symbol;
-}
-
-
-export const MvcSymbols: MvcSymbols = {
-
-    /**
-     * Application symbol.
-     */
-    Application: Symbol('Application'),
-
-    /**
-     * MVC Context
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    IContext: Symbol('IContext'),
-
-    /**
-     * Authorization
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    IAuthorization: Symbol('IAuthorization'),
-
-    /**
-     * Configuration
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    IConfiguration: Symbol('IConfiguration'),
-
-
-    /**
-     * context middlwware is provider for context of request.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    ContextMiddleware: Symbol('ContextMiddleware'),
-
-    /**
-     * content middlwware is static files server.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    ContentMiddleware: Symbol('ContentMiddleware'),
-
-
-    /**
-     * Session middlwware is deal wtih session connect.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    SessionMiddleware: Symbol('SessionMiddleware'),
-
-    /**
-     * log middlwware is deal with log for requests.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    LogMiddleware: Symbol('LogMiddleware'),
-
-
-    /**
-     * route middlwware is deal with route for requests.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    RouterMiddleware: Symbol('RouterMiddleware'),
-
-    /**
-     * Cors middlwware is deal with route cors for requests.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    CorsMiddleware: Symbol('CorsMiddleware'),
-
-
-    /**
-     * json middlwware is deal with request body as json for some requests.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    JsonMiddleware: Symbol('JsonMiddleware'),
-
-    /**
-     * Body Parse middlwware is deal with request body for requests.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    BodyParserMiddleware: Symbol('BodyParserMiddleware'),
-
-
-    /**
-     * view middlwware is render html for requests.
-     * it is a symbol id, you can register yourself middleware for this.
-     */
-    ViewsMiddleware: Symbol('ViewsMiddleware')
-
-}
 
 /**
  * mvc symbols
  */
-export const mvcSymbols = MvcSymbols;
+export interface MvcTokens {
+
+
+    /**
+     * Application token.
+     */
+    Application: InjectToken<Application>;
+
+    /**
+     * MVC Context
+     * it is a token id, you can register yourself middleware for this.
+     */
+    IContext: InjectToken<IContext>;
+
+    /**
+     * Authorization
+     * it is a token id, you can register yourself middleware for this.
+     */
+    IAuthorization: InjectToken<IAuthorization>;
+
+    /**
+     * Configuration
+     * it is a token id, you can register yourself middleware for this.
+     */
+    IConfiguration: InjectToken<IConfiguration>;
+
+
+    /**
+     * context middlwware is provider for context of request.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    ContextMiddleware: InjectToken<IMiddleware>;
+
+    /**
+     * content middlwware is static files server.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    ContentMiddleware: InjectToken<IMiddleware>;
+
+
+    /**
+     * Session middlwware is deal wtih session connect.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    SessionMiddleware: InjectToken<IMiddleware>;
+
+    /**
+     * log middlwware is deal with log for requests.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    LogMiddleware: InjectToken<IMiddleware>;
+
+
+    /**
+     * route middlwware is deal with route for requests.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    RouterMiddleware: InjectToken<IRouter>;
+
+    /**
+     * Cors middlwware is deal with route cors for requests.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    CorsMiddleware: InjectToken<IMiddleware>;
+
+
+    /**
+     * json middlwware is deal with request body as json for some requests.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    JsonMiddleware: InjectToken<IMiddleware>;
+
+    /**
+     * Body Parse middlwware is deal with request body for requests.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    BodyParserMiddleware: InjectToken<IMiddleware>;
+
+
+    /**
+     * view middlwware is render html for requests.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    ViewsMiddleware: InjectToken<IMiddleware>;
+}
+
+
+export const MvcTokens: MvcTokens = {
+
+    /**
+     * Application token.
+     */
+    Application: ApplicationToken,
+
+    /**
+     * MVC Context
+     * it is a token id, you can register yourself middleware for this.
+     */
+    IContext: ContextToken,
+
+    /**
+     * Authorization
+     * it is a token id, you can register yourself middleware for this.
+     */
+    IAuthorization: AuthorizationToken,
+
+    /**
+     * Configuration
+     * it is a token id, you can register yourself middleware for this.
+     */
+    IConfiguration: ConfigurationToken,
+
+
+    /**
+     * context middlwware is provider for context of request.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    ContextMiddleware: ContentMiddlewareToken,
+
+    /**
+     * content middlwware is static files server.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    ContentMiddleware: ContentMiddlewareToken,
+
+
+    /**
+     * Session middlwware is deal wtih session connect.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    SessionMiddleware: SessionMiddlewareToken,
+
+    /**
+     * log middlwware is deal with log for requests.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    LogMiddleware: LogMiddlewareToken,
+
+
+    /**
+     * route middlwware is deal with route for requests.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    RouterMiddleware: RouterMiddlewareToken,
+
+    /**
+     * Cors middlwware is deal with route cors for requests.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    CorsMiddleware: CorsMiddlewareToken,
+
+
+    /**
+     * json middlwware is deal with request body as json for some requests.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    JsonMiddleware: JsonMiddlewareToken,
+
+    /**
+     * Body Parse middlwware is deal with request body for requests.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    BodyParserMiddleware: BodyParserMiddlewareToken,
+
+
+    /**
+     * view middlwware is render html for requests.
+     * it is a token id, you can register yourself middleware for this.
+     */
+    ViewsMiddleware: ViewsMiddlewareToken
+
+}
+
+/**
+ * mvc tokens
+ */
+export const mvcSymbols = MvcTokens;
+
+/**
+ * mvc tokens
+ */
+export const MvcSymbols = MvcTokens;

@@ -1,11 +1,11 @@
 import { NonePointcut } from '@ts-ioc/aop';
 import * as Koa from 'koa';
-import { Injectable, Singleton, IContainer, AutoWired, Inject, symbols, Type, InjectToken } from '@ts-ioc/core';
+import { Injectable, Singleton, IContainer, AutoWired, Inject, Type, InjectToken, ContainerToken } from '@ts-ioc/core';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
 import { IConfiguration, ConfigurationToken } from '../IConfiguration';
-import { ILogger, ILoggerManager, IConfigureLoggerManager, LogSymbols } from '@ts-ioc/logs';
+import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
 
 /**
  * Application token.
@@ -27,7 +27,7 @@ export class Application {
     private koa: Koa;
     private _loggerMgr: ILoggerManager;
 
-    @Inject(symbols.IContainer)
+    @Inject(ContainerToken)
     container: IContainer;
 
     constructor() {
@@ -48,7 +48,7 @@ export class Application {
     getLoggerManger(): ILoggerManager {
         if (!this._loggerMgr) {
             let cfg = this.getConfiguration();
-            this._loggerMgr = this.container.resolve<IConfigureLoggerManager>(LogSymbols.IConfigureLoggerManager, { config: cfg.logConfig })
+            this._loggerMgr = this.container.resolve<IConfigureLoggerManager>(ConfigureLoggerManagerToken, { config: cfg.logConfig })
         }
         return this._loggerMgr;
     }

@@ -1,3 +1,5 @@
+import { InjectToken } from "@ts-ioc/core";
+
 /**
  * Authorization
  */
@@ -10,3 +12,8 @@ export interface IAuthorization {
      */
     isAuth(): boolean;
 }
+
+/**
+ * Authorization token.
+ */
+export const AuthorizationToken = new InjectToken<IAuthorization>('_MVC_Authorization');

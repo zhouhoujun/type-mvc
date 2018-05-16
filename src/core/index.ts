@@ -19,7 +19,6 @@ import {
 
 } from './middlewares/index';
 import { IContainer, CoreActions, LifeState } from '@ts-ioc/core';
-import { MvcSymbols } from '../util/index';
 import { Router, ModelParser } from './router/index';
 import { BaseController } from './BaseController';
 import { Controller, Authorization, Middleware, Model } from './decorators/index';

@@ -1,16 +1,15 @@
 import { IContainer, Injectable, Inject } from '@ts-ioc/core';
 import { Middleware } from '../decorators';
-import { IMiddleware } from './IMiddleware';
-import { Application } from '../Application';
-import { MvcSymbols } from '../../util/index';
+import { IMiddleware, LogMiddlewareToken } from './IMiddleware';
+import { Application, ApplicationToken } from '../Application';
 import { NonePointcut } from '@ts-ioc/aop';
 const logger = require('koa-logger')
 
 @NonePointcut
-@Middleware(MvcSymbols.LogMiddleware)
+@Middleware(LogMiddlewareToken)
 export class DefaultLogMiddleware implements IMiddleware {
 
-    @Inject(MvcSymbols.Application)
+    @Inject(ApplicationToken)
     private app: Application;
 
     constructor() {

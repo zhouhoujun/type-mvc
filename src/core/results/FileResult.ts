@@ -1,9 +1,8 @@
 import { ResultValue } from './ResultValue';
 import { Stream } from 'stream';
 import { IContext } from '../IContext';
-import { Defer, MvcSymbols } from '../../util/index';
-import { IConfiguration } from '../../IConfiguration';
-import { IContainer, isString } from '@ts-ioc/core';
+import { IConfiguration, ConfigurationToken } from '../../IConfiguration';
+import { IContainer, isString, Defer } from '@ts-ioc/core';
 import { existsSync, readFile } from 'fs';
 import { join } from 'path';
 import { BadRequestError } from '../../errors/index';
@@ -24,7 +23,7 @@ export class FileResult extends ResultValue {
         let defer = Defer.create<Buffer>();
         let file = this.file;
         let contentType = this.contentType;
-        let confige = container.get<IConfiguration>(MvcSymbols.IConfiguration);
+        let confige = container.get(ConfigurationToken);
         if (isString(file)) {
             let filepath = join(confige.rootdir, file);
             if (existsSync(filepath)) {

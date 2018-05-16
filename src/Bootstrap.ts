@@ -1,23 +1,20 @@
 import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
-import { IConfiguration } from './IConfiguration';
+import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { Configuration } from './Configuration';
-import { Defer, MvcSymbols } from './util/index';
-import { isString, isSymbol, symbols, IContainer, IContainerBuilder, isClass, isFunction, Type, Token, AsyncLoadOptions, isToken } from '@ts-ioc/core';
+import { isString, isSymbol, IContainer, IContainerBuilder, isClass, isFunction, Type, Token, AsyncLoadOptions, isToken, Defer } from '@ts-ioc/core';
 import { ContainerBuilder, toAbsolutePath } from '@ts-ioc/platform-server';
 import * as path from 'path';
 import { Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter } from './core';
-import { execFileSync } from 'child_process';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
 
-// import * as logs from './logs/index';
 
 import { AuthAspect, DebugLogAspect } from './aop/index';
 import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
 import { AopModule } from '@ts-ioc/aop';
-import { LogModule } from '@ts-ioc/logs';
+import { LogModule, LogConfigureToken } from '@ts-ioc/logs';
 import { IServerMiddleware, ServerMiddleware } from './core/servers/index';
 
 /**
@@ -46,8 +43,6 @@ export class Bootstrap {
         this.afterSMdls = [];
         this.appType = this.appType || Application;
     }
-
-    static symbols = MvcSymbols
 
     /**
      * create new application.
@@ -139,7 +134,7 @@ export class Bootstrap {
         if (isString(config)) {
             if (existsSync(config)) {
                 cfgmodeles = require(config) as IConfiguration;
-            } else if (execFileSync(path.join(this.rootdir, config))) {
+            } else if (existsSync(path.join(this.rootdir, config))) {
                 cfgmodeles = require(path.join(this.rootdir, config)) as IConfiguration;
             } else {
                 console.log(`config file: ${config} not exists.`)
@@ -218,7 +213,7 @@ export class Bootstrap {
      */
     async run(listener?: Function) {
         let app = await this.build();
-        let config = app.container.get<IConfiguration>(MvcSymbols.IConfiguration);
+        let config = app.container.get(ConfigurationToken);
         let server = app.getServer();
         let port = config.port || parseInt(process.env.PORT || '0');
         if (config.hostname) {
@@ -263,7 +258,7 @@ export class Bootstrap {
         }
 
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
-        container.registerSingleton(MvcSymbols.IConfiguration, config);
+        container.registerSingleton(ConfigurationToken, config);
         container.registerSingleton(Configuration, config as Configuration);
         this.registerDefaults(container);
         // register app.
@@ -302,7 +297,7 @@ export class Bootstrap {
         }
 
         if (config.logConfig) {
-            container.registerSingleton(LogModule.symbols.LogConfigure, config.logConfig);
+            container.registerSingleton(LogConfigureToken, config.logConfig);
         }
 
         if (config.debug) {

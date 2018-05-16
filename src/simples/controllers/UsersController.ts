@@ -1,4 +1,4 @@
-import { Controller, Get, Post, IContext, MvcSymbols, Model, Field, Cors } from '../../index';
+import { Controller, Get, Post, IContext, ContextToken, Model, Field, Cors } from '../../index';
 import { Inject } from '@ts-ioc/core';
 import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
@@ -8,7 +8,7 @@ import { RequestMethod } from '../../index';
 @Controller('/users')
 export class UserController {
 
-    // @Inject(symbols.IContext)
+    // @Inject(ContextToken)
     // context: IContext;
     constructor(private work: Mywork) {
 
@@ -22,7 +22,7 @@ export class UserController {
 
     @Cors([RequestMethod.Post])
     @Post('/add')
-    async addUser(user: User, @Inject(MvcSymbols.IContext) ctx: IContext) {
+    async addUser(user: User, @Inject(ContextToken) ctx: IContext) {
         console.log('user:', user);
         console.log('request body', ctx.request['body']);
         return this.work.save(user);
@@ -40,7 +40,7 @@ export class UserController {
     }
 
     @Get('/find/:name')
-    query(@Inject(MvcSymbols.IContext) ctx, name: string) {
+    query(@Inject(ContextToken) ctx, name: string) {
         console.log(ctx);
         return this.work.find(name);
     }

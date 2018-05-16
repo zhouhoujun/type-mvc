@@ -1,14 +1,14 @@
-import { Application } from '../Application';
+import { Application, ApplicationToken } from '../Application';
 import { IConfiguration } from '../../IConfiguration';
 import { Middleware } from '../decorators/index';
 import { RequestMethod } from '../RequestMethod';
 import { IMiddleware } from '../middlewares/index';
-import { ObjectMap, ActionComponent, Token, Inject, Injectable } from '@ts-ioc/core';
+import { ObjectMap, ActionComponent, Token, Inject, Injectable, InjectToken } from '@ts-ioc/core';
 import { IRoute } from './IRoute';
 import { RootRoute } from './RootRoute';
 import { RouteBuilder } from './RouteBuilder';
-import { MvcSymbols } from '../../util/index';
 import { NonePointcut } from '@ts-ioc/aop';
+import { ConfigurationToken } from '../../IConfiguration';
 const compose = require('koa-compose');
 
 /**
@@ -26,13 +26,18 @@ export interface IRouter extends IMiddleware {
     getRoot(): IRoute;
 }
 
-@Middleware(MvcSymbols.RouterMiddleware)
+/**
+ * Router middleware token.
+ */
+export const RouterMiddlewareToken = new InjectToken<IRouter>('__MVC_Middleware_Router'); 
+
+@Middleware(RouterMiddlewareToken)
 export class Router implements IRouter, IMiddleware {
 
     private root: IRoute;
-    @Inject(MvcSymbols.Application)
+    @Inject(ApplicationToken)
     private app: Application;
-    constructor(private builder: RouteBuilder, @Inject(MvcSymbols.IConfiguration) private config: IConfiguration) {
+    constructor(private builder: RouteBuilder, @Inject(ConfigurationToken) private config: IConfiguration) {
         this.root = new RootRoute(config.routePrefix);
     }
 

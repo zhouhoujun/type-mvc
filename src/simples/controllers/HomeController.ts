@@ -1,11 +1,11 @@
-import { Controller, Get, Post, IContext, MvcSymbols, BaseController, ViewResult, ResultValue } from '../../index';
+import { Controller, Get, Post, IContext, BaseController, ViewResult, ResultValue } from '../../index';
 import { Inject } from '@ts-ioc/core';
 import { Mywork } from '../bi/Mywork';
 
 @Controller('/')
 export class HomeController extends BaseController {
 
-    // @Inject(symbols.IContext)
+    // @Inject(ContextToken)
     // context: IContext;
     constructor() {
         super();

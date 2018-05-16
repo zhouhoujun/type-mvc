@@ -1,14 +1,15 @@
 import { IContainer, Injectable, Inject } from '@ts-ioc/core';
 import { Middleware } from '../decorators';
-import { IMiddleware } from './IMiddleware';
-import { Application } from '../Application';
+import { IMiddleware, ContextMiddlewareToken } from './IMiddleware';
+import { Application, ApplicationToken } from '../Application';
 import { NonePointcut } from '@ts-ioc/aop';
+import { ContextToken } from '../IContext';
 
 
-@Middleware(MvcSymbols.ContextMiddleware)
+@Middleware(ContextMiddlewareToken)
 export class DefaultContextMiddleware implements IMiddleware {
 
-    @Inject(MvcSymbols.Application)
+    @Inject(ApplicationToken)
     private app: Application;
 
     constructor() {
@@ -16,8 +17,8 @@ export class DefaultContextMiddleware implements IMiddleware {
 
     setup() {
         this.app.use(async (ctx, next) => {
-            this.app.container.unregister(MvcSymbols.IContext);
-            this.app.container.bindProvider(MvcSymbols.IContext, () => ctx);
+            this.app.container.unregister(ContextToken);
+            this.app.container.bindProvider(ContextToken, () => ctx);
             return next();
         });
     }

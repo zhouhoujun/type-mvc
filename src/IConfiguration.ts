@@ -55,7 +55,6 @@ export interface ModelOptions {
 }
 
 /**
-<<<<<<< HEAD
  * configuration token.
  */
 export const ConfigurationToken = new InjectToken<IConfiguration>('__MVC_Configuration');
@@ -63,10 +62,8 @@ export const ConfigurationToken = new InjectToken<IConfiguration>('__MVC_Configu
 /**
  * Configuration.
  * 
-=======
  * Mvc applaction configuration.
  *
->>>>>>> f86e94ec5ca4a3e675b32106d39ae20f68b55464
  * @export
  * @interface IConfiguration
  * @extends {ObjectMap<any>}

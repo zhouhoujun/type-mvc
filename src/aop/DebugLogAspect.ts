@@ -1,7 +1,6 @@
-import { Singleton, Inject, IContainer, symbols  } from '@ts-ioc/core';
+import { Singleton, Inject, IContainer, ContainerToken  } from '@ts-ioc/core';
 import { LoggerAspect, Level } from '@ts-ioc/logs'
 import { Aspect, Around, Joinpoint, JoinpointState } from '@ts-ioc/aop';
-import { MvcSymbols } from '../util/index';
 import { IConfiguration } from '../IConfiguration';
 
 /**
@@ -15,7 +14,7 @@ import { IConfiguration } from '../IConfiguration';
 @Aspect
 export class DebugLogAspect extends LoggerAspect {
 
-    constructor( @Inject(symbols.IContainer) container: IContainer) {
+    constructor( @Inject(ContainerToken) container: IContainer) {
         super(container);
     }
 
