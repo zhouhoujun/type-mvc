@@ -5,6 +5,12 @@ import { ServerOptions } from 'https';
 // import { ServerOptions as Http2Options } from 'http2';
 
 
+/**
+ * seetion config.
+ *
+ * @export
+ * @interface ISessionConfig
+ */
 export interface ISessionConfig {
     /** (string) cookie key (default is koa:sess) */
     key: string;
@@ -26,6 +32,12 @@ export interface ISessionConfig {
     rolling: boolean;
 }
 
+/**
+ * view options
+ *
+ * @export
+ * @interface IViewOptions
+ */
 export interface IViewOptions {
     extension: string,
     map?: ObjectMap<any>;
@@ -43,6 +55,7 @@ export interface ModelOptions {
 }
 
 /**
+<<<<<<< HEAD
  * configuration token.
  */
 export const ConfigurationToken = new InjectToken<IConfiguration>('__MVC_Configuration');
@@ -50,6 +63,10 @@ export const ConfigurationToken = new InjectToken<IConfiguration>('__MVC_Configu
 /**
  * Configuration.
  * 
+=======
+ * Mvc applaction configuration.
+ *
+>>>>>>> f86e94ec5ca4a3e675b32106d39ae20f68b55464
  * @export
  * @interface IConfiguration
  * @extends {ObjectMap<any>}
@@ -277,16 +294,53 @@ export interface IConfiguration extends ObjectMap<any> {
     logConfig?: LogConfigure | Type<LogConfigure>;
 }
 
+/**
+ * cors options
+ *
+ * @export
+ * @interface CorsOptions
+ */
 export interface CorsOptions {
+    /**
+     * enable Access-Control-Allow-Credentials
+     *
+     * @type {boolean}
+     * @memberof CorsOptions
+     */
     credentials?: boolean;
+    /**
+     * set request Access-Control-Expose-Headers
+     *
+     * @type {string}
+     * @memberof CorsOptions
+     */
     exposeHeaders?: string;
+    /**
+     * keep headers on error.
+     *
+     * @type {boolean}
+     * @memberof CorsOptions
+     */
     keepHeadersOnError?: boolean;
+
+    /**
+     * allow cors request methods
+     *
+     * @type {(string | (string | RequestMethod)[])}
+     * @memberof CorsOptions
+     */
     allowMethods?: string | (string | RequestMethod)[];
 
+    /**
+     * allow cors request headers, 'Access-Control-Request-Headers'
+     *
+     * @type {(string | string[])}
+     * @memberof CorsOptions
+     */
     allowHeaders?: string | string[];
 
     /**
-     * for global default.
+     * set cors cache max age.  Access-Control-Max-Age.
      *
      * @type {number}
      * @memberof CorsOptions

@@ -1,7 +1,34 @@
 import { RequestMethod } from '../RequestMethod';
-import { createRouteDecorator, IRouteDecorator } from './Route';
+import { createRouteDecorator } from './Route';
 import { PostMetadata } from '../metadata/index';
+import { IMethodDecorator } from '@ts-ioc/core';
 
 
-export const Post: IRouteDecorator<PostMetadata> = createRouteDecorator<PostMetadata>(RequestMethod.Post);
+/**
+ * Post decorator. define the route method as an Post.
+ *
+ * @Post
+ *
+ * @export
+ * @interface IPostDecorator
+ * @template T
+ */
+export interface IPostDecorator<T extends PostMetadata> extends IMethodDecorator<T> {
+    /**
+     * Post decorator. define the route method as an Post.
+     *
+     * @Post
+     *
+     * @param {string} route route sub path.
+     * @param {string} [contentType] set request contentType.
+     */
+    (route: string, contentType?: string): MethodDecorator;
+}
+
+/**
+ * Post decorator. define the route method as post.
+ *
+ * @Post
+ */
+export const Post: IPostDecorator<PostMetadata> = createRouteDecorator<PostMetadata>(RequestMethod.Post);
 

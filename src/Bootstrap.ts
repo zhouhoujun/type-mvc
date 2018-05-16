@@ -21,7 +21,7 @@ import { LogModule } from '@ts-ioc/logs';
 import { IServerMiddleware, ServerMiddleware } from './core/servers/index';
 
 /**
- * Bootstrap
+ * mvc applaction bootstrap.
  *
  * @export
  * @class Bootstrap
@@ -264,6 +264,7 @@ export class Bootstrap {
 
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
         container.registerSingleton(MvcSymbols.IConfiguration, config);
+        container.registerSingleton(Configuration, config as Configuration);
         this.registerDefaults(container);
         // register app.
         container.register(this.appType);
@@ -376,7 +377,7 @@ export class Bootstrap {
             }
 
             if (isToken(m)) {
-                let middleware = container.get(m as Token<any>) as IMiddleware;
+                let middleware = container.get(m as Token<any>) as IServerMiddleware;
                 if (isFunction(middleware.setup)) {
                     middleware.setup();
                 }

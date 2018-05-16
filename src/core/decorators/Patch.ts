@@ -1,6 +1,34 @@
 import { RequestMethod } from '../RequestMethod';
-import { IRouteDecorator, createRouteDecorator } from './Route';
+import { createRouteDecorator } from './Route';
 import { PatchMetadata } from '../metadata/index';
+import { IMethodDecorator } from '@ts-ioc/core';
 
 
-export const Patch: IRouteDecorator<PatchMetadata> = createRouteDecorator<PatchMetadata>(RequestMethod.Patch);
+
+/**
+ * Patch decorator. define the route method as an Patch.
+ *
+ * @Patch
+ *
+ * @export
+ * @interface IPatchDecorator
+ * @template T
+ */
+export interface IPatchDecorator<T extends PatchMetadata> extends IMethodDecorator<T> {
+    /**
+     * Patch decorator. define the route method as an Patch.
+     *
+     * @Patch
+     *
+     * @param {string} route route sub path.
+     * @param {string} [contentType] set request contentType.
+     */
+    (route: string, contentType?: string): MethodDecorator;
+}
+
+/**
+ * Patch decorator. define the route method as patch.
+ *
+ * @Patch
+ */
+export const Patch: IPatchDecorator<PatchMetadata> = createRouteDecorator<PatchMetadata>(RequestMethod.Patch);

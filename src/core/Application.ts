@@ -1,9 +1,10 @@
+import { NonePointcut } from '@ts-ioc/aop';
 import * as Koa from 'koa';
 import { Injectable, Singleton, IContainer, AutoWired, Inject, symbols, Type, InjectToken } from '@ts-ioc/core';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
-import { IConfiguration } from '../IConfiguration';
+import { IConfiguration, ConfigurationToken } from '../IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, LogSymbols } from '@ts-ioc/logs';
 
 /**
@@ -18,20 +19,19 @@ export const ApplicationToken = new InjectToken<Application>('__MVC_Application'
  * @class Application
  * @extends {Koa}
  */
+@NonePointcut
 @Singleton(ApplicationToken)
 export class Application {
 
     private server: http.Server | https.Server;
     private koa: Koa;
-
-    private _container: IContainer;
     private _loggerMgr: ILoggerManager;
-    get container() {
-        return this._container;
-    }
 
-    constructor(@Inject(symbols.IContainer) container: IContainer) {
-        this._container = container;
+    @Inject(symbols.IContainer)
+    container: IContainer;
+
+    constructor() {
+
     }
 
     getKoa(): Koa {

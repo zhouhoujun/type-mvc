@@ -7,11 +7,16 @@ import { IConfiguration } from '../../IConfiguration';
 import * as json from 'koa-json';
 import { NonePointcut } from '@ts-ioc/aop';
 
-@NonePointcut
 @Middleware(MvcSymbols.JsonMiddleware)
 export class DefaultJsonMiddleware implements IMiddleware {
 
-    constructor(private app: Application, @Inject(MvcSymbols.IConfiguration) private config: IConfiguration) {
+    @Inject(MvcSymbols.Application)
+    private app: Application;
+
+    @Inject(MvcSymbols.IConfiguration)
+    private config: IConfiguration;
+
+    constructor() {
     }
     setup() {
         this.app.use(json());

@@ -1,5 +1,34 @@
 import { RequestMethod } from '../RequestMethod';
-import { createRouteDecorator, IRouteDecorator } from './Route';
+import { createRouteDecorator } from './Route';
 import { HeadMetadata } from '../metadata/index';
+import { IMethodDecorator } from '@ts-ioc/core';
 
-export const Head: IRouteDecorator<HeadMetadata> = createRouteDecorator<HeadMetadata>(RequestMethod.Head);
+
+/**
+ * Head decorator. define the route method as head.
+ *
+ * @Head
+ *
+ * @export
+ * @interface IHeadDecorator
+ * @template T
+ */
+export interface IHeadDecorator<T extends HeadMetadata> extends IMethodDecorator<T> {
+    /**
+     * Head decorator. define the route method as head.
+     *
+     * @Head
+     *
+     * @param {string} route route sub path.
+     * @param {string} [contentType] set request contentType.
+     */
+    (route: string, contentType?: string): MethodDecorator;
+}
+
+
+/**
+ * Head decorator. define the route method as head.
+ *
+ * @Head
+ */
+export const Head: IHeadDecorator<HeadMetadata> = createRouteDecorator<HeadMetadata>(RequestMethod.Head);

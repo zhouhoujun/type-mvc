@@ -9,11 +9,16 @@ import { toAbsolutePath } from '@ts-ioc/platform-server';
 
 const views = require('koa-views');
 
-@NonePointcut
 @Middleware(MvcSymbols.ViewsMiddleware)
 export class DefaultViewsMiddleware implements IMiddleware {
 
-    constructor(private app: Application, @Inject(MvcSymbols.IConfiguration) private config: IConfiguration) {
+    @Inject(MvcSymbols.Application)
+    private app: Application;
+
+    @Inject(MvcSymbols.IConfiguration)
+    private config: IConfiguration;
+
+    constructor() {
     }
     setup() {
         let viewPath = toAbsolutePath(this.config.rootdir, this.config.views);

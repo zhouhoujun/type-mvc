@@ -1,7 +1,9 @@
+import { NonePointcut } from '@ts-ioc/aop';
 import { Middleware, IMiddleware, Application, IConfiguration, MvcSymbols } from '../../index';
 import { IContainer, Injectable, Inject } from '@ts-ioc/core';
 
 
+@NonePointcut
 @Middleware({ provide: 'logger' })
 export class Logger implements IMiddleware {
 

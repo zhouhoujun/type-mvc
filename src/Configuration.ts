@@ -1,7 +1,8 @@
-import { Singleton, ObjectMap, Token } from '@ts-ioc/core';
+import { Singleton, ObjectMap, Token, Type } from '@ts-ioc/core';
 import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
 import { RequestMethod } from './core/index';
 import { ServerOptions } from 'https';
+import { LogConfigure } from '@ts-ioc/logs';
 
 /**
  * mvc configuration
@@ -15,8 +16,8 @@ export class Configuration implements IConfiguration {
 
     }
 
-    assertUrlRegExp?= /\/((\w|%|\.))+\.\w+$/;
-    routeUrlRegExp?= null;
+    assertUrlRegExp = /\/((\w|%|\.))+\.\w+$/;
+    routeUrlRegExp = null;
     isRouteUrl?(ctxUrl: string): boolean {
         let flag = !this.assertUrlRegExp.test(ctxUrl);
         if (flag && this.routeUrlRegExp) {
@@ -30,19 +31,19 @@ export class Configuration implements IConfiguration {
      *
      * @memberof Configuration
      */
-    hostname?= '';
+    hostname = '';
     /**
      * port
      *
      * @memberof Configuration
      */
-    port?= 3000;
+    port = 3000;
     /**
      * system file root directory.
      */
-    rootdir?= '';
+    rootdir = '';
 
-    session?= {
+    session = {
         key: 'typemvc:sess', /** (string) cookie key (default is koa:sess) */
         /** (number || 'session') maxAge in ms (default is 1 days) */
         /** 'session' will result in a cookie that expires when session/browser is closed */
@@ -67,7 +68,7 @@ export class Configuration implements IConfiguration {
      * @type {string}
      * @memberOf Configuration
      */
-    routePrefix?= '';
+    routePrefix = '';
     /**
      * custom config key value setting.
      *
@@ -164,6 +165,13 @@ export class Configuration implements IConfiguration {
      */
     useControllers?: Token<any>[] = [];
 
+    /**
+     * global cors default options.
+     *
+     * @type {CorsOptions}
+     * @memberof Configuration
+     */
+    corsOptions?: CorsOptions;
 
     /**
      * custom aop services. default './aop/\*\*\/*{.js,.ts}', '!.\/**\/*.d.ts\'
@@ -186,14 +194,14 @@ export class Configuration implements IConfiguration {
      *
      * @memberof Configuration
      */
-    views?= './views';
+    views = './views';
 
     /**
      * render view options.
      *
      * @memberof Configuration
      */
-    viewsOptions?= {
+    viewsOptions = {
         extension: 'ejs',
         map: { html: 'nunjucks' }
     };
@@ -206,13 +214,7 @@ export class Configuration implements IConfiguration {
      *
      * @memberof Configuration
      */
-    debug?= false;
+    debug = false;
 
-    /**
-     * global cors default options.
-     *
-     * @type {CorsOptions}
-     * @memberof Configuration
-     */
-    corsOptions?: CorsOptions;
+    logConfig?: LogConfigure | Type<LogConfigure>;
 }

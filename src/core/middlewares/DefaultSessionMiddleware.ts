@@ -12,8 +12,15 @@ const session = require('koa-session');
 @Middleware(MvcSymbols.SessionMiddleware)
 export class DefaultSessionMiddleware implements IMiddleware {
 
-    constructor(private app: Application, @Inject(MvcSymbols.IConfiguration) private config: IConfiguration) {
+    @Inject(MvcSymbols.Application)
+    private app: Application;
+
+    @Inject(MvcSymbols.IConfiguration)
+    private config: IConfiguration;
+
+    constructor() {
     }
+
     setup() {
         this.app.use(session(this.config.session, this.app.getKoa()));
     }

@@ -4,17 +4,6 @@ import { RouteMetadata } from '../metadata/index';
 
 
 /**
- * route decorator type define.
- *
- * @export
- * @interface IRouteDecorator
- * @template T
- */
-export interface IRouteDecorator<T extends RouteMetadata> extends IMethodDecorator<T> {
-    (route: string, contentType?: string): MethodDecorator;
-}
-
-/**
  * custom define Request method. route decorator type define.
  *
  * @export
@@ -22,6 +11,13 @@ export interface IRouteDecorator<T extends RouteMetadata> extends IMethodDecorat
  * @template T
  */
 export interface IRouteMethodDecorator<T extends RouteMetadata> extends IMethodDecorator<T> {
+    /**
+     * route decorator. define the controller method as an route.
+     *
+     * @param {string} route route sub path.
+     * @param {string} [contentType] set request contentType.
+     * @param {RequestMethod} [method] set request method.
+     */
     (route: string, contentType?: string, method?: RequestMethod): MethodDecorator;
 }
 
@@ -35,7 +31,7 @@ export interface IRouteMethodDecorator<T extends RouteMetadata> extends IMethodD
  */
 export function createRouteDecorator<T extends RouteMetadata>(
     method?: RequestMethod,
-    adapter?: MetadataAdapter, metaExtends?: MetadataExtends<T>): IRouteDecorator<T> {
+    adapter?: MetadataAdapter, metaExtends?: MetadataExtends<T>): IRouteMethodDecorator<T> {
     return createMethodDecorator<RouteMetadata>('Route',
         args => {
             if (adapter) {
@@ -69,7 +65,12 @@ export function createRouteDecorator<T extends RouteMetadata>(
             }
             metadata.method = method || RequestMethod.Get;
             return metadata;
-        }) as IRouteDecorator<T>;
+        }) as IRouteMethodDecorator<T>;
 }
 
+/**
+ * route decorator. define the controller method as an route.
+ *
+ * @Route
+ */
 export const Route: IRouteMethodDecorator<RouteMetadata> = createRouteDecorator<RouteMetadata>() as IRouteMethodDecorator<RouteMetadata>;

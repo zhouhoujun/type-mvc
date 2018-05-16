@@ -7,7 +7,7 @@ const ts = require('gulp-typescript');
 const sourcemaps = require('gulp-sourcemaps');
 let tsProject = ts.createProject('tsconfig.json');
 const uglify = require('gulp-uglify');
-import { classAnnotations } from 'typescript-class-annotations';
+import { classAnnotations } from '@ts-ioc/class-annotations';
 
 @TaskModule({
     providers: <IPipeElementProvider>{
@@ -26,7 +26,7 @@ import { classAnnotations } from 'typescript-class-annotations';
                     trans.changeAsOrigin = true;
                     return trans;
                 },
-                (ctx) => uglify(),
+                // (ctx) => uglify(),
                 (ctx) => sourcemaps.write('./sourcemaps')
             ],
             dts: [
