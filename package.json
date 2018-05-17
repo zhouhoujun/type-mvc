@@ -1,6 +1,6 @@
 {
   "name": "type-mvc",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -28,10 +28,10 @@
     "url": "git+https://github.com/zhouhoujun/type-mvc.git"
   },
   "dependencies": {
-    "@ts-ioc/aop": "^2.2.0",
-    "@ts-ioc/core": "^2.2.0",
-    "@ts-ioc/logs": "^2.2.0",
-    "@ts-ioc/platform-server": "^2.2.0",
+    "@ts-ioc/aop": "^2.2.1",
+    "@ts-ioc/core": "^2.2.1",
+    "@ts-ioc/logs": "^2.2.1",
+    "@ts-ioc/platform-server": "^2.2.1",
     "@types/koa": "^2.0.44",
     "ejs": "^2.5.7",
     "koa": "^2.5.0",
@@ -46,7 +46,7 @@
     "nunjucks": "^3.1.2"
   },
   "devDependencies": {
-    "@ts-ioc/class-annotations": "^2.2.0",
+    "@ts-ioc/class-annotations": "^2.2.1",
     "@types/chai": "^4.1.2",
     "@types/gulp-mocha": "0.0.32",
     "bluebird": "^3.4.1",

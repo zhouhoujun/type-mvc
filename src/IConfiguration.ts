@@ -61,7 +61,7 @@ export const ConfigurationToken = new InjectToken<IConfiguration>('__MVC_Configu
 
 /**
  * Configuration.
- * 
+ *
  * Mvc applaction configuration.
  *
  * @export

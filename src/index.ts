@@ -4,4 +4,5 @@ export * from './errors/index';
 export * from './IConfiguration';
 export * from './Configuration';
 export * from './Bootstrap';
+export * from './tokens';
 
