@@ -1,4 +1,4 @@
-import { ObjectMap, Injectable, Singleton, Token, Type, InjectToken } from '@ts-ioc/core';
+import { ObjectMap, Injectable, Singleton, Token, Type, InjectToken, AppConfiguration } from '@ts-ioc/core';
 import { LogConfigure } from '@ts-ioc/logs';
 import { RequestMethod } from './core';
 import { ServerOptions } from 'https';
@@ -68,7 +68,7 @@ export const ConfigurationToken = new InjectToken<IConfiguration>('__MVC_Configu
  * @interface IConfiguration
  * @extends {ObjectMap<any>}
  */
-export interface IConfiguration extends ObjectMap<any> {
+export interface IConfiguration extends AppConfiguration {
 
     /**
      * aseert url match regexp.

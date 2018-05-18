@@ -2,10 +2,10 @@ import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { Configuration } from './Configuration';
-import { isString, isSymbol, IContainer, IContainerBuilder, isClass, isFunction, Type, Token, AsyncLoadOptions, isToken, Defer } from '@ts-ioc/core';
+import { isString, isSymbol, IContainer, IContainerBuilder, isClass, isFunction, Type, Token, AsyncLoadOptions, isToken, Defer, AppConfigurationToken } from '@ts-ioc/core';
 import { ContainerBuilder, toAbsolutePath } from '@ts-ioc/platform-server';
 import * as path from 'path';
-import { Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter } from './core';
+import { Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter, ApplicationToken } from './core';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
@@ -259,6 +259,7 @@ export class Bootstrap {
 
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
         container.registerSingleton(ConfigurationToken, config);
+        container.bindProvider(AppConfigurationToken, ConfigurationToken);
         container.registerSingleton(Configuration, config as Configuration);
         this.registerDefaults(container);
         // register app.
