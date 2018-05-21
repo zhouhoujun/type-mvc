@@ -29,7 +29,7 @@ export interface IRouter extends IMiddleware {
 /**
  * Router middleware token.
  */
-export const RouterMiddlewareToken = new InjectToken<IRouter>('__MVC_Middleware_Router'); 
+export const RouterMiddlewareToken = new InjectToken<IRouter>('__MVC_Middleware_Router');
 
 @Middleware(RouterMiddlewareToken)
 export class Router implements IRouter, IMiddleware {

@@ -2,7 +2,7 @@ import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { Configuration } from './Configuration';
-import { isString, isSymbol, IContainer, IContainerBuilder, isClass, isFunction, Type, Token, AsyncLoadOptions, isToken, Defer, AppConfigurationToken } from '@ts-ioc/core';
+import { isString, isSymbol, IContainer, IContainerBuilder, isClass, isFunction, Type, Token, isToken, Defer, AppConfigurationToken, LoadType } from '@ts-ioc/core';
 import { ContainerBuilder, toAbsolutePath } from '@ts-ioc/platform-server';
 import * as path from 'path';
 import { Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter, ApplicationToken } from './core';
@@ -88,8 +88,8 @@ export class Bootstrap {
         return this.container.promise;
     }
 
-    protected createContainer(option?: AsyncLoadOptions): Promise<IContainer> {
-        return this.getContainerBuilder().build(option);
+    protected createContainer(...modules: LoadType[]): Promise<IContainer> {
+        return this.getContainerBuilder().build(...modules);
     }
 
 
@@ -267,9 +267,7 @@ export class Bootstrap {
 
         // custom use.
         if (this.middlewares) {
-            await this.builder.loadModule(container, {
-                modules: this.middlewares.filter(m => isClass(m)) as Type<any>[]
-            });
+            await this.builder.loadModule(container, ...this.middlewares.filter(m => isClass(m)) as Type<any>[]);
         }
 
         // custom config.
@@ -315,7 +313,7 @@ export class Bootstrap {
             config.usedAops = aops;
         }
 
-        let servers = await this.builder.loadModule(container, { modules: this.beforeSMdls.concat(this.afterSMdls).filter(m => isClass(m)) as Type<any>[] });
+        let servers = await this.builder.loadModule(container, ...this.beforeSMdls.concat(this.afterSMdls).filter(m => isClass(m)) as Type<any>[]);
         if (servers && servers.length) {
             config.usedServerMiddlewares = servers;
         }
