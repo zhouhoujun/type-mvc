@@ -4,6 +4,6 @@ Bootstrap.create(__dirname)
     .useConfiguration()
     // .useContainerBuilder()
     // .useContainer()
-    .run();
+    .bootstrap();
 
 

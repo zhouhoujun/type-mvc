@@ -73,8 +73,8 @@ class TestTask extends TaskElement {
 
 TaskContainer.create(__dirname)
     .bootstrap([
-        TestTask,
         TsCompile,
+        TestTask,
         {
             providers: {
                 src: 'src/cli/*.ts',

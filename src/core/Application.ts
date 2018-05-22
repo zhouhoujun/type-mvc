@@ -10,7 +10,23 @@ import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManage
 /**
  * Application token.
  */
-export const ApplicationToken = new InjectToken<Application>('__MVC_Application');
+export const ApplicationToken = new InjectToken<IApplication>('__MVC_Application');
+
+
+export interface IApplication {
+
+    getKoa(): Koa;
+
+    getConfiguration(): IConfiguration;
+
+    getLoggerManger(): ILoggerManager;
+
+    getLogger(name?: string): ILogger;
+
+    getServer(): http.Server | https.Server;
+
+    use(middleware: Koa.Middleware);
+}
 
 /**
  * Application of type mvc.

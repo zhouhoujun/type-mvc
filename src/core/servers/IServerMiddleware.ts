@@ -1,8 +1,8 @@
-import { Application } from '../Application';
+import { IApplication } from '../Application';
 import { IContainer } from '@ts-ioc/core';
 
 
-export type ServerMiddleware = (app: Application, container?: IContainer) => void;
+export type ServerMiddleware = (app: IApplication, container?: IContainer) => void;
 
 /**
  * server middleware inteface

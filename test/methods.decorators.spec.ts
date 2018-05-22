@@ -60,6 +60,5 @@ describe('decorator', () => {
 
     it('get', () => {
 
-
     })
 });

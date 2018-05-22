@@ -2,10 +2,10 @@ import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { Configuration } from './Configuration';
-import { isString, isSymbol, IContainer, IContainerBuilder, isClass, isFunction, Type, Token, isToken, Defer, AppConfigurationToken, LoadType } from '@ts-ioc/core';
-import { ContainerBuilder, toAbsolutePath } from '@ts-ioc/platform-server';
+import { isString, isSymbol, IContainer, IContainerBuilder, isClass, isFunction, Type, Token, isToken, Defer, LoadType, IModuleBuilder } from '@ts-ioc/core';
+import { ContainerBuilder, toAbsolutePath, PlatformServer, AppConfigurationToken } from '@ts-ioc/platform-server';
 import * as path from 'path';
-import { Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter, ApplicationToken } from './core';
+import { IApplication, Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter, ApplicationToken } from './core/index';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
@@ -23,25 +23,22 @@ import { IServerMiddleware, ServerMiddleware } from './core/servers/index';
  * @export
  * @class Bootstrap
  */
-export class Bootstrap {
+export class Bootstrap extends PlatformServer<IConfiguration> implements IModuleBuilder<IConfiguration> {
 
     private beforeSMdls: any[];
     private afterSMdls: any[];
-    private container: Defer<IContainer>;
     private middlewares: Token<any>[];
-    private configDefer: Defer<IConfiguration>;
-    private builder: IContainerBuilder;
     /**
      * Creates an instance of WebApplication.
      * @param {string} rootdir
      * @param {Type<any>} [appType]
      * @memberof WebApplication
      */
-    constructor(private rootdir: string, protected appType?: Type<Application>) {
+    constructor(rootdir: string) {
+        super(rootdir);
         this.middlewares = [];
         this.beforeSMdls = [];
         this.afterSMdls = [];
-        this.appType = this.appType || Application;
     }
 
     /**
@@ -49,139 +46,13 @@ export class Bootstrap {
      *
      * @static
      * @param {string} rootdir
-     * @param {Type<Application>} [appType]
      * @returns
      * @memberof WebApplication
      */
-    static create(rootdir: string, appType?: Type<Application>) {
-        return new Bootstrap(rootdir, appType);
+    static create(rootdir: string) {
+        return new Bootstrap(rootdir);
     }
 
-    /**
-     * user custom IContainer.
-     *
-     * @param {(IContainer | Promise<IContainer>)} [container]
-     * @returns
-     *
-     * @memberOf WebHostBuilder
-     */
-    useContainer(container: IContainer | Promise<IContainer>) {
-        if (container) {
-            if (!this.container) {
-                this.container = Defer.create<IContainer>();
-            }
-            this.container.resolve(container);
-        }
-        return this;
-    }
-
-    /**
-     * get container of bootstrap.
-     *
-     * @returns
-     * @memberof Bootstrap
-     */
-    getContainer() {
-        if (!this.container) {
-            this.useContainer(this.createContainer());
-        }
-        return this.container.promise;
-    }
-
-    protected createContainer(...modules: LoadType[]): Promise<IContainer> {
-        return this.getContainerBuilder().build(...modules);
-    }
-
-
-    /**
-     * use container builder
-     *
-     * @param {IContainerBuilder} builder
-     * @returns
-     * @memberof Bootstrap
-     */
-    useContainerBuilder(builder: IContainerBuilder) {
-        this.builder = builder;
-        return this;
-    }
-
-    /**
-     * get container builder.
-     *
-     * @returns
-     * @memberof Bootstrap
-     */
-    getContainerBuilder() {
-        if (!this.builder) {
-            this.builder = new ContainerBuilder();
-        }
-        return this.builder;
-    }
-
-    /**
-     * use custom configuration.
-     *
-     * @param {(string | IConfiguration)} [config]
-     * @returns {this}
-     * @memberof Bootstrap
-     */
-    useConfiguration(config?: string | IConfiguration): this {
-        if (!this.configDefer) {
-            this.configDefer = Defer.create<IConfiguration>();
-            this.configDefer.resolve(new Configuration());
-        }
-        let cfgmodeles: IConfiguration;
-        if (isString(config)) {
-            if (existsSync(config)) {
-                cfgmodeles = require(config) as IConfiguration;
-            } else if (existsSync(path.join(this.rootdir, config))) {
-                cfgmodeles = require(path.join(this.rootdir, config)) as IConfiguration;
-            } else {
-                console.log(`config file: ${config} not exists.`)
-            }
-        } else if (config) {
-            cfgmodeles = config;
-        } else {
-            let cfgpath = path.join(this.rootdir, './config');
-            ['.js', '.ts', '.json'].forEach(ext => {
-                if (cfgmodeles) {
-                    return false;
-                }
-                if (existsSync(cfgpath + ext)) {
-                    cfgmodeles = require(cfgpath + ext);
-                    return false;
-                }
-                return true;
-            });
-            if (!cfgmodeles) {
-                console.log('your app has not config file.');
-            }
-        }
-
-        if (cfgmodeles) {
-            let excfg = (cfgmodeles['default'] ? cfgmodeles['default'] : cfgmodeles) as IConfiguration;
-            this.configDefer.promise = this.configDefer.promise
-                .then(cfg => {
-                    cfg = Object.assign(cfg || {}, excfg || {});
-                    return cfg;
-                });
-        }
-
-        return this;
-    }
-
-    /**
-     * get configuration.
-     *
-     * @returns {Promise<IConfiguration>}
-     * @memberof Bootstrap
-     */
-    getConfiguration(): Promise<IConfiguration> {
-        if (!this.configDefer) {
-            this.useConfiguration();
-        }
-        return this.configDefer.promise;
-    }
 
     /**
      * use middleware `fn` or  `MiddlewareFactory`.
@@ -190,7 +61,7 @@ export class Bootstrap {
      * @returns {this}
      * @memberof Bootstrap
      */
-    use(middleware: IMiddleware | Middleware | Token<any>): this {
+    useMiddleware(middleware: IMiddleware | Middleware | Token<any>): this {
         this.middlewares.push(middleware as Type<any>);
         return this;
     }
@@ -204,39 +75,37 @@ export class Bootstrap {
         return this;
     }
 
-    /**
-     * run service.
-     *
-     * @param {Function} [listener]
-     * @returns
-     * @memberof Bootstrap
-     */
-    async run(listener?: Function) {
-        let app = await this.build();
-        let config = app.container.get(ConfigurationToken);
-        let server = app.getServer();
-        let port = config.port || parseInt(process.env.PORT || '0');
-        if (config.hostname) {
-            server.listen(port, config.hostname, listener);
-        } else {
-            server.listen(port, listener);
-        }
-
-        console.log('service listen on port: ', port);
-        return app;
+    private _listener: Function;
+    useListener(listener: Function) {
+        this._listener = listener;
     }
 
+    /**
+     * use boostrap to start application.
+     *
+     * @template T
+     * @param {Type<T>} [appModule]
+     * @returns {Promise<T>}
+     * @memberof Bootstrap
+     */
+    async run<T extends IApplication>(appModule?: Type<T>): Promise<T> {
+        return this.bootstrap(appModule);
+    }
 
     /**
-     * build application.
-     * @returns {Bootstrap}
-     * @memberOf WebHostBuilder
+     * bootstrap mvc application with App Module.
+     *
+     * @template T
+     * @param {Type<T>} [appModule]
+     * @returns {Promise<T>}
+     * @memberof Bootstrap
      */
-    protected async build(): Promise<Application> {
+    async bootstrap<T extends IApplication>(appModule?: Type<T>): Promise<T> {
+        let appType = appModule || Application;
+        let app: IApplication = await super.bootstrap(appType);
+
         let cfg: IConfiguration = await this.getConfiguration();
-        let container: IContainer = await this.getContainer();
-        container = await this.initIContainer(cfg, container);
-        let app = container.get(this.appType);
+        let container = await this.getContainer();
         this.setupServerMiddwares(app, container, this.beforeSMdls);
 
         this.setupMiddwares(app, container, cfg.beforeMiddlewares, cfg.excludeMiddlewares);
@@ -245,11 +114,33 @@ export class Bootstrap {
         this.setupMiddwares(app, container, cfg.afterMiddlewares, cfg.excludeMiddlewares);
 
         this.setupServerMiddwares(app, container, this.afterSMdls);
-        return app;
+
+
+        let config = container.get(ConfigurationToken);
+        let server = app.getServer();
+        let port = config.port || parseInt(process.env.PORT || '0');
+        if (config.hostname) {
+            server.listen(port, config.hostname, this._listener);
+        } else {
+            server.listen(port, this._listener);
+        }
+
+        console.log('service listen on port: ', port);
+        return app as T;
     }
 
 
+    protected setRootdir(config: IConfiguration) {
+        config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
+    }
+
+    protected getDefaultConfig() {
+        return new Configuration();
+    }
+
     protected async initIContainer(config: IConfiguration, container: IContainer): Promise<IContainer> {
+        await super.initIContainer(config, container);
+
         if (!container.has(AopModule)) {
             container.register(AopModule);
         }
@@ -257,13 +148,10 @@ export class Bootstrap {
             container.register(LogModule);
         }
 
-        config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
         container.registerSingleton(ConfigurationToken, config);
-        container.bindProvider(AppConfigurationToken, ConfigurationToken);
         container.registerSingleton(Configuration, config as Configuration);
+
         this.registerDefaults(container);
-        // register app.
-        container.register(this.appType);
 
         // custom use.
         if (this.middlewares) {
@@ -336,7 +224,7 @@ export class Bootstrap {
         router.setup();
     }
 
-    protected setupMiddwares(app: Application, container: IContainer, middlewares: Token<any>[], excludes: Token<any>[]) {
+    protected setupMiddwares(app: IApplication, container: IContainer, middlewares: Token<any>[], excludes: Token<any>[]) {
         if (!middlewares || middlewares.length < 1) {
             return app;
         }
@@ -361,7 +249,7 @@ export class Bootstrap {
         return app;
     }
 
-    protected setupServerMiddwares(app: Application, container: IContainer, middlewares: (ServerMiddleware | Token<IServerMiddleware>)[]) {
+    protected setupServerMiddwares(app: IApplication, container: IContainer, middlewares: (ServerMiddleware | Token<IServerMiddleware>)[]) {
         if (!middlewares || middlewares.length < 1) {
             return;
         }
