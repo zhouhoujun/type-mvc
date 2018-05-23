@@ -12,7 +12,12 @@ import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManage
  */
 export const ApplicationToken = new InjectToken<IApplication>('__MVC_Application');
 
-
+/**
+ * Applaction interface.
+ *
+ * @export
+ * @interface IApplication
+ */
 export interface IApplication {
 
     getKoa(): Koa;

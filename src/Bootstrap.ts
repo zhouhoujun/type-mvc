@@ -2,10 +2,10 @@ import { existsSync } from 'fs';
 import { Middleware, Request, Response, Context } from 'koa';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { Configuration } from './Configuration';
-import { isString, isSymbol, IContainer, IContainerBuilder, isClass, isFunction, Type, Token, isToken, Defer, LoadType, IModuleBuilder } from '@ts-ioc/core';
+import { isString, isSymbol, IContainer, IContainerBuilder, isClass, isFunction, Type, Token, isToken, Defer, LoadType, IModuleBuilder, hasClassMetadata, getTypeMetadata } from '@ts-ioc/core';
 import { ContainerBuilder, toAbsolutePath, PlatformServer, AppConfigurationToken } from '@ts-ioc/platform-server';
 import * as path from 'path';
-import { IApplication, Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter, ApplicationToken } from './core/index';
+import { IApplication, Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter, ApplicationToken, AppModule } from './core/index';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
@@ -61,7 +61,7 @@ export class Bootstrap extends PlatformServer<IConfiguration> implements IModule
      * @returns {this}
      * @memberof Bootstrap
      */
-    useMiddleware(middleware: IMiddleware | Middleware | Token<any>): this {
+    use(middleware: IMiddleware | Middleware | Token<any>): this {
         this.middlewares.push(middleware as Type<any>);
         return this;
     }
@@ -88,8 +88,8 @@ export class Bootstrap extends PlatformServer<IConfiguration> implements IModule
      * @returns {Promise<T>}
      * @memberof Bootstrap
      */
-    async run<T extends IApplication>(appModule?: Type<T>): Promise<T> {
-        return this.bootstrap(appModule);
+    async run<T extends IApplication>(appModule?: Type<any>): Promise<T> {
+        return this.bootstrap<T>(appModule);
     }
 
     /**
@@ -100,10 +100,13 @@ export class Bootstrap extends PlatformServer<IConfiguration> implements IModule
      * @returns {Promise<T>}
      * @memberof Bootstrap
      */
-    async bootstrap<T extends IApplication>(appModule?: Type<T>): Promise<T> {
+    async bootstrap<T extends IApplication>(appModule?: Type<any>): Promise<T> {
         let appType = appModule || Application;
         let app: IApplication = await super.bootstrap(appType);
 
+        if (!isFunction(app.getServer) || !isFunction(app.use) || !isFunction(app.getKoa)) {
+            console.error('configuration bootstrap or bootstrap with module is not right application implements IApplication.');
+        }
         let cfg: IConfiguration = await this.getConfiguration();
         let container = await this.getContainer();
         this.setupServerMiddwares(app, container, this.beforeSMdls);
@@ -130,7 +133,7 @@ export class Bootstrap extends PlatformServer<IConfiguration> implements IModule
     }
 
 
-    protected setRootdir(config: IConfiguration) {
+    protected setConfigRoot(config: IConfiguration) {
         config.rootdir = config.rootdir ? toAbsolutePath(this.rootdir, config.rootdir) : this.rootdir;
     }
 
@@ -138,8 +141,19 @@ export class Bootstrap extends PlatformServer<IConfiguration> implements IModule
         return new Configuration();
     }
 
-    protected async initIContainer(config: IConfiguration, container: IContainer): Promise<IContainer> {
-        await super.initIContainer(config, container);
+    protected getMetaConfig(appModule: Type<any>): IConfiguration {
+        let cfg: IConfiguration;
+        if (hasClassMetadata(AppModule, appModule)) {
+            let meta = getTypeMetadata<IConfiguration>(AppModule, appModule);
+            console.log(meta);
+            if (meta && meta.length) {
+                return meta[0];
+            }
+        }
+        return super.getMetaConfig(appModule);
+    }
+
+    protected async initContainer(config: IConfiguration, container: IContainer): Promise<IContainer> {
 
         if (!container.has(AopModule)) {
             container.register(AopModule);
@@ -147,6 +161,9 @@ export class Bootstrap extends PlatformServer<IConfiguration> implements IModule
         if (!container.has(LogModule)) {
             container.register(LogModule);
         }
+
+        await super.initContainer(config, container);
+
 
         container.registerSingleton(ConfigurationToken, config);
         container.registerSingleton(Configuration, config as Configuration);

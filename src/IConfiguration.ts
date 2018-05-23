@@ -71,6 +71,12 @@ export const ConfigurationToken = new InjectToken<IConfiguration>('__MVC_Configu
  */
 export interface IConfiguration extends AppConfiguration {
 
+    /**
+     * set bootstrap applaction.
+     *
+     * @type {Type<IApplication>}
+     * @memberof IConfiguration
+     */
     bootstrap?: Type<IApplication>;
     /**
      * aseert url match regexp.
