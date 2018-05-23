@@ -29,14 +29,13 @@
     "url": "git+https://github.com/zhouhoujun/type-mvc.git"
   },
   "dependencies": {
-    "globby": "^8.0.1",
-    "reflect-metadata": "^0.1.12",
     "@ts-ioc/aop": "^2.3.8",
     "@ts-ioc/core": "^2.3.8",
     "@ts-ioc/logs": "^2.3.8",
     "@ts-ioc/platform-server": "^2.3.8",
     "@types/koa": "^2.0.44",
     "ejs": "^2.5.7",
+    "globby": "^7.1.1",
     "koa": "^2.5.0",
     "koa-bodyparser": "^4.2.0",
     "koa-compose": "^4.0.0",
@@ -46,7 +45,8 @@
     "koa-session": "^5.8.1",
     "koa-static": "^4.0.2",
     "koa-views": "^6.1.4",
-    "nunjucks": "^3.1.2"
+    "nunjucks": "^3.1.2",
+    "reflect-metadata": "^0.1.12"
   },
   "devDependencies": {
     "@ts-ioc/class-annotations": "^2.3.8",
