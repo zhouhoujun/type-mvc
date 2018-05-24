@@ -1,7 +1,7 @@
 import { IContainer, Injectable, Inject } from '@ts-ioc/core';
 import { Middleware } from '../decorators';
 import { IMiddleware, ContextMiddlewareToken } from './IMiddleware';
-import { Application, ApplicationToken } from '../Application';
+import { IApplication, ApplicationToken } from '../IApplication';
 import { NonePointcut } from '@ts-ioc/aop';
 import { ContextToken } from '../IContext';
 
@@ -10,7 +10,7 @@ import { ContextToken } from '../IContext';
 export class DefaultContextMiddleware implements IMiddleware {
 
     @Inject(ApplicationToken)
-    private app: Application;
+    private app: IApplication;
 
     constructor() {
     }

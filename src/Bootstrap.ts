@@ -1,15 +1,9 @@
-import { existsSync } from 'fs';
-import { Middleware, Request, Response, Context } from 'koa';
+import { Middleware } from 'koa';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { Configuration } from './Configuration';
-import { isString, isSymbol, IContainer, IContainerBuilder, isClass, isFunction, Type, Token, isToken, Defer, LoadType, IModuleBuilder, hasClassMetadata, getTypeMetadata } from '@ts-ioc/core';
-import { ContainerBuilder, toAbsolutePath, PlatformServer, ServerApplicationBuilder, IServerApplicationBuilder } from '@ts-ioc/platform-server';
-import * as path from 'path';
-import { IApplication, Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter, ApplicationToken, AppModule } from './core/index';
-import * as http from 'http';
-// import * as http2 from 'http2';
-import * as https from 'https';
-
+import { IContainer, isClass, isFunction, Type, Token, hasClassMetadata, getTypeMetadata } from '@ts-ioc/core';
+import { toAbsolutePath, ServerApplicationBuilder, IServerApplicationBuilder } from '@ts-ioc/platform-server';
+import { IApplication, Application, IMiddleware, registerDefaults, ApplicationToken, AppModule } from './core/index';
 
 import { AuthAspect, DebugLogAspect } from './aop/index';
 import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
@@ -104,23 +98,17 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
         let appType: Token<IApplication> = appModule || Application;
         let app: IApplication = await super.bootstrap(appType);
 
-        if (!isFunction(app.getServer) || !isFunction(app.use) || !isFunction(app.getKoa)) {
+        if (!isFunction(app.getHttpServer) || !isFunction(app.use) || !isFunction(app.getServer) || !isFunction(app.setup)) {
             console.error('configuration bootstrap or bootstrap with module is not right application implements IApplication.');
         }
         let cfg: IConfiguration = await this.getConfiguration() as IConfiguration;
         let container = await this.getContainer();
-        this.setupServerMiddwares(app, container, this.beforeSMdls);
+        container.bindProvider(ApplicationToken, app);
 
-        this.setupMiddwares(app, container, cfg.beforeMiddlewares, cfg.excludeMiddlewares);
-        this.setupMiddwares(app, container, cfg.useMiddlewares, cfg.excludeMiddlewares.concat(cfg.afterMiddlewares));
-        this.setupRoutes(cfg, container);
-        this.setupMiddwares(app, container, cfg.afterMiddlewares, cfg.excludeMiddlewares);
-
-        this.setupServerMiddwares(app, container, this.afterSMdls);
-
+        app.setup(this.beforeSMdls, this.afterSMdls);
 
         let config = container.get(ConfigurationToken);
-        let server = app.getServer();
+        let server = app.getHttpServer();
         let port = config.port || parseInt(process.env.PORT || '0');
         if (config.hostname) {
             server.listen(port, config.hostname, this._listener);
@@ -164,15 +152,14 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
 
         await super.initContainer(config, container);
 
-
-        container.registerSingleton(ConfigurationToken, config);
-        container.registerSingleton(Configuration, config as Configuration);
+        container.bindProvider(ConfigurationToken, config);
+        container.bindProvider(Configuration, config as Configuration);
 
         this.registerDefaults(container);
 
         // custom use.
         if (this.middlewares) {
-            await this.builder.loadModule(container, ...this.middlewares.filter(m => isClass(m)) as Type<any>[]);
+             await this.builder.loadModule(container, ...this.middlewares.filter(m => isClass(m)) as Type<any>[]);
         }
 
         // custom config.
@@ -187,8 +174,6 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
                 config.useMiddlewares = this.middlewares.concat(config.useMiddlewares);
             }
         }
-        // register default
-        this.registerDefaultMiddlewars(container);
 
         if (config.controllers) {
             let controllers = await this.builder.loadModule(container, {
@@ -222,12 +207,8 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
         if (servers && servers.length) {
             config.usedServerMiddlewares = servers;
         }
+
         return container;
-    }
-
-
-    protected registerDefaultMiddlewars(container: IContainer) {
-        registerDefaultMiddlewars(container);
     }
 
     protected registerDefaults(container: IContainer) {
@@ -235,56 +216,4 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
         container.register(Log4jsAdapter);
     }
 
-    protected setupRoutes(config: IConfiguration, container: IContainer) {
-        let router: IRouter = container.get(config.routerMiddlewate || Router);
-        router.register(...config.useControllers);
-        router.setup();
-    }
-
-    protected setupMiddwares(app: IApplication, container: IContainer, middlewares: Token<any>[], excludes: Token<any>[]) {
-        if (!middlewares || middlewares.length < 1) {
-            return app;
-        }
-        middlewares.forEach(m => {
-            if (!m) {
-                return;
-            }
-            if (excludes && excludes.length > 0 && excludes.indexOf(m) > 0) {
-                return;
-            }
-            if (isToken(m)) {
-                let middleware = container.get(m as Token<any>) as IMiddleware;
-                if (isFunction(middleware.setup)) {
-                    middleware.setup();
-                }
-
-            } else if (isFunction(m)) {
-                app.use(m as Middleware);
-            }
-
-        });
-        return app;
-    }
-
-    protected setupServerMiddwares(app: IApplication, container: IContainer, middlewares: (ServerMiddleware | Token<IServerMiddleware>)[]) {
-        if (!middlewares || middlewares.length < 1) {
-            return;
-        }
-        middlewares.forEach(m => {
-            if (!m) {
-                return;
-            }
-
-            if (isToken(m)) {
-                let middleware = container.get(m as Token<any>) as IServerMiddleware;
-                if (isFunction(middleware.setup)) {
-                    middleware.setup();
-                }
-
-            } else if (isFunction(m)) {
-                m(app, container);
-            }
-
-        })
-    }
 }

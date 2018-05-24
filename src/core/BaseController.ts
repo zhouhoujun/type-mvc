@@ -1,11 +1,9 @@
 import { IContext } from './IContext';
-import { existsSync, readFile } from 'fs';
 import { Buffer } from 'buffer';
 import { Stream } from 'stream';
-import * as path from 'path';
 
-import { Controller, Get } from './decorators/index';
-import { AutoWired, Injectable, Inject } from '@ts-ioc/core';
+import { Controller } from './decorators/index';
+import { Injectable, Inject } from '@ts-ioc/core';
 import { ViewResult, FileResult, RedirectResult, JsonResult } from './results/index';
 import { ContextToken } from './IContext';
 

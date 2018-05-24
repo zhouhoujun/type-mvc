@@ -1,7 +1,7 @@
 import { IContainer, Injectable, Inject } from '@ts-ioc/core';
 import { Middleware } from '../decorators';
 import { IMiddleware, SessionMiddlewareToken } from './IMiddleware';
-import { Application, ApplicationToken } from '../Application';
+import { IApplication, ApplicationToken } from '../IApplication';
 import { IConfiguration, ConfigurationToken } from '../../IConfiguration';
 import { NonePointcut } from '@ts-ioc/aop';
 
@@ -12,7 +12,7 @@ const session = require('koa-session');
 export class DefaultSessionMiddleware implements IMiddleware {
 
     @Inject(ApplicationToken)
-    private app: Application;
+    private app: IApplication;
 
     @Inject(ConfigurationToken)
     private config: IConfiguration;
@@ -21,7 +21,7 @@ export class DefaultSessionMiddleware implements IMiddleware {
     }
 
     setup() {
-        this.app.use(session(this.config.session, this.app.getKoa()));
+        this.app.use(session(this.config.session, this.app.getServer()));
     }
 
 }

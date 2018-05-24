@@ -1,4 +1,4 @@
-import { Application, ApplicationToken } from '../Application';
+import { ApplicationToken, IApplication } from '../IApplication';
 import { IConfiguration } from '../../IConfiguration';
 import { Middleware } from '../decorators/index';
 import { RequestMethod } from '../RequestMethod';
@@ -35,8 +35,10 @@ export const RouterMiddlewareToken = new InjectToken<IRouter>('__MVC_Middleware_
 export class Router implements IRouter, IMiddleware {
 
     private root: IRoute;
+
     @Inject(ApplicationToken)
-    private app: Application;
+    private app: IApplication;
+
     constructor(private builder: RouteBuilder, @Inject(ConfigurationToken) private config: IConfiguration) {
         this.root = new RootRoute(config.routePrefix);
     }
@@ -49,9 +51,7 @@ export class Router implements IRouter, IMiddleware {
         this.builder.build(this, ...controllers);
     }
 
-
     setup() {
-
         this.app.use(async (ctx, next) => {
             if ((!ctx.status || ctx.status === 404) && this.config.isRouteUrl(ctx.url)) {
                 return this.root.navigating(this.app.container, ctx, next);

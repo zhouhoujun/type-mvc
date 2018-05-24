@@ -1,7 +1,7 @@
 import { IContainer, Injectable, Inject } from '@ts-ioc/core';
 import { Middleware } from '../decorators';
 import { IMiddleware, BodyParserMiddlewareToken } from './IMiddleware';
-import { Application, ApplicationToken } from '../Application';
+import { IApplication, ApplicationToken } from '../IApplication';
 import { NonePointcut } from '@ts-ioc/aop';
 const bodyParser = require('koa-bodyparser');
 
@@ -11,7 +11,7 @@ const bodyParser = require('koa-bodyparser');
 export class DefaultBodyParserMiddleware implements IMiddleware {
 
     @Inject(ApplicationToken)
-    private app: Application;
+    private app: IApplication;
 
     constructor() {
     }

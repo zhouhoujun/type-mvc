@@ -11,4 +11,7 @@ export interface IAppModuleMetadata extends IConfiguration, TypeMetadata {
  *
  * @AppModule
  */
-export const AppModule: IClassDecorator<IAppModuleMetadata> = createClassDecorator<IAppModuleMetadata>('AppModule');
+export const AppModule: IClassDecorator<IAppModuleMetadata> = createClassDecorator<IAppModuleMetadata>('AppModule', null, (metadata) => {
+    metadata.singleton = true;
+    return metadata;
+});

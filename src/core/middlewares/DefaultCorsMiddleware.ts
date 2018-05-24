@@ -1,4 +1,4 @@
-import { Application, ApplicationToken } from '../Application';
+import { IApplication, ApplicationToken } from '../IApplication';
 import { IConfiguration, ConfigurationToken } from '../../IConfiguration';
 import { Middleware } from '../decorators';
 import { RequestMethod } from '../RequestMethod';
@@ -11,7 +11,7 @@ import { NonePointcut } from '@ts-ioc/aop';
 export class DefaultCorsMiddleware implements IMiddleware {
 
     @Inject(ApplicationToken)
-    private app: Application;
+    private app: IApplication;
 
     @Inject(ConfigurationToken)
     private config: IConfiguration;

@@ -8,19 +8,11 @@ export * from './results/index';
 export * from './router/index';
 export * from './servers/index';
 export * from './Application';
-export * from './BaseController';
+export * from './BaseController'
+export * from './IApplication';
 
-import {
-    DefaultLogMiddleware, DefaultContextMiddleware,
-    DefaultContentMiddleware, DefaultSessionMiddleware,
-    DefaultBodyParserMiddleware,
-    DefaultCorsMiddleware,
-    DefaultViewsMiddleware,
-    DefaultJsonMiddleware
-
-} from './middlewares/index';
 import { IContainer, CoreActions, LifeState } from '@ts-ioc/core';
-import { Router, ModelParser } from './router/index';
+import { ModelParser } from './router/index';
 import { BaseController } from './BaseController';
 import { Controller, Authorization, Middleware, Model } from './decorators/index';
 
@@ -34,14 +26,3 @@ export function registerDefaults(container: IContainer) {
     container.register(BaseController);
 }
 
-export function registerDefaultMiddlewars(container: IContainer) {
-    container.register(DefaultContentMiddleware);
-    container.register(DefaultContextMiddleware);
-    container.register(DefaultJsonMiddleware);
-    container.register(DefaultLogMiddleware);
-    container.register(DefaultSessionMiddleware);
-    container.register(DefaultBodyParserMiddleware);
-    container.register(DefaultViewsMiddleware);
-    container.register(DefaultCorsMiddleware);
-    container.register(Router);
-}

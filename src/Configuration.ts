@@ -1,6 +1,6 @@
 import { Singleton, ObjectMap, Token, Type } from '@ts-ioc/core';
 import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
-import { RouterMiddlewareToken, RequestMethod, BodyParserMiddlewareToken, JsonMiddlewareToken, LogMiddlewareToken, SessionMiddlewareToken, ContentMiddlewareToken, ContextMiddlewareToken, CorsMiddlewareToken, ViewsMiddlewareToken } from './core/index';
+import { RequestMethod, RouterMiddlewareToken } from './core/index';
 import { ServerOptions } from 'https';
 import { LogConfigure } from '@ts-ioc/logs';
 
@@ -92,15 +92,6 @@ export class Configuration implements IConfiguration {
      * @memberof Configuration
      */
     beforeMiddlewares?: Token<any>[] = [
-        BodyParserMiddlewareToken,
-        JsonMiddlewareToken,
-        LogMiddlewareToken,
-        SessionMiddlewareToken,
-        ContentMiddlewareToken,
-        ContextMiddlewareToken,
-        CorsMiddlewareToken,
-        ViewsMiddlewareToken
-
     ];
 
     /**

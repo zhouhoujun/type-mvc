@@ -1,4 +1,4 @@
-import { IApplication } from '../Application';
+import { IApplication } from '../IApplication';
 import { IContainer } from '@ts-ioc/core';
 
 
