@@ -1,4 +1,5 @@
 import { Bootstrap, AppModule, Application, DebugLogAspect } from '../index';
+// import { PlatformServer } from '@ts-ioc/platform-server';
 
 @AppModule({
     // imports: [DebugLogAspect],
@@ -8,6 +9,7 @@ import { Bootstrap, AppModule, Application, DebugLogAspect } from '../index';
 class MvcApi {
 
 }
+
 
 Bootstrap.create(__dirname)
     .useConfiguration()

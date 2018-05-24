@@ -3,7 +3,7 @@ import { Middleware, Request, Response, Context } from 'koa';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { Configuration } from './Configuration';
 import { isString, isSymbol, IContainer, IContainerBuilder, isClass, isFunction, Type, Token, isToken, Defer, LoadType, IModuleBuilder, hasClassMetadata, getTypeMetadata } from '@ts-ioc/core';
-import { ContainerBuilder, toAbsolutePath, PlatformServer, AppConfigurationToken } from '@ts-ioc/platform-server';
+import { ContainerBuilder, toAbsolutePath, PlatformServer, ServerApplicationBuilder, IServerApplicationBuilder } from '@ts-ioc/platform-server';
 import * as path from 'path';
 import { IApplication, Application, IContext, IMiddleware, registerDefaults, registerDefaultMiddlewars, Router, IRoute, IRouter, ApplicationToken, AppModule } from './core/index';
 import * as http from 'http';
@@ -23,7 +23,7 @@ import { IServerMiddleware, ServerMiddleware } from './core/servers/index';
  * @export
  * @class Bootstrap
  */
-export class Bootstrap extends PlatformServer<IConfiguration> implements IModuleBuilder<IConfiguration> {
+export class Bootstrap extends ServerApplicationBuilder<IApplication> implements IServerApplicationBuilder<IApplication> {
 
     private beforeSMdls: any[];
     private afterSMdls: any[];
@@ -88,26 +88,26 @@ export class Bootstrap extends PlatformServer<IConfiguration> implements IModule
      * @returns {Promise<T>}
      * @memberof Bootstrap
      */
-    async run<T extends IApplication>(appModule?: Type<any>): Promise<T> {
-        return this.bootstrap<T>(appModule);
+    async run<T extends IApplication>(appModule?: Token<T> | Type<any>): Promise<T> {
+        return this.bootstrap(appModule);
     }
 
     /**
      * bootstrap mvc application with App Module.
      *
      * @template T
-     * @param {Type<T>} [appModule]
+     * @param {Token<T>} [appModule]
      * @returns {Promise<T>}
      * @memberof Bootstrap
      */
-    async bootstrap<T extends IApplication>(appModule?: Type<any>): Promise<T> {
-        let appType = appModule || Application;
+    async bootstrap<T extends IApplication>(appModule?: Token<T> | Type<any>): Promise<T> {
+        let appType: Token<IApplication> = appModule || Application;
         let app: IApplication = await super.bootstrap(appType);
 
         if (!isFunction(app.getServer) || !isFunction(app.use) || !isFunction(app.getKoa)) {
             console.error('configuration bootstrap or bootstrap with module is not right application implements IApplication.');
         }
-        let cfg: IConfiguration = await this.getConfiguration();
+        let cfg: IConfiguration = await this.getConfiguration() as IConfiguration;
         let container = await this.getContainer();
         this.setupServerMiddwares(app, container, this.beforeSMdls);
 
@@ -150,7 +150,7 @@ export class Bootstrap extends PlatformServer<IConfiguration> implements IModule
                 return meta[0];
             }
         }
-        return super.getMetaConfig(appModule);
+        return super.getMetaConfig(appModule) as IConfiguration;
     }
 
     protected async initContainer(config: IConfiguration, container: IContainer): Promise<IContainer> {
