@@ -145,8 +145,8 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
         let cfg: IConfiguration;
         if (hasClassMetadata(AppModule, appModule)) {
             let meta = getTypeMetadata<IConfiguration>(AppModule, appModule);
-            console.log(meta);
             if (meta && meta.length) {
+                console.log('bootstrap with applction module with metadata:\n', meta[0]);
                 return meta[0];
             }
         }
