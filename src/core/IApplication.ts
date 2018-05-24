@@ -20,7 +20,7 @@ export const ApplicationToken = new InjectToken<IApplication>('__MVC_Application
  */
 export interface IApplication {
 
-    readonly container: IContainer;
+    container: IContainer;
 
     configuration: IConfiguration;
 
