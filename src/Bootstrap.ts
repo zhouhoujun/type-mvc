@@ -1,7 +1,7 @@
 import { Middleware } from 'koa';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { Configuration } from './Configuration';
-import { IContainer, isClass, isFunction, Type, Token, hasClassMetadata, getTypeMetadata } from '@ts-ioc/core';
+import { IContainer, isClass, isFunction, Type, Token, hasClassMetadata, getTypeMetadata, IModuleBuilder, lang } from '@ts-ioc/core';
 import { toAbsolutePath, ServerApplicationBuilder, IServerApplicationBuilder } from '@ts-ioc/platform-server';
 import { IApplication, Application, IMiddleware, registerDefaults, ApplicationToken, AppModule } from './core/index';
 
@@ -99,7 +99,7 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
         let app: IApplication = await super.bootstrap(appType);
 
         if (!isFunction(app.getHttpServer) || !isFunction(app.use) || !isFunction(app.getServer) || !isFunction(app.setup)) {
-            console.error('configuration bootstrap or bootstrap with module is not right application implements IApplication.');
+            throw new Error('configuration bootstrap or bootstrap with module is not right application implements IApplication.');
         }
         let cfg: IConfiguration = await this.getConfiguration() as IConfiguration;
         let container = await this.getContainer();
@@ -129,16 +129,13 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
         return new Configuration();
     }
 
-    protected getMetaConfig(appModule: Type<any>): IConfiguration {
-        let cfg: IConfiguration;
-        if (hasClassMetadata(AppModule, appModule)) {
-            let meta = getTypeMetadata<IConfiguration>(AppModule, appModule);
-            if (meta && meta.length) {
-                console.log('bootstrap with applction module with metadata:\n', meta[0]);
-                return meta[0];
-            }
+    protected getModuleConfigure(builder: IModuleBuilder<IApplication>, appModule: Token<IApplication> | Type<any>): IConfiguration {
+        let cfg: IConfiguration = builder.getConfigure(appModule, AppModule) as IConfiguration;
+        if (lang.hasField(cfg)) {
+            console.log('app module configure:', cfg);
+            return cfg;
         }
-        return super.getMetaConfig(appModule) as IConfiguration;
+        return super.getModuleConfigure(builder, appModule) as IConfiguration;
     }
 
     protected async initContainer(config: IConfiguration, container: IContainer): Promise<IContainer> {
@@ -159,7 +156,7 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
 
         // custom use.
         if (this.middlewares) {
-             await this.builder.loadModule(container, ...this.middlewares.filter(m => isClass(m)) as Type<any>[]);
+            await this.builder.loadModule(container, ...this.middlewares.filter(m => isClass(m)) as Type<any>[]);
         }
 
         // custom config.

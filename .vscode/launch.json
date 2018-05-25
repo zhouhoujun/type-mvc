@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/lib/simples/app.js",
+            "program": "${workspaceFolder}/lib/simples/app2.js",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ]
