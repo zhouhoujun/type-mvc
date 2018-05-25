@@ -132,7 +132,6 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
     protected getModuleConfigure(builder: IModuleBuilder<IApplication>, appModule: Token<IApplication> | Type<any>): IConfiguration {
         let cfg: IConfiguration = builder.getConfigure(appModule, AppModule) as IConfiguration;
         if (lang.hasField(cfg)) {
-            console.log('app module configure:', cfg);
             return cfg;
         }
         return super.getModuleConfigure(builder, appModule) as IConfiguration;

@@ -119,7 +119,6 @@ export class Application implements IApplication {
 
 
     setupRoutes(config: IConfiguration) {
-        console.log(config.routerMiddlewate);
         let router: IRouter = this.container.get(config.routerMiddlewate || RouterMiddlewareToken);
         router.register(...config.useControllers);
         router.setup();
@@ -134,7 +133,6 @@ export class Application implements IApplication {
                 return;
             }
             if (filter && !filter(m)) {
-                console.log('exclude middlewars:', m);
                 return;
             }
             if (isToken(m)) {
