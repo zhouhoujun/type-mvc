@@ -78,14 +78,43 @@ export class YourSecrityAspect {
 create application
 
 ```ts
-import { Bootstrap } from 'type-mvc';
-
+import { Bootstrap,  AppModule, Application, DebugLogAspect } from 'type-mvc';
+// 1.
 Bootstrap.create(__dirname)
     .useConfiguration()
     //.use(middleware: IMiddleware | Middleware | Token<any>)
     //.useContainerBuilder(...)
     .run();
 
+// 2.
+@AppModule({
+    imports: [DebugLogAspect],
+    debug: false
+})
+class MvcApi extends Application {
+    constructor() {
+        super();
+        console.log('my extends application');
+    }
+}
+
+Bootstrap.create(__dirname)
+    .useConfiguration()
+    .bootstrap(MvcApi);
+
+// 3.
+@AppModule({
+    // imports: [DebugLogAspect],
+    debug: false,
+    bootstrap: Application
+})
+class MvcApi {
+
+}
+
+Bootstrap.create(__dirname)
+    .useConfiguration()
+    .bootstrap(MvcApi);
 ```
 
 ### Define Model
