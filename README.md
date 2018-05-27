@@ -174,7 +174,7 @@ export class UserController {
     // @Cors(['Post','Get'])
     // @Cors('POST,GET')
     @Post('/add')
-    async addUser(user: User, @Inject(symbols.IContext) ctx: IContext) {
+    async addUser(user: User, @Inject(ContextToken) ctx: IContext) {
         console.log('user:', user);
         console.log('request body', ctx.request['body']);
         return this.work.save(user);
@@ -191,7 +191,7 @@ export class UserController {
     }
 
     @Get('/find/:name')
-    query(name: string, @Inject(symbols.IContext) ctx) {
+    query(name: string, @Inject(ContextToken) ctx) {
         console.log(ctx);
         return this.work.find(name);
     }
@@ -220,7 +220,7 @@ export class UserController {
 @Controller('/')
 export class HomeController extends BaseController {
 
-    // @Inject(symbols.IContext)
+    // @Inject(ContextToken)
     // context: IContext;
     constructor() {
         super();
@@ -284,7 +284,7 @@ import { IContainer, Injectable } from 'tsioc';
 @Middleware({ provide: 'logger' })
 export class Logger implements IMiddleware {
 
-    constructor(private app: Application, private config: Configuration) {
+    constructor(@Inject(ApplicationToken) private app: IApplication, @Inject(ConfigurationToken) private config: IConfiguration) {
 
     }
 
