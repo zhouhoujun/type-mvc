@@ -111,7 +111,7 @@ export class Application implements IApplication {
         };
         this.setupMiddlewares(cfg.beforeMiddlewares, filter(excludes));
         this.setupMiddlewares(this.geDefaultMiddlewares(), filter(excludes));
-        this.setupMiddlewares(cfg.useMiddlewares, filter(excludes.concat(cfg.afterMiddlewares)));
+        this.setupMiddlewares(cfg.useMiddlewares as Token<any>[], filter(excludes.concat(cfg.afterMiddlewares)));
         this.setupRoutes(cfg);
         this.setupMiddlewares(cfg.afterMiddlewares, filter(excludes));
         this.setupServerMiddwares(afterSMdls);
