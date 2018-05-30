@@ -1,6 +1,6 @@
 import { ObjectMap, Injectable, Singleton, Token, Type, InjectToken, AppConfiguration } from '@ts-ioc/core';
 import { LogConfigure } from '@ts-ioc/logs';
-import { RequestMethod, IApplication } from './core';
+import { RequestMethod, IApplication, IMiddleware } from './core';
 import { ServerOptions } from 'https';
 // import { ServerOptions as Http2Options } from 'http2';
 
@@ -209,7 +209,7 @@ export interface IConfiguration extends AppConfiguration<IApplication> {
      * @type {Token<any>[]}
      * @memberof Configuration
      */
-    useMiddlewares?: Token<any>[];
+    useMiddlewares?: (IMiddleware | Function | Token<any>)[];
 
     /**
      * global cors default options.

@@ -1,9 +1,9 @@
-import { Middleware } from 'koa';
+import { Middleware as KoaMiddleware } from 'koa';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { Configuration } from './Configuration';
-import { IContainer, isClass, isFunction, Type, Token, hasClassMetadata, getTypeMetadata, IModuleBuilder, lang } from '@ts-ioc/core';
+import { IContainer, isClass, isFunction, Type, Token, hasClassMetadata, getTypeMetadata, IModuleBuilder, lang, LoadType } from '@ts-ioc/core';
 import { toAbsolutePath, ServerApplicationBuilder, IServerApplicationBuilder } from '@ts-ioc/platform-server';
-import { IApplication, Application, IMiddleware, registerDefaults, ApplicationToken, AppModule } from './core/index';
+import { IApplication, Application, IMiddleware, registerDefaults, ApplicationToken, AppModule, Middleware } from './core/index';
 
 import { AuthAspect, DebugLogAspect } from './aop/index';
 import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
@@ -21,7 +21,7 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
 
     private beforeSMdls: any[];
     private afterSMdls: any[];
-    private middlewares: Token<any>[];
+    private middlewares: (IMiddleware | KoaMiddleware | Token<any>)[];
     /**
      * Creates an instance of WebApplication.
      * @param {string} rootdir
@@ -51,12 +51,33 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
     /**
      * use middleware `fn` or  `MiddlewareFactory`.
      *
-     * @param {(IMiddleware | Middleware | Token<any>)} middleware
+     * @param {...(IMiddleware | KoaMiddleware | Token<any> | LoadType)[]} middleware
      * @returns {this}
      * @memberof Bootstrap
      */
-    use(middleware: IMiddleware | Middleware | Token<any>): this {
-        this.middlewares.push(middleware as Type<any>);
+    use(...modules: (IMiddleware | KoaMiddleware | Token<any> | LoadType)[]): this {
+        modules.forEach(md => {
+            if (isClass(md) && hasClassMetadata(Middleware, md)) {
+                this.middlewares.push(md);
+            } else if (isFunction(md)) {
+                this.middlewares.push(md);
+            } else {
+                super.use(md as LoadType);
+            }
+        });
+
+        return this;
+    }
+
+    /**
+     * use middlewares.
+     *
+     * @param {...(IMiddleware | KoaMiddleware | Token<any>)[]} middlewares
+     * @returns {this}
+     * @memberof Bootstrap
+     */
+    useMiddlewares(...middlewares: (IMiddleware | KoaMiddleware | Token<any>)[]): this {
+        this.middlewares = this.middlewares.concat(middlewares);
         return this;
     }
 
@@ -153,14 +174,16 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
 
         this.registerDefaults(container);
 
+        let builder = this.getContainerBuilder();
+
         // custom use.
         if (this.middlewares) {
-            await this.builder.loadModule(container, ...this.middlewares.filter(m => isClass(m)) as Type<any>[]);
+            await builder.loadModule(container, ...this.middlewares.filter(m => isClass(m)) as Type<any>[]);
         }
 
         // custom config.
         if (config.middlewares) {
-            let modules = await this.builder.loadModule(container, {
+            let modules = await builder.loadModule(container, {
                 basePath: config.rootdir,
                 files: config.middlewares
             });
@@ -172,7 +195,7 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
         }
 
         if (config.controllers) {
-            let controllers = await this.builder.loadModule(container, {
+            let controllers = await builder.loadModule(container, {
                 basePath: config.rootdir,
                 files: config.controllers
             });
@@ -191,7 +214,7 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
         container.register(AuthAspect);
 
         if (config.aop) {
-            let aops = await this.builder.loadModule(container, {
+            let aops = await builder.loadModule(container, {
                 basePath: config.rootdir,
                 files: config.aop
             });
@@ -199,7 +222,7 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
             config.usedAops = aops;
         }
 
-        let servers = await this.builder.loadModule(container, ...this.beforeSMdls.concat(this.afterSMdls).filter(m => isClass(m)) as Type<any>[]);
+        let servers = await builder.loadModule(container, ...this.beforeSMdls.concat(this.afterSMdls).filter(m => isClass(m)) as Type<any>[]);
         if (servers && servers.length) {
             config.usedServerMiddlewares = servers;
         }
