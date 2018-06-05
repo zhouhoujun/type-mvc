@@ -145,7 +145,7 @@ export class ControllerRoute extends BaseRoute {
         let meta = this.getRouteMetaData(ctx, container, method);
 
         if (meta && meta.propertyKey) {
-            let corsmetas = getMethodMetadata<CorsMetadata>(Cors, this.controller)[meta.propertyKey] || [];
+            let corsmetas = getMethodMetadata<CorsMetadata>(Cors, this.controller)[meta.propertyKey.toString()] || [];
             if (corsmetas.length < 1) {
                 corsmetas = getTypeMetadata<CorsMetadata>(Cors, this.controller);
             }
