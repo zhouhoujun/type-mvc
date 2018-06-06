@@ -281,7 +281,7 @@ Auto load Aspect service from folder `/aop` in  your project.
 see simple demo
 
 ```ts
-import { Aspect, Around, Joinpoint, Before } from 'tsioc';
+import { Aspect, Around, Joinpoint, Before } from '@ts-ioc/aop';
 
 @Aspect
 export class DebugLog {
@@ -307,7 +307,7 @@ default setting load middlewares in your project folder
 
 ```ts
 import { Middleware, IMiddleware, Application, Configuration } from 'type-mvc';
-import { IContainer, Injectable } from 'tsioc';
+import { IContainer, Injectable } from '@ts-ioc/core';
 
 
 @Middleware({ provide: 'logger' })
