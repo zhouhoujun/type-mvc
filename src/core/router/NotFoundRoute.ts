@@ -1,7 +1,6 @@
-import { NullComponent, IComponent, IContainer } from '@ts-ioc/core';
+import { NullComponent, IContainer } from '@ts-ioc/core';
 import { IRoute } from './IRoute';
 import { IContext } from '../IContext';
-import { NotFoundError } from '../../errors/index';
 import { Next } from '../../util/index';
 
 

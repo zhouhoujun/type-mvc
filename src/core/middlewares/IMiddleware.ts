@@ -1,6 +1,4 @@
-import { Middleware } from 'koa';
-import * as Koa from 'koa';
-import { IContainer, InjectToken } from '@ts-ioc/core';
+import { InjectToken } from '@ts-ioc/core';
 
 /**
  * middleware token.

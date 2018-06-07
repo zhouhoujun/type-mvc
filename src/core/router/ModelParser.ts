@@ -1,4 +1,4 @@
-import { Type, getPropertyMetadata, PropertyMetadata, isToken, isFunction, isUndefined, IContainer, Inject, isClass, Singleton, ObjectMap, ContainerToken } from '@ts-ioc/core';
+import { Type, getPropertyMetadata, PropertyMetadata, isToken, isUndefined, IContainer, Inject, isClass, Singleton, ObjectMap, ContainerToken } from '@ts-ioc/core';
 import { Field, Model } from '../decorators/index';
 import { IConfiguration, ConfigurationToken } from '../../IConfiguration';
 import { NonePointcut } from '@ts-ioc/aop';

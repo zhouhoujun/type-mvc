@@ -1,4 +1,4 @@
-import { Aspect, Pointcut, Joinpoint } from '@ts-ioc/aop';
+import { Aspect, Pointcut } from '@ts-ioc/aop';
 
 /**
  * Auth aspect. pointcut method with @Authorization decorator, to check your custom auth validation.

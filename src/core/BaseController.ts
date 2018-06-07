@@ -1,8 +1,5 @@
 import { IContext } from './IContext';
-import { Buffer } from 'buffer';
 import { Stream } from 'stream';
-
-import { Controller } from './decorators/index';
 import { Injectable, Inject } from '@ts-ioc/core';
 import { ViewResult, FileResult, RedirectResult, JsonResult } from './results/index';
 import { ContextToken } from './IContext';

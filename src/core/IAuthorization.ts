@@ -1,4 +1,4 @@
-import { InjectToken } from "@ts-ioc/core";
+import { InjectToken } from '@ts-ioc/core';
 
 /**
  * Authorization

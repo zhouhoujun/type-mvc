@@ -1,8 +1,7 @@
 import { NonePointcut } from '@ts-ioc/aop';
 import * as Koa from 'koa';
-import { Injectable, Singleton, IContainer, AutoWired, Inject, Type, InjectToken, ContainerToken, isToken, Token, isFunction } from '@ts-ioc/core';
+import { Singleton, IContainer, Inject, InjectToken, ContainerToken, isToken, Token, isFunction } from '@ts-ioc/core';
 import * as http from 'http';
-// import * as http2 from 'http2';
 import * as https from 'https';
 import { IConfiguration, ConfigurationToken } from '../IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';

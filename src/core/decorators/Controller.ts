@@ -1,4 +1,4 @@
-import { createClassDecorator, ITypeDecorator, TypeMetadata, Type, isClass, isString, Registration, ArgsIterator, isClassMetadata } from '@ts-ioc/core';
+import { createClassDecorator, ITypeDecorator, isString, Registration, ArgsIterator, isClassMetadata } from '@ts-ioc/core';
 import { ControllerMetadata } from '../metadata/index';
 
 /**

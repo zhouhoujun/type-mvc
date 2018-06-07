@@ -1,4 +1,4 @@
-import { IContainer, Injectable, Inject, isString } from '@ts-ioc/core';
+import { Inject } from '@ts-ioc/core';
 import { Middleware } from '../decorators';
 import { IMiddleware, ContentMiddlewareToken } from './IMiddleware';
 import { IApplication, ApplicationToken } from '../IApplication';

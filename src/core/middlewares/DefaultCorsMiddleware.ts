@@ -1,11 +1,9 @@
 import { IApplication, ApplicationToken } from '../IApplication';
 import { IConfiguration, ConfigurationToken } from '../../IConfiguration';
 import { Middleware } from '../decorators';
-import { RequestMethod } from '../RequestMethod';
 import { IMiddleware, CorsMiddlewareToken } from '../middlewares/index';
-import { ObjectMap, ActionComponent, Token, Inject } from '@ts-ioc/core';
+import { Inject } from '@ts-ioc/core';
 import { Router, RouterMiddlewareToken } from '../router/index';
-import { NonePointcut } from '@ts-ioc/aop';
 
 @Middleware(CorsMiddlewareToken)
 export class DefaultCorsMiddleware implements IMiddleware {

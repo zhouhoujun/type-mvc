@@ -1,15 +1,12 @@
 import { ApplicationToken, IApplication } from '../IApplication';
 import { IConfiguration } from '../../IConfiguration';
 import { Middleware } from '../decorators/index';
-import { RequestMethod } from '../RequestMethod';
 import { IMiddleware } from '../middlewares/index';
-import { ObjectMap, ActionComponent, Token, Inject, Injectable, InjectToken } from '@ts-ioc/core';
+import { Token, Inject, InjectToken } from '@ts-ioc/core';
 import { IRoute } from './IRoute';
 import { RootRoute } from './RootRoute';
 import { RouteBuilder } from './RouteBuilder';
-import { NonePointcut } from '@ts-ioc/aop';
 import { ConfigurationToken } from '../../IConfiguration';
-const compose = require('koa-compose');
 
 /**
  * router

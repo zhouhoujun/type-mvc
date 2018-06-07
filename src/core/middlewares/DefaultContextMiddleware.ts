@@ -1,8 +1,7 @@
-import { IContainer, Injectable, Inject } from '@ts-ioc/core';
+import { Inject } from '@ts-ioc/core';
 import { Middleware } from '../decorators';
 import { IMiddleware, ContextMiddlewareToken } from './IMiddleware';
 import { IApplication, ApplicationToken } from '../IApplication';
-import { NonePointcut } from '@ts-ioc/aop';
 import { ContextToken } from '../IContext';
 
 

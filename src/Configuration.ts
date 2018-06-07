@@ -1,7 +1,6 @@
 import { Singleton, ObjectMap, Token, Type } from '@ts-ioc/core';
 import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
-import { RequestMethod, RouterMiddlewareToken } from './core/index';
-import { ServerOptions } from 'https';
+import { RouterMiddlewareToken } from './core/index';
 import { LogConfigure } from '@ts-ioc/logs';
 
 /**

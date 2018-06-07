@@ -1,21 +1,20 @@
 import { BaseRoute } from './BaseRoute';
 import {
     Type, IContainer, getMethodMetadata,
-    Token, isClass, getPropertyMetadata, getTypeMetadata, PropertyMetadata, isPromise,
+    isClass, getTypeMetadata, isPromise,
     isUndefined, isString, isObject, isArray, isNumber,
     IParameter, Provider, hasClassMetadata, hasMethodMetadata, Providers,
     isBoolean,  isDate
 } from '@ts-ioc/core';
 import { IContext } from '../IContext';
 import { Next } from '../../util/index';
-import { Get, Post, Put, Delete, Field, Cors, Options, Model, Route } from '../decorators/index';
-import { GetMetadata, CorsMetadata, RouteMetadata } from '../metadata/index'
-import { IRoute } from './IRoute';
+import { Cors, Route } from '../decorators/index';
+import { CorsMetadata, RouteMetadata } from '../metadata/index'
 import { Authorization } from '../decorators/index';
-import { IAuthorization, AuthorizationToken } from '../IAuthorization';
+import { AuthorizationToken } from '../IAuthorization';
 import { UnauthorizedError, NotFoundError, HttpError, BadRequestError, ForbiddenError } from '../../errors/index';
 import { isBuffer } from 'util';
-import { JsonResult, ResultValue, ViewResult, FileResult } from '../results/index';
+import { ResultValue } from '../results/index';
 import { RequestMethod, methodToString, parseRequestMethod } from '../RequestMethod';
 import { IConfiguration, ConfigurationToken } from '../../IConfiguration';
 import { ModelParser } from './ModelParser';

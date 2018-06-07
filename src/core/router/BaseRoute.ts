@@ -1,9 +1,8 @@
-import { GComposite, Type, IContainer, Mode, isString } from '@ts-ioc/core';
+import { GComposite, IContainer, Mode, isString } from '@ts-ioc/core';
 import { IContext } from '../IContext';
 import { Next } from '../../util/index';
-import { IRoute, RouteAction } from './IRoute';
+import { IRoute } from './IRoute';
 import { notFoundRoute } from './NotFoundRoute';
-import { RootRoute } from './RootRoute';
 
 
 /**
