@@ -122,7 +122,6 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
         if (!isFunction(app.getHttpServer) || !isFunction(app.use) || !isFunction(app.getServer) || !isFunction(app.setup)) {
             throw new Error('configuration bootstrap or bootstrap with module is not right application implements IApplication.');
         }
-        let cfg: IConfiguration = await this.getConfiguration() as IConfiguration;
         let container = await this.getContainer();
         container.bindProvider(ApplicationToken, app);
 
