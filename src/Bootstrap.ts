@@ -103,7 +103,7 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
      * @returns {Promise<T>}
      * @memberof Bootstrap
      */
-    async run<T extends IApplication>(appModule?: Token<T> | Type<any>): Promise<T> {
+    run<T extends IApplication>(appModule?: Token<T> | Type<any>): Promise<T> {
         return this.bootstrap(appModule);
     }
 
