@@ -1,6 +1,7 @@
 src
 test
 gulpfile.ts
+taskfile.ts
 tsconfig.json
 tslint.json
 .vscode/
