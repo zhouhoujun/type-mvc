@@ -1,4 +1,4 @@
-import { PipeModule, Package, TsConfigure, AssetActivity } from '@taskfr/pipes';
+import { PipeModule, Package, TsConfigure } from '@taskfr/pipes';
 import { TaskContainer } from '@taskfr/platform-server';
 
 @Package({
@@ -7,8 +7,8 @@ import { TaskContainer } from '@taskfr/platform-server';
     test: 'test/**/*.spec.ts',
     assets: {
         ts: <TsConfigure>{ dest: 'lib', annotation: true, uglify: false },
-        html: { dest: 'lib', task: AssetActivity },
-        js: { dest: 'lib', task: AssetActivity }
+        html: { dest: 'lib' },
+        js: { dest: 'lib' }
     }
 })
 export class Builder {
