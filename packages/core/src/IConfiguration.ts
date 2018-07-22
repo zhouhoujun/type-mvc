@@ -2,7 +2,6 @@ import { ObjectMap, Token, Type, InjectToken, AppConfiguration } from '@ts-ioc/c
 import { LogConfigure } from '@ts-ioc/logs';
 import { RequestMethod, IApplication, IMiddleware } from './core';
 import { ServerOptions } from 'https';
-// import { ServerOptions as Http2Options } from 'http2';
 
 
 /**
@@ -57,7 +56,7 @@ export interface ModelOptions {
 /**
  * configuration token.
  */
-export const ConfigurationToken = new InjectToken<IConfiguration>('__MVC_Configuration');
+export const ConfigurationToken = new InjectToken<IConfiguration>('MVX_Configuration');
 
 /**
  * Configuration.

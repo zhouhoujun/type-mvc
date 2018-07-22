@@ -4,13 +4,13 @@ import { ILoggerManager, ILogger } from '@ts-ioc/logs';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
-import { IMiddleware } from './middlewares/index';
+import { IMiddleware, MiddlewareOrder } from './middlewares/index';
 import { ServerMiddleware, IServerMiddleware } from './servers/index';
 
 /**
  * Application token.
  */
-export const ApplicationToken = new InjectToken<IApplication>('__MVC_Application');
+export const ApplicationToken = new InjectToken<IApplication>('MVX_Application');
 
 /**
  * Applaction interface.
@@ -34,11 +34,11 @@ export interface IApplication {
 
     use(middleware: Function);
 
-    geDefaultMiddlewares(): InjectToken<IMiddleware>[];
+    middlewareOrder(): MiddlewareOrder;
 
     setup(beforeSMdls: (ServerMiddleware | Token<IServerMiddleware>)[], afterSMdls: (ServerMiddleware | Token<IServerMiddleware>)[]);
 
     setupRoutes(config: IConfiguration);
 
-    setupMiddlewares(middlewares: Token<any>[], filter?: (token: Token<any>) => boolean);
+    setupMiddlewares(middlewares: MiddlewareOrder, filter?: (token: Token<IMiddleware>) => boolean);
 }

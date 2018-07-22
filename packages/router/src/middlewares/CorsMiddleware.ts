@@ -1,12 +1,12 @@
-import { IApplication, ApplicationToken } from '../IApplication';
-import { IConfiguration, ConfigurationToken } from '../../IConfiguration';
-import { Middleware } from '../decorators';
-import { IMiddleware, CorsMiddlewareToken } from '../middlewares/index';
+import {
+    IApplication, ApplicationToken, IConfiguration, ConfigurationToken,
+    Middleware, IMiddleware, CorsMiddlewareToken
+} from '@mvx/core';
 import { Inject } from '@ts-ioc/core';
-import { Router, RouterMiddlewareToken } from '../router/index';
+import { Router, RouterMiddlewareToken } from './Router';
 
 @Middleware(CorsMiddlewareToken)
-export class DefaultCorsMiddleware implements IMiddleware {
+export class CorsMiddleware implements IMiddleware {
 
     @Inject(ApplicationToken)
     private app: IApplication;

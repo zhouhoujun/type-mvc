@@ -4,7 +4,7 @@ import { ObjectMap, InjectToken } from '@ts-ioc/core'
 /**
  * context token.
  */
-export const ContextToken = new InjectToken<IContext>('__MVC_IContext');
+export const ContextToken = new InjectToken<IContext>('MVX_IContext');
 
 /**
  * mvc IContext.

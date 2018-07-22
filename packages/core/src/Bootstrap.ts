@@ -5,11 +5,11 @@ import { IContainer, isClass, isFunction, Type, Token, hasClassMetadata, IModule
 import { toAbsolutePath, ServerApplicationBuilder, IServerApplicationBuilder } from '@ts-ioc/platform-server';
 import { IApplication, Application, IMiddleware, registerDefaults, ApplicationToken, AppModule, Middleware } from './core/index';
 
-import { AuthAspect, DebugLogAspect } from './aop/index';
+import { AuthAspect, DebugLogAspect } from './aop';
 import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
 import { AopModule } from '@ts-ioc/aop';
 import { LogModule, LogConfigureToken } from '@ts-ioc/logs';
-import { IServerMiddleware, ServerMiddleware } from './core/servers/index';
+import { IServerMiddleware, ServerMiddleware } from './core/servers';
 
 /**
  * mvc applaction bootstrap.

@@ -1,8 +1,9 @@
 import { Inject } from '@ts-ioc/core';
-import { Middleware } from '../decorators';
-import { IMiddleware, ContentMiddlewareToken } from './IMiddleware';
-import { IApplication, ApplicationToken } from '../IApplication';
-import { IConfiguration, ConfigurationToken } from '../../IConfiguration';
+import {
+    Middleware, IMiddleware, ContentMiddlewareToken,
+    IApplication, ApplicationToken,
+    IConfiguration, ConfigurationToken
+} from '@mvx/core';
 import { NonePointcut } from '@ts-ioc/aop';
 import { toAbsolutePath } from '@ts-ioc/platform-server';
 const serve = require('koa-static');

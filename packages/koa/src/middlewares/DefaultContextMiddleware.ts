@@ -1,8 +1,8 @@
 import { Inject } from '@ts-ioc/core';
-import { Middleware } from '../decorators';
-import { IMiddleware, ContextMiddlewareToken } from './IMiddleware';
-import { IApplication, ApplicationToken } from '../IApplication';
-import { ContextToken } from '../IContext';
+import {
+    Middleware, IMiddleware, ContextMiddlewareToken,
+    IApplication, ApplicationToken, ContextToken
+} from '@mvx/core';
 
 
 @Middleware(ContextMiddlewareToken)

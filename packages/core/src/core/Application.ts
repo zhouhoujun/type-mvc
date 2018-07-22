@@ -5,20 +5,9 @@ import * as http from 'http';
 import * as https from 'https';
 import { IConfiguration, ConfigurationToken } from '../IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
-import { IServerMiddleware, ServerMiddleware } from './servers/index';
-import { Middleware } from 'koa';
-import { IMiddleware, ViewsMiddlewareToken, CorsMiddlewareToken, ContextMiddlewareToken, ContentMiddlewareToken, SessionMiddlewareToken, LogMiddlewareToken, JsonMiddlewareToken, BodyParserMiddlewareToken } from './middlewares/index';
-import { Router, IRouter, RouterMiddlewareToken } from './router/index';
-
-import {
-    DefaultLogMiddleware, DefaultContextMiddleware,
-    DefaultContentMiddleware, DefaultSessionMiddleware,
-    DefaultBodyParserMiddleware,
-    DefaultCorsMiddleware,
-    DefaultViewsMiddleware,
-    DefaultJsonMiddleware
-
-} from './middlewares/index';
+import { IServerMiddleware, ServerMiddleware } from './servers';
+import { IMiddleware, ViewsMiddlewareToken, CorsMiddlewareToken, ContextMiddlewareToken, ContentMiddlewareToken, SessionMiddlewareToken, LogMiddlewareToken, JsonMiddlewareToken, BodyParserMiddlewareToken } from './middlewares';
+import { Router, IRouter, RouterMiddlewareToken } from './router';
 import { IApplication } from './IApplication';
 
 /**
@@ -82,8 +71,7 @@ export class Application implements IApplication {
         this.getServer().use(middleware);
     }
 
-    geDefaultMiddlewares(): InjectToken<IMiddleware>[] {
-        this.registerDefaultMiddlewars();
+    middlewareOrder(): InjectToken<IMiddleware>[] {
         return [
             BodyParserMiddlewareToken,
             JsonMiddlewareToken,
@@ -109,7 +97,7 @@ export class Application implements IApplication {
             }
         };
         this.setupMiddlewares(cfg.beforeMiddlewares, filter(excludes));
-        this.setupMiddlewares(this.geDefaultMiddlewares(), filter(excludes));
+        this.setupMiddlewares(this.middlewareOrder(), filter(excludes));
         this.setupMiddlewares(cfg.useMiddlewares as Token<any>[], filter(excludes.concat(cfg.afterMiddlewares)));
         this.setupRoutes(cfg);
         this.setupMiddlewares(cfg.afterMiddlewares, filter(excludes));
@@ -123,7 +111,7 @@ export class Application implements IApplication {
         router.setup();
     }
 
-    setupMiddlewares(middlewares: Token<any>[], filter?: (token: Token<any>) => boolean) {
+    setupMiddlewares(middlewares: Token<IMiddleware>[], filter?: (token: Token<IMiddleware>) => boolean) {
         if (!middlewares || middlewares.length < 1) {
             return;
         }
@@ -135,27 +123,18 @@ export class Application implements IApplication {
                 return;
             }
             if (isToken(m)) {
-                let middleware = this.container.get(m as Token<any>) as IMiddleware;
+                let middleware = this.container.get(m);
                 if (isFunction(middleware.setup)) {
                     middleware.setup();
                 }
-
             } else if (isFunction(m)) {
-                this.use(m as Middleware);
+                this.use(m);
             }
 
         });
     }
 
-    protected registerDefaultMiddlewars() {
-        this.container.register(DefaultContentMiddleware);
-        this.container.register(DefaultContextMiddleware);
-        this.container.register(DefaultJsonMiddleware);
-        this.container.register(DefaultLogMiddleware);
-        this.container.register(DefaultSessionMiddleware);
-        this.container.register(DefaultBodyParserMiddleware);
-        this.container.register(DefaultViewsMiddleware);
-        this.container.register(DefaultCorsMiddleware);
+    protected registerRouter() {
         this.container.register(Router);
     }
 

@@ -1,6 +1,6 @@
 import { Singleton, ObjectMap, Token, Type } from '@ts-ioc/core';
 import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
-import { RouterMiddlewareToken } from './core/index';
+import { RouterMiddlewareToken } from './core';
 import { LogConfigure } from '@ts-ioc/logs';
 
 /**
