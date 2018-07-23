@@ -1,5 +1,5 @@
 import { createClassDecorator, ITypeDecorator, isString, Registration, ArgsIterator, isClassMetadata } from '@ts-ioc/core';
-import { ControllerMetadata } from '../metadata/index';
+import { ControllerMetadata } from '../metadata';
 
 /**
  * Controller decorator, define the class as mvc controller.

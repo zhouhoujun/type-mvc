@@ -1,8 +1,5 @@
 import { Inject } from '@ts-ioc/core';
-import { Middleware } from '../decorators';
-import { IMiddleware, ViewsMiddlewareToken } from './IMiddleware';
-import { IApplication, ApplicationToken } from '../IApplication';
-import { IConfiguration, ConfigurationToken } from '../../IConfiguration';
+import { Middleware, IMiddleware, IApplication, IConfiguration, ConfigurationToken, ApplicationToken, ViewsMiddlewareToken } from '@mvx/core';
 import { toAbsolutePath } from '@ts-ioc/platform-server';
 
 const views = require('koa-views');

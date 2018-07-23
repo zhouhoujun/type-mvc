@@ -1,6 +1,6 @@
 import { createMethodDecorator, IMethodDecorator, MetadataExtends, isClassMetadata, MetadataAdapter, isString, isNumber } from '@ts-ioc/core';
 import { RequestMethod } from '../RequestMethod';
-import { RouteMetadata } from '../metadata/index';
+import { RouteMetadata } from '../metadata';
 
 
 /**

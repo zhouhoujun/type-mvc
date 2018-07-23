@@ -1,8 +1,5 @@
 import { Inject } from '@ts-ioc/core';
-import { Middleware } from '../decorators';
-import { IMiddleware, JsonMiddlewareToken } from './IMiddleware';
-import { IApplication, ApplicationToken } from '../IApplication';
-import { IConfiguration, ConfigurationToken } from '../../IConfiguration';
+import { Middleware, IMiddleware, JsonMiddlewareToken, IApplication, IConfiguration, ConfigurationToken, ApplicationToken } from '@mvx/core';
 import * as json from 'koa-json';
 
 @Middleware(JsonMiddlewareToken)

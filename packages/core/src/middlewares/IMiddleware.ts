@@ -82,3 +82,8 @@ export const SessionMiddlewareToken = new InjectMiddlewareToken<IMiddleware>('Se
  * views middleware token.
  */
 export const ViewsMiddlewareToken = new InjectMiddlewareToken<IMiddleware>('Views');
+
+/**
+ * router middleware token.
+ */
+export const RouterMiddlewareToken = new InjectMiddlewareToken<IMiddleware>('Router');

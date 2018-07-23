@@ -1,7 +1,5 @@
 import { Inject } from '@ts-ioc/core';
-import { Middleware } from '../decorators';
-import { IMiddleware, LogMiddlewareToken } from './IMiddleware';
-import { IApplication, ApplicationToken } from '../IApplication';
+import { Middleware, IMiddleware, IApplication, ApplicationToken, LogMiddlewareToken } from '@mvx/core';
 import { NonePointcut } from '@ts-ioc/aop';
 const logger = require('koa-logger')
 

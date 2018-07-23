@@ -5,14 +5,12 @@ export * from './metadata/index';
 export * from './decorators/index';
 export * from './middlewares/index';
 export * from './results/index';
-export * from './router/index';
 export * from './servers/index';
 export * from './Application';
 export * from './BaseController'
 export * from './IApplication';
 
 import { IContainer, CoreActions, LifeState } from '@ts-ioc/core';
-import { ModelParser } from './router/index';
 import { BaseController } from './BaseController';
 import { Controller, Authorization, Middleware, Model } from './decorators/index';
 

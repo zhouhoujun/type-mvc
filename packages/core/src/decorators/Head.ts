@@ -1,6 +1,6 @@
 import { RequestMethod } from '../RequestMethod';
 import { createRouteDecorator } from './Route';
-import { HeadMetadata } from '../metadata/index';
+import { HeadMetadata } from '../metadata';
 import { IMethodDecorator } from '@ts-ioc/core';
 
 

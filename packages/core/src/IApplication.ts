@@ -1,11 +1,11 @@
 import { InjectToken, IContainer, Token } from '@ts-ioc/core';
-import { IConfiguration } from '../IConfiguration';
+import { IConfiguration } from './IConfiguration';
 import { ILoggerManager, ILogger } from '@ts-ioc/logs';
 import * as http from 'http';
 // import * as http2 from 'http2';
 import * as https from 'https';
-import { IMiddleware, MiddlewareOrder } from './middlewares/index';
-import { ServerMiddleware, IServerMiddleware } from './servers/index';
+import { IMiddleware, MiddlewareOrder } from './middlewares';
+import { ServerMiddleware, IServerMiddleware } from './servers';
 
 /**
  * Application token.

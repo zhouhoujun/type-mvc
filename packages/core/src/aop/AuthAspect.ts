@@ -1,5 +1,5 @@
 import { Aspect, Pointcut } from '@ts-ioc/aop';
-import { Controller } from '../core';
+import { Controller } from '../decorators';
 
 /**
  * Auth aspect. pointcut method with @Authorization decorator, to check your custom auth validation.
@@ -16,5 +16,4 @@ export class AuthAspect {
     auth() {
 
     }
-
 }

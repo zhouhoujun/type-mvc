@@ -3,7 +3,7 @@ import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { Configuration } from './Configuration';
 import { IContainer, isClass, isFunction, Type, Token, hasClassMetadata, IModuleBuilder, lang, LoadType } from '@ts-ioc/core';
 import { toAbsolutePath, ServerApplicationBuilder, IServerApplicationBuilder } from '@ts-ioc/platform-server';
-import { IApplication, Application, IMiddleware, registerDefaults, ApplicationToken, AppModule, Middleware } from './core/index';
+import { IApplication, Application, IMiddleware, registerDefaults, ApplicationToken, AppModule, Middleware } from './core';
 
 import { AuthAspect, DebugLogAspect } from './aop';
 import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';

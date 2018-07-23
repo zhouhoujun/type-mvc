@@ -1,8 +1,8 @@
-export * from './util/index';
-export * from './core/index';
-export * from './errors/index';
+export * from './util';
+export * from './core';
+export * from './errors';
 export * from './IConfiguration';
 export * from './Configuration';
 export * from './Bootstrap';
-export * from './aop/index';
+export * from './aop';
 

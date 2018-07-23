@@ -1,11 +1,11 @@
 import { ResultValue } from './ResultValue';
 import { Stream } from 'stream';
 import { IContext } from '../IContext';
-import { ConfigurationToken } from '../../IConfiguration';
+import { ConfigurationToken } from '../IConfiguration';
 import { IContainer, isString, Defer } from '@ts-ioc/core';
 import { existsSync, readFile } from 'fs';
 import { join } from 'path';
-import { BadRequestError } from '../../errors/index';
+import { BadRequestError } from '../errors';
 
 
 /**

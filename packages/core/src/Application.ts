@@ -3,11 +3,10 @@ import * as Koa from 'koa';
 import { Singleton, IContainer, Inject, InjectToken, ContainerToken, isToken, Token, isFunction } from '@ts-ioc/core';
 import * as http from 'http';
 import * as https from 'https';
-import { IConfiguration, ConfigurationToken } from '../IConfiguration';
+import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
 import { IServerMiddleware, ServerMiddleware } from './servers';
 import { IMiddleware, ViewsMiddlewareToken, CorsMiddlewareToken, ContextMiddlewareToken, ContentMiddlewareToken, SessionMiddlewareToken, LogMiddlewareToken, JsonMiddlewareToken, BodyParserMiddlewareToken } from './middlewares';
-import { Router, IRouter, RouterMiddlewareToken } from './router';
 import { IApplication } from './IApplication';
 
 /**

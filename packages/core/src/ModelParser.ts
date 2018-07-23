@@ -1,6 +1,7 @@
 import { Type, getPropertyMetadata, PropertyMetadata, isToken, isUndefined, IContainer, Inject, isClass, Singleton, ObjectMap, ContainerToken } from '@ts-ioc/core';
-import { IConfiguration, ConfigurationToke, Field, Model } from '@mvx/core';
 import { NonePointcut } from '@ts-ioc/aop';
+import { Model, Field } from './decorators';
+import { ConfigurationToken, IConfiguration } from './IConfiguration';
 
 @NonePointcut
 @Singleton

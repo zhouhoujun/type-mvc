@@ -1,7 +1,7 @@
 import { IContext } from './IContext';
 import { Stream } from 'stream';
 import { Injectable, Inject } from '@ts-ioc/core';
-import { ViewResult, FileResult, RedirectResult, JsonResult } from './results/index';
+import { ViewResult, FileResult, RedirectResult, JsonResult } from './results';
 import { ContextToken } from './IContext';
 
 
