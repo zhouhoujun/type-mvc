@@ -29,10 +29,11 @@
     "url": "git+https://github.com/zhouhoujun/type-mvc.git"
   },
   "dependencies": {
-    "@ts-ioc/aop": "^2.5.4",
-    "@ts-ioc/core": "^2.5.4",
-    "@ts-ioc/logs": "^2.5.4",
-    "@ts-ioc/platform-server": "^2.5.4",
+    "@ts-ioc/aop": "^3.0.0",
+    "@ts-ioc/core": "^3.0.0",
+    "@ts-ioc/logs": "^3.0.0",
+    "@ts-ioc/bootstrap": "^3.0.0",
+    "@ts-ioc/platform-server": "^3.0.0",
     "@types/koa": "^2.0.44",
     "ejs": "^2.5.7",
     "globby": "^7.1.1",
@@ -50,10 +51,10 @@
     "tslib": "^1.9.2"
   },
   "devDependencies": {
-    "@taskfr/cli": "^1.0.2",
-    "@taskfr/core": "^1.0.2",
-    "@taskfr/pipes": "^1.0.2",
-    "@taskfr/platform-server": "^1.0.2",
+    "@taskfr/cli": "^2.0.0",
+    "@taskfr/core": "^2.0.0",
+    "@taskfr/pipes": "^2.0.0",
+    "@taskfr/platform-server": "^2.0.0",
     "@ts-ioc/annotations": "^2.5.4",
     "@types/chai": "^4.1.3",
     "@types/gulp-mocha": "0.0.32",
