@@ -1,13 +1,11 @@
-import { NonePointcut } from '@ts-ioc/aop';
-import * as Koa from 'koa';
 import { Singleton, IContainer, Inject, InjectToken, ContainerToken, isToken, Token, isFunction } from '@ts-ioc/core';
 import * as http from 'http';
 import * as https from 'https';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
-import { IServerMiddleware, ServerMiddleware } from './servers';
-import { IMiddleware, ViewsMiddlewareToken, CorsMiddlewareToken, ContextMiddlewareToken, ContentMiddlewareToken, SessionMiddlewareToken, LogMiddlewareToken, JsonMiddlewareToken, BodyParserMiddlewareToken } from './middlewares';
-import { IApplication } from './IApplication';
+import { IMiddleware, ViewsMiddlewareToken, CorsMiddlewareToken, ContextMiddlewareToken, ContentMiddlewareToken, SessionMiddlewareToken, LogMiddlewareToken, JsonMiddlewareToken, BodyParserMiddlewareToken, RouterMiddlewareToken, MiddlewareOrder } from './middlewares';
+import { IApplication, IServer, CoreServerToken, CustomMiddleware } from './IApplication';
+import { IRouter } from './router';
 
 /**
  * Application of type mvc.
@@ -16,12 +14,10 @@ import { IApplication } from './IApplication';
  * @class Application
  * @extends {Koa}
  */
-@NonePointcut
 @Singleton
 export class Application implements IApplication {
 
     private httpServer: http.Server | https.Server;
-    private koa: Koa;
     private _loggerMgr: ILoggerManager;
 
     @Inject(ContainerToken)
@@ -34,11 +30,8 @@ export class Application implements IApplication {
 
     }
 
-    getServer(): Koa {
-        if (!this.koa) {
-            this.koa = new Koa();
-        }
-        return this.koa;
+    getServer(): IServer {
+        return this.container.resolve(CoreServerToken);
     }
 
     getLoggerManger(): ILoggerManager {
@@ -58,7 +51,7 @@ export class Application implements IApplication {
         if (!this.httpServer) {
             let cfg = this.configuration;
             if (cfg.httpsOptions) {
-                this.httpServer = https.createServer(cfg.httpsOptions, this.getServer().callback);
+                this.httpServer = https.createServer(cfg.httpsOptions, this.getServer().callback());
             } else {
                 this.httpServer = http.createServer(this.getServer().callback());
             }
@@ -66,12 +59,8 @@ export class Application implements IApplication {
         return this.httpServer;
     }
 
-    use(middleware: Koa.Middleware) {
-        this.getServer().use(middleware);
-    }
-
-    middlewareOrder(): InjectToken<IMiddleware>[] {
-        return [
+    middlewareOrder(): MiddlewareOrder {
+        return this.configuration.middlewareOrder || [
             BodyParserMiddlewareToken,
             JsonMiddlewareToken,
             LogMiddlewareToken,
@@ -80,10 +69,10 @@ export class Application implements IApplication {
             ContextMiddlewareToken,
             CorsMiddlewareToken,
             ViewsMiddlewareToken
-        ]
+        ];
     }
 
-    setup(beforeSMdls: (ServerMiddleware | Token<IServerMiddleware>)[], afterSMdls: (ServerMiddleware | Token<IServerMiddleware>)[]) {
+    setup(beforeSMdls: (CustomMiddleware | Token<IMiddleware>)[], afterSMdls: (CustomMiddleware | Token<IMiddleware>)[]) {
         this.setupServerMiddwares(beforeSMdls);
         let cfg = this.configuration;
         let excludes = this.getExcludeMiddwares(cfg);
@@ -114,6 +103,7 @@ export class Application implements IApplication {
         if (!middlewares || middlewares.length < 1) {
             return;
         }
+        let server = this.getServer();
         middlewares.forEach(m => {
             if (!m) {
                 return;
@@ -127,21 +117,17 @@ export class Application implements IApplication {
                     middleware.setup();
                 }
             } else if (isFunction(m)) {
-                this.use(m);
+                server.use(m);
             }
 
         });
-    }
-
-    protected registerRouter() {
-        this.container.register(Router);
     }
 
     protected getExcludeMiddwares(cfg: IConfiguration): Token<any>[] {
         return cfg.excludeMiddlewares || [];
     }
 
-    protected setupServerMiddwares(middlewares: (ServerMiddleware | Token<IServerMiddleware>)[]) {
+    protected setupServerMiddwares(middlewares: (CustomMiddleware | Token<IMiddleware>)[]) {
         if (!middlewares || middlewares.length < 1) {
             return;
         }
@@ -151,7 +137,7 @@ export class Application implements IApplication {
             }
 
             if (isToken(m)) {
-                let middleware = this.container.get(m as Token<any>) as IServerMiddleware;
+                let middleware = this.container.get(m as Token<any>) as IMiddleware;
                 if (isFunction(middleware.setup)) {
                     middleware.setup();
                 }
@@ -160,7 +146,7 @@ export class Application implements IApplication {
                 m(this, this.container);
             }
 
-        })
+        });
     }
 
 }

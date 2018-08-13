@@ -1,7 +1,10 @@
-import { ObjectMap, Token, Type, InjectToken, AppConfiguration } from '@ts-ioc/core';
+import { ObjectMap, Token, Type, InjectToken } from '@ts-ioc/core';
 import { LogConfigure } from '@ts-ioc/logs';
-import { RequestMethod, IApplication, IMiddleware } from './core';
 import { ServerOptions } from 'https';
+import { AppConfigure } from '@ts-ioc/bootstrap';
+import { IApplication } from './IApplication';
+import { IMiddleware, MiddlewareOrder } from './middlewares';
+import { RequestMethod } from './RequestMethod';
 
 
 /**
@@ -67,7 +70,7 @@ export const ConfigurationToken = new InjectToken<IConfiguration>('MVX_Configura
  * @interface IConfiguration
  * @extends {ObjectMap<any>}
  */
-export interface IConfiguration extends AppConfiguration<IApplication> {
+export interface IConfiguration extends AppConfigure {
 
     /**
      * set bootstrap applaction.
@@ -165,6 +168,7 @@ export interface IConfiguration extends AppConfiguration<IApplication> {
      */
     connections?: ObjectMap<any>;
 
+    middlewareOrder?: MiddlewareOrder;
     /**
      * some middleware befor custom middleware to deal with http request.
      *

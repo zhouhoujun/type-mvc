@@ -2,10 +2,42 @@ import { InjectToken, IContainer, Token } from '@ts-ioc/core';
 import { IConfiguration } from './IConfiguration';
 import { ILoggerManager, ILogger } from '@ts-ioc/logs';
 import * as http from 'http';
-// import * as http2 from 'http2';
 import * as https from 'https';
 import { IMiddleware, MiddlewareOrder } from './middlewares';
-import { ServerMiddleware, IServerMiddleware } from './servers';
+
+
+/**
+ * custom middleware.
+ */
+export type CustomMiddleware = (app: IApplication, container?: IContainer) => void;
+
+/**
+ * server.
+ *
+ * @export
+ * @interface IServer
+ */
+export interface IServer {
+    /**
+     * use middleware.
+     *
+     * @param {*} middleware
+     * @memberof IServer
+     */
+    use(middleware: any);
+    /**
+     * http server callback
+     *
+     * @returns {(request: http.IncomingMessage, response: http.ServerResponse) => void}
+     * @memberof IServer
+     */
+    callback(): (request: http.IncomingMessage, response: http.ServerResponse) => void;
+}
+
+/**
+ * core server token. use as singleton.
+ */
+export const CoreServerToken = new InjectToken<IServer>('MVX_CoreServer');
 
 /**
  * Application token.
@@ -24,7 +56,7 @@ export interface IApplication {
 
     configuration: IConfiguration;
 
-    getServer(): any;
+    getServer(): IServer;
 
     getLoggerManger(): ILoggerManager;
 
@@ -32,11 +64,9 @@ export interface IApplication {
 
     getHttpServer(): http.Server | https.Server;
 
-    use(middleware: Function);
-
     middlewareOrder(): MiddlewareOrder;
 
-    setup(beforeSMdls: (ServerMiddleware | Token<IServerMiddleware>)[], afterSMdls: (ServerMiddleware | Token<IServerMiddleware>)[]);
+    setup(beforeSMdls: (CustomMiddleware | Token<IMiddleware>)[], afterSMdls: (CustomMiddleware | Token<IMiddleware>)[]);
 
     setupRoutes(config: IConfiguration);
 

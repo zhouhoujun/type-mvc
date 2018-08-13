@@ -1,6 +1,7 @@
 import { Singleton, ObjectMap, Token, Type } from '@ts-ioc/core';
 import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
 import { LogConfigure } from '@ts-ioc/logs';
+import { RouterMiddlewareToken, MiddlewareOrder } from './middlewares';
 
 /**
  * mvc configuration
@@ -91,6 +92,8 @@ export class Configuration implements IConfiguration {
      */
     beforeMiddlewares?: Token<any>[] = [
     ];
+
+    middlewareOrder?: MiddlewareOrder;
 
     /**
      * the router middleware.

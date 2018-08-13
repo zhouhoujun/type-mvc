@@ -1,23 +1,26 @@
-import { Middleware as KoaMiddleware } from 'koa';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { Configuration } from './Configuration';
-import { IContainer, isClass, isFunction, Type, Token, hasClassMetadata, IModuleBuilder, lang, LoadType } from '@ts-ioc/core';
-import { toAbsolutePath, ServerApplicationBuilder, IServerApplicationBuilder } from '@ts-ioc/platform-server';
-import { IApplication, Application, IMiddleware, registerDefaults, ApplicationToken, AppModule, Middleware } from './core';
-
+import { IContainer, isClass, isFunction, Type, Token, hasClassMetadata, lang, LoadType } from '@ts-ioc/core';
+import { toAbsolutePath } from '@ts-ioc/platform-server';
 import { AuthAspect, DebugLogAspect } from './aop';
 import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
 import { AopModule } from '@ts-ioc/aop';
 import { LogModule, LogConfigureToken } from '@ts-ioc/logs';
-import { IServerMiddleware, ServerMiddleware } from './core/servers';
+import { IMiddleware } from './middlewares';
+import { ApplicationBuilder } from '@ts-ioc/platform-server/bootstrap';
+import { IApplication, CustomMiddleware } from './IApplication';
+import { IApplicationBuilder } from '@ts-ioc/bootstrap';
+import { Middleware } from './decorators';
+import { Application } from './Application';
+import { CoreModule } from './CoreModule';
 
 /**
- * mvc applaction bootstrap.
+ * mvc applaction builder.
  *
  * @export
- * @class Bootstrap
+ * @class AppBuilder
  */
-export class Bootstrap extends ServerApplicationBuilder<IApplication> implements IServerApplicationBuilder<IApplication> {
+export class AppBuilder {
 
     private beforeSMdls: any[];
     private afterSMdls: any[];
@@ -28,11 +31,35 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
      * @param {Type<any>} [appType]
      * @memberof WebApplication
      */
-    constructor(rootdir: string) {
-        super(rootdir);
+    constructor(public rootdir: string) {
         this.middlewares = [];
         this.beforeSMdls = [];
         this.afterSMdls = [];
+    }
+
+    protected container: IContainer;
+    getContainer(): IContainer {
+        if (!this.container) {
+            this.container = this.getBuilder().getPools().getDefault();
+        }
+        return this.container;
+    }
+
+
+    protected builder: IApplicationBuilder<any>;
+    getBuilder(): IApplicationBuilder<any> {
+        if (!this.builder) {
+            this.builder = this.createAppBuilder();
+            this.builder
+                .use(AopModule)
+                .use(LogModule)
+                .use(CoreModule);
+        }
+        return this.builder;
+    }
+
+    protected createAppBuilder() {
+        return new ApplicationBuilder(this.rootdir);
     }
 
     /**
@@ -44,7 +71,7 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
      * @memberof WebApplication
      */
     static create(rootdir: string) {
-        return new Bootstrap(rootdir);
+        return new AppBuilder(rootdir);
     }
 
 
@@ -81,7 +108,7 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
         return this;
     }
 
-    useServer(middleware: ServerMiddleware | Token<IServerMiddleware>, afterMvc = true): this {
+    useServer(middleware: CustomMiddleware | Token<IMiddleware>, afterMvc = true): this {
         if (afterMvc) {
             this.afterSMdls.push(middleware);
         } else {
@@ -96,18 +123,6 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
     }
 
     /**
-     * use boostrap to start application.
-     *
-     * @template T
-     * @param {Type<T>} [appModule]
-     * @returns {Promise<T>}
-     * @memberof Bootstrap
-     */
-    run<T extends IApplication>(appModule?: Token<T> | Type<any>): Promise<T> {
-        return this.bootstrap(appModule);
-    }
-
-    /**
      * bootstrap mvc application with App Module.
      *
      * @template T
@@ -115,11 +130,11 @@ export class Bootstrap extends ServerApplicationBuilder<IApplication> implements
      * @returns {Promise<T>}
      * @memberof Bootstrap
      */
-    async bootstrap<T extends IApplication>(appModule?: Token<T> | Type<any>): Promise<T> {
+    async bootstrap<T extends IApplication>(appModule?: Token<T> | Configuration): Promise<T> {
         let appType: Token<IApplication> = appModule || Application;
         let app: IApplication = await super.bootstrap(appType);
 
-        if (!isFunction(app.getHttpServer) || !isFunction(app.use) || !isFunction(app.getServer) || !isFunction(app.setup)) {
+        if (!(app instanceof Application)) {
             throw new Error('configuration bootstrap or bootstrap with module is not right application implements IApplication.');
         }
         let container = await this.getContainer();

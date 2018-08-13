@@ -37,11 +37,6 @@ export class InjectMiddlewareToken<T extends IMiddleware> extends Registration<T
 }
 
 /**
- * middleware token.
- */
-export const MiddlewareToken = new InjectMiddlewareToken<IMiddleware>('');
-
-/**
  * context middleware token.
  */
 export const ContextMiddlewareToken = new InjectMiddlewareToken<IMiddleware>('Context');

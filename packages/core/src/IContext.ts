@@ -1,4 +1,3 @@
-import { Context } from 'koa'
 import { ObjectMap, InjectToken } from '@ts-ioc/core'
 
 /**
@@ -12,7 +11,7 @@ export const ContextToken = new InjectToken<IContext>('MVX_IContext');
  * @interface IContext
  * @extends {Context}
  */
-export interface IContext extends Context, ObjectMap<any> {
+export interface IContext extends ObjectMap<any> {
 
 }
 
