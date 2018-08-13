@@ -51,7 +51,7 @@
     "tslib": "^1.9.2"
   },
   "devDependencies": {
-    "@taskfr/cli": "^2.0.0",
+    "@taskfr/cli": "^2.0.1",
     "@taskfr/core": "^2.0.0",
     "@taskfr/pipes": "^2.0.0",
     "@taskfr/platform-server": "^2.0.0",

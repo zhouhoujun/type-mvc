@@ -1,10 +1,8 @@
-import { InjectToken, IContainer, Token } from '@ts-ioc/core';
+import { InjectToken, IContainer } from '@ts-ioc/core';
 import { IConfiguration } from './IConfiguration';
 import { ILoggerManager, ILogger } from '@ts-ioc/logs';
 import * as http from 'http';
 import * as https from 'https';
-import { IMiddleware } from './middlewares';
-import { IContext } from './IContext';
 
 
 /**

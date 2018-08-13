@@ -1,4 +1,4 @@
-import { Singleton, IContainer, Inject, InjectToken, ContainerToken, isToken, Token, isFunction } from '@ts-ioc/core';
+import { Singleton, IContainer, Inject, ContainerToken, isToken, Token, isFunction } from '@ts-ioc/core';
 import * as http from 'http';
 import * as https from 'https';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
@@ -57,41 +57,6 @@ export class Application implements IApplication {
             }
         }
         return this.httpServer;
-    }
-
-    middlewareOrder(): MiddlewareOrder {
-        return this.configuration.middlewareOrder || [
-            BodyParserMiddlewareToken,
-            JsonMiddlewareToken,
-            LogMiddlewareToken,
-            SessionMiddlewareToken,
-            ContentMiddlewareToken,
-            ContextMiddlewareToken,
-            CorsMiddlewareToken,
-            ViewsMiddlewareToken
-        ];
-    }
-
-    setup() {
-
-        let cfg = this.configuration;
-        let excludes = this.getExcludeMiddwares(cfg);
-        let filter = (excludes: any[]) => {
-            return (m) => {
-                if (excludes.length) {
-                    return excludes.indexOf(m) < 0;
-                }
-                return true;
-            }
-        };
-        this.setupMiddlewares(cfg.beforeMiddlewares, filter(excludes));
-        this.setupMiddlewares(this.middlewareOrder(), filter(excludes));
-        this.setupMiddlewares(cfg.useMiddlewares as Token<any>[], filter(excludes.concat(cfg.afterMiddlewares)));
-        this.setupRoutes(cfg);
-        this.setupMiddlewares(cfg.afterMiddlewares, filter(excludes));
-        if (cfg.afterMiddlewares) {
-            this.setupMiddlewares(cfg.afterMiddlewares);
-        }
     }
 
 
