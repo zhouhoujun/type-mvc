@@ -3,8 +3,8 @@ import * as http from 'http';
 import * as https from 'https';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
-import { IMiddleware, ViewsMiddlewareToken, CorsMiddlewareToken, ContextMiddlewareToken, ContentMiddlewareToken, SessionMiddlewareToken, LogMiddlewareToken, JsonMiddlewareToken, BodyParserMiddlewareToken, RouterMiddlewareToken, MiddlewareOrder } from './middlewares';
-import { IApplication, IServer, CoreServerToken, CustomMiddleware } from './IApplication';
+import { IMiddleware } from './middlewares';
+import { IApplication, IServer, CoreServerToken } from './IApplication';
 import { IRouter } from './router';
 
 /**
@@ -72,8 +72,8 @@ export class Application implements IApplication {
         ];
     }
 
-    setup(beforeSMdls: (CustomMiddleware | Token<IMiddleware>)[], afterSMdls: (CustomMiddleware | Token<IMiddleware>)[]) {
-        this.setupServerMiddwares(beforeSMdls);
+    setup() {
+
         let cfg = this.configuration;
         let excludes = this.getExcludeMiddwares(cfg);
         let filter = (excludes: any[]) => {
@@ -89,7 +89,9 @@ export class Application implements IApplication {
         this.setupMiddlewares(cfg.useMiddlewares as Token<any>[], filter(excludes.concat(cfg.afterMiddlewares)));
         this.setupRoutes(cfg);
         this.setupMiddlewares(cfg.afterMiddlewares, filter(excludes));
-        this.setupServerMiddwares(afterSMdls);
+        if (cfg.afterMiddlewares) {
+            this.setupMiddlewares(cfg.afterMiddlewares);
+        }
     }
 
 
@@ -125,28 +127,6 @@ export class Application implements IApplication {
 
     protected getExcludeMiddwares(cfg: IConfiguration): Token<any>[] {
         return cfg.excludeMiddlewares || [];
-    }
-
-    protected setupServerMiddwares(middlewares: (CustomMiddleware | Token<IMiddleware>)[]) {
-        if (!middlewares || middlewares.length < 1) {
-            return;
-        }
-        middlewares.forEach(m => {
-            if (!m) {
-                return;
-            }
-
-            if (isToken(m)) {
-                let middleware = this.container.get(m as Token<any>) as IMiddleware;
-                if (isFunction(middleware.setup)) {
-                    middleware.setup();
-                }
-
-            } else if (isFunction(m)) {
-                m(this, this.container);
-            }
-
-        });
     }
 
 }

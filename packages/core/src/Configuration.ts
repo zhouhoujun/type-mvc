@@ -1,7 +1,6 @@
-import { Singleton, ObjectMap, Token, Type } from '@ts-ioc/core';
+import { Singleton, ObjectMap, Type } from '@ts-ioc/core';
 import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
 import { LogConfigure } from '@ts-ioc/logs';
-import { RouterMiddlewareToken, MiddlewareOrder } from './middlewares';
 
 /**
  * mvc configuration
@@ -85,61 +84,9 @@ export class Configuration implements IConfiguration {
     connections?: ObjectMap<any> = {};
 
     /**
-     * some middleware befor router middleware to deal with http request.
-     *
-     * @type {Token<any>[]}
-     * @memberof Configuration
-     */
-    beforeMiddlewares?: Token<any>[] = [
-    ];
-
-    middlewareOrder?: MiddlewareOrder;
-
-    /**
-     * the router middleware.
-     *
-     * @type {Token<any>}
-     * @memberof Configuration
-     */
-    routerMiddlewate?: Token<any> = RouterMiddlewareToken;
-
-    /**
      * custom middleware match path, './middlewares/\*\*\/*{.js,.ts}', '!.\/**\/*.d.ts\' in your project.
      */
     middlewares?: string | string[] = ['./middlewares/**/*{.js,.ts}', '!./**/*.d.ts'];
-
-    /**
-     * some middleware after router middleware to deal with http request.
-     *
-     * @type {Token<any>[]}
-     * @memberof Configuration
-     */
-    afterMiddlewares?: Token<any>[] = [
-    ];
-
-    /**
-     * exclude some middlewares
-     *
-     * @type {Token<any>[]}
-     * @memberof Configuration
-     */
-    excludeMiddlewares?: Token<any>[] = [];
-
-    /**
-     * use middlewars. if not config will load all.
-     *
-     * @type {Token<any>[]}
-     * @memberof Configuration
-     */
-    useMiddlewares?: Token<any>[] = [];
-
-    /**
-     * used server Middlewares
-     *
-     * @type {Token<any>[]}
-     * @memberof Configuration
-     */
-    usedServerMiddlewares?: Token<any>[] = [];
 
     /**
      * controllers match. default `./controllers/\*\*\/*{.js,.ts}`, '!.\/**\/*.d.ts\' in your project..
@@ -148,14 +95,6 @@ export class Configuration implements IConfiguration {
      * @memberOf Configuration
      */
     controllers?: string | string[] = ['./controllers/**/*{.js,.ts}', '!./**/*.d.ts'];
-
-    /**
-     * use controllers. if not config will load all.
-     *
-     * @type {Token<any>[]}
-     * @memberof Configuration
-     */
-    useControllers?: Token<any>[] = [];
 
     /**
      * global cors default options.
@@ -172,14 +111,6 @@ export class Configuration implements IConfiguration {
      * @memberof Configuration
      */
     aop?: string | string[] = ['./aop/**/*{.js,.ts}', '!./**/*.d.ts'];
-
-    /**
-     * used aop
-     *
-     * @type {Token<any>[]}
-     * @memberof Configuration
-     */
-    usedAops?: Token<any>[] = [];
 
     /**
      * views folder, default `./views` in your project.

@@ -1,14 +1,14 @@
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { Configuration } from './Configuration';
-import { IContainer, isClass, isFunction, Type, Token, hasClassMetadata, lang, LoadType } from '@ts-ioc/core';
+import { IContainer, isClass, isFunction, Type, Token, hasClassMetadata, lang, LoadType, isToken } from '@ts-ioc/core';
 import { toAbsolutePath } from '@ts-ioc/platform-server';
 import { AuthAspect, DebugLogAspect } from './aop';
 import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
 import { AopModule } from '@ts-ioc/aop';
 import { LogModule, LogConfigureToken } from '@ts-ioc/logs';
-import { IMiddleware } from './middlewares';
+import { IMiddleware, CustomMiddleware } from './middlewares';
 import { ApplicationBuilder } from '@ts-ioc/platform-server/bootstrap';
-import { IApplication, CustomMiddleware } from './IApplication';
+import { IApplication } from './IApplication';
 import { IApplicationBuilder } from '@ts-ioc/bootstrap';
 import { Middleware } from './decorators';
 import { Application } from './Application';
@@ -20,11 +20,9 @@ import { CoreModule } from './CoreModule';
  * @export
  * @class AppBuilder
  */
-export class AppBuilder {
+export class MvcContainer {
 
-    private beforeSMdls: any[];
-    private afterSMdls: any[];
-    private middlewares: (IMiddleware | KoaMiddleware | Token<any>)[];
+    middlewares: CustomMiddleware[];
     /**
      * Creates an instance of WebApplication.
      * @param {string} rootdir
@@ -33,8 +31,6 @@ export class AppBuilder {
      */
     constructor(public rootdir: string) {
         this.middlewares = [];
-        this.beforeSMdls = [];
-        this.afterSMdls = [];
     }
 
     protected container: IContainer;
@@ -71,49 +67,27 @@ export class AppBuilder {
      * @memberof WebApplication
      */
     static create(rootdir: string) {
-        return new AppBuilder(rootdir);
+        return new MvcContainer(rootdir);
     }
 
 
     /**
-     * use middleware `fn` or  `MiddlewareFactory`.
+     * use module, middleware or CustomMiddleware.
      *
-     * @param {...(IMiddleware | KoaMiddleware | Token<any> | LoadType)[]} middleware
+     * @param {...(CustomMiddleware | LoadType)[]} middleware
      * @returns {this}
      * @memberof Bootstrap
      */
-    use(...modules: (IMiddleware | KoaMiddleware | Token<any> | LoadType)[]): this {
+    use(...modules: (CustomMiddleware | LoadType)[]): this {
+        let appBuilder = this.getBuilder();
         modules.forEach(md => {
-            if (isClass(md) && hasClassMetadata(Middleware, md)) {
-                this.middlewares.push(md);
+            if (isToken(md)) {
+                appBuilder.use(md);
             } else if (isFunction(md)) {
                 this.middlewares.push(md);
-            } else {
-                super.use(md as LoadType);
             }
         });
 
-        return this;
-    }
-
-    /**
-     * use middlewares.
-     *
-     * @param {...(IMiddleware | KoaMiddleware | Token<any>)[]} middlewares
-     * @returns {this}
-     * @memberof Bootstrap
-     */
-    useMiddlewares(...middlewares: (IMiddleware | KoaMiddleware | Token<any>)[]): this {
-        this.middlewares = this.middlewares.concat(middlewares);
-        return this;
-    }
-
-    useServer(middleware: CustomMiddleware | Token<IMiddleware>, afterMvc = true): this {
-        if (afterMvc) {
-            this.afterSMdls.push(middleware);
-        } else {
-            this.beforeSMdls.push(middleware);
-        }
         return this;
     }
 

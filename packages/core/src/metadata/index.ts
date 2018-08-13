@@ -9,3 +9,4 @@ export * from './PatchMetadata';
 export * from './PostMetadata';
 export * from './PutMetadata';
 export * from './CorsMetadata';
+export * from './MiddlewareMetadata';

@@ -1,4 +1,5 @@
 import { Registration, Token } from '@ts-ioc/core';
+import { IContext } from '../IContext';
 
 
 
@@ -16,69 +17,89 @@ export interface IMiddleware {
     setup?();
 }
 
+
+/**
+ * custom middleware.
+ */
+export type CustomMiddleware = (context: IContext, next: Promise<any>) => any;
+
+/**
+ * middleware type.
+ */
+export type MiddlewareType = Token<IMiddleware> | CustomMiddleware;
+
 /**
  *  middlewares with order.
  */
-export type MiddlewareOrder = Token<IMiddleware>[];
+export interface OrderMiddleware {
+    name?: string;
+    middleware: Token<IMiddleware>;
+}
 
+/**
+ *  default middleware name.
+ */
+export enum Middlewares {
+    /**
+     * context middleware token. to get context of one request.
+     */
+    Context = 'Context',
+    /**
+     * BodyParser middleware token.
+     */
+    BodyParser = 'BodyParser',
+    /**
+     * Content middleware token.
+     */
+    Content = 'Content',
+    /**
+     * cors middleware token.
+     */
+    Cors = 'Cors',
+    /**
+     * log middleware token.
+     */
+    Log = 'Log',
+    /**
+     *
+     */
+    Json = 'Json',
+    /**
+     * session middleware token.
+     */
+    Session = 'Session',
+    /**
+     * views middleware token.
+     */
+    Views = 'Views',
+    /**
+     * router middleware token.
+     */
+    Router = 'Router'
+}
 
 /**
  * Inject middleware token.
  *
  * @export
  * @class InjectMiddlewareToken
- * @extends {Registration<T>}
+ * @extends {Registration<IMiddleware>}
  * @template T
  */
-export class InjectMiddlewareToken<T extends IMiddleware> extends Registration<T> {
+export class InjectMiddlewareToken extends Registration<IMiddleware> {
     constructor(desc: string) {
         super('MVX_Middleware', desc);
     }
 }
 
-/**
- * context middleware token.
- */
-export const ContextMiddlewareToken = new InjectMiddlewareToken<IMiddleware>('Context');
 
-/**
- * BodyParser middleware token.
- */
-export const BodyParserMiddlewareToken = new InjectMiddlewareToken<IMiddleware>('BodyParser');
-
-
-/**
- * Content middleware token.
- */
-export const ContentMiddlewareToken = new InjectMiddlewareToken<IMiddleware>('Content');
-
-/**
- * cors middleware token.
- */
-export const CorsMiddlewareToken = new InjectMiddlewareToken<IMiddleware>('Cors');
-
-/**
- * log middleware token.
- */
-export const LogMiddlewareToken = new InjectMiddlewareToken<IMiddleware>('Log');
-
-/**
- * Json middleware token.
- */
-export const JsonMiddlewareToken = new InjectMiddlewareToken<IMiddleware>('Json');
-
-
-/**
- * session middleware token.
- */
-export const SessionMiddlewareToken = new InjectMiddlewareToken<IMiddleware>('Session');
-
-/**
- * views middleware token.
- */
-export const ViewsMiddlewareToken = new InjectMiddlewareToken<IMiddleware>('Views');
-
-/**
- * router middleware token.
- */
-export const RouterMiddlewareToken = new InjectMiddlewareToken<IMiddleware>('Router');
+export const DefaultMiddlewawres = [
+    new InjectMiddlewareToken(Middlewares.BodyParser),
+    new InjectMiddlewareToken(Middlewares.Json),
+    new InjectMiddlewareToken(Middlewares.Log),
+    new InjectMiddlewareToken(Middlewares.Session),
+    new InjectMiddlewareToken(Middlewares.Content),
+    new InjectMiddlewareToken(Middlewares.Context),
+    new InjectMiddlewareToken(Middlewares.Cors),
+    new InjectMiddlewareToken(Middlewares.Views)
+];

@@ -29,7 +29,6 @@ export interface IControllerDecorator<T extends ControllerMetadata> extends ITyp
 export const Controller: IControllerDecorator<ControllerMetadata> =
     createClassDecorator<ControllerMetadata>('Controller', (args: ArgsIterator) => {
         args.next<ControllerMetadata>({
-            isMetadata: (arg) => isClassMetadata(arg, ['routePrefix']),
             match: (arg) => isString(arg),
             setMetadata: (metadata, arg) => {
                 metadata.routePrefix = arg;

@@ -3,13 +3,9 @@ import { IConfiguration } from './IConfiguration';
 import { ILoggerManager, ILogger } from '@ts-ioc/logs';
 import * as http from 'http';
 import * as https from 'https';
-import { IMiddleware, MiddlewareOrder } from './middlewares';
+import { IMiddleware } from './middlewares';
+import { IContext } from './IContext';
 
-
-/**
- * custom middleware.
- */
-export type CustomMiddleware = (app: IApplication, container?: IContainer) => void;
 
 /**
  * server.
@@ -64,11 +60,11 @@ export interface IApplication {
 
     getHttpServer(): http.Server | https.Server;
 
-    middlewareOrder(): MiddlewareOrder;
+    // middlewareOrder(): MiddlewareOrder;
 
-    setup(beforeSMdls: (CustomMiddleware | Token<IMiddleware>)[], afterSMdls: (CustomMiddleware | Token<IMiddleware>)[]);
+    // setup(beforeSMdls: (CustomMiddleware | Token<IMiddleware>)[], afterSMdls: (CustomMiddleware | Token<IMiddleware>)[]);
 
-    setupRoutes(config: IConfiguration);
+    // setupRoutes(config: IConfiguration);
 
-    setupMiddlewares(middlewares: MiddlewareOrder, filter?: (token: Token<IMiddleware>) => boolean);
+    // setupMiddlewares(middlewares: MiddlewareOrder, filter?: (token: Token<IMiddleware>) => boolean);
 }

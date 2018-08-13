@@ -3,7 +3,6 @@ import { LogConfigure } from '@ts-ioc/logs';
 import { ServerOptions } from 'https';
 import { AppConfigure } from '@ts-ioc/bootstrap';
 import { IApplication } from './IApplication';
-import { IMiddleware, MiddlewareOrder } from './middlewares';
 import { RequestMethod } from './RequestMethod';
 
 
@@ -167,53 +166,10 @@ export interface IConfiguration extends AppConfigure {
      * @memberof Configuration
      */
     connections?: ObjectMap<any>;
-
-    middlewareOrder?: MiddlewareOrder;
-    /**
-     * some middleware befor custom middleware to deal with http request.
-     *
-     * @type {Token<any>[]}
-     * @memberof Configuration
-     */
-    beforeMiddlewares?: Token<any>[];
-
-    /**
-     * the router middleware.
-     *
-     * @type {Token<any>}
-     * @memberof Configuration
-     */
-    routerMiddlewate?: Token<any>;
-
     /**
      * custom middleware match path, './middlewares/\*\*\/*{.js,.ts}' in your project.
      */
     middlewares?: string | string[];
-
-    /**
-     * some middleware after custom, router middleware to deal with http request.
-     *
-     * @type {Token<any>[]}
-     * @memberof Configuration
-     */
-    afterMiddlewares?: Token<any>[];
-
-    /**
-     * exclude some middlewares
-     *
-     * @type {Token<any>[]}
-     * @memberof Configuration
-     */
-    excludeMiddlewares?: Token<any>[];
-
-    /**
-     * use middlewars. if not config will load all.
-     *
-     * @type {Token<any>[]}
-     * @memberof Configuration
-     */
-    useMiddlewares?: (IMiddleware | Function | Token<any>)[];
-
     /**
      * global cors default options.
      *
@@ -245,24 +201,6 @@ export interface IConfiguration extends AppConfigure {
      * @memberof IConfiguration
      */
     aop?: string | string[];
-
-    /**
-     * used aop aspect.
-     *
-     * @type {Token<any>[]}
-     * @memberof IConfiguration
-     */
-    usedAops?: Token<any>[];
-
-
-    /**
-     * used server middlewares.
-     *
-     * @type {Token<any>[]}
-     * @memberof IConfiguration
-     */
-    usedServerMiddlewares?: Token<any>[];
-
     /**
      * views folder, default `./views` in your project.
      *
