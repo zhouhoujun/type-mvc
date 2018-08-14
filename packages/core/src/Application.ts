@@ -59,28 +59,6 @@ export class Application implements IApplication {
         return this.httpServer;
     }
 
-    setup() {
-
-        let cfg = this.configuration;
-        let excludes = this.getExcludeMiddwares(cfg);
-        let filter = (excludes: any[]) => {
-            return (m) => {
-                if (excludes.length) {
-                    return excludes.indexOf(m) < 0;
-                }
-                return true;
-            }
-        };
-        this.setupMiddlewares(cfg.beforeMiddlewares, filter(excludes));
-        this.setupMiddlewares(this.middlewareOrder(), filter(excludes));
-        this.setupMiddlewares(cfg.useMiddlewares as Token<any>[], filter(excludes.concat(cfg.afterMiddlewares)));
-        this.setupRoutes(cfg);
-        this.setupMiddlewares(cfg.afterMiddlewares, filter(excludes));
-        if (cfg.afterMiddlewares) {
-            this.setupMiddlewares(cfg.afterMiddlewares);
-        }
-    }
-
 
     setupRoutes(config: IConfiguration) {
         let router: IRouter = this.container.get(config.routerMiddlewate || RouterMiddlewareToken);

@@ -1,6 +1,5 @@
-import { Singleton, InjectToken, Token, IContainer, Inject, ContainerToken, Providers, MapSet, isClass, isToken, getTypeMetadata, lang } from '@ts-ioc/core';
-import { IConfiguration } from '../IConfiguration';
-import { OrderMiddleware, MiddlewareType, InjectMiddlewareToken, IMiddleware, Middlewares, DefaultMiddlewawres } from './IMiddleware';
+import { Singleton, InjectToken, Token, IContainer, Inject, ContainerToken, Providers, isClass, isToken, getTypeMetadata, lang } from '@ts-ioc/core';
+import { OrderMiddleware, MiddlewareType, InjectMiddlewareToken, IMiddleware, DefaultMiddlewawres } from './IMiddleware';
 import { MiddlewareMetadata } from '../metadata';
 import { isFunction, isString } from 'util';
 import { Middleware } from '../decorators';
