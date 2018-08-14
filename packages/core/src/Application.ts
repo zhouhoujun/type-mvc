@@ -1,18 +1,20 @@
-import { Singleton, IContainer, Inject, ContainerToken, isToken, Token, isFunction } from '@ts-ioc/core';
+import { Singleton, IContainer, Inject, ContainerToken, isFunction } from '@ts-ioc/core';
 import * as http from 'http';
 import * as https from 'https';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
-import { IMiddleware } from './middlewares';
 import { IApplication, IServer, CoreServerToken } from './IApplication';
-import { IRouter } from './router';
+import { IContext } from './IContext';
+import { Next } from './util';
+import { ServerListenerToken } from './IListener';
+import { MiddlewareChainToken, IMiddlewareChain } from './middlewares';
 
 /**
- * Application of type mvc.
+ * Default Application of type mvc.
  *
  * @export
  * @class Application
- * @extends {Koa}
+ * @implements {IApplication}
  */
 @Singleton
 export class Application implements IApplication {
@@ -28,6 +30,10 @@ export class Application implements IApplication {
 
     constructor() {
 
+    }
+
+    getMiddleChain(): IMiddlewareChain {
+        return this.container.resolve(MiddlewareChainToken);
     }
 
     getServer(): IServer {
@@ -59,39 +65,28 @@ export class Application implements IApplication {
         return this.httpServer;
     }
 
-
-    setupRoutes(config: IConfiguration) {
-        let router: IRouter = this.container.get(config.routerMiddlewate || RouterMiddlewareToken);
-        router.register(...config.useControllers);
-        router.setup();
+    use(middleware: (context: IContext, next?: Next) => any) {
+        this.getServer().use(middleware);
     }
 
-    setupMiddlewares(middlewares: Token<IMiddleware>[], filter?: (token: Token<IMiddleware>) => boolean) {
-        if (!middlewares || middlewares.length < 1) {
-            return;
+    run() {
+        let config = this.configuration;
+        let listener = this.container.get(ServerListenerToken);
+        let func;
+        if (isFunction(listener)) {
+            func = listener;
+        } else if (listener) {
+            let ls = listener;
+            func = (...args: any[]) => ls.listener(...args);
         }
-        let server = this.getServer();
-        middlewares.forEach(m => {
-            if (!m) {
-                return;
-            }
-            if (filter && !filter(m)) {
-                return;
-            }
-            if (isToken(m)) {
-                let middleware = this.container.get(m);
-                if (isFunction(middleware.setup)) {
-                    middleware.setup();
-                }
-            } else if (isFunction(m)) {
-                server.use(m);
-            }
 
-        });
-    }
-
-    protected getExcludeMiddwares(cfg: IConfiguration): Token<any>[] {
-        return cfg.excludeMiddlewares || [];
+        let server = this.getHttpServer();
+        let port = config.port || parseInt(process.env.PORT || '0');
+        if (config.hostname) {
+            server.listen(port, config.hostname, func);
+        } else {
+            server.listen(port, func);
+        }
     }
 
 }
