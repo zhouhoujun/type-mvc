@@ -11,10 +11,9 @@ import {
     RouteMetadata, Authorization, AuthorizationToken, ResultValue,
     UnauthorizedError, NotFoundError, HttpError, BadRequestError, ForbiddenError,
     RequestMethod, methodToString, parseRequestMethod,
-    IConfiguration, ConfigurationToken
+    IConfiguration, ConfigurationToken, ModelParserToken
 } from '@mvx/core';
 import { isBuffer } from 'util';
-import { ModelParser } from './ModelParser';
 
 /**
  * controller route.
@@ -211,7 +210,7 @@ export class ControllerRoute extends BaseRoute {
 
     protected createProvider(container: IContainer, ctx: IContext, ctrl: any, meta: RouteMetadata, params: IParameter[]): Providers[] {
 
-        let parser = container.get(ModelParser);
+        let parser = container.get(ModelParserToken);
 
         if (params && params.length) {
             let restParams: any = {};

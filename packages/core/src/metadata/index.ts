@@ -10,3 +10,5 @@ export * from './PostMetadata';
 export * from './PutMetadata';
 export * from './CorsMetadata';
 export * from './MiddlewareMetadata';
+export * from './FieldMetadata';
+export * from './ModelMetadata';

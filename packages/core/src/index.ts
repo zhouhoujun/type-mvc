@@ -1,10 +1,14 @@
-export * from './util';
-export * from './errors';
-export * from './metadata';
-export * from './decorators';
-export * from './middlewares';
-export * from './results';
 export * from './aop';
+export * from './decorators';
+export * from './errors';
+export * from './logAdapter';
+export * from './metadata';
+export * from './middlewares';
+export * from './model';
+export * from './results';
+export * from './router';
+export * from './util';
+
 export * from './IConfiguration';
 export * from './Configuration';
 export * from './IAuthorization';
@@ -15,3 +19,5 @@ export * from './IApplication';
 export * from './Application';
 export * from './BaseController';
 export * from './Bootstrap';
+export * from './CoreModule';
+

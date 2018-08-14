@@ -40,7 +40,7 @@ export interface IMiddlewareDecorator<T extends MiddlewareMetadata> extends ITyp
  *
  * @Middleware
  */
-export const Middleware: IClassDecorator<MiddlewareMetadata> = createClassDecorator<MiddlewareMetadata>('Middleware',
+export const Middleware: IMiddlewareDecorator<MiddlewareMetadata> = createClassDecorator<MiddlewareMetadata>('Middleware',
     (args) => {
         args.next<MiddlewareMetadata>({
             match: (arg) => isString(arg),
@@ -68,4 +68,4 @@ export const Middleware: IClassDecorator<MiddlewareMetadata> = createClassDecora
             metadata.provide = new InjectMiddlewareToken(metadata.name).toString();
         }
         return metadata;
-    });
+    }) as IMiddlewareDecorator<MiddlewareMetadata>;

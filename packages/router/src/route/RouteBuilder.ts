@@ -3,10 +3,9 @@ import { IRouter } from './IRouter';
 import { Token, Injectable, getTypeMetadata, isClass } from '@ts-ioc/core';
 import { Controller, ControllerMetadata } from '@mvx/core';
 import { ControllerRoute } from './ControllerRoute';
-import { NonePointcut } from '@ts-ioc/aop';
 
 
-@NonePointcut
+
 @Injectable
 export class RouteBuilder {
 
@@ -31,9 +30,9 @@ export class RouteBuilder {
                     let route = root.match(prefix);
                     let ctrlRoute = new ControllerRoute(prefix, ctrl);
                     if (route.isEmpty()) {
-                        root.add(new ControllerRoute(prefix, ctrl));
+                        root.add(ctrlRoute);
                     } else {
-                        route.add(new ControllerRoute(prefix, ctrl));
+                        route.add(ctrlRoute);
                     }
                 });
             }

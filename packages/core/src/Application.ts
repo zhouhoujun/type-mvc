@@ -1,4 +1,4 @@
-import { Singleton, IContainer, Inject, InjectToken, ContainerToken, isToken, Token, isFunction } from '@ts-ioc/core';
+import { Singleton, IContainer, Inject, ContainerToken, isToken, Token, isFunction } from '@ts-ioc/core';
 import * as http from 'http';
 import * as https from 'https';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
@@ -57,19 +57,6 @@ export class Application implements IApplication {
             }
         }
         return this.httpServer;
-    }
-
-    middlewareOrder(): MiddlewareOrder {
-        return this.configuration.middlewareOrder || [
-            BodyParserMiddlewareToken,
-            JsonMiddlewareToken,
-            LogMiddlewareToken,
-            SessionMiddlewareToken,
-            ContentMiddlewareToken,
-            ContextMiddlewareToken,
-            CorsMiddlewareToken,
-            ViewsMiddlewareToken
-        ];
     }
 
     setup() {

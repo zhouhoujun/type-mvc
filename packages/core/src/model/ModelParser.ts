@@ -1,41 +1,25 @@
-import { Type, getPropertyMetadata, PropertyMetadata, isToken, isUndefined, IContainer, Inject, isClass, Singleton, ObjectMap, ContainerToken } from '@ts-ioc/core';
-import { NonePointcut } from '@ts-ioc/aop';
-import { Model, Field } from './decorators';
-import { ConfigurationToken, IConfiguration } from './IConfiguration';
+import { Type, getPropertyMetadata, PropertyMetadata, isToken, isUndefined, IContainer, Inject, isClass, Singleton, ObjectMap, ContainerToken, SymbolType, hasClassMetadata, hasOwnClassMetadata } from '@ts-ioc/core';
+import { Model, Field } from '../decorators';
+import { ConfigurationToken, IConfiguration } from '../IConfiguration';
+import { ModelParserToken } from './IModelParser';
 
-@NonePointcut
-@Singleton
+@Singleton(ModelParserToken)
 export class ModelParser {
 
-    constructor( @Inject(ContainerToken) private container: IContainer, @Inject(ConfigurationToken) private config: IConfiguration) {
+    constructor(@Inject(ContainerToken) private container: IContainer, @Inject(ConfigurationToken) private config: IConfiguration) {
 
     }
 
     isModel(type: Type<any>): boolean {
-        if (this.config.modelOptions) {
-            return Reflect.hasOwnMetadata(this.config.modelOptions.classMetaname, type);
-        } else {
-            return Reflect.hasOwnMetadata(Model.toString(), type);
-        }
+        return hasOwnClassMetadata(this.getModelDecorator(), type);
     }
 
-    protected getPropertyMeta(type: Type<any>): ObjectMap<PropertyMetadata[]> {
-        let meta;
-        if (this.config.modelOptions) {
-            meta = getPropertyMetadata<PropertyMetadata>(this.config.modelOptions.fieldMetaname, type);
-        } else {
-            meta = getPropertyMetadata<PropertyMetadata>(Field, type);
-        }
-        return meta;
-    }
-
-    parseModel(type: Type<any>, objMap: object) {
+    parseModel(type: Type<any>, objMap: any): any {
         let meta = this.getPropertyMeta(type);
         let result = this.container.get(type);
         for (let n in meta) {
             let propmetas = meta[n];
             if (propmetas.length) {
-
                 if (!isUndefined(objMap[n])) {
                     let propmeta = propmetas.find(p => !!p.type);
                     let reqval = objMap[n];
@@ -45,7 +29,6 @@ export class ModelParser {
                     } else if (isClass(propmeta.type) && this.isModel(propmeta.type)) {
                         parmVal = this.parseModel(propmeta.type, reqval);
                     }
-
                     result[n] = parmVal;
                 }
             }
@@ -69,17 +52,26 @@ export class ModelParser {
         return val;
     }
 
-    isBaseType(p): boolean {
+    isBaseType(p: any): boolean {
         if (!isToken(p)) {
             return true;
         }
-
         if (p === Boolean || p === String || p === Number || p === Date) {
             return true;
         }
-
         return false;
+    }
 
+    protected getModelDecorator(): string {
+        return Model.toString();
+    }
+
+    protected getFiledDecorator(): string {
+        return Field.toString();
+    }
+
+    protected getPropertyMeta(type: Type<any>): ObjectMap<PropertyMetadata[]> {
+        return getPropertyMetadata<PropertyMetadata>(this.getFiledDecorator(), type);
     }
 
 }
