@@ -5,12 +5,12 @@ import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
 import { AopModule } from '@ts-ioc/aop';
 import { LogModule } from '@ts-ioc/logs';
 import { CustomMiddleware } from './middlewares';
-import { IApplicationBuilder, Runnable, DefaultConfigureToken, DefaultModuleBuilderToken, DefaultAnnotationBuilderToken, DefaultApplicationBuilder } from '@ts-ioc/bootstrap';
+import { IApplicationBuilder, Runnable, DefaultConfigureToken, DefaultModuleBuilderToken, DefaultAnnotationBuilderToken, DefaultApplicationBuilder, AppConfigureLoaderToken } from '@ts-ioc/bootstrap';
 
 import { Application } from './Application';
 import { CoreModule } from './CoreModule';
 import { AppModuleBuilderToken } from './AppBuilder';
-import { ApplicationBuilder } from '@ts-ioc/platform-server/bootstrap/lib';
+import { ApplicationBuilder, ConfigureFileLoader } from '@ts-ioc/platform-server/bootstrap';
 import { ServerListenerToken } from './IListener';
 
 /**
@@ -52,6 +52,7 @@ export class MvcContainer {
                 .use(Log4jsAdapter)
                 .provider(DefaultConfigureToken, Configuration)
                 .provider(DefaultModuleBuilderToken, AppModuleBuilderToken)
+                .provider(AppConfigureLoaderToken, ConfigureFileLoader);
             // .provider(DefaultAnnotationBuilderToken, ApplicationBuilder);
         }
         return this.builder;

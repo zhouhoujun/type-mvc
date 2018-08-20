@@ -3,6 +3,8 @@ import { IApp } from './IApplication';
 import { ModuleBuilder, InjectModuleBuilderToken, Bootstrap } from '@ts-ioc/bootstrap';
 import { Application } from './Application';
 import { IConfiguration } from './IConfiguration';
+import { LogConfigureToken } from '@ts-ioc/logs';
+import { DebugLogAspect, AuthAspect } from './aop';
 
 export const AppModuleBuilderToken = new InjectModuleBuilderToken<IApp>(Application);
 /**
@@ -16,6 +18,48 @@ export class AppModuleBuilder extends ModuleBuilder<IApp> {
 
     getDecorator() {
         return Bootstrap.toString();
+    }
+
+    protected async registerExts(container: IContainer, config: IConfiguration): Promise<IContainer> {
+        await super.registerExts(container, config);
+        let builder = container.getBuilder();
+             // custom config.
+        if (config.middlewares) {
+            let modules = await builder.loadModule(container, {
+                basePath: config.rootdir,
+                files: config.middlewares
+            });
+
+        }
+
+        if (config.controllers) {
+            let controllers = await builder.loadModule(container, {
+                basePath: config.rootdir,
+                files: config.controllers
+            });
+            if (!config.useControllers || config.useControllers.length < 1) {
+                config.useControllers = controllers;
+            }
+        }
+
+        if (config.logConfig) {
+            container.registerSingleton(LogConfigureToken, config.logConfig);
+        }
+
+        if (config.debug) {
+            container.register(DebugLogAspect);
+        }
+        container.register(AuthAspect);
+
+        if (config.aop) {
+            let aops = await builder.loadModule(container, {
+                basePath: config.rootdir,
+                files: config.aop
+            });
+
+            // config.usedAops = aops;
+        }
+        return container;
     }
 
     // async build(token?: Token<IApp> | IConfiguration, defaults?: IContainer | LoadedModule, data?: any): Promise<IApp> {
@@ -142,48 +186,6 @@ export class AppModuleBuilder extends ModuleBuilder<IApp> {
 
     //     return container;
     // }
-
-    protected async registerExts(container: IContainer, config: IConfiguration): Promise<IContainer> {
-        await super.registerExts(container, config);
-        let builder = container.getBuilder();
-             // custom config.
-        if (config.middlewares) {
-            let modules = await builder.loadModule(container, {
-                basePath: config.rootdir,
-                files: config.middlewares
-            });
-
-        }
-
-        if (config.controllers) {
-            let controllers = await builder.loadModule(container, {
-                basePath: config.rootdir,
-                files: config.controllers
-            });
-            if (!config.useControllers || config.useControllers.length < 1) {
-                config.useControllers = controllers;
-            }
-        }
-
-        if (config.logConfig) {
-            container.registerSingleton(LogConfigureToken, config.logConfig);
-        }
-
-        if (config.debug) {
-            container.register(DebugLogAspect);
-        }
-        container.register(AuthAspect);
-
-        if (config.aop) {
-            let aops = await builder.loadModule(container, {
-                basePath: config.rootdir,
-                files: config.aop
-            });
-
-            config.usedAops = aops;
-        }
-        return container;
-    }
 
     // protected getDefaultConfig(): IConfiguration {
     //     return lang.assign({}, new Configuration());
