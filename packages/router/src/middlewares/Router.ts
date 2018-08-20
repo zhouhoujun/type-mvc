@@ -1,7 +1,7 @@
 import {
-    ApplicationToken, IApplication, IConfiguration,
+    ApplicationToken, IApp, IConfiguration,
     Middleware, IMiddleware, ConfigurationToken
-} from '@mvx/core';
+} from '@mvx/mvc';
 import { Token, Inject, InjectToken } from '@ts-ioc/core';
 import { IRoute, RootRoute, RouteBuilder, IRouter } from '../route';
 
@@ -17,7 +17,7 @@ export class Router implements IRouter, IMiddleware {
     private root: IRoute;
 
     @Inject(ApplicationToken)
-    private app: IApplication;
+    private app: IApp;
 
     constructor(private builder: RouteBuilder, @Inject(ConfigurationToken) private config: IConfiguration) {
         this.root = new RootRoute(config.routePrefix);

@@ -6,9 +6,7 @@ import { TaskContainer } from '@taskfr/platform-server';
     clean: 'lib',
     test: 'test/**/*.spec.ts',
     assets: {
-        ts: <TsConfigure>{ dest: 'lib', annotation: true, uglify: false },
-        html: { dest: 'lib' },
-        js: { dest: 'lib' }
+        ts: <TsConfigure>{ dest: 'lib', annotation: true, uglify: false }
     }
 })
 export class Builder {

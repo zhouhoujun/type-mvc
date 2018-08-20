@@ -3,11 +3,12 @@ import * as http from 'http';
 import * as https from 'https';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
-import { IApplication, IServer, CoreServerToken } from './IApplication';
+import { IApp, IMvcServer, CoreServerToken } from './IApplication';
 import { IContext } from './IContext';
 import { Next } from './util';
 import { ServerListenerToken } from './IListener';
 import { MiddlewareChainToken, IMiddlewareChain } from './middlewares';
+import { Service } from '@ts-ioc/bootstrap';
 
 /**
  * Default Application of type mvc.
@@ -17,7 +18,7 @@ import { MiddlewareChainToken, IMiddlewareChain } from './middlewares';
  * @implements {IApplication}
  */
 @Singleton
-export class Application implements IApplication {
+export class Application extends Service implements IApp {
 
     private httpServer: http.Server | https.Server;
     private _loggerMgr: ILoggerManager;
@@ -29,14 +30,14 @@ export class Application implements IApplication {
     configuration: IConfiguration;
 
     constructor() {
-
+        super();
     }
 
     getMiddleChain(): IMiddlewareChain {
         return this.container.resolve(MiddlewareChainToken);
     }
 
-    getServer(): IServer {
+    getServer(): IMvcServer {
         return this.container.resolve(CoreServerToken);
     }
 
@@ -69,7 +70,7 @@ export class Application implements IApplication {
         this.getServer().use(middleware);
     }
 
-    run() {
+    async start() {
         let config = this.configuration;
         let listener = this.container.get(ServerListenerToken);
         let func;
@@ -87,6 +88,12 @@ export class Application implements IApplication {
         } else {
             server.listen(port, func);
         }
+    }
+
+    async stop() {
+        let server = this.getHttpServer();
+        server.removeAllListeners();
+        server.close();
     }
 
 }

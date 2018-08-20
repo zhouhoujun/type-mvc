@@ -1,6 +1,5 @@
-import { Controller, Get, Post, IContext, BaseController, ViewResult, ResultValue } from '../../index';
-import { Inject } from '@ts-ioc/core';
-import { Mywork } from '../bi/Mywork';
+import { Controller, Get, Post, BaseController, ResultValue } from '@mvx/mvc';
+
 
 @Controller('/')
 export class HomeController extends BaseController {

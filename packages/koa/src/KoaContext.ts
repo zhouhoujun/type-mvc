@@ -1,4 +1,4 @@
-import { IContext } from '@mvx/core';
+import { IContext } from '@mvx/mvc';
 import { Context } from 'koa';
 
 /**

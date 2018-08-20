@@ -1,4 +1,4 @@
-import { Model, Field } from '../../index';
+import { Model, Field } from '@mvx/mvc';
 
 
 @Model

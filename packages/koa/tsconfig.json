@@ -4,8 +4,8 @@
       "baseUrl": ".",
       "rootDir": "../../packages",
       "paths": {
-        "@mvx/core": [
-          "../core/src"
+        "@mvx/mvc": [
+          "../mvc/src"
         ]
       }
     },

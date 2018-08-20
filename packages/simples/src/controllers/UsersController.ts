@@ -1,8 +1,7 @@
-import { Controller, Get, Post, IContext, ContextToken, Model, Field, Cors } from '../../index';
+import { Controller, Get, Post, IContext, ContextToken,  RequestMethod, Model, Field, Cors } from '@mvx/mvc';
 import { Inject } from '@ts-ioc/core';
 import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
-import { RequestMethod } from '../../index';
 
 @Cors
 @Controller('/users')

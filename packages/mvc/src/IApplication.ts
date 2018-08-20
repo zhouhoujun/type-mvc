@@ -6,6 +6,7 @@ import * as https from 'https';
 import { IContext } from './IContext';
 import { Next } from './util';
 import { IMiddlewareChain } from './middlewares/MiddlewareChain';
+import { IService } from '@ts-ioc/bootstrap';
 
 
 /**
@@ -14,7 +15,7 @@ import { IMiddlewareChain } from './middlewares/MiddlewareChain';
  * @export
  * @interface IServer
  */
-export interface IServer {
+export interface IMvcServer {
     /**
      * use middleware.
      *
@@ -34,20 +35,20 @@ export interface IServer {
 /**
  * core server token. use as singleton.
  */
-export const CoreServerToken = new InjectToken<IServer>('MVX_CoreServer');
+export const CoreServerToken = new InjectToken<IMvcServer>('MVX_CoreServer');
 
 /**
  * Application token.
  */
-export const ApplicationToken = new InjectToken<IApplication>('MVX_Application');
+export const ApplicationToken = new InjectToken<IApp>('MVX_Application');
 
 /**
- * Applaction interface.
+ * MVC Applaction interface.
  *
  * @export
- * @interface IApplication
+ * @interface IApp
  */
-export interface IApplication {
+export interface IApp extends IService<IApp> {
 
     /**
      * application container.
@@ -76,10 +77,10 @@ export interface IApplication {
     /**
      * get server.
      *
-     * @returns {IServer}
+     * @returns {IMvcServer}
      * @memberof IApplication
      */
-    getServer(): IServer;
+    getServer(): IMvcServer;
 
     /**
      * get logger manager.
@@ -114,10 +115,4 @@ export interface IApplication {
      */
     use(middleware: (context: IContext, next?: Next) => any);
 
-    /**
-     * run application.
-     *
-     * @memberof IApplication
-     */
-    run();
 }

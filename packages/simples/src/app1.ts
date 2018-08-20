@@ -1,4 +1,4 @@
-import { Bootstrap, AppModule, Application, DebugLogAspect } from '../index';
+import { Bootstrap, AppModule, Application, DebugLogAspect } from '@mvx/mvc';
 // import { PlatformServer } from '@ts-ioc/platform-server';
 
 @AppModule({

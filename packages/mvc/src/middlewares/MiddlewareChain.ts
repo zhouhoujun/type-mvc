@@ -3,7 +3,7 @@ import { OrderMiddleware, MiddlewareType, InjectMiddlewareToken, IMiddleware, De
 import { MiddlewareMetadata } from '../metadata';
 import { isFunction, isString } from 'util';
 import { Middleware } from '../decorators';
-import { IApplication, IServer } from '../IApplication';
+import { IApp, IMvcServer } from '../IApplication';
 import { IConfiguration } from '../IConfiguration';
 import { IRouter } from '../router';
 
@@ -16,10 +16,10 @@ export interface IMiddlewareChain {
     /**
      * setup middleware chain
      *
-     * @param {IApplication} app
+     * @param {IApp} app
      * @memberof IMiddlewareChain
      */
-    setup(app: IApplication);
+    setup(app: IApp);
 
     /**
      * get middleware instance.
@@ -76,7 +76,7 @@ export class MiddlewareChain implements IMiddlewareChain {
         this.orders = this.getDefault();
     }
 
-    setup(app: IApplication) {
+    setup(app: IApp) {
         let server = app.getServer();
         this.orders.forEach(mdl => {
             let m = mdl.middleware;

@@ -18,6 +18,6 @@ export * from './IContext';
 export * from './IApplication';
 export * from './Application';
 export * from './BaseController';
-export * from './Bootstrap';
+export * from './MvcContainer';
 export * from './CoreModule';
 
