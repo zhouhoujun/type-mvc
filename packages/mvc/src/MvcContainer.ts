@@ -1,17 +1,18 @@
-import { IConfiguration } from './IConfiguration';
+import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { Configuration } from './Configuration';
 import { IContainer, isFunction, Token, LoadType, isToken } from '@ts-ioc/core';
 import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
 import { AopModule } from '@ts-ioc/aop';
 import { LogModule } from '@ts-ioc/logs';
 import { CustomMiddleware } from './middlewares';
-import { IApplicationBuilder, Runnable, DefaultConfigureToken, DefaultModuleBuilderToken, DefaultAnnotationBuilderToken, DefaultApplicationBuilder, AppConfigureLoaderToken } from '@ts-ioc/bootstrap';
+import { IApplicationBuilder, Runnable, DefaultConfigureToken, AppConfigureLoaderToken, IApplicationExtends, AppConfigure, DefaultModuleBuilderToken } from '@ts-ioc/bootstrap';
 
 import { Application } from './Application';
 import { CoreModule } from './CoreModule';
-import { AppModuleBuilderToken } from './AppBuilder';
 import { ApplicationBuilder, ConfigureFileLoader } from '@ts-ioc/platform-server/bootstrap';
 import { ServerListenerToken } from './IListener';
+import { AppModuleBuilderToken } from './IApplication';
+
 
 /**
  * mvc applaction builder.
@@ -19,7 +20,7 @@ import { ServerListenerToken } from './IListener';
  * @export
  * @class AppBuilder
  */
-export class MvcContainer {
+export class MvcContainer implements IApplicationExtends {
 
     middlewares: CustomMiddleware[];
     /**
@@ -50,10 +51,11 @@ export class MvcContainer {
                 .use(LogModule)
                 .use(CoreModule)
                 .use(Log4jsAdapter)
+                .use(ConfigureFileLoader)
                 .provider(DefaultConfigureToken, Configuration)
                 .provider(DefaultModuleBuilderToken, AppModuleBuilderToken)
+                // .provider(DefaultAnnotationBuilderToken, AppBuilder)
                 .provider(AppConfigureLoaderToken, ConfigureFileLoader);
-            // .provider(DefaultAnnotationBuilderToken, ApplicationBuilder);
         }
         return this.builder;
     }
@@ -95,6 +97,17 @@ export class MvcContainer {
         return this;
     }
 
+    useConfiguration(config?: string | AppConfigure): this {
+        this.getBuilder().useConfiguration(config);
+        return this;
+    }
+
+    provider(provide: Token<any>, provider: any): this {
+        this.getBuilder().provider(provide, provider);
+        return this;
+    }
+
+
     useListener(listener: Function) {
         this.getBuilder().provider(ServerListenerToken, () => listener);
     }
@@ -103,14 +116,14 @@ export class MvcContainer {
      * bootstrap mvc application with App Module.
      *
      * @template T
-     * @param {Token<T>} [appModule]
+     * @param {Token<T>} [app]
      * @returns {Promise<T>}
      * @memberof Bootstrap
      */
-    async bootstrap<T>(appModule?: Token<T> | IConfiguration): Promise<Runnable<T>> {
-        let appType = appModule || Application;
-        let app = await this.getBuilder<T>().bootstrap(appType);
-        return app;
+    async bootstrap<T>(app?: Token<T> | IConfiguration): Promise<Runnable<T>> {
+        let appType = app || Application;
+        let instance = await this.getBuilder<T>().bootstrap(appType);
+        return instance;
     }
 
 }

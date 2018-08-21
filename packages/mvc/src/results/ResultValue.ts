@@ -9,8 +9,18 @@ import { IContainer } from '@ts-ioc/core';
  * @class ResultValue
  */
 export abstract class ResultValue {
+
     constructor(public contentType: string) {
     }
 
+    /**
+     * send value.
+     *
+     * @abstract
+     * @param {IContext} ctx
+     * @param {IContainer} container
+     * @returns {Promise<any>}
+     * @memberof ResultValue
+     */
     abstract sendValue(ctx: IContext, container: IContainer): Promise<any>;
 }

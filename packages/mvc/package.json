@@ -1,6 +1,6 @@
 {
-  "name": "@mvx/core",
-  "version": "1.6.2",
+  "name": "@mvx/mvc",
+  "version": "2.0.0-beta",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -9,17 +9,7 @@
     "postinstall": "npm prune",
     "prepublish": "tkf"
   },
-  "keywords": [
-    "mvc",
-    "AOP",
-    "ioc",
-    "frameworker",
-    "koa",
-    "express",
-    "tsioc",
-    "server",
-    "ts-ioc"
-  ],
+  "keywords": ["mvc", "AOP", "ioc", "frameworker", "koa", "express", "tsioc", "server", "ts-ioc"],
   "author": "houjun",
   "license": "MIT",
   "bugs": {
@@ -30,11 +20,13 @@
     "url": "git+https://github.com/zhouhoujun/type-mvc.git"
   },
   "dependencies": {
-    "@ts-ioc/aop": "^2.5.4",
-    "@ts-ioc/core": "^2.5.4",
-    "@ts-ioc/logs": "^2.5.4",
     "reflect-metadata": "^0.1.12",
-    "tslib": "^1.9.2"
+    "tslib": "^1.9.2",
+    "@ts-ioc/aop": "^3.0.6",
+    "@ts-ioc/core": "^3.0.6",
+    "@ts-ioc/logs": "^3.0.6",
+    "@ts-ioc/bootstrap": "^3.0.6",
+    "@ts-ioc/platform-server": "^3.0.6"
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme"
 }

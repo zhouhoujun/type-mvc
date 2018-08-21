@@ -1,6 +1,6 @@
 import { NullComponent, IContainer } from '@ts-ioc/core';
 import { IRoute } from './IRoute';
-import { IContext, Next } from '@mvx/core';
+import { IContext, Next } from '@mvx/mvc';
 
 
 /**

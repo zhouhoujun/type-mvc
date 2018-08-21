@@ -2,7 +2,9 @@ import { GComponent, IContainer } from '@ts-ioc/core';
 import { IContext } from '../IContext';
 import { Next } from '../util';
 
-
+/**
+ * route action.
+ */
 export interface RouteAction {
     (ctx: IContext, next: Next): Promise<any>;
 }

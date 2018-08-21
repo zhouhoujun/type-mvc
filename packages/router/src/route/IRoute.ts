@@ -1,5 +1,5 @@
 import { GComponent, IContainer } from '@ts-ioc/core';
-import { IContext, Next } from '@mvx/core';
+import { IContext, Next } from '@mvx/mvc';
 
 
 export interface RouteAction {

@@ -17,6 +17,7 @@ export * from './IContext';
 
 export * from './IApplication';
 export * from './Application';
+export * from './AppModuleBuilder';
 export * from './BaseController';
 export * from './MvcContainer';
 export * from './CoreModule';

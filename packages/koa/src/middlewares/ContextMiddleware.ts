@@ -1,12 +1,9 @@
 import { Inject } from '@ts-ioc/core';
-import {
-    Middleware, IMiddleware, ContextMiddlewareToken,
-    IApplication, ApplicationToken, ContextToken
-} from '@mvx/core';
+import { Middleware, IMiddleware, IApplication, ApplicationToken, ContextToken, MiddlewareTokens } from '@mvx/mvc';
 
 
-@Middleware(ContextMiddlewareToken)
-export class DefaultContextMiddleware implements IMiddleware {
+@Middleware(MiddlewareTokens.Context)
+export class ContextMiddleware implements IMiddleware {
 
     @Inject(ApplicationToken)
     private app: IApplication;

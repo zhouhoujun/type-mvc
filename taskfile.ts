@@ -7,12 +7,12 @@ const jeditor = require('gulp-json-editor');
 let versionSetting = (ctx: IPipeContext) => {
     let envArgs = ctx.getEnvArgs();
     return jeditor((json: any) => {
-        let version = envArgs['setvs'] || '';
+        let version = envArgs['vs'] || '';
         if (version) {
             json.version = version;
             if (json.peerDependencies) {
                 Object.keys(json.peerDependencies).forEach(key => {
-                    if (/^@taskfr/.test(key)) {
+                    if (/^@mvx/.test(key)) {
                         json.peerDependencies[key] = '^' + version;
                     }
                 })
@@ -58,7 +58,7 @@ let iocVersion = (ctx: IPipeContext) => {
         {
             shell: (ctx: IPipeContext) => {
                 let envArgs = ctx.getEnvArgs();
-                let packages = ctx.getFolders('packages');
+                let packages = ['packages/mvc', 'packages/koa', 'packages/router']; // ctx.getFolders('packages');
                 let cmd = envArgs.deploy ? 'npm publish --access=public' : 'npm test';
                 let cmds = packages.map(fd => {
                     return `cd ${fd} && ${cmd}`;
@@ -70,9 +70,9 @@ let iocVersion = (ctx: IPipeContext) => {
         }
     ]
 })
-export class Builder {
+export class BuilderPackage {
 }
 
 TaskContainer.create(__dirname)
     .use(PipeModule)
-    .bootstrap(Builder);
+    .bootstrap(BuilderPackage);

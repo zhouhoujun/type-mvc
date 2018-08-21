@@ -1,6 +1,6 @@
 import { BaseRoute } from './BaseRoute';
 import { IContainer } from '@ts-ioc/core';
-import { IContext, Next } from '@mvx/core';
+import { IContext, Next } from '@mvx/mvc';
 
 /**
  * root route.

@@ -1,10 +1,8 @@
-import { Singleton, InjectToken, Token, IContainer, Inject, ContainerToken, Providers, isClass, isToken, getTypeMetadata, lang } from '@ts-ioc/core';
-import { OrderMiddleware, MiddlewareType, InjectMiddlewareToken, IMiddleware, DefaultMiddlewawres, Middlewares } from './IMiddleware';
+import { Singleton, InjectToken, Token, IContainer, Inject, ContainerToken, Providers, isClass, isToken, isFunction, isString, getTypeMetadata, lang } from '@ts-ioc/core';
+import { OrderMiddleware, MiddlewareType, InjectMiddlewareToken, IMiddleware, DefaultMiddlewawreChain, Middlewares } from './IMiddleware';
 import { MiddlewareMetadata } from '../metadata';
-import { isFunction, isString } from 'util';
 import { Middleware } from '../decorators';
-import { IApp, IMvcServer } from '../IApplication';
-import { IConfiguration } from '../IConfiguration';
+import { IApplication } from '../IApplication';
 import { IRouter } from '../router';
 
 
@@ -16,10 +14,10 @@ export interface IMiddlewareChain {
     /**
      * setup middleware chain
      *
-     * @param {IApp} app
+     * @param {IApplication} app
      * @memberof IMiddlewareChain
      */
-    setup(app: IApp);
+    setup(app: IApplication);
 
     /**
      * get middleware instance.
@@ -71,13 +69,22 @@ export class MiddlewareChain implements IMiddlewareChain {
     @Inject(ContainerToken)
     container: IContainer;
 
-    protected orders: OrderMiddleware[];
-    constructor() {
-        this.orders = this.getDefault();
+
+    private _orders: OrderMiddleware[];
+    get orders(): OrderMiddleware[] {
+        if (!this._orders) {
+            this._orders = this.getDefault();
+        }
+        return this._orders;
     }
 
-    setup(app: IApp) {
+    constructor() {
+    }
+
+    setup(app: IApplication) {
+        console.log('MiddlewareChain:', app);
         let server = app.getServer();
+        console.log(this.orders);
         this.orders.forEach(mdl => {
             let m = mdl.middleware;
             if (!m) {
@@ -89,7 +96,7 @@ export class MiddlewareChain implements IMiddlewareChain {
                 if (mdl.name === Middlewares.Router) {
                     let router = middleware as IRouter;
                     let config = app.configuration;
-                    router.register(...config.useControllers);
+                    router.register(...config.usedControllers);
                 }
                 if (isFunction(middleware.setup)) {
                     middleware.setup();
@@ -121,7 +128,7 @@ export class MiddlewareChain implements IMiddlewareChain {
             this.container.register(middleware);
         }
 
-        let meta = this.getMiddlewareMeta(Middleware);
+        let meta = this.getMiddlewareMeta(middleware);
         if (meta) {
             this.insertByMeta(meta, middleware, chain);
         }
@@ -185,7 +192,7 @@ export class MiddlewareChain implements IMiddlewareChain {
     protected getDefault() {
         let chain = [];
 
-        DefaultMiddlewawres.forEach(m => {
+        DefaultMiddlewawreChain.forEach(m => {
             this.insert(m, chain);
         });
 

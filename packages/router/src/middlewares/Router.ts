@@ -1,23 +1,19 @@
 import {
-    ApplicationToken, IApp, IConfiguration,
-    Middleware, IMiddleware, ConfigurationToken
+    ApplicationToken, IApplication, IConfiguration,
+    Middleware, IMiddleware, ConfigurationToken, Middlewares
 } from '@mvx/mvc';
-import { Token, Inject, InjectToken } from '@ts-ioc/core';
+import { Token, Inject } from '@ts-ioc/core';
 import { IRoute, RootRoute, RouteBuilder, IRouter } from '../route';
 
 
-/**
- * Router middleware token.
- */
-export const RouterMiddlewareToken = new InjectToken<IRouter>('__MVC_Middleware_Router');
 
-@Middleware(RouterMiddlewareToken)
+@Middleware(Middlewares.Router)
 export class Router implements IRouter, IMiddleware {
 
     private root: IRoute;
 
     @Inject(ApplicationToken)
-    private app: IApp;
+    private app: IApplication;
 
     constructor(private builder: RouteBuilder, @Inject(ConfigurationToken) private config: IConfiguration) {
         this.root = new RootRoute(config.routePrefix);

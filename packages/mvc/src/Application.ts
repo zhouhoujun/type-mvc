@@ -3,7 +3,7 @@ import * as http from 'http';
 import * as https from 'https';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
-import { IApp, IMvcServer, CoreServerToken } from './IApplication';
+import { IApplication, IMvcServer, CoreServerToken, ApplicationToken } from './IApplication';
 import { IContext } from './IContext';
 import { Next } from './util';
 import { ServerListenerToken } from './IListener';
@@ -17,8 +17,8 @@ import { Service } from '@ts-ioc/bootstrap';
  * @class Application
  * @implements {IApplication}
  */
-@Singleton
-export class Application extends Service implements IApp {
+@Singleton(ApplicationToken)
+export class Application extends Service implements IApplication {
 
     private httpServer: http.Server | https.Server;
     private _loggerMgr: ILoggerManager;
@@ -37,8 +37,12 @@ export class Application extends Service implements IApp {
         return this.container.resolve(MiddlewareChainToken);
     }
 
+    private mvcService: IMvcServer;
     getServer(): IMvcServer {
-        return this.container.resolve(CoreServerToken);
+        if (!this.mvcService) {
+            this.mvcService = this.container.resolve(CoreServerToken);
+        }
+        return this.mvcService;
     }
 
     getLoggerManger(): ILoggerManager {
@@ -72,7 +76,8 @@ export class Application extends Service implements IApp {
 
     async start() {
         let config = this.configuration;
-        let listener = this.container.get(ServerListenerToken);
+        console.log('App config:', config);
+        let listener = this.container.has(ServerListenerToken) ? this.container.get(ServerListenerToken) : null;
         let func;
         if (isFunction(listener)) {
             func = listener;
@@ -88,6 +93,7 @@ export class Application extends Service implements IApp {
         } else {
             server.listen(port, func);
         }
+        console.log('service listen on port: ', port);
     }
 
     async stop() {

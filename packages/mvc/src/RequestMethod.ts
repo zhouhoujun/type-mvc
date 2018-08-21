@@ -5,12 +5,33 @@ import { isString } from '@ts-ioc/core';
  * request method.
  */
 export enum RequestMethod {
+    /**
+     * Get method.
+     */
     Get,
+    /**
+     * Post method.
+     */
     Post,
+    /**
+     * Put method.
+     */
     Put,
+    /**
+     * Delete method.
+     */
     Delete,
+    /**
+     * Options method.
+     */
     Options,
+    /**
+     * Head method.
+     */
     Head,
+    /**
+     * Patch method.
+     */
     Patch
 }
 

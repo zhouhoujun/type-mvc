@@ -1,11 +1,11 @@
 import { Inject } from '@ts-ioc/core';
-import { Middleware, IMiddleware, IApplication, IConfiguration, ConfigurationToken, ApplicationToken, ViewsMiddlewareToken } from '@mvx/core';
+import { Middleware, IMiddleware, IApplication, IConfiguration, ConfigurationToken, ApplicationToken, MiddlewareTokens } from '@mvx/mvc';
 import { toAbsolutePath } from '@ts-ioc/platform-server';
 
 const views = require('koa-views');
 
-@Middleware(ViewsMiddlewareToken)
-export class DefaultViewsMiddleware implements IMiddleware {
+@Middleware(MiddlewareTokens.Views)
+export class ViewsMiddleware implements IMiddleware {
 
     @Inject(ApplicationToken)
     private app: IApplication;

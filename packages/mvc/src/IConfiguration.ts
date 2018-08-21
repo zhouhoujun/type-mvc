@@ -2,7 +2,7 @@ import { ObjectMap, Token, Type, InjectToken } from '@ts-ioc/core';
 import { LogConfigure } from '@ts-ioc/logs';
 import { ServerOptions } from 'https';
 import { AppConfigure } from '@ts-ioc/bootstrap';
-import { IApp } from './IApplication';
+import { IApplication } from './IApplication';
 import { RequestMethod } from './RequestMethod';
 
 
@@ -74,10 +74,10 @@ export interface IConfiguration extends AppConfigure {
     /**
      * set bootstrap applaction.
      *
-     * @type {Type<IApp>}
+     * @type {Type<IApplication>}
      * @memberof IConfiguration
      */
-    bootstrap?: Type<IApp>;
+    bootstrap?: Type<IApplication>;
     /**
      * aseert url match regexp.
      *
@@ -85,7 +85,6 @@ export interface IConfiguration extends AppConfigure {
      * @memberof IConfiguration
      */
     assertUrlRegExp?: RegExp;
-
     /**
      * route url match  regexp.
      *
@@ -101,7 +100,6 @@ export interface IConfiguration extends AppConfigure {
      * @memberof IConfiguration
      */
     isRouteUrl?(ctxUrl: string): boolean;
-
     /**
      * https server options.
      *
@@ -109,7 +107,6 @@ export interface IConfiguration extends AppConfigure {
      * @memberof IConfiguration
      */
     httpsOptions?: ServerOptions;
-
     /**
      * server hostname
      *
@@ -128,7 +125,6 @@ export interface IConfiguration extends AppConfigure {
      * system file root directory.
      */
     rootdir?: string;
-
     /**
      * session config.
      *
@@ -136,7 +132,6 @@ export interface IConfiguration extends AppConfigure {
      * @memberof IConfiguration
      */
     session?: ISessionConfig;
-
     /**
      * contents path of files, static files. default in 'public'
      *
@@ -158,7 +153,6 @@ export interface IConfiguration extends AppConfigure {
      * @memberOf Configuration
      */
     setting?: ObjectMap<any>;
-
     /**
      * custom config connections.
      *
@@ -171,13 +165,16 @@ export interface IConfiguration extends AppConfigure {
      */
     middlewares?: string | string[];
     /**
+     * use middlewares.
+     */
+    useMiddlewares?: Type<any>[];
+    /**
      * global cors default options.
      *
      * @type {CorsOptions}
      * @memberof Configuration
      */
     corsOptions?: CorsOptions;
-
     /**
      * controllers match. default `./controllers/\*\*\/*{.js,.ts}` in your project..
      *
@@ -185,15 +182,13 @@ export interface IConfiguration extends AppConfigure {
      * @memberOf Configuration
      */
     controllers?: string | string[];
-
     /**
-     * use controllers. if not config will load all.
+     * used controllers. if not config will load all.
      *
      * @type {Token<any>[]}
      * @memberof Configuration
      */
-    useControllers?: Token<any>[];
-
+    usedControllers?: Token<any>[];
     /**
      * aspect service path. default: './aop'
      *
@@ -202,19 +197,24 @@ export interface IConfiguration extends AppConfigure {
      */
     aop?: string | string[];
     /**
+     * used aops.
+     *
+     * @type {Type<any>[]}
+     * @memberof IConfiguration
+     */
+    usedAops?: Type<any>[];
+    /**
      * views folder, default `./views` in your project.
      *
      * @memberof Configuration
      */
     views?: string;
-
     /**
      * render view options.
      *
      * @memberof Configuration
      */
     viewsOptions?: IViewOptions;
-
     /**
      * model options.
      *
@@ -222,14 +222,12 @@ export interface IConfiguration extends AppConfigure {
      * @memberof IConfiguration
      */
     modelOptions?: ModelOptions;
-
     /**
      * in debug log. defult false.
      *
      * @memberof IConfiguration
      */
     debug?: boolean;
-
     /**
      * log config
      *

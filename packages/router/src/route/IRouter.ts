@@ -1,4 +1,4 @@
-import { IMiddleware } from '@mvx/core';
+import { IMiddleware } from '@mvx/mvc';
 import { Token } from '@ts-ioc/core';
 import { IRoute } from './IRoute';
 

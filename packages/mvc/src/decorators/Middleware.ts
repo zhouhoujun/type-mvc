@@ -1,4 +1,4 @@
-import { ClassMetadata, IClassDecorator, createClassDecorator, ITypeDecorator, Token, isString, isToken } from '@ts-ioc/core';
+import { createClassDecorator, ITypeDecorator, Token, isString, isToken, Registration } from '@ts-ioc/core';
 import { MiddlewareMetadata } from '../metadata';
 import { IMiddleware, InjectMiddlewareToken } from '../middlewares';
 
@@ -16,12 +16,12 @@ export interface IMiddlewareDecorator<T extends MiddlewareMetadata> extends ITyp
      * Middleware decorator. define the class as mvc Middleware.
      * @Middleware
      *
-     * @param {string} name middleware name singed for mvc.
+     * @param {(string | Registration<IMiddleware>)} name middleware name singed for mvc.
      * @param {Token<IMiddleware>} [before] define middleware setup before one middleware.
      * @param {Token<IMiddleware>} [after] define middleware setup after one middleware.
      * @param {(Registration<any> | symbol | string)} [provide] define this Middleware provider for provide.
      */
-    (name: string, before?: Token<IMiddleware>, after?: Token<IMiddleware>, provide?: Token<any>): ClassDecorator;
+    (name: string | Registration<IMiddleware>, before?: Token<IMiddleware>, after?: Token<IMiddleware>, provide?: Token<any>): ClassDecorator;
     /**
      * Middleware decorator. define the class as mvc Middleware.
      * @Middleware
@@ -43,9 +43,14 @@ export interface IMiddlewareDecorator<T extends MiddlewareMetadata> extends ITyp
 export const Middleware: IMiddlewareDecorator<MiddlewareMetadata> = createClassDecorator<MiddlewareMetadata>('Middleware',
     (args) => {
         args.next<MiddlewareMetadata>({
-            match: (arg) => isString(arg),
+            match: (arg) => isString(arg) || (arg instanceof Registration),
             setMetadata: (metadata, arg) => {
-                metadata.name = arg;
+                if (isString(arg)) {
+                    metadata.name = arg;
+                } else if (arg instanceof Registration) {
+                    metadata.provide = arg;
+                    metadata.name = metadata.provide.getDesc();
+                }
             }
         });
         args.next<MiddlewareMetadata>({

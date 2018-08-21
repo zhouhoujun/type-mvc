@@ -12,7 +12,7 @@ import {
     UnauthorizedError, NotFoundError, HttpError, BadRequestError, ForbiddenError,
     RequestMethod, methodToString, parseRequestMethod,
     IConfiguration, ConfigurationToken, ModelParserToken
-} from '@mvx/core';
+} from '@mvx/mvc';
 import { isBuffer } from 'util';
 
 /**
@@ -140,7 +140,6 @@ export class ControllerRoute extends BaseRoute {
             return null;
         }
 
-        let methodCors = getMethodMetadata<CorsMetadata>(Cors, this.controller);
         let method = parseRequestMethod(reqMethod);
 
         let meta = this.getRouteMetaData(ctx, container, method);
@@ -283,9 +282,6 @@ export class ControllerRoute extends BaseRoute {
         if (!meta) {
             meta = allMethods.find(route => {
                 let uri = route.route || '';
-                // if (uri === routPath) {
-                //     return true;
-                // }
                 if (this.isRestUri(uri)) {
                     let idex = uri.indexOf('/:');
                     let url = uri.substring(0, idex);

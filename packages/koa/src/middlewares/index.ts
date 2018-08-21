@@ -1,8 +1,8 @@
 
-export * from './DefaultContextMiddleware';
-export * from './DefaultContentMiddleware';
-export * from './DefaultSessionMiddleware';
-export * from './DefaultJsonMiddleware';
-export * from './DefaultLogMiddleware';
-export * from './DefaultBodyParserMiddleware';
-export * from './DefaultViewsMiddleware';
+export * from './ContextMiddleware';
+export * from './ContentMiddleware';
+export * from './SessionMiddleware';
+export * from './JsonMiddleware';
+export * from './LogMiddleware';
+export * from './BodyParserMiddleware';
+export * from './ViewsMiddleware';

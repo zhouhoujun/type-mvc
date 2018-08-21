@@ -92,14 +92,32 @@ export class InjectMiddlewareToken extends Registration<IMiddleware> {
     }
 }
 
+/**
+ * Middlewawre Tokens
+ */
+export const MiddlewareTokens = {
+    BodyParser: new InjectMiddlewareToken(Middlewares.BodyParser),
+    Json: new InjectMiddlewareToken(Middlewares.Json),
+    Log: new InjectMiddlewareToken(Middlewares.Log),
+    Session: new InjectMiddlewareToken(Middlewares.Session),
+    Content: new InjectMiddlewareToken(Middlewares.Content),
+    Context: new InjectMiddlewareToken(Middlewares.Context),
+    Cors: new InjectMiddlewareToken(Middlewares.Cors),
+    Views: new InjectMiddlewareToken(Middlewares.Views),
+    Router: new InjectMiddlewareToken(Middlewares.Router)
+}
 
-export const DefaultMiddlewawres = [
-    new InjectMiddlewareToken(Middlewares.BodyParser),
-    new InjectMiddlewareToken(Middlewares.Json),
-    new InjectMiddlewareToken(Middlewares.Log),
-    new InjectMiddlewareToken(Middlewares.Session),
-    new InjectMiddlewareToken(Middlewares.Content),
-    new InjectMiddlewareToken(Middlewares.Context),
-    new InjectMiddlewareToken(Middlewares.Cors),
-    new InjectMiddlewareToken(Middlewares.Views)
+/**
+ * default Middlewawre chain.
+ */
+export const DefaultMiddlewawreChain = [
+    MiddlewareTokens.BodyParser,
+    MiddlewareTokens.Json,
+    MiddlewareTokens.Log,
+    MiddlewareTokens.Session,
+    MiddlewareTokens.Content,
+    MiddlewareTokens.Context,
+    MiddlewareTokens.Cors,
+    MiddlewareTokens.Views,
+    MiddlewareTokens.Router
 ];

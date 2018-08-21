@@ -6,7 +6,7 @@ import * as https from 'https';
 import { IContext } from './IContext';
 import { Next } from './util';
 import { IMiddlewareChain } from './middlewares/MiddlewareChain';
-import { IService } from '@ts-ioc/bootstrap';
+import { IService, InjectModuleBuilderToken, InjectAnnotationBuilder } from '@ts-ioc/bootstrap';
 
 
 /**
@@ -40,7 +40,17 @@ export const CoreServerToken = new InjectToken<IMvcServer>('MVX_CoreServer');
 /**
  * Application token.
  */
-export const ApplicationToken = new InjectToken<IApp>('MVX_Application');
+export const ApplicationToken = new InjectToken<IApplication>('MVX_Application');
+
+/**
+ * app module builder token.
+ */
+export const AppModuleBuilderToken = new InjectModuleBuilderToken<IApplication>(ApplicationToken);
+
+/**
+ *  app build token
+ */
+export const AppBuilderToken = new InjectAnnotationBuilder<IApplication>(ApplicationToken);
 
 /**
  * MVC Applaction interface.
@@ -48,7 +58,7 @@ export const ApplicationToken = new InjectToken<IApp>('MVX_Application');
  * @export
  * @interface IApp
  */
-export interface IApp extends IService<IApp> {
+export interface IApplication extends IService<IApplication> {
 
     /**
      * application container.

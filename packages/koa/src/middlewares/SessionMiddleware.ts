@@ -1,12 +1,12 @@
 import { Inject } from '@ts-ioc/core';
-import { Middleware, IMiddleware, IApplication, IConfiguration, ConfigurationToken, ApplicationToken, SessionMiddlewareToken } from '@mvx/core';
+import { Middleware, IMiddleware, IApplication, IConfiguration, ConfigurationToken, ApplicationToken, MiddlewareTokens } from '@mvx/mvc';
 import { NonePointcut } from '@ts-ioc/aop';
 
 const session = require('koa-session');
 
 @NonePointcut
-@Middleware(SessionMiddlewareToken)
-export class DefaultSessionMiddleware implements IMiddleware {
+@Middleware(MiddlewareTokens.Session)
+export class SessionMiddleware implements IMiddleware {
 
     @Inject(ApplicationToken)
     private app: IApplication;

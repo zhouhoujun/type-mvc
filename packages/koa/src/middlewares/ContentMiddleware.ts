@@ -1,16 +1,16 @@
 import { Inject } from '@ts-ioc/core';
 import {
-    Middleware, IMiddleware, ContentMiddlewareToken,
+    Middleware, IMiddleware,
     IApplication, ApplicationToken,
-    IConfiguration, ConfigurationToken
-} from '@mvx/core';
+    IConfiguration, ConfigurationToken, MiddlewareTokens
+} from '@mvx/mvc';
 import { NonePointcut } from '@ts-ioc/aop';
 import { toAbsolutePath } from '@ts-ioc/platform-server';
 const serve = require('koa-static');
 
 @NonePointcut
-@Middleware(ContentMiddlewareToken)
-export class DefaultContentMiddleware implements IMiddleware {
+@Middleware(MiddlewareTokens.Content)
+export class ContentMiddleware implements IMiddleware {
 
     @Inject(ApplicationToken)
     private app: IApplication;

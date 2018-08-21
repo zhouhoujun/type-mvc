@@ -1,5 +1,5 @@
 import { GComposite, IContainer, Mode, isString } from '@ts-ioc/core';
-import { IContext, Next } from '@mvx/core';
+import { IContext, Next } from '@mvx/mvc';
 import { IRoute } from './IRoute';
 import { notFoundRoute } from './NotFoundRoute';
 

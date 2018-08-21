@@ -1,9 +1,15 @@
-import { Bootstrap, AppModule, Application, DebugLogAspect } from '@mvx/mvc';
+import {  App, Application, DebugLogAspect, MvcContainer } from '@mvx/mvc';
 // import { PlatformServer } from '@ts-ioc/platform-server';
+import { KoaModule } from '@mvx/koa';
+import { RouterModule } from '@mvx/router';
 
-@AppModule({
-    // imports: [DebugLogAspect],
-    debug: false,
+@App({
+    imports: [
+        KoaModule,
+        RouterModule,
+        // DebugLogAspect
+    ],
+    // debug: true,
     bootstrap: Application
 })
 class MvcApi {
@@ -11,6 +17,6 @@ class MvcApi {
 }
 
 
-Bootstrap.create(__dirname)
+MvcContainer.create(__dirname)
     .useConfiguration()
     .bootstrap(MvcApi);

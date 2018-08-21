@@ -15,10 +15,7 @@ You can install this package either with `npm`
 
 ```shell
 
-npm install @mvx/mvc
-npm install @mvx/router
-npm install @mvx/koa
-
+npm install type-mvc
 
 ```
 

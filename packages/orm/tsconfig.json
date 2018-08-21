@@ -6,12 +6,6 @@
       "paths": {
         "@mvx/mvc": [
           "../mvc/src"
-        ],
-        "@mvx/koa": [
-          "../koa/src"
-        ],
-        "@mvx/router": [
-          "../router/src"
         ]
       }
     },

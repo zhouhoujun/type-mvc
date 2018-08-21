@@ -1,7 +1,7 @@
 import { IRoute } from './IRoute';
 import { IRouter } from './IRouter';
 import { Token, Injectable, getTypeMetadata, isClass } from '@ts-ioc/core';
-import { Controller, ControllerMetadata } from '@mvx/core';
+import { Controller, ControllerMetadata } from '@mvx/mvc';
 import { ControllerRoute } from './ControllerRoute';
 
 

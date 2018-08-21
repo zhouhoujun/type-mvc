@@ -1,4 +1,4 @@
-import { Singleton, ObjectMap, Type } from '@ts-ioc/core';
+import { ObjectMap, Type, Singleton } from '@ts-ioc/core';
 import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
 import { LogConfigure } from '@ts-ioc/logs';
 
@@ -89,6 +89,13 @@ export class Configuration implements IConfiguration {
     middlewares?: string | string[] = ['./middlewares/**/*{.js,.ts}', '!./**/*.d.ts'];
 
     /**
+     * use middlewawres
+     *
+     * @type {Type<any>[]}
+     * @memberof Configuration
+     */
+    usedMiddlewares?: Type<any>[];
+    /**
      * controllers match. default `./controllers/\*\*\/*{.js,.ts}`, '!.\/**\/*.d.ts\' in your project..
      *
      * @type {(string | string[])}
@@ -111,6 +118,14 @@ export class Configuration implements IConfiguration {
      * @memberof Configuration
      */
     aop?: string | string[] = ['./aop/**/*{.js,.ts}', '!./**/*.d.ts'];
+
+    /**
+     * use aops.
+     *
+     * @type {Type<any>[]}
+     * @memberof Configuration
+     */
+    usedAops?: Type<any>[];
 
     /**
      * views folder, default `./views` in your project.
