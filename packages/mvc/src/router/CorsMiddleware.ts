@@ -1,9 +1,10 @@
-import {
-    IApplication, ApplicationToken, IConfiguration, ConfigurationToken,
-    Middleware, IMiddleware, Middlewares, MiddlewareTokens
-} from '@mvx/mvc';
+
 import { Inject } from '@ts-ioc/core';
-import { Router } from './Router';
+import { IRouter } from './IRouter';
+import { MiddlewareTokens, Middlewares, IMiddleware } from '../middlewares';
+import { Middleware } from '../decorators';
+import { ApplicationToken, IApplication } from '../IApplication';
+import { ConfigurationToken, IConfiguration } from '../IConfiguration';
 
 @Middleware(Middlewares.Cors)
 export class CorsMiddleware implements IMiddleware {
@@ -15,7 +16,7 @@ export class CorsMiddleware implements IMiddleware {
     private config: IConfiguration;
 
     @Inject(MiddlewareTokens.Router)
-    private router: Router;
+    private router: IRouter;
 
     constructor() {
 

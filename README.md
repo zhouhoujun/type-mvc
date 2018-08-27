@@ -41,11 +41,11 @@ npm install @mvx/koa
 
 * v0.5.1 
     1. add Log aop aspect service. for Log easy.  default user console to log, can config `logLib`,`logConfig` in your `config.js` to use third logger lib. eg. `{ logLib: 'log4js', logConfig:{...} }`.
-    has implements log4js adapter [see code](https://github.com/zhouhoujun/type-mvc/blob/master/src/logs/Log4jsAdapter.ts)
+    has implements log4js adapter [see code](https://github.com/zhouhoujun/type-mvc/blob/master/packages/mvc/src/logAdapter/Log4jsAdapter.ts)
 
     2. DebugAspect, config `debug: true`,  in your `config.js`, will auto log debug info.
-    2. [AnnotationLogerAspect](https://github.com/zhouhoujun/type-mvc/blob/master/src/aop/AnnotationLogerAspect.ts) @annotation(Logger), logger some state via @Logger decorator config. 
-    2. add Annotation Auth aspect service [`AuthAspect`](https://github.com/zhouhoujun/type-mvc/blob/master/src/aop/AuthAspect.ts) to support yourself auth check easy. eg.
+    2. [AnnotationLogerAspect](https://github.com/zhouhoujun/type-mvc/blob/master/packages/mvc/src/aop/AnnotationLogerAspect.ts) @annotation(Logger), logger some state via @Logger decorator config. 
+    2. add Annotation Auth aspect service [`AuthAspect`](https://github.com/zhouhoujun/type-mvc/blob/master/packages/mvc/src/aop/AuthAspect.ts) to support yourself auth check easy. eg.
     
 ```ts
 @Aspect
@@ -81,16 +81,16 @@ export class YourSecrityAspect {
 create application
 
 ```ts
-import { Bootstrap,  AppModule, Application, DebugLogAspect } from 'type-mvc';
+import { MvcContainer,  App, Application, DebugLogAspect } from '@mvx/mvc';
 // 1.
-Bootstrap.create(__dirname)
+MvcContainer.create(__dirname)
     .useConfiguration()
     //.use(middleware: IMiddleware | Middleware | Token<any>)
     //.useContainerBuilder(...)
     .run();
 
 // 2.
-@AppModule({
+@App({
     imports: [DebugLogAspect],
     debug: false
 })
@@ -101,12 +101,12 @@ class MvcApi extends Application {
     }
 }
 
-Bootstrap.create(__dirname)
+MvcContainer.create(__dirname)
     .useConfiguration()
     .bootstrap(MvcApi);
 
 // 3.
-@AppModule({
+@App({
     // imports: [DebugLogAspect],
     debug: false,
     bootstrap: Application

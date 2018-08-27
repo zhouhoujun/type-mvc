@@ -1,18 +1,16 @@
-import { IocExt, IContainer, Inject, ContainerToken } from '@ts-ioc/core';
-import * as routes from './route';
-import * as middlewares from './middlewares';
+import { DIModule } from '@ts-ioc/bootstrap';
+import { RouteBuilder } from './route';
+import { Router } from './middlewares';
 
-@IocExt('setup')
+@DIModule({
+    imports: [
+        RouteBuilder,
+        Router
+    ],
+    exports: [
+        RouteBuilder,
+        Router
+    ]
+})
 export class RouterModule {
-
-    @Inject(ContainerToken)
-    private container: IContainer;
-
-    constructor() {
-
-    }
-
-    setup() {
-        this.container.use(routes, middlewares);
-    }
 }

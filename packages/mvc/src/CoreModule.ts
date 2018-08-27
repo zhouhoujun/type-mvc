@@ -7,6 +7,7 @@ import { AppModuleBuilder } from './AppModuleBuilder';
 import { Application } from './Application';
 import { MiddlewareChain } from './middlewares';
 import { Configuration } from './Configuration';
+import { CorsMiddleware } from './router';
 
 @IocExt('setup')
 export class CoreModule {
@@ -21,6 +22,6 @@ export class CoreModule {
         lifeScope.registerDecorator(Authorization, LifeState.onInit, CoreActions.bindProvider);
         lifeScope.registerDecorator(Middleware, LifeState.onInit, CoreActions.bindProvider);
         lifeScope.registerDecorator(Model, LifeState.onInit, CoreActions.bindProvider);
-        this.container.use(Configuration, ModelParser, BaseController, AppBuilder, AppModuleBuilder, Application, MiddlewareChain);
+        this.container.use(Configuration, ModelParser, BaseController, AppBuilder, AppModuleBuilder, Application, MiddlewareChain, CorsMiddleware);
     }
 }
