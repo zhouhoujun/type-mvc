@@ -2,8 +2,7 @@ import { IocExt, ContainerToken, Inject, IContainer, LifeState, CoreActions } fr
 import { BaseController } from './BaseController';
 import { Controller, Authorization, Middleware, Model } from './decorators';
 import { ModelParser } from './model';
-import { AppBuilder } from './AppBuilder';
-import { AppModuleBuilder } from './AppModuleBuilder';
+import { AppBuilder, AppModuleBuilder } from './injectors';
 import { Application } from './Application';
 import { MiddlewareChain } from './middlewares';
 import { Configuration } from './Configuration';

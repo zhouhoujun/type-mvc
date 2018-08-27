@@ -1,9 +1,9 @@
 import { AnnotationBuilder } from '@ts-ioc/bootstrap';
-import { IApplication, AppBuilderToken } from './IApplication';
-import { IConfiguration } from './IConfiguration';
-import { MiddlewareChainToken } from './middlewares';
+import { IApplication, AppBuilderToken } from '../IApplication';
+import { IConfiguration } from '../IConfiguration';
+import { MiddlewareChainToken } from '../middlewares';
 import { Injectable } from '@ts-ioc/core';
-import { Application } from './Application';
+import { Application } from '../Application';
 
 @Injectable(AppBuilderToken)
 export class AppBuilder extends AnnotationBuilder<IApplication> {

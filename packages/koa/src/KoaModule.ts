@@ -1,15 +1,33 @@
-import { IocExt, Inject, ContainerToken, IContainer } from '@ts-ioc/core';
 import * as Koa from 'koa';
-import * as middlewares from './middlewares';
+import {
+    BodyParserMiddleware, ContentMiddleware, ContextMiddleware,
+    JsonMiddleware, LogMiddleware, SessionMiddleware, ViewsMiddleware
+} from './middlewares';
 import { CoreServerToken } from '@mvx/mvc';
+import { DIModule } from '@ts-ioc/bootstrap';
 
-@IocExt('setup')
+@DIModule({
+    imports: [
+        BodyParserMiddleware,
+        ContentMiddleware,
+        ContextMiddleware,
+        JsonMiddleware,
+        LogMiddleware,
+        SessionMiddleware,
+        ViewsMiddleware
+    ],
+    providers: [
+        { provide: CoreServerToken, useClass: Koa }
+    ],
+    exports: [
+        BodyParserMiddleware,
+        ContentMiddleware,
+        ContextMiddleware,
+        JsonMiddleware,
+        LogMiddleware,
+        SessionMiddleware,
+        ViewsMiddleware
+    ]
+})
 export class KoaModule {
-    @Inject(ContainerToken)
-    private container: IContainer;
-
-    setup() {
-        this.container.use(middlewares);
-        this.container.bindProvider(CoreServerToken, () => new Koa());
-    }
 }

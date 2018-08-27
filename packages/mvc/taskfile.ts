@@ -4,7 +4,7 @@ import { TaskContainer } from '@taskfr/platform-server';
 @Package({
     src: 'src',
     clean: 'lib',
-    // test: 'test/**/*.spec.ts',
+    test: 'test/**/*.spec.ts',
     assets: {
         ts: <TsConfigure>{ dest: 'lib', annotation: true, uglify: false }
     }

@@ -15,9 +15,9 @@ export * from './IAuthorization';
 export * from './RequestMethod';
 export * from './IContext';
 
+export * from './injectors';
 export * from './IApplication';
 export * from './Application';
-export * from './AppModuleBuilder';
 export * from './BaseController';
 export * from './MvcContainer';
 export * from './CoreModule';
