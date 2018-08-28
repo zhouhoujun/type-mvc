@@ -9,7 +9,16 @@
     "postinstall": "npm prune",
     "prepublish": "tkf"
   },
-  "keywords": ["mvc", "AOP", "ioc", "frameworker", "koa", "tsioc", "server", "ts-ioc"],
+  "keywords": [
+    "mvc",
+    "AOP",
+    "ioc",
+    "frameworker",
+    "koa",
+    "tsioc",
+    "server",
+    "ts-ioc"
+  ],
   "author": "houjun",
   "license": "MIT",
   "bugs": {

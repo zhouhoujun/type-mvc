@@ -1,11 +1,8 @@
 import { IocExt, ContainerToken, Inject, IContainer, LifeState, CoreActions } from '@ts-ioc/core';
-import { BaseController } from './BaseController';
 import { Controller, Authorization, Middleware, Model } from './decorators';
-import { ModelParser } from './model';
 import { AppBuilder, AppModuleBuilder } from './injectors';
 import { Application } from './Application';
 import { MiddlewareChain } from './middlewares';
-import { Configuration } from './Configuration';
 import { CorsMiddleware } from './router';
 
 @IocExt('setup')
@@ -21,13 +18,9 @@ export class CoreModule {
         lifeScope.registerDecorator(Authorization, LifeState.onInit, CoreActions.bindProvider);
         lifeScope.registerDecorator(Middleware, LifeState.onInit, CoreActions.bindProvider);
         lifeScope.registerDecorator(Model, LifeState.onInit, CoreActions.bindProvider);
-        this.container.register(Configuration)
-            .register(ModelParser)
-            .register(BaseController)
+        this.container
             .register(AppBuilder)
             .register(AppModuleBuilder)
-            .register(Application)
-            .register(MiddlewareChain)
-            .register(CorsMiddleware);
+            .register(Application);
     }
 }

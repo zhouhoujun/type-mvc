@@ -9,7 +9,7 @@ import { RouterModule } from '@mvx/router';
         RouterModule,
         // DebugLogAspect
     ],
-    // debug: true,
+    debug: true,
     bootstrap: Application
 })
 class MvcApi {

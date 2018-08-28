@@ -8,7 +8,7 @@ import { IContext } from './IContext';
 import { Next } from './util';
 import { ServerListenerToken } from './IListener';
 import { MiddlewareChainToken, IMiddlewareChain } from './middlewares';
-import { Service, AppConfigureToken, DefaultConfigureToken } from '@ts-ioc/bootstrap';
+import { Service } from '@ts-ioc/bootstrap';
 
 /**
  * Default Application of type mvc.

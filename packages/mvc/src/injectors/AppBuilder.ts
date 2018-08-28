@@ -6,24 +6,31 @@ import { Application } from '../Application';
 import { Configuration } from '../Configuration';
 import { LogConfigureToken } from '@ts-ioc/logs';
 import { DebugLogAspect, AuthAspect } from '../aop';
+import { ModelParser } from '../model';
+import { BaseController } from '../BaseController';
+import { MiddlewareChain } from '../middlewares';
+import { CorsMiddleware } from '../router';
 
 @Injectable(AppBuilderToken)
 export class AppBuilder extends AnnotationBuilder<IApplication> {
 
-    protected getTokenMetaConfig(token: Token<IApplication>, config?: IConfiguration): IConfiguration {
-        let metaConfig = super.getTokenMetaConfig(token, config);
-        let globCfg = this.container.get(AppConfigureToken) as IConfiguration;
-        globCfg.rootdir = globCfg.rootdir || globCfg.baseURL;
-        metaConfig = lang.assign(globCfg, metaConfig) as IConfiguration;
-        this.container.bindProvider(ConfigurationToken, metaConfig);
-        this.container.bindProvider(Configuration, metaConfig as Configuration);
-        return metaConfig;
-    }
-
     async buildStrategy(app: IApplication, config: IConfiguration): Promise<IApplication> {
         if (app instanceof Application) {
+            let chain = app.middlewareChain;
+            chain.use(...config.useMiddlewares);
+            chain.setup(app);
+        }
+        return app;
+    }
 
-            let builder = this.container.getBuilder();
+    protected async registerExts(config?: IConfiguration) {
+        let builder = this.container.getBuilder();
+            if (config.models) {
+                await builder.loadModule(this.container, {
+                    basePath: config.rootdir,
+                    files: config.models
+                });
+            }
             // custom config.
             if (config.middlewares) {
                 let modules = await builder.loadModule(this.container, {
@@ -53,6 +60,23 @@ export class AppBuilder extends AnnotationBuilder<IApplication> {
             }
             this.container.register(AuthAspect);
 
+            if (!this.container.has(ModelParser)) {
+                this.container.register(ModelParser);
+            }
+
+            if (!this.container.has(BaseController)) {
+                this.container.register(BaseController);
+            }
+
+            if (!this.container.has(MiddlewareChain)) {
+                this.container.register(MiddlewareChain);
+            }
+
+            if (!this.container.has(CorsMiddleware)) {
+                this.container.register(CorsMiddleware);
+            }
+
+
             if (config.aop) {
                 let aops = await builder.loadModule(this.container, {
                     basePath: config.rootdir,
@@ -61,12 +85,15 @@ export class AppBuilder extends AnnotationBuilder<IApplication> {
 
                 config.usedAops = aops;
             }
+    }
 
-            let chain = app.middlewareChain;
-            console.log('buildStrategy:', config, this.container.resolve(ConfigurationToken));
-            chain.use(...config.useMiddlewares);
-            chain.setup(app);
-        }
-        return app;
+    protected getTokenMetaConfig(token: Token<IApplication>, config?: IConfiguration): IConfiguration {
+        let metaConfig = super.getTokenMetaConfig(token, config);
+        let globCfg = this.container.get(AppConfigureToken) as IConfiguration;
+        globCfg.rootdir = globCfg.rootdir || globCfg.baseURL;
+        metaConfig = lang.assign(globCfg, metaConfig) as IConfiguration;
+        this.container.bindProvider(ConfigurationToken, metaConfig);
+        this.container.bindProvider(Configuration, metaConfig as Configuration);
+        return metaConfig;
     }
 }

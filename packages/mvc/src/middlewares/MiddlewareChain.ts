@@ -82,7 +82,6 @@ export class MiddlewareChain implements IMiddlewareChain {
 
     setup(app: IApplication) {
         let server = app.getServer();
-        console.log(this.orders);
         this.orders.forEach(mdl => {
             let m = mdl.middleware;
             if (!m) {
@@ -134,7 +133,6 @@ export class MiddlewareChain implements IMiddlewareChain {
 
     getMiddlewareMeta(middleware: Token<IMiddleware>): MiddlewareMetadata {
         let type = isClass(middleware) ? middleware : this.container.getTokenImpl(middleware);
-        console.log('Middleware type:', middleware, this.container.has(middleware), type);
         if (isClass(type)) {
             return lang.first(getTypeMetadata(Middleware, type));
         } else if (isString(middleware)) {
@@ -191,7 +189,6 @@ export class MiddlewareChain implements IMiddlewareChain {
     protected getDefault() {
         let chain = [];
 
-        console.log('MiddlewawreChain container:', this.container);
         DefaultMiddlewawreChain.forEach(m => {
             this.insert(m, chain);
         });

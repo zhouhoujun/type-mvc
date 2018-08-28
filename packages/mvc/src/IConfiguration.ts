@@ -222,6 +222,14 @@ export interface IConfiguration extends AppConfigure {
      * @memberof IConfiguration
      */
     modelOptions?: ModelOptions;
+
+    /**
+     * models match. default `['.\/models\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']` in your project..
+     *
+     * @type {(string | string[])}
+     * @memberOf Configuration
+     */
+    models?: string | string[];
     /**
      * in debug log. defult false.
      *

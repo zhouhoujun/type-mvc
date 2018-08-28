@@ -184,7 +184,7 @@ export class ControllerRoute extends BaseRoute {
 
             let lifeScope = container.getLifeScope();
 
-            let params = lifeScope.getMethodParameters(this.controller, ctrl, meta.propertyKey);
+            let params =  lifeScope.getMethodParameters(this.controller, ctrl, meta.propertyKey);
             let providers = this.createProvider(container, ctx, ctrl, meta, params);
             let response: any = await container.invoke(this.controller, meta.propertyKey, ctrl, ...providers);
 

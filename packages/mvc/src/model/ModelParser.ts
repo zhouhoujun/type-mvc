@@ -1,13 +1,12 @@
-import { Type, getPropertyMetadata, PropertyMetadata, isToken, isUndefined, IContainer, Inject, isClass, Singleton, ObjectMap, ContainerToken, SymbolType, hasClassMetadata, hasOwnClassMetadata } from '@ts-ioc/core';
+import { Type, getPropertyMetadata, PropertyMetadata, isToken, isUndefined, IContainer, Inject, isClass, Singleton, ObjectMap, ContainerToken, SymbolType, hasClassMetadata, hasOwnClassMetadata, Injectable } from '@ts-ioc/core';
 import { Model, Field } from '../decorators';
 import { ConfigurationToken, IConfiguration } from '../IConfiguration';
 import { ModelParserToken } from './IModelParser';
 
-@Singleton(ModelParserToken)
+@Injectable(ModelParserToken)
 export class ModelParser {
 
     constructor(@Inject(ContainerToken) private container: IContainer, @Inject(ConfigurationToken) private config: IConfiguration) {
-
     }
 
     isModel(type: Type<any>): boolean {
@@ -16,6 +15,9 @@ export class ModelParser {
 
     parseModel(type: Type<any>, objMap: any): any {
         let meta = this.getPropertyMeta(type);
+        if (!this.container.has(type) && isClass(type)) {
+            this.container.register(type);
+        }
         let result = this.container.get(type);
         for (let n in meta) {
             let propmetas = meta[n];

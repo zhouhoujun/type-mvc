@@ -1,5 +1,5 @@
 import { ObjectMap, Type, Singleton } from '@ts-ioc/core';
-import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
+import { IConfiguration, CorsOptions, ModelOptions, ConfigurationToken } from './IConfiguration';
 import { LogConfigure } from '@ts-ioc/logs';
 
 /**
@@ -8,7 +8,6 @@ import { LogConfigure } from '@ts-ioc/logs';
  * @export
  * @interface Configuration
  */
-@Singleton
 export class Configuration implements IConfiguration {
     constructor() {
 
@@ -146,6 +145,13 @@ export class Configuration implements IConfiguration {
 
 
     modelOptions?: ModelOptions = null;
+    /**
+     * models match. default `['.\/models\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']` in your project..
+     *
+     * @type {(string | string[])}
+     * @memberOf Configuration
+     */
+    models?: string | string[] = ['./models/**/*{.js,.ts}', '!./**/*.d.ts'];
 
     /**
      * in debug log. defult false.
