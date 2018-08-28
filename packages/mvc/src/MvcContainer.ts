@@ -6,14 +6,11 @@ import { AopModule } from '@ts-ioc/aop';
 import { LogModule } from '@ts-ioc/logs';
 import { CustomMiddleware } from './middlewares';
 import { IApplicationBuilder, Runnable, DefaultConfigureToken, AppConfigureLoaderToken, IApplicationExtends, AppConfigure, DefaultModuleBuilderToken, DefaultAnnotationBuilderToken, ApplicationEvents } from '@ts-ioc/bootstrap';
-
-import { Application } from './Application';
 import { CoreModule } from './CoreModule';
-import { ConfigureFileLoader } from '@ts-ioc/platform-server/bootstrap';
+import { ConfigureFileLoader, ApplicationBuilder } from '@ts-ioc/platform-server/bootstrap';
 import { ServerListenerToken } from './IListener';
-import { AppModuleBuilderToken, AppBuilderToken } from './IApplication';
-import { AppModuleBuilder, AppMetaAccessor, AppModuleValidate, AppModuleInjector, AppModuleInjectorToken } from './injectors';
-
+import { AppMetaAccessor, AppModuleValidate, AppModuleInjector, AppModuleInjectorToken, AppBuilder, AppModuleBuilder } from './injectors';
+import { Application } from './Application';
 
 
 /**
@@ -48,7 +45,7 @@ export class MvcContainer implements IApplicationExtends {
     getBuilder<T>(): IApplicationBuilder<T> {
         if (!this.builder) {
             this.builder = this.createAppBuilder();
-            this.builder.events.on(ApplicationEvents.onRootContainerCreated, (container: IContainer) => {
+            this.builder.on(ApplicationEvents.onRootContainerCreated, (container: IContainer) => {
                 container.register(AppMetaAccessor)
                     .register(AppModuleValidate)
                     .register(AppModuleInjector);
@@ -57,17 +54,17 @@ export class MvcContainer implements IApplicationExtends {
             });
 
             this.builder
-                .use(AopModule, LogModule, CoreModule, Log4jsAdapter, ConfigureFileLoader)
-                .provider(DefaultConfigureToken, Configuration)
-                .provider(DefaultModuleBuilderToken, AppModuleBuilderToken)
-                .provider(DefaultAnnotationBuilderToken, AppBuilderToken)
+                .use(AopModule, LogModule, CoreModule, Log4jsAdapter)
+                .provider(DefaultConfigureToken, Configuration, true)
+                .provider(DefaultModuleBuilderToken, AppModuleBuilder)
+                .provider(DefaultAnnotationBuilderToken, AppBuilder)
                 .provider(AppConfigureLoaderToken, ConfigureFileLoader);
         }
         return this.builder;
     }
 
     protected createAppBuilder() {
-        return new AppModuleBuilder(this.rootdir);
+        return new ApplicationBuilder(this.rootdir);
     }
 
     /**
@@ -108,8 +105,8 @@ export class MvcContainer implements IApplicationExtends {
         return this;
     }
 
-    provider(provide: Token<any>, provider: any): this {
-        this.getBuilder().provider(provide, provider);
+    provider(provide: Token<any>, provider: any, beforRootInit?: boolean): this {
+        this.getBuilder().provider(provide, provider, beforRootInit);
         return this;
     }
 

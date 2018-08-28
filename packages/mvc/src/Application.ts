@@ -8,7 +8,7 @@ import { IContext } from './IContext';
 import { Next } from './util';
 import { ServerListenerToken } from './IListener';
 import { MiddlewareChainToken, IMiddlewareChain } from './middlewares';
-import { Service } from '@ts-ioc/bootstrap';
+import { Service, AppConfigureToken, DefaultConfigureToken } from '@ts-ioc/bootstrap';
 
 /**
  * Default Application of type mvc.
@@ -26,8 +26,12 @@ export class Application extends Service implements IApplication {
     @Inject(ContainerToken)
     container: IContainer;
 
-    @Inject(ConfigurationToken)
-    configuration: IConfiguration;
+    get configuration(): IConfiguration {
+        return this.container.resolve(ConfigurationToken);
+    }
+
+    @Inject(MiddlewareChainToken)
+    middlewareChain: IMiddlewareChain;
 
     constructor() {
         super();
@@ -76,7 +80,6 @@ export class Application extends Service implements IApplication {
 
     async start() {
         let config = this.configuration;
-        console.log('App config:', config);
         let listener = this.container.has(ServerListenerToken) ? this.container.get(ServerListenerToken) : null;
         let func;
         if (isFunction(listener)) {

@@ -1,4 +1,4 @@
-import { Singleton, InjectToken, Token, IContainer, Inject, ContainerToken, Providers, isClass, isToken, isFunction, isString, getTypeMetadata, lang } from '@ts-ioc/core';
+import { InjectToken, Token, IContainer, Inject, ContainerToken, Providers, isClass, isToken, isFunction, isString, getTypeMetadata, lang, Injectable } from '@ts-ioc/core';
 import { OrderMiddleware, MiddlewareType, InjectMiddlewareToken, IMiddleware, DefaultMiddlewawreChain, Middlewares } from './IMiddleware';
 import { MiddlewareMetadata } from '../metadata';
 import { Middleware } from '../decorators';
@@ -63,12 +63,11 @@ export const MiddlewareChainToken = new InjectToken<IMiddlewareChain>('middlewar
 
 
 
-@Singleton(MiddlewareChainToken)
+@Injectable(MiddlewareChainToken)
 export class MiddlewareChain implements IMiddlewareChain {
 
     @Inject(ContainerToken)
-    container: IContainer;
-
+    public container: IContainer;
 
     private _orders: OrderMiddleware[];
     get orders(): OrderMiddleware[] {
@@ -82,7 +81,6 @@ export class MiddlewareChain implements IMiddlewareChain {
     }
 
     setup(app: IApplication) {
-        console.log('MiddlewareChain:', app);
         let server = app.getServer();
         console.log(this.orders);
         this.orders.forEach(mdl => {
@@ -136,6 +134,7 @@ export class MiddlewareChain implements IMiddlewareChain {
 
     getMiddlewareMeta(middleware: Token<IMiddleware>): MiddlewareMetadata {
         let type = isClass(middleware) ? middleware : this.container.getTokenImpl(middleware);
+        console.log('Middleware type:', middleware, this.container.has(middleware), type);
         if (isClass(type)) {
             return lang.first(getTypeMetadata(Middleware, type));
         } else if (isString(middleware)) {
@@ -192,6 +191,7 @@ export class MiddlewareChain implements IMiddlewareChain {
     protected getDefault() {
         let chain = [];
 
+        console.log('MiddlewawreChain container:', this.container);
         DefaultMiddlewawreChain.forEach(m => {
             this.insert(m, chain);
         });
