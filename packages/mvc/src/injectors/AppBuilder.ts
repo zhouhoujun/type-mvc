@@ -1,5 +1,5 @@
 import { AnnotationBuilder, AppConfigureToken } from '@ts-ioc/bootstrap';
-import { IApplication, AppBuilderToken } from '../IApplication';
+import { IApplication, AppBuilderToken, ApplicationToken } from '../IApplication';
 import { IConfiguration, ConfigurationToken } from '../IConfiguration';
 import { Injectable, lang, Token } from '@ts-ioc/core';
 import { Application } from '../Application';
@@ -16,6 +16,11 @@ export class AppBuilder extends AnnotationBuilder<IApplication> {
 
     async buildStrategy(app: IApplication, config: IConfiguration): Promise<IApplication> {
         if (app instanceof Application) {
+            // if (!this.container.has(ApplicationToken)) {
+            //     console.log('register ApplicationToken')
+            //     this.container.bindProvider(ApplicationToken, app);
+            // }
+            this.container.bindProvider(ApplicationToken, app);
             let chain = app.middlewareChain;
             chain.use(...config.useMiddlewares);
             chain.setup(app);
@@ -25,66 +30,66 @@ export class AppBuilder extends AnnotationBuilder<IApplication> {
 
     protected async registerExts(config?: IConfiguration) {
         let builder = this.container.getBuilder();
-            if (config.models) {
-                await builder.loadModule(this.container, {
-                    basePath: config.rootdir,
-                    files: config.models
-                });
+        if (config.models) {
+            await builder.loadModule(this.container, {
+                basePath: config.rootdir,
+                files: config.models
+            });
+        }
+        // custom config.
+        if (config.middlewares) {
+            let modules = await builder.loadModule(this.container, {
+                basePath: config.rootdir,
+                files: config.middlewares
+            });
+            config.useMiddlewares = modules;
+
+        }
+
+        if (config.controllers) {
+            let controllers = await builder.loadModule(this.container, {
+                basePath: config.rootdir,
+                files: config.controllers
+            });
+            if (!config.usedControllers || config.usedControllers.length < 1) {
+                config.usedControllers = controllers;
             }
-            // custom config.
-            if (config.middlewares) {
-                let modules = await builder.loadModule(this.container, {
-                    basePath: config.rootdir,
-                    files: config.middlewares
-                });
-                config.useMiddlewares = modules;
+        }
 
-            }
+        if (config.logConfig) {
+            this.container.registerSingleton(LogConfigureToken, config.logConfig);
+        }
 
-            if (config.controllers) {
-                let controllers = await builder.loadModule(this.container, {
-                    basePath: config.rootdir,
-                    files: config.controllers
-                });
-                if (!config.usedControllers || config.usedControllers.length < 1) {
-                    config.usedControllers = controllers;
-                }
-            }
+        if (config.debug) {
+            this.container.register(DebugLogAspect);
+        }
+        this.container.register(AuthAspect);
 
-            if (config.logConfig) {
-                this.container.registerSingleton(LogConfigureToken, config.logConfig);
-            }
+        if (!this.container.has(ModelParser)) {
+            this.container.register(ModelParser);
+        }
 
-            if (config.debug) {
-                this.container.register(DebugLogAspect);
-            }
-            this.container.register(AuthAspect);
+        if (!this.container.has(BaseController)) {
+            this.container.register(BaseController);
+        }
 
-            if (!this.container.has(ModelParser)) {
-                this.container.register(ModelParser);
-            }
+        if (!this.container.has(MiddlewareChain)) {
+            this.container.register(MiddlewareChain);
+        }
 
-            if (!this.container.has(BaseController)) {
-                this.container.register(BaseController);
-            }
-
-            if (!this.container.has(MiddlewareChain)) {
-                this.container.register(MiddlewareChain);
-            }
-
-            if (!this.container.has(CorsMiddleware)) {
-                this.container.register(CorsMiddleware);
-            }
+        if (!this.container.has(CorsMiddleware)) {
+            this.container.register(CorsMiddleware);
+        }
 
 
-            if (config.aop) {
-                let aops = await builder.loadModule(this.container, {
-                    basePath: config.rootdir,
-                    files: config.aop
-                });
+        if (config.aop) {
+            let aops = await builder.loadModule(this.container, {
+                basePath: config.rootdir,
+                files: config.aop
+            });
 
-                config.usedAops = aops;
-            }
+            config.usedAops = aops;
+        }
     }
 
     protected getTokenMetaConfig(token: Token<IApplication>, config?: IConfiguration): IConfiguration {
