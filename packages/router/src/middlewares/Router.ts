@@ -1,13 +1,13 @@
 import {
     ApplicationToken, IApplication, IConfiguration,
-    Middleware, IMiddleware, ConfigurationToken, Middlewares
+    Middleware, IMiddleware, ConfigurationToken, MiddlewareTokens
 } from '@mvx/mvc';
 import { Token, Inject } from '@ts-ioc/core';
 import { IRoute, RootRoute, RouteBuilder, IRouter } from '../route';
 
 
 
-@Middleware(Middlewares.Router)
+@Middleware(MiddlewareTokens.Router)
 export class Router implements IRouter, IMiddleware {
 
     private root: IRoute;

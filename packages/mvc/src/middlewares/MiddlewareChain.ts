@@ -188,7 +188,6 @@ export class MiddlewareChain implements IMiddlewareChain {
 
     protected getDefault() {
         let chain = [];
-
         DefaultMiddlewawreChain.forEach(m => {
             this.insert(m, chain);
         });

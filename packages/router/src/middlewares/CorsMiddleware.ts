@@ -1,12 +1,10 @@
 
 import { Inject } from '@ts-ioc/core';
-import { IRouter } from './IRouter';
-import { MiddlewareTokens, Middlewares, IMiddleware } from '../middlewares';
-import { Middleware } from '../decorators';
-import { ApplicationToken, IApplication } from '../IApplication';
-import { ConfigurationToken, IConfiguration } from '../IConfiguration';
+import { Middleware, MiddlewareTokens, IMiddleware, ApplicationToken, IApplication, ConfigurationToken, IConfiguration, IRouter } from '@mvx/mvc';
 
-@Middleware(Middlewares.Cors)
+
+
+@Middleware(MiddlewareTokens.Cors)
 export class CorsMiddleware implements IMiddleware {
 
     @Inject(ApplicationToken)

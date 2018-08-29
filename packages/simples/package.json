@@ -1,6 +1,6 @@
 {
   "name": "@mvx/simples",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -20,11 +20,11 @@
     "url": "git+https://github.com/zhouhoujun/type-mvc.git"
   },
   "dependencies": {
-    "@ts-ioc/aop": "^3.1.2",
-    "@ts-ioc/core": "^3.1.2",
-    "@ts-ioc/logs": "^3.1.2",
-    "@ts-ioc/bootstrap": "^3.1.2",
-    "@ts-ioc/platform-server": "^3.1.2",
+    "@ts-ioc/aop": "^3.1.3",
+    "@ts-ioc/core": "^3.1.3",
+    "@ts-ioc/logs": "^3.1.3",
+    "@ts-ioc/bootstrap": "^3.1.3",
+    "@ts-ioc/platform-server": "^3.1.3",
     "@mvx/mvc": "^2.0.0-beta",
     "@mvx/koa": "^2.0.0-beta",
     "@mvx/router": "^2.0.0-beta",

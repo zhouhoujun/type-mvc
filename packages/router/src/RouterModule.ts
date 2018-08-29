@@ -1,14 +1,16 @@
 import { DIModule } from '@ts-ioc/bootstrap';
 import { RouteBuilder } from './route';
-import { Router } from './middlewares';
+import { Router, CorsMiddleware } from './middlewares';
 
 @DIModule({
     imports: [
         RouteBuilder,
+        CorsMiddleware,
         Router
     ],
     exports: [
         RouteBuilder,
+        CorsMiddleware,
         Router
     ]
 })

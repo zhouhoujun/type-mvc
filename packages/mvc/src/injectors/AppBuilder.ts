@@ -9,7 +9,6 @@ import { DebugLogAspect, AuthAspect } from '../aop';
 import { ModelParser } from '../model';
 import { BaseController } from '../BaseController';
 import { MiddlewareChain } from '../middlewares';
-import { CorsMiddleware } from '../router';
 
 @Injectable(AppBuilderToken)
 export class AppBuilder extends AnnotationBuilder<IApplication> {
@@ -72,11 +71,6 @@ export class AppBuilder extends AnnotationBuilder<IApplication> {
         if (!this.container.has(MiddlewareChain)) {
             this.container.register(MiddlewareChain);
         }
-
-        if (!this.container.has(CorsMiddleware)) {
-            this.container.register(CorsMiddleware);
-        }
-
 
         if (config.aop) {
             let aops = await builder.loadModule(this.container, {
