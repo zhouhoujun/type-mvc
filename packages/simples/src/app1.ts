@@ -7,7 +7,7 @@ import { RouterModule } from '@mvx/router';
     imports: [
         KoaModule,
         RouterModule,
-        // DebugLogAspect
+        DebugLogAspect
     ],
     debug: false
 })
