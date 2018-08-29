@@ -15,7 +15,9 @@ You can install this package either with `npm`
 
 ```shell
 
-npm install type-mvc
+npm install @mvx/mvc
+npm install @mvx/router
+npm install @mvx/koa
 
 ```
 
@@ -336,7 +338,7 @@ export class Logger implements IMiddleware {
 
 ## Simples
 
-[see simples](https://github.com/zhouhoujun/type-mvc/tree/master/src/simples)
+[see simples](https://github.com/zhouhoujun/type-mvc/tree/master/packages/simples)
 ## License
 
 MIT © [Houjun](https://github.com/zhouhoujun/)

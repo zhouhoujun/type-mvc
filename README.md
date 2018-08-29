@@ -339,7 +339,7 @@ export class Logger implements IMiddleware {
 
 ## Simples
 
-[see simples](https://github.com/zhouhoujun/type-mvc/tree/master/src/simples)
+[see simples](https://github.com/zhouhoujun/type-mvc/tree/master/packages/simples)
 ## License
 
 MIT © [Houjun](https://github.com/zhouhoujun/)
