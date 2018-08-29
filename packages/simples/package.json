@@ -45,11 +45,11 @@
     "tslib": "^1.9.2"
   },
   "devDependencies": {
-    "@taskfr/cli": "^1.0.2",
-    "@taskfr/core": "^1.0.2",
-    "@taskfr/pipes": "^1.0.2",
-    "@taskfr/platform-server": "^1.0.2",
-    "@ts-ioc/annotations": "^2.5.4",
+    "@taskfr/cli": "^2.1.1",
+    "@taskfr/core": "^2.1.1",
+    "@taskfr/pipes": "^2.1.1",
+    "@taskfr/platform-server": "^2.1.1",
+    "@ts-ioc/annotations": "^3.1.3",
     "@types/chai": "^4.1.3",
     "@types/gulp-mocha": "0.0.32",
     "bluebird": "^3.4.1",
