@@ -16,10 +16,6 @@ export class AppBuilder extends AnnotationBuilder<IApplication> {
 
     async buildStrategy(app: IApplication, config: IConfiguration): Promise<IApplication> {
         if (app instanceof Application) {
-            // if (!this.container.has(ApplicationToken)) {
-            //     console.log('register ApplicationToken')
-            //     this.container.bindProvider(ApplicationToken, app);
-            // }
             this.container.bindProvider(ApplicationToken, app);
             let chain = app.middlewareChain;
             chain.use(...config.useMiddlewares);

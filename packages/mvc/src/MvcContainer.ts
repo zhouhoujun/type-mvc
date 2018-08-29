@@ -5,7 +5,10 @@ import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
 import { AopModule } from '@ts-ioc/aop';
 import { LogModule } from '@ts-ioc/logs';
 import { CustomMiddleware } from './middlewares';
-import { IApplicationBuilder, Runnable, DefaultConfigureToken, AppConfigureLoaderToken, IApplicationExtends, AppConfigure, DefaultModuleBuilderToken, DefaultAnnotationBuilderToken, ApplicationEvents } from '@ts-ioc/bootstrap';
+import {
+    IApplicationBuilder, Runnable, DefaultConfigureToken, AppConfigureLoaderToken, IApplicationExtends,
+    AppConfigure, DefaultModuleBuilderToken, DefaultAnnotationBuilderToken, ApplicationEvents
+} from '@ts-ioc/bootstrap';
 import { CoreModule } from './CoreModule';
 import { ConfigureFileLoader, ApplicationBuilder } from '@ts-ioc/platform-server/bootstrap';
 import { ServerListenerToken } from './IListener';

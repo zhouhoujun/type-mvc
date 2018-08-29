@@ -1,5 +1,5 @@
-import { ObjectMap, Type, Singleton } from '@ts-ioc/core';
-import { IConfiguration, CorsOptions, ModelOptions, ConfigurationToken } from './IConfiguration';
+import { ObjectMap, Type } from '@ts-ioc/core';
+import { IConfiguration, CorsOptions, ModelOptions } from './IConfiguration';
 import { LogConfigure } from '@ts-ioc/logs';
 
 /**

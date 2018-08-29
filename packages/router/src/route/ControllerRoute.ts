@@ -191,7 +191,6 @@ export class ControllerRoute extends BaseRoute {
             if (isPromise(response)) {
                 response = await response;
             }
-            let contentType: string = meta.contentType;
             if (isString(response) || isBoolean(response) || isNumber(response) || isArray(response) || isDate(response) || isBuffer(response)) {
                 ctx.body = isBuffer(response) ? Buffer.from(response) : response;
             } else if (isObject(response)) {

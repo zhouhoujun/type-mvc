@@ -2,8 +2,6 @@ import { IocExt, ContainerToken, Inject, IContainer, LifeState, CoreActions } fr
 import { Controller, Authorization, Middleware, Model } from './decorators';
 import { AppBuilder, AppModuleBuilder } from './injectors';
 import { Application } from './Application';
-import { MiddlewareChain } from './middlewares';
-import { CorsMiddleware } from './router';
 
 @IocExt('setup')
 export class CoreModule {
