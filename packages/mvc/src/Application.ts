@@ -18,7 +18,7 @@ import { Service } from '@ts-ioc/bootstrap';
  * @implements {IApplication}
  */
 @Singleton(ApplicationToken)
-export class Application extends Service implements IApplication {
+export class Application extends Service<IApplication> implements IApplication {
 
     private httpServer: http.Server | https.Server;
     private _loggerMgr: ILoggerManager;
