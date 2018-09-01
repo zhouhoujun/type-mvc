@@ -82,17 +82,24 @@ create application
 
 ```ts
 import { MvcContainer,  App, Application, DebugLogAspect } from '@mvx/mvc';
+import { KoaModule } from '@mvx/koa';
+import { RouterModule } from '@mvx/router';
 // 1.
 MvcContainer.create(__dirname)
-    .useConfiguration()
+    .use(KoaModule, RouterModule)
+    // .useConfiguration('config path or object')
     //.use(middleware: IMiddleware | Middleware | Token<any>)
     //.useContainerBuilder(...)
-    .run();
+    .bootstrap();
 
 // 2.
 @App({
-    imports: [DebugLogAspect],
-    debug: false
+    imports: [
+        KoaModule,
+        RouterModule,
+        DebugLogAspect
+    ],
+    // debug: false
 })
 class MvcApi extends Application {
     constructor() {
@@ -102,21 +109,25 @@ class MvcApi extends Application {
 }
 
 MvcContainer.create(__dirname)
-    .useConfiguration()
+    // .useConfiguration('config path or object')
     .bootstrap(MvcApi);
 
 // 3.
 @App({
-    // imports: [DebugLogAspect],
-    debug: false,
+    imports: [
+        KoaModule,
+        RouterModule,
+        // DebugLogAspect
+    ],
+    debug: true,
     bootstrap: Application
 })
 class MvcApi {
 
 }
 
-Bootstrap.create(__dirname)
-    .useConfiguration()
+MvcContainer.create(__dirname)
+    // .useConfiguration('config path or object')
     .bootstrap(MvcApi);
 ```
 
