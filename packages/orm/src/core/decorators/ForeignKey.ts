@@ -1,10 +1,10 @@
 import { IFiledDecorator, createFieldDecorator } from './Field';
 import { ForeignKeyMetadata } from '../metadata';
-import { IPropertyDecorator, isNumber, isString } from '@ts-ioc/core';
+import { IPropertyDecorator, isNumber, isString, Type, isClass } from '@ts-ioc/core';
 
 
 export interface IForeignKeyDecorator<T extends ForeignKeyMetadata> extends IPropertyDecorator<T> {
-    (foreignKey?: string, foreignOrder?: number, dbtype?: string, dbfield?: string): PropertyDecorator;
+    (foreignKey?: string, refType?: Type<any>, foreignOrder?: number, dbtype?: string, dbfield?: string): PropertyDecorator;
 }
 
 export const ForeignKey: IForeignKeyDecorator<ForeignKeyMetadata> = createFieldDecorator<ForeignKeyMetadata>(
@@ -14,6 +14,12 @@ export const ForeignKey: IForeignKeyDecorator<ForeignKeyMetadata> = createFieldD
             match: (arg) => isString(arg),
             setMetadata: (metadata, arg) => {
                 metadata.foreignKey = arg;
+            }
+        });
+        args.next<ForeignKeyMetadata>({
+            match: (arg) => isClass(arg),
+            setMetadata: (metadata, arg) => {
+                metadata.refType = arg;
             }
         });
     }

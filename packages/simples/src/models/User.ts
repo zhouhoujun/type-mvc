@@ -12,4 +12,7 @@ export class User {
     sex: string;
     @Field
     age: number;
+
+    @Field
+    names: string[];
 }

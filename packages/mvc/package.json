@@ -22,11 +22,11 @@
   "dependencies": {
     "reflect-metadata": "^0.1.12",
     "tslib": "^1.9.2",
-    "@ts-ioc/aop": "^3.2.2",
-    "@ts-ioc/core": "^3.2.2",
-    "@ts-ioc/logs": "^3.2.2",
-    "@ts-ioc/bootstrap": "^3.2.2",
-    "@ts-ioc/platform-server": "^3.2.2"
+    "@ts-ioc/aop": "^3.2.10",
+    "@ts-ioc/core": "^3.2.10",
+    "@ts-ioc/logs": "^3.2.10",
+    "@ts-ioc/bootstrap": "^3.2.10",
+    "@ts-ioc/platform-server": "^3.2.10"
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme"
 }

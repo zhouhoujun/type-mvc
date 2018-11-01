@@ -20,13 +20,13 @@ export interface IFiledDecorator<T extends FieldMetadata> extends IPropertyDecor
  *
  * @export
  * @template T
- * @param {string} [fieldType]
+ * @param {string} [decoratorName]
  * @param {MetadataAdapter} [adapter]
  * @param {MetadataExtends<T>} [metaExtends]
  * @returns {IFiledDecorator<T>}
  */
 export function createFieldDecorator<T extends FieldMetadata>(
-    fieldType?: string,
+    decoratorName?: string,
     adapter?: MetadataAdapter,
     metaExtends?: MetadataExtends<T>): IFiledDecorator<T> {
     return createPropDecorator<FieldMetadata>('Field',
@@ -69,7 +69,7 @@ export function createFieldDecorator<T extends FieldMetadata>(
             if (metaExtends) {
                 metadata = metaExtends(metadata as T);
             }
-            metadata.fieldType = fieldType;
+            metadata.decorName = decoratorName;
             return metadata;
         }) as IFiledDecorator<T>;
 }
