@@ -1,23 +1,4 @@
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-      "baseUrl": ".",
-      "rootDir": "../../packages",
-      "paths": {
-        "@mvx/mvc": [
-          "../mvc/src"
-        ],
-        "@mvx/koa": [
-          "../koa/src"
-        ],
-        "@mvx/router": [
-          "../router/src"
-        ]
-      }
-    },
-    "exclude": [
-      "lib",
-      "node_modules"    
-    ]
-  }
-  
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {}
+}

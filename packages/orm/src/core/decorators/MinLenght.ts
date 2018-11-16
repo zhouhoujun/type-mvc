@@ -1,4 +1,4 @@
-import { IFiledDecorator, createFieldDecorator } from './Field';
+import { createFieldDecorator } from './Field';
 import { MinLengthMetadata } from '../metadata/index';
 import { IPropertyDecorator, isNumber, isString } from '@ts-ioc/core';
 

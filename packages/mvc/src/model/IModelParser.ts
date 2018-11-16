@@ -1,4 +1,4 @@
-import { Type, SymbolType, Registration } from '@ts-ioc/core';
+import { Type, Registration } from '@ts-ioc/core';
 
 /**
  * model parser. parser model from request.
@@ -6,45 +6,18 @@ import { Type, SymbolType, Registration } from '@ts-ioc/core';
  * @export
  * @interface IModelParser
  */
-export interface IModelParser {
-    /**
-     * type is model or not.
-     *
-     * @param {Type<any>} type
-     * @returns {boolean}
-     * @memberof IModelParser
-     */
-    isModel(type: Type<any>): boolean;
+export interface IModelParser<T> {
 
     /**
      * parse model.
      *
-     * @param {Type<any>} type
-     * @param {any} objMap
+     * @param {Type<T>} type
+     * @param {T} objMap
      * @returns {*}
      * @memberof IModelParser
      */
-    parseModel(type: Type<any>, objMap: any): any;
+    parseModel(type: Type<T>, objMap: any): T;
 
-
-    /**
-     * is base type.
-     *
-     * @param {*} type
-     * @returns {boolean}
-     * @memberof IModelParser
-     */
-    isBaseType(type: any): boolean;
-
-    /**
-     * parse base type.
-     *
-     * @param {*} type
-     * @param {*} paramVal
-     * @returns {*}
-     * @memberof IModelParser
-     */
-    parseBaseType(type, paramVal): any;
 }
 
 /**
@@ -55,13 +28,13 @@ export interface IModelParser {
  * @extends {Registration<T>}
  * @template T
  */
-export class InjectModelParserToken<T extends IModelParser> extends Registration<T> {
-    constructor(desc: string) {
-        super('modelParser', desc);
+export class InjectModelParserToken<T> extends Registration<IModelParser<T>> {
+    constructor(type: Type<T>) {
+        super(type, 'modelParser');
     }
 }
 
 /**
- * module parser token.
+ * default module parser token.
  */
-export const ModelParserToken = new InjectModelParserToken<IModelParser>('')
+export const DefaultModelParserToken = new InjectModelParserToken(Object)

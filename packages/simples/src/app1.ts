@@ -2,7 +2,6 @@ import { MvcContainer, App, Application, DebugLogAspect } from '@mvx/mvc';
 // import { PlatformServer } from '@ts-ioc/platform-server';
 import { KoaModule } from '@mvx/koa';
 import { RouterModule } from '@mvx/router';
-
 @App({
     imports: [
         KoaModule,
@@ -18,7 +17,6 @@ class MvcApi extends Application {
     }
 }
 
-
 MvcContainer.create(__dirname)
     .useConfiguration()
-    .bootstrap(MvcApi);
+    .run(MvcApi);

@@ -4,14 +4,14 @@ import {
     isClass, getTypeMetadata, isPromise,
     isUndefined, isString, isObject, isArray, isNumber,
     IParameter, Provider, hasClassMetadata, hasMethodMetadata, Providers,
-    isBoolean, isDate
+    isBoolean, isDate, isBaseType
 } from '@ts-ioc/core';
 import {
     IContext, Next, Cors, Route, CorsMetadata,
     RouteMetadata, Authorization, AuthorizationToken, ResultValue,
     UnauthorizedError, NotFoundError, HttpError, BadRequestError, ForbiddenError,
     RequestMethod, methodToString, parseRequestMethod,
-    IConfiguration, ConfigurationToken, ModelParserToken
+    IConfiguration, ConfigurationToken, InjectModelParserToken, DefaultModelParserToken, BaseTypeParserToken
 } from '@mvx/mvc';
 import { isBuffer } from 'util';
 
@@ -184,14 +184,14 @@ export class ControllerRoute extends BaseRoute {
 
             let lifeScope = container.getLifeScope();
 
-            let params =  lifeScope.getMethodParameters(this.controller, ctrl, meta.propertyKey);
+            let params = lifeScope.getMethodParameters(this.controller, ctrl, meta.propertyKey);
             let providers = this.createProvider(container, ctx, ctrl, meta, params);
             let response: any = await container.invoke(this.controller, meta.propertyKey, ctrl, ...providers);
 
             if (isPromise(response)) {
                 response = await response;
             }
-            if (isString(response) || isBoolean(response) || isNumber(response) || isArray(response) || isDate(response) || isBuffer(response)) {
+            if (isBaseType(response) || isArray(response) || isBuffer(response)) {
                 ctx.body = isBuffer(response) ? Buffer.from(response) : response;
             } else if (isObject(response)) {
                 if (response instanceof ResultValue) {
@@ -207,42 +207,36 @@ export class ControllerRoute extends BaseRoute {
     }
 
     protected createProvider(container: IContainer, ctx: IContext, ctrl: any, meta: RouteMetadata, params: IParameter[]): Providers[] {
-
-        let parser = container.get(ModelParserToken);
-
         if (params && params.length) {
             let restParams: any = {};
             if (this.isRestUri(meta.route)) {
                 let routes = meta.route.split('/').map(r => r.trim());
-                let restParamNames = routes.filter(d => /^\S*:/.test(d)); // .map(rest => rest.substring(1));
+                let restParamNames = routes.filter(d => /^\S*:/.test(d));
                 let baseURL = this.cutEmptyPath(this.url, true);
                 let routeUrls = this.cutEmptyPath(ctx.url.replace(baseURL, '')).split('/');
-
                 restParamNames.forEach(pname => {
                     let val = routeUrls[routes.indexOf(pname)];
                     restParams[pname.substring(1)] = val;
                 });
-
             }
             let body = ctx.request['body'] || {};
             let providers = params.map((param, idx) => {
                 try {
                     let ptype = param.type;
-                    if (isClass(ptype) && parser.isModel(ptype)) {
-                        let val = parser.parseModel(ptype, body);
-                        return Provider.createParam(param.name || ptype, val, idx)
-
-                    } else if (parser.isBaseType(ptype)) {
+                    if (isBaseType(ptype)) {
                         let paramVal = restParams[param.name];
                         if (isUndefined(paramVal)) {
                             paramVal = ctx.request.query[param.name];
                         }
-                        if (!isUndefined(paramVal)) {
-                            let val = parser.parseBaseType(ptype, paramVal);
-                            return Provider.createParam(param.name, val, idx);
-                        } else {
-                            return null;
+                        let parser = container.get(BaseTypeParserToken);
+                        return parser.parse(ptype, paramVal);
+                    } else if (isClass(ptype)) {
+                        if (!container.has(ptype)) {
+                            container.register(ptype);
                         }
+                        let parser = container.getRefService(InjectModelParserToken, ptype, DefaultModelParserToken);
+                        let val = parser.parseModel(ptype, body);
+                        return Provider.createParam(param.name || ptype, val, idx);
                     } else {
                         return null;
                     }
@@ -256,11 +250,9 @@ export class ControllerRoute extends BaseRoute {
         return [];
     }
 
-
     protected isRestUri(uri: string) {
         return /\/:/.test(uri || '');
     }
-
 
     protected getRouteMetaData(ctx: IContext, container: IContainer, requestMethod: RequestMethod) {
         let decoratorName = Route.toString();

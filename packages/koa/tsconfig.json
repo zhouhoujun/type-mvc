@@ -1,17 +1,4 @@
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-      "baseUrl": ".",
-      "rootDir": "../../packages",
-      "paths": {
-        "@mvx/mvc": [
-          "../mvc/src"
-        ]
-      }
-    },
-    "exclude": [
-      "lib",
-      "node_modules"    
-    ]
-  }
-  
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {}
+}

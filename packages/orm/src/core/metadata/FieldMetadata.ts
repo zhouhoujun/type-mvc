@@ -1,4 +1,4 @@
-import { PropertyMetadata } from '@ts-ioc/core';
+import { PropertyMetadata, Type } from '@ts-ioc/core';
 
 /**
  * Field metadata.
@@ -9,12 +9,21 @@ import { PropertyMetadata } from '@ts-ioc/core';
  */
 export interface FieldMetadata extends PropertyMetadata {
     /**
-     * Filed entends Decorator type.
+     * name of Filed decorator entends Decorator type.
      *
      * @type {string}
      * @memberof FieldMetadata
      */
-    fieldType?: string;
+    decorName?: string;
+
+    /**
+     * Filed ref model type.
+     *
+     * @type {string}
+     * @memberof FieldMetadata
+     */
+    refType?: Type<any>;
+
     /**
      * db type.
      *
