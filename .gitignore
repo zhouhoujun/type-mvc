@@ -1,5 +1,5 @@
 .DS_STORE
-.vscode/.*
+.vscode
 node_modules
 build
 lib
