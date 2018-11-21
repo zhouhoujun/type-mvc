@@ -20,11 +20,11 @@
     "url": "git+https://github.com/zhouhoujun/type-mvc.git"
   },
   "dependencies": {
-    "@ts-ioc/aop": "^3.2.10",
-    "@ts-ioc/core": "^3.2.10",
-    "@ts-ioc/logs": "^3.2.10",
-    "@ts-ioc/bootstrap": "^3.2.10",
-    "@ts-ioc/platform-server": "^3.2.10",
+    "@ts-ioc/aop": "^3.2.12",
+    "@ts-ioc/core": "^3.2.12",
+    "@ts-ioc/logs": "^3.2.12",
+    "@ts-ioc/bootstrap": "^3.2.12",
+    "@ts-ioc/platform-server": "^3.2.12",
     "@mvx/mvc": "^2.0.0-beta",
     "@mvx/koa": "^2.0.0-beta",
     "@mvx/router": "^2.0.0-beta",

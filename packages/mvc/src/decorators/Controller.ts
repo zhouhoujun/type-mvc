@@ -19,6 +19,10 @@ export interface IControllerDecorator<T extends ControllerMetadata> extends ITyp
      * @param {string} [alias] define this controller provider with alias for provide.
      */
     (routePrefix: string, provide?: Registration<any> | symbol | string, alias?: string): ClassDecorator;
+    /**
+     * Controller decorator. define the class as mvc controller.
+     * @Controller
+     */
     (target: Function): void;
 }
 
