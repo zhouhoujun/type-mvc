@@ -1,19 +1,20 @@
-import { PipeModule, Package, TsConfigure } from '@taskfr/pipes';
-import { TaskContainer } from '@taskfr/platform-server';
+import { Pack, PackModule } from '@ts-ioc/pack';
+import { Workflow } from '@ts-ioc/activities';
 
-@Package({
+@Pack({
+    baseURL: __dirname,
     src: 'src',
     clean: 'lib',
     test: 'test/**/*.spec.ts',
     assets: {
-        ts: <TsConfigure>{ dest: 'lib', annotation: true, uglify: false },
-        html: { dest: 'lib' },
-        js: { dest: 'lib' }
+        ts: { dest: 'lib', annotation: true, uglify: false }
     }
 })
-export class Builder {
+export class OrmBuilder {
 }
 
-TaskContainer.create(__dirname)
-    .use(PipeModule)
-    .bootstrap(Builder);
+if (process.cwd() === __dirname) {
+    Workflow.create()
+        .use(PackModule)
+        .bootstrap(OrmBuilder);
+}

@@ -5,9 +5,7 @@
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
   "scripts": {
-    "test": "tkf",
-    "postinstall": "npm prune",
-    "prepublish": "tkf"
+    "postinstall": "npm prune"
   },
   "keywords": ["mvc", "AOP", "ioc", "frameworker", "koa", "tsioc", "server", "ts-ioc"],
   "author": "houjun",

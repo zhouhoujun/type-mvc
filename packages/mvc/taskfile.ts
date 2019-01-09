@@ -1,17 +1,21 @@
-import { PipeModule, Package, TsConfigure } from '@taskfr/pipes';
-import { TaskContainer } from '@taskfr/platform-server';
+import { Pack, PackModule } from '@ts-ioc/pack';
+import { Workflow } from '@ts-ioc/activities';
 
-@Package({
+@Pack({
+    baseURL: __dirname,
     src: 'src',
     clean: 'lib',
     test: 'test/**/*.spec.ts',
     assets: {
-        ts: <TsConfigure>{ dest: 'lib', annotation: true, uglify: false }
+        ts: { dest: 'lib', annotation: true, uglify: false }
     }
 })
-export class Builder {
+export class MvcBuilder {
 }
 
-TaskContainer.create(__dirname)
-    .use(PipeModule)
-    .bootstrap(Builder);
+
+if (process.cwd() === __dirname) {
+    Workflow.create()
+        .use(PackModule)
+        .bootstrap(MvcBuilder);
+}
