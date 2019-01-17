@@ -1,9 +1,9 @@
-import { InjectToken, Token, IContainer, Inject, ContainerToken, Providers, isClass, isToken, isFunction, isString, getTypeMetadata, lang, Injectable } from '@ts-ioc/core';
+import { InjectToken, Token, IContainer, Inject, ContainerToken, Providers, isClass, isToken, isFunction, isString, getTypeMetadata, lang, Injectable, ParamProviders } from '@ts-ioc/core';
 import { OrderMiddleware, MiddlewareType, InjectMiddlewareToken, IMiddleware, DefaultMiddlewawreChain, Middlewares } from './IMiddleware';
 import { MiddlewareMetadata } from '../metadata';
 import { Middleware } from '../decorators';
-import { IApplication } from '../IApplication';
 import { IRouter } from '../router';
+import { IApplication } from '../IApplication';
 
 
 
@@ -27,7 +27,7 @@ export interface IMiddlewareChain {
      * @returns {IMiddleware}
      * @memberof IMiddlewareChain
      */
-    resolve(name: string, ...providers: Providers[]): IMiddleware;
+    resolve(name: string, ...providers: ParamProviders[]): IMiddleware;
 
     /**
      * use middleware

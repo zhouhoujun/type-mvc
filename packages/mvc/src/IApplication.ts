@@ -6,7 +6,7 @@ import * as https from 'https';
 import { IContext } from './IContext';
 import { Next } from './util';
 import { IMiddlewareChain } from './middlewares/MiddlewareChain';
-import { IService, InjectModuleBuilderToken, InjectAnnotationBuilder } from '@ts-ioc/bootstrap';
+import { IBoot, InjectModuleBuilderToken, InjectAnnotationBuilder, IConfigureManager } from '@ts-ioc/bootstrap';
 
 
 /**
@@ -58,23 +58,15 @@ export const AppBuilderToken = new InjectAnnotationBuilder<IApplication>(Applica
  * @export
  * @interface IApp
  */
-export interface IApplication extends IService<IApplication> {
+export interface IApplication extends IBoot<IMvcServer> {
 
     /**
-     * application container.
+     * config manager.
      *
-     * @type {IContainer}
+     * @returns {IConfigureManager<IConfiguration>}
      * @memberof IApplication
      */
-    container: IContainer;
-
-    /**
-     * application configuration.
-     *
-     * @type {IConfiguration}
-     * @memberof IApplication
-     */
-    configuration: IConfiguration;
+    getConfigureManager(): IConfigureManager<IConfiguration>;
 
     /**
      * middleware chian.

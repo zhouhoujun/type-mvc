@@ -19,6 +19,6 @@ export * from './injectors';
 export * from './IApplication';
 export * from './Application';
 export * from './BaseController';
-export * from './MvcContainer';
 export * from './CoreModule';
+export * from './MvcHostBuilder';
 

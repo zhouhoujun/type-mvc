@@ -1,4 +1,4 @@
-import { Pack, PackModule } from '@ts-ioc/pack';
+import { Pack, PackModule, PackActivity } from '@ts-ioc/pack';
 import { Workflow } from '@ts-ioc/activities';
 
 @Pack({
@@ -13,8 +13,8 @@ import { Workflow } from '@ts-ioc/activities';
 export class KoaBuilder {
 }
 
-if (process.cwd() === __dirname) {
-    Workflow.create()
-        .use(PackModule)
-        .bootstrap(KoaBuilder);
-}
+// if (process.cwd() === __dirname) {
+//     Workflow.create()
+//         .use(PackModule)
+//         .bootstrap(KoaBuilder);
+// }

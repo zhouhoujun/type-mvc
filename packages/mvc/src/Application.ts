@@ -1,14 +1,14 @@
-import { Singleton, IContainer, Inject, ContainerToken, isFunction } from '@ts-ioc/core';
+import { Singleton, IContainer, Inject, ContainerToken, isFunction, Token } from '@ts-ioc/core';
 import * as http from 'http';
 import * as https from 'https';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
-import { IApplication, IMvcServer, CoreServerToken, ApplicationToken } from './IApplication';
+import { IMvcServer, CoreServerToken, ApplicationToken, IApplication } from './IApplication';
 import { IContext } from './IContext';
 import { Next } from './util';
 import { ServerListenerToken } from './IListener';
 import { MiddlewareChainToken, IMiddlewareChain } from './middlewares';
-import { Service } from '@ts-ioc/bootstrap';
+import { Boot, RunOptions } from '@ts-ioc/bootstrap';
 
 /**
  * Default Application of type mvc.
@@ -18,7 +18,8 @@ import { Service } from '@ts-ioc/bootstrap';
  * @implements {IApplication}
  */
 @Singleton(ApplicationToken)
-export class Application extends Service<IApplication> implements IApplication {
+export class Application extends Boot<IMvcServer> implements IApplication {
+    name?: string;
 
     private httpServer: http.Server | https.Server;
     private _loggerMgr: ILoggerManager;
@@ -33,8 +34,12 @@ export class Application extends Service<IApplication> implements IApplication {
     @Inject(MiddlewareChainToken)
     middlewareChain: IMiddlewareChain;
 
-    constructor() {
-        super();
+    constructor(token?: Token<IMvcServer>, instance?: IMvcServer, config?: IConfiguration) {
+        super(token, instance, config);
+    }
+
+    async onInit(options: RunOptions<IMvcServer>) {
+
     }
 
     getMiddleChain(): IMiddlewareChain {

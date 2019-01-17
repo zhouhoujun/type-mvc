@@ -2,7 +2,7 @@ import { AnnotationBuilder, AppConfigureToken } from '@ts-ioc/bootstrap';
 import { IApplication, AppBuilderToken, ApplicationToken } from '../IApplication';
 import { IConfiguration, ConfigurationToken } from '../IConfiguration';
 import { Injectable, lang, Token } from '@ts-ioc/core';
-import { Application } from '../Application';
+import { MvcApplication } from '../Application';
 import { Configuration } from '../Configuration';
 import { LogConfigureToken } from '@ts-ioc/logs';
 import { DebugLogAspect, AuthAspect } from '../aop';
@@ -14,7 +14,7 @@ import { MiddlewareChain } from '../middlewares';
 export class AppBuilder extends AnnotationBuilder<IApplication> {
 
     async buildStrategy(app: IApplication, config: IConfiguration): Promise<IApplication> {
-        if (app instanceof Application) {
+        if (app instanceof MvcApplication) {
             this.container.bindProvider(ApplicationToken, app);
             let chain = app.middlewareChain;
             chain.use(...config.useMiddlewares);

@@ -2,19 +2,14 @@ import { IConfiguration } from './IConfiguration';
 import { Configuration } from './Configuration';
 import { IContainer, Token } from '@ts-ioc/core';
 import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
-import { AopModule } from '@ts-ioc/aop';
-import { LogModule } from '@ts-ioc/logs';
 import { CustomMiddleware } from './middlewares';
 import {
-    Runnable, DefaultConfigureToken,
-    AppConfigureLoaderToken, DefaultModuleBuilderToken,
-    DefaultAnnotationBuilderToken, ApplicationEvents, IApplication
+    Runnable, ApplicationEvents, ApplicationBuilder
 } from '@ts-ioc/bootstrap';
-import { CoreModule } from './CoreModule';
-import { ConfigureFileLoader, ApplicationBuilder, IApplicationBuilderServer } from '@ts-ioc/platform-server/bootstrap';
 import { ServerListenerToken } from './IListener';
-import { AppMetaAccessor, AppModuleValidate, AppModuleInjector, AppModuleInjectorToken, AppBuilder, AppModuleBuilder } from './injectors';
-import { Application } from './Application';
+import { AppModuleValidate, AppModuleInjector, AppModuleInjectorToken} from './injectors';
+import { IMvcServer, IApplication } from './IApplication';
+import { MvcModule } from './MvcModule';
 
 
 /**
@@ -23,7 +18,7 @@ import { Application } from './Application';
  * @export
  * @class AppBuilder
  */
-export class MvcContainer extends ApplicationBuilder<IApplication> implements IApplicationBuilderServer<IApplication> {
+export class MvcHostBuilder extends ApplicationBuilder<IMvcServer>  {
 
     middlewares: CustomMiddleware[];
     /**
@@ -40,22 +35,11 @@ export class MvcContainer extends ApplicationBuilder<IApplication> implements IA
     protected initEvents() {
         super.initEvents();
         this.on(ApplicationEvents.onRootContainerCreated, (container: IContainer) => {
-            container.register(AppMetaAccessor)
-                .register(AppModuleValidate)
+            container.register(AppModuleValidate)
                 .register(AppModuleInjector);
             let chain = container.getBuilder().getInjectorChain(container);
             chain.first(container.resolve(AppModuleInjectorToken));
         });
-    }
-
-    protected async initRootContainer(container: IContainer) {
-        this.use(AopModule, LogModule, CoreModule, Log4jsAdapter)
-            .provider(DefaultConfigureToken, Configuration, true)
-            .provider(DefaultModuleBuilderToken, AppModuleBuilder)
-            .provider(DefaultAnnotationBuilderToken, AppBuilder)
-            .provider(AppConfigureLoaderToken, ConfigureFileLoader);
-
-        await super.initRootContainer(container);
     }
 
     /**
@@ -66,8 +50,8 @@ export class MvcContainer extends ApplicationBuilder<IApplication> implements IA
      * @returns
      * @memberof WebApplication
      */
-    static create(rootdir: string): MvcContainer {
-        return new MvcContainer(rootdir);
+    static create(rootdir: string): MvcHostBuilder {
+        return new MvcHostBuilder(rootdir);
     }
 
 
@@ -82,8 +66,8 @@ export class MvcContainer extends ApplicationBuilder<IApplication> implements IA
      * @returns {Promise<T>}
      * @memberof Bootstrap
      */
-    async bootstrap(app?: Token<IApplication> | IConfiguration): Promise<Runnable<IApplication>> {
-        let appType = app || Application;
+    async bootstrap(app?: Token<IMvcServer> | IConfiguration): Promise<Runnable<IApplication>> {
+        let appType = app || MvcApplication;
         let instance = await super.bootstrap(appType);
         return instance;
     }
@@ -91,11 +75,11 @@ export class MvcContainer extends ApplicationBuilder<IApplication> implements IA
     /**
      * run application.
      *
-     * @param {(Token<IApplication> | IConfiguration)} [app]
-     * @returns {Promise<Runnable<IApplication>>}
+     * @param {(Token<IMvcServer> | IConfiguration)} [app]
+     * @returns {Promise<IApplication>}
      * @memberof MvcContainer
      */
-    run(app?: Token<IApplication> | IConfiguration): Promise<Runnable<IApplication>> {
+    run(app?: Token<IMvcServer> | IConfiguration): Promise<IApplication> {
         return this.bootstrap(app);
     }
 
