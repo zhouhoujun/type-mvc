@@ -3,7 +3,7 @@ import {
     BodyParserMiddleware, ContentMiddleware, ContextMiddleware,
     JsonMiddleware, LogMiddleware, SessionMiddleware, ViewsMiddleware
 } from './middlewares';
-import { CoreServerToken } from '@mvx/mvc';
+import { MvcServerToken } from '@mvx/mvc';
 import { DIModule } from '@ts-ioc/bootstrap';
 
 @DIModule({
@@ -17,7 +17,7 @@ import { DIModule } from '@ts-ioc/bootstrap';
         ViewsMiddleware
     ],
     providers: [
-        { provide: CoreServerToken, useClass: Koa }
+        { provide: MvcServerToken, useClass: Koa }
     ],
     exports: [
         BodyParserMiddleware,

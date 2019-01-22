@@ -1,4 +1,4 @@
-import { InjectToken, IContainer, Type } from '@ts-ioc/core';
+import { InjectToken, Type } from '@ts-ioc/core';
 import { IConfiguration } from './IConfiguration';
 import { ILoggerManager, ILogger } from '@ts-ioc/logs';
 import * as http from 'http';
@@ -6,51 +6,14 @@ import * as https from 'https';
 import { IContext } from './IContext';
 import { Next } from './util';
 import { IMiddlewareChain } from './middlewares/MiddlewareChain';
-import { IBoot, InjectModuleBuilderToken, InjectAnnotationBuilder, IConfigureManager } from '@ts-ioc/bootstrap';
+import { IBoot, IConfigureManager, InjectRunnableToken } from '@ts-ioc/bootstrap';
+import { IMvcServer, MvcServerToken } from './IMvcServer';
 
-
-/**
- * server.
- *
- * @export
- * @interface IServer
- */
-export interface IMvcServer {
-    /**
-     * use middleware.
-     *
-     * @param {*} middleware
-     * @memberof IServer
-     */
-    use(middleware: any);
-    /**
-     * http server callback
-     *
-     * @returns {(request: http.IncomingMessage, response: http.ServerResponse) => void}
-     * @memberof IServer
-     */
-    callback(): (request: http.IncomingMessage, response: http.ServerResponse) => void;
-}
-
-/**
- * core server token. use as singleton.
- */
-export const CoreServerToken = new InjectToken<IMvcServer>('MVX_CoreServer');
 
 /**
  * Application token.
  */
-export const ApplicationToken = new InjectToken<IApplication>('MVX_Application');
-
-/**
- * app module builder token.
- */
-export const AppModuleBuilderToken = new InjectModuleBuilderToken<IApplication>(ApplicationToken);
-
-/**
- *  app build token
- */
-export const AppBuilderToken = new InjectAnnotationBuilder<IApplication>(ApplicationToken);
+export const ApplicationToken = new InjectRunnableToken(MvcServerToken);
 
 /**
  * MVC Applaction interface.
@@ -83,14 +46,6 @@ export interface IApplication extends IBoot<IMvcServer> {
      * @memberof IApplication
      */
     getMiddlewares(): Type<any>[];
-
-    /**
-     * get all registered aops
-     *
-     * @returns {Type<any>[]}
-     * @memberof IApplication
-     */
-    getAops(): Type<any>[];
 
     /**
      * config manager.

@@ -12,21 +12,16 @@ const serve = require('koa-static');
 @Middleware(MiddlewareTokens.Content)
 export class ContentMiddleware implements IMiddleware {
 
-    @Inject(ApplicationToken)
-    private app: IApplication;
-
-    @Inject(ConfigurationToken)
-    private config: IConfiguration;
-
     constructor() {
     }
 
-    setup() {
-        let contents = this.config.contents || ['./public'];
+    setup(app: IApplication) {
+        let config = app.getConfig();
+        let contents = config.contents || ['./public'];
         contents.forEach((content, idx) => {
-            let staticPath = toAbsolutePath(this.config.rootdir, content);
+            let staticPath = toAbsolutePath(config.rootdir, content);
             console.log(`content path ${idx + 1}:`, staticPath);
-            this.app.use(serve(staticPath));
+            app.use(serve(staticPath));
         })
     }
 

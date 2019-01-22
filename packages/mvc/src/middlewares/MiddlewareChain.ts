@@ -1,5 +1,12 @@
-import { InjectToken, Token, IContainer, Inject, ContainerToken, Providers, isClass, isToken, isFunction, isString, getTypeMetadata, lang, Injectable, ParamProviders } from '@ts-ioc/core';
-import { OrderMiddleware, MiddlewareType, InjectMiddlewareToken, IMiddleware, DefaultMiddlewawreChain, Middlewares } from './IMiddleware';
+import {
+    InjectToken, Token, IContainer, Inject, ContainerToken,
+    isClass, isToken, isFunction, isString, getTypeMetadata,
+    lang, Injectable, ParamProviders
+} from '@ts-ioc/core';
+import {
+    OrderMiddleware, MiddlewareType, InjectMiddlewareToken,
+    IMiddleware, DefaultMiddlewawreChain, Middlewares
+} from './IMiddleware';
 import { MiddlewareMetadata } from '../metadata';
 import { Middleware } from '../decorators';
 import { IRouter } from '../router';
@@ -93,11 +100,10 @@ export class MiddlewareChain implements IMiddlewareChain {
                 let middleware = this.container.resolve(m);
                 if (mdl.name === Middlewares.Router) {
                     let router = middleware as IRouter;
-                    let config = app.getConfigureManager();
-                    router.register(...config.usedControllers);
+                    router.register(...app.getControllers());
                 }
                 if (isFunction(middleware.setup)) {
-                    middleware.setup();
+                    middleware.setup(app);
                 }
             } else if (isFunction(m)) {
                 server.use(m);
@@ -105,7 +111,7 @@ export class MiddlewareChain implements IMiddlewareChain {
         });
     }
 
-    resolve(name: string, ...providers: Providers[]): IMiddleware {
+    resolve(name: string, ...providers: ParamProviders[]): IMiddleware {
         return this.container.resolve(new InjectMiddlewareToken(name), ...providers);
     }
 

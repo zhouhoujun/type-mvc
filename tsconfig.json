@@ -12,9 +12,6 @@
             ],
             "@mvx/koa": [
                 "packages/koa/src"
-            ],
-            "@mvx/router": [
-                "packages/router/src"
             ]
         },
         "module": "commonjs",

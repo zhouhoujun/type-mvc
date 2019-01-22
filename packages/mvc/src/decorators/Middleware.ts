@@ -1,6 +1,6 @@
 import { createClassDecorator, ITypeDecorator, Token, isString, isToken, Registration } from '@ts-ioc/core';
 import { MiddlewareMetadata } from '../metadata';
-import { IMiddleware, InjectMiddlewareToken } from '../middlewares';
+import { IMiddleware, InjectMiddlewareToken } from '../middlewares/IMiddleware';
 
 
 /**

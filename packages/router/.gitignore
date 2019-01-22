@@ -1,7 +1,0 @@
-.DS_STORE
-.vscode/.*
-node_modules
-build
-lib
-bin
-package-lock.json

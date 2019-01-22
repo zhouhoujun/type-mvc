@@ -1,13 +1,17 @@
 import { IConfiguration } from './IConfiguration';
-import { IContainer, Token } from '@ts-ioc/core';
+import { IContainer, Token, LoadType, isFunction, isToken } from '@ts-ioc/core';
 import { CustomMiddleware } from './middlewares';
-import {  ApplicationEvents, ApplicationBuilder } from '@ts-ioc/bootstrap';
+import { ApplicationEvents, ApplicationBuilder } from '@ts-ioc/bootstrap';
 import { ServerListenerToken } from './IListener';
-import { AppModuleValidate, AppModuleInjector, AppModuleInjectorToken} from './injectors';
-import { IMvcServer, IApplication } from './IApplication';
-import { Application } from './Application';
+import { AppModuleValidate, AppModuleInjector, AppModuleInjectorToken } from './injectors';
+import { IApplication } from './IApplication';
 import { MvcModule } from './MvcModule';
+import { IMvcServer, MvcServerToken } from './IMvcServer';
 
+/**
+ * load type or middleware.
+ */
+export type LoadTypeOrMiddleware = LoadType | CustomMiddleware;
 
 /**
  * mvc applaction builder.
@@ -24,7 +28,7 @@ export class MvcHostBuilder extends ApplicationBuilder<IMvcServer>  {
      * @param {Type<any>} [appType]
      * @memberof WebApplication
      */
-    constructor(public baseURL: string) {
+    constructor(baseURL?: string) {
         super(baseURL)
         this.use(MvcModule);
         this.middlewares = [];
@@ -44,12 +48,25 @@ export class MvcHostBuilder extends ApplicationBuilder<IMvcServer>  {
      * create new application.
      *
      * @static
-     * @param {string} rootdir
+     * @param {string} [rootdir]
      * @returns
      * @memberof WebApplication
      */
-    static create(rootdir: string): MvcHostBuilder {
+    static create(rootdir?: string): MvcHostBuilder {
         return new MvcHostBuilder(rootdir);
+    }
+
+    use(...modules: LoadTypeOrMiddleware[]): this {
+        modules.forEach(m => {
+            if (isToken(m)) {
+                super.use(m);
+            } else if (isFunction(m)) {
+                this.middlewares.push(m);
+            } else {
+                super.use(m);
+            }
+        })
+        return this;
     }
 
 
@@ -65,7 +82,7 @@ export class MvcHostBuilder extends ApplicationBuilder<IMvcServer>  {
      * @memberof Bootstrap
      */
     async bootstrap(app?: Token<IMvcServer> | IConfiguration): Promise<IApplication> {
-        let appType = app || Application;
+        let appType = app || MvcServerToken;
         let instance = await super.bootstrap(appType) as IApplication;
         return instance;
     }

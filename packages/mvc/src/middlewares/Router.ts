@@ -12,9 +12,6 @@ export class Router implements IRouter, IMiddleware {
 
     private root: IRoute;
 
-    @Inject(ApplicationToken)
-    private app: IApplication;
-
     constructor(private builder: RouteBuilder, @Inject(ConfigurationToken) private config: IConfiguration) {
         this.root = new RootRoute(config.routePrefix);
     }
@@ -27,10 +24,10 @@ export class Router implements IRouter, IMiddleware {
         this.builder.build(this, ...controllers);
     }
 
-    setup() {
-        this.app.use(async (ctx, next) => {
+    setup(app: IApplication) {
+        app.use(async (ctx, next) => {
             if ((!ctx.status || ctx.status === 404) && this.config.isRouteUrl(ctx.url)) {
-                return this.root.navigating(this.app.container, ctx, next);
+                return this.root.navigating(app.container, ctx, next);
             }
         });
     }

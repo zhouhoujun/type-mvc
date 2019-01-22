@@ -1,9 +1,18 @@
-import { Type, getPropertyMetadata, PropertyMetadata, isUndefined, IContainer, Inject, isClass, ObjectMap, ContainerToken, hasOwnClassMetadata, Injectable, isBaseType, isArray } from '@ts-ioc/core';
+import {
+    Type, getPropertyMetadata, PropertyMetadata, isUndefined, IContainer,
+    Inject, isClass, ObjectMap, ContainerToken, Injectable, isBaseType, isArray
+} from '@ts-ioc/core';
 import { Model, Field } from '../decorators';
 import { ConfigurationToken, IConfiguration } from '../IConfiguration';
 import { DefaultModelParserToken } from './IModelParser';
 import { BaseTypeParserToken } from './IBaseTypeParser';
 
+/**
+ * modle parser.
+ *
+ * @export
+ * @class ModelParser
+ */
 @Injectable(DefaultModelParserToken)
 export class ModelParser {
 

@@ -1,5 +1,6 @@
 import { Registration, Token } from '@ts-ioc/core';
 import { IContext } from '../IContext';
+import { IApplication } from '../IApplication';
 
 
 
@@ -14,7 +15,7 @@ export interface IMiddleware {
      *
      * @memberof IMiddleware
      */
-    setup?();
+    setup(app: IApplication);
 }
 
 

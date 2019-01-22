@@ -1,18 +1,14 @@
-import { MvcHostBuilder, App, MvcApplication, DebugLogAspect } from '@mvx/mvc';
+import { MvcHostBuilder, App } from '@mvx/mvc';
 // import { PlatformServer } from '@ts-ioc/platform-server';
 import { KoaModule } from '@mvx/koa';
-import { RouterModule } from '@mvx/router';
 @App({
     imports: [
-        KoaModule,
-        RouterModule,
-        DebugLogAspect
+        KoaModule
     ],
     debug: false
 })
-class MvcApi extends MvcApplication {
+class MvcApi {
     constructor() {
-        super();
         console.log('my extends application');
     }
 }

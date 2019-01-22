@@ -9,12 +9,13 @@ export * from './router';
 export * from './util';
 
 export * from './IConfiguration';
-export * from './Configuration';
 export * from './IAuthorization';
 export * from './RequestMethod';
 export * from './IContext';
 
 export * from './injectors';
+export * from './IMvcServer';
+export * from './MvcServer';
 export * from './IApplication';
 export * from './Application';
 export * from './BaseController';

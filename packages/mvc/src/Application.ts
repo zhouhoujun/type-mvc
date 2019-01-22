@@ -1,14 +1,17 @@
-import { Singleton, IContainer, Inject, ContainerToken, isFunction, Token, lang, Type } from '@ts-ioc/core';
+import { IContainer, Inject, ContainerToken, isFunction, Token, lang, Type, isClass, MapSet, InstanceFactory, hasOwnClassMetadata, Injectable } from '@ts-ioc/core';
 import * as http from 'http';
 import * as https from 'https';
 import { IConfiguration } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
-import { IMvcServer, CoreServerToken, ApplicationToken, IApplication } from './IApplication';
+import { IApplication, ApplicationToken } from './IApplication';
+import { IMvcServer, MvcServerToken } from './IMvcServer';
 import { IContext } from './IContext';
 import { Next } from './util';
 import { ServerListenerToken } from './IListener';
 import { MiddlewareChainToken, IMiddlewareChain } from './middlewares';
 import { Boot, RunOptions, IConfigureManager } from '@ts-ioc/bootstrap';
+import { Controller, Middleware } from './decorators';
+import { MvcHostBuilder } from './MvcHostBuilder';
 
 /**
  * Default Application of type mvc.
@@ -17,7 +20,7 @@ import { Boot, RunOptions, IConfigureManager } from '@ts-ioc/bootstrap';
  * @class Application
  * @implements {IApplication}
  */
-@Singleton(ApplicationToken)
+@Injectable(ApplicationToken)
 export class Application extends Boot<IMvcServer> implements IApplication {
     name?: string;
 
@@ -32,9 +35,9 @@ export class Application extends Boot<IMvcServer> implements IApplication {
         return this.config as IConfiguration;
     }
 
-    protected controllers: Type<any>[];
-    protected middlewares: Type<any>[];
-    protected aops: Type<any>[];
+    protected controllers: MapSet<Type<any>, InstanceFactory<any>>;
+    protected middlewares: MapSet<Type<any>, InstanceFactory<any>>;
+    // protected aops: MapSet<Type<any>, InstanceFactory<any>>;
 
     @Inject(MiddlewareChainToken)
     middlewareChain: IMiddlewareChain;
@@ -43,12 +46,13 @@ export class Application extends Boot<IMvcServer> implements IApplication {
 
     constructor(token?: Token<IMvcServer>, instance?: IMvcServer, config?: IConfiguration) {
         super(token, instance, config);
-        this.controllers = [];
-        this.middlewares = [];
-        this.aops = [];
+        this.controllers = new MapSet();
+        this.middlewares = new MapSet();
+        // this.aops = new MapSet();
     }
 
     async onInit(options: RunOptions<IMvcServer>) {
+        console.log(options);
         this.configMgr = options.configManager;
         let gcfg = await this.configMgr.getConfig();
         this.config = lang.assign({
@@ -89,10 +93,24 @@ export class Application extends Boot<IMvcServer> implements IApplication {
             }
         }, this.config, gcfg);
 
-        // options.bootBuilder.getPools().iterator()
-        // this.controllers = await this.container.loadModule(this.config.controllers);
-        // this.middlewares = await this.container.loadModule(this.config.middlewares);
-        // this.aops = await this.container.loadModule(this.config.aop);
+        let builder = options.bootBuilder as MvcHostBuilder;
+
+        builder.getPools().iterator(c => {
+            c.forEach((tk, fac) => {
+                if (isClass(tk)) {
+                    if (hasOwnClassMetadata(Controller, tk)) {
+                        this.controllers.set(tk, fac);
+                    } else if (hasOwnClassMetadata(Middleware, tk)) {
+                        this.middlewares.set(tk, fac);
+                    }
+                }
+            })
+        });
+
+        await this.getMiddleChain()
+            .use(...[...this.getMiddlewares(), ...builder.middlewares])
+            .setup(this);
+
     }
 
     getConfigureManager(): IConfigureManager<IConfiguration> {
@@ -100,15 +118,11 @@ export class Application extends Boot<IMvcServer> implements IApplication {
     }
 
     getControllers(): Type<any>[] {
-        return this.controllers;
+        return this.controllers.keys();
     }
 
     getMiddlewares(): Type<any>[] {
-        return this.middlewares;
-    }
-
-    getAops(): Type<any>[] {
-        return this.aops;
+        return this.middlewares.keys();
     }
 
     getMiddleChain(): IMiddlewareChain {
@@ -118,7 +132,7 @@ export class Application extends Boot<IMvcServer> implements IApplication {
     private mvcService: IMvcServer;
     getServer(): IMvcServer {
         if (!this.mvcService) {
-            this.mvcService = this.container.resolve(CoreServerToken);
+            this.mvcService = this.container.resolve(MvcServerToken);
         }
         return this.mvcService;
     }
