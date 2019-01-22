@@ -27,8 +27,8 @@ export class Application extends Boot<IMvcServer> implements IApplication {
     @Inject(ContainerToken)
     container: IContainer;
 
-    get configuration(): IConfiguration {
-        return this.container.resolve(ConfigurationToken);
+    getConfig(): IConfiguration {
+        return this.config;
     }
 
     @Inject(MiddlewareChainToken)

@@ -2,19 +2,30 @@ import { BaseRoute } from './BaseRoute';
 import {
     Type, IContainer, getMethodMetadata,
     isClass, getTypeMetadata, isPromise,
-    isUndefined, isString, isObject, isArray, isNumber,
-    IParameter, Provider, hasClassMetadata, hasMethodMetadata, Providers,
-    isBoolean, isDate, isBaseType, ParamProviders
+    isUndefined, isString, isObject, isArray,
+    IParameter, Provider, hasClassMetadata, hasMethodMetadata, isBaseType, ParamProviders, lang
 } from '@ts-ioc/core';
-import {
-    IContext, Next, Cors, Route, CorsMetadata,
-    RouteMetadata, Authorization, AuthorizationToken, ResultValue,
-    UnauthorizedError, NotFoundError, HttpError, BadRequestError, ForbiddenError,
-    RequestMethod, methodToString, parseRequestMethod,
-    IConfiguration, ConfigurationToken, InjectModelParserToken, DefaultModelParserToken, BaseTypeParserToken
-} from '@mvx/mvc';
-import { isBuffer } from 'util';
 
+import { IContext } from '../IContext';
+import { Next } from '../util';
+import { HttpError, ForbiddenError, UnauthorizedError, NotFoundError, BadRequestError } from '../errors';
+import { IConfiguration, ConfigurationToken } from '../IConfiguration';
+import { methodToString, parseRequestMethod, RequestMethod } from '../RequestMethod';
+import { CorsMetadata, RouteMetadata } from '../metadata';
+import { Cors, Authorization, Route } from '../decorators';
+import { AuthorizationToken } from '../IAuthorization';
+import { ResultValue } from '../results';
+import { BaseTypeParserToken, InjectModelParserToken, DefaultModelParserToken } from '../model';
+
+declare let Buffer: any;
+
+export function isBuffer(target: any): boolean {
+    if (typeof Buffer === 'undefined') {
+        return false;
+    } else {
+        return lang.getClass(target) === Buffer;
+    }
+}
 /**
  * controller route.
  *
@@ -192,7 +203,15 @@ export class ControllerRoute extends BaseRoute {
                 response = await response;
             }
             if (isBaseType(response) || isArray(response) || isBuffer(response)) {
-                ctx.body = isBuffer(response) ? Buffer.from(response) : response;
+                if (isBuffer(response)) {
+                    if (typeof Buffer !== 'undefined') {
+                        ctx.body = Buffer.from(response)
+                    } else {
+                        ctx.body = response;
+                    }
+                } else {
+                    ctx.body = response;
+                }
             } else if (isObject(response)) {
                 if (response instanceof ResultValue) {
                     await response.sendValue(ctx, container);
