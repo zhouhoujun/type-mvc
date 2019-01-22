@@ -165,10 +165,6 @@ export interface IConfiguration extends AppConfigure {
      */
     middlewares?: string | string[];
     /**
-     * use middlewares.
-     */
-    useMiddlewares?: Type<any>[];
-    /**
      * global cors default options.
      *
      * @type {CorsOptions}
@@ -182,13 +178,6 @@ export interface IConfiguration extends AppConfigure {
      * @memberOf Configuration
      */
     controllers?: string | string[];
-    /**
-     * used controllers. if not config will load all.
-     *
-     * @type {Token<any>[]}
-     * @memberof Configuration
-     */
-    usedControllers?: Token<any>[];
     /**
      * aspect service path. default: './aop'
      *

@@ -1,14 +1,11 @@
 import { IConfiguration } from './IConfiguration';
-import { Configuration } from './Configuration';
 import { IContainer, Token } from '@ts-ioc/core';
-import { Log4jsAdapter } from './logAdapter/Log4jsAdapter';
 import { CustomMiddleware } from './middlewares';
-import {
-    Runnable, ApplicationEvents, ApplicationBuilder
-} from '@ts-ioc/bootstrap';
+import {  ApplicationEvents, ApplicationBuilder } from '@ts-ioc/bootstrap';
 import { ServerListenerToken } from './IListener';
 import { AppModuleValidate, AppModuleInjector, AppModuleInjectorToken} from './injectors';
 import { IMvcServer, IApplication } from './IApplication';
+import { Application } from './Application';
 import { MvcModule } from './MvcModule';
 
 
@@ -29,6 +26,7 @@ export class MvcHostBuilder extends ApplicationBuilder<IMvcServer>  {
      */
     constructor(public baseURL: string) {
         super(baseURL)
+        this.use(MvcModule);
         this.middlewares = [];
     }
 
@@ -66,9 +64,9 @@ export class MvcHostBuilder extends ApplicationBuilder<IMvcServer>  {
      * @returns {Promise<T>}
      * @memberof Bootstrap
      */
-    async bootstrap(app?: Token<IMvcServer> | IConfiguration): Promise<Runnable<IApplication>> {
-        let appType = app || MvcApplication;
-        let instance = await super.bootstrap(appType);
+    async bootstrap(app?: Token<IMvcServer> | IConfiguration): Promise<IApplication> {
+        let appType = app || Application;
+        let instance = await super.bootstrap(appType) as IApplication;
         return instance;
     }
 

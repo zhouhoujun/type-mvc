@@ -4,10 +4,12 @@ import { LogModule } from '@ts-ioc/logs';
 import * as injectors from './injectors';
 import * as modles from './model';
 import { MvcCoreModule } from './CoreModule';
+import { MvcConfigureRegister } from './MvcConfigureRegister';
 
 @DIModule({
     imports: [
         MvcCoreModule,
+        MvcConfigureRegister,
         AopModule,
         LogModule,
         injectors,
@@ -17,6 +19,7 @@ import { MvcCoreModule } from './CoreModule';
         AopModule,
         LogModule,
         injectors,
+        MvcConfigureRegister,
         modles
     ]
 })

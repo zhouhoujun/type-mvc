@@ -1,4 +1,4 @@
-import { InjectToken, IContainer } from '@ts-ioc/core';
+import { InjectToken, IContainer, Type } from '@ts-ioc/core';
 import { IConfiguration } from './IConfiguration';
 import { ILoggerManager, ILogger } from '@ts-ioc/logs';
 import * as http from 'http';
@@ -59,6 +59,38 @@ export const AppBuilderToken = new InjectAnnotationBuilder<IApplication>(Applica
  * @interface IApp
  */
 export interface IApplication extends IBoot<IMvcServer> {
+
+    /**
+     * get all merged config.
+     *
+     * @returns {IConfiguration}
+     * @memberof IApplication
+     */
+    getConfig(): IConfiguration;
+
+    /**
+     * get all registered controllers.
+     *
+     * @returns {Type<any>[]}
+     * @memberof IApplication
+     */
+    getControllers(): Type<any>[];
+
+    /**
+     * get all registered middlewares
+     *
+     * @returns {Type<any>[]}
+     * @memberof IApplication
+     */
+    getMiddlewares(): Type<any>[];
+
+    /**
+     * get all registered aops
+     *
+     * @returns {Type<any>[]}
+     * @memberof IApplication
+     */
+    getAops(): Type<any>[];
 
     /**
      * config manager.

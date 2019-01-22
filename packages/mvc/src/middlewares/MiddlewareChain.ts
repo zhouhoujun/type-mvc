@@ -78,6 +78,7 @@ export class MiddlewareChain implements IMiddlewareChain {
     }
 
     constructor() {
+
     }
 
     setup(app: IApplication) {
@@ -92,7 +93,7 @@ export class MiddlewareChain implements IMiddlewareChain {
                 let middleware = this.container.resolve(m);
                 if (mdl.name === Middlewares.Router) {
                     let router = middleware as IRouter;
-                    let config = app.configuration;
+                    let config = app.getConfigureManager();
                     router.register(...config.usedControllers);
                 }
                 if (isFunction(middleware.setup)) {

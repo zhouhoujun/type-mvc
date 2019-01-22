@@ -1,7 +1,6 @@
 export * from './aop';
 export * from './decorators';
 export * from './errors';
-export * from './logAdapter';
 export * from './metadata';
 export * from './middlewares';
 export * from './model';
