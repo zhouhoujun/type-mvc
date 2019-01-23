@@ -1,15 +1,12 @@
-import { IContainer, Inject, ContainerToken, isFunction, Token, lang, Type, isClass, MapSet, InstanceFactory, hasOwnClassMetadata, Injectable } from '@ts-ioc/core';
-import * as http from 'http';
-import * as https from 'https';
+import { IContainer, Inject, ContainerToken, lang, Type, isClass, MapSet, InstanceFactory, hasOwnClassMetadata, Injectable } from '@ts-ioc/core';
 import { IConfiguration } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
 import { IApplication, ApplicationToken } from './IApplication';
 import { IMvcServer, MvcServerToken } from './IMvcServer';
 import { IContext } from './IContext';
 import { Next } from './util';
-import { ServerListenerToken } from './IListener';
 import { MiddlewareChainToken, IMiddlewareChain } from './middlewares';
-import { Boot, RunOptions, IConfigureManager } from '@ts-ioc/bootstrap';
+import { Boot, RunOptions, IConfigureManager, RunnableOptions, RunnableOptionsToken } from '@ts-ioc/bootstrap';
 import { Controller, Middleware } from './decorators';
 import { MvcHostBuilder } from './MvcHostBuilder';
 
@@ -25,7 +22,6 @@ export class Application extends Boot<IMvcServer> implements IApplication {
     name?: string;
 
     protected config: IConfiguration;
-    private httpServer: http.Server | https.Server;
     private _loggerMgr: ILoggerManager;
 
     @Inject(ContainerToken)
@@ -37,22 +33,20 @@ export class Application extends Boot<IMvcServer> implements IApplication {
 
     protected controllers: MapSet<Type<any>, InstanceFactory<any>>;
     protected middlewares: MapSet<Type<any>, InstanceFactory<any>>;
-    // protected aops: MapSet<Type<any>, InstanceFactory<any>>;
 
     @Inject(MiddlewareChainToken)
     middlewareChain: IMiddlewareChain;
 
     private configMgr: IConfigureManager<IConfiguration>;
 
-    constructor(token?: Token<IMvcServer>, instance?: IMvcServer, config?: IConfiguration) {
-        super(token, instance, config);
+    constructor(@Inject(RunnableOptionsToken) options: RunnableOptions<IMvcServer>) {
+        super(options);
         this.controllers = new MapSet();
         this.middlewares = new MapSet();
         // this.aops = new MapSet();
     }
 
     async onInit(options: RunOptions<IMvcServer>) {
-        console.log(options);
         this.configMgr = options.configManager;
         let gcfg = await this.configMgr.getConfig();
         this.config = lang.assign({
@@ -91,7 +85,7 @@ export class Application extends Boot<IMvcServer> implements IApplication {
                 }
                 return flag;
             }
-        }, this.config, gcfg);
+        }, gcfg, this.config);
 
         let builder = options.bootBuilder as MvcHostBuilder;
 
@@ -129,12 +123,8 @@ export class Application extends Boot<IMvcServer> implements IApplication {
         return this.container.resolve(MiddlewareChainToken);
     }
 
-    private mvcService: IMvcServer;
     getServer(): IMvcServer {
-        if (!this.mvcService) {
-            this.mvcService = this.container.resolve(MvcServerToken);
-        }
-        return this.mvcService;
+        return this.options.instance;
     }
 
     getLoggerManger(): ILoggerManager {
@@ -150,47 +140,16 @@ export class Application extends Boot<IMvcServer> implements IApplication {
         return this.getLoggerManger().getLogger(name);
     }
 
-    getHttpServer() {
-        if (!this.httpServer) {
-            let cfg = this.getConfig();
-            if (cfg.httpsOptions) {
-                this.httpServer = https.createServer(cfg.httpsOptions, this.getServer().callback());
-            } else {
-                this.httpServer = http.createServer(this.getServer().callback());
-            }
-        }
-        return this.httpServer;
-    }
-
     use(middleware: (context: IContext, next?: Next) => any) {
         this.getServer().use(middleware);
     }
 
     async start() {
-        let config = this.getConfig();
-        let listener = this.container.has(ServerListenerToken) ? this.container.get(ServerListenerToken) : null;
-        let func;
-        if (isFunction(listener)) {
-            func = listener;
-        } else if (listener) {
-            let ls = listener;
-            func = (...args: any[]) => ls.listener(...args);
-        }
-
-        let server = this.getHttpServer();
-        let port = config.port || parseInt(process.env.PORT || '0');
-        if (config.hostname) {
-            server.listen(port, config.hostname, func);
-        } else {
-            server.listen(port, func);
-        }
-        console.log('service listen on port: ', port);
+        this.getServer().start(this.config);
     }
 
     async stop() {
-        let server = this.getHttpServer();
-        server.removeAllListeners();
-        server.close();
+        this.getServer().stop();
     }
 
 }

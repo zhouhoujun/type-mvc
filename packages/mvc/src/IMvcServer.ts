@@ -1,5 +1,6 @@
 import * as http from 'http';
 import { InjectToken } from '@ts-ioc/core';
+import { IConfiguration } from './IConfiguration';
 
 
 /**
@@ -17,12 +18,19 @@ export interface IMvcServer {
      */
     use(middleware: any);
     /**
-     * http server callback
+     * start server withconfig.
      *
-     * @returns {(request: http.IncomingMessage, response: http.ServerResponse) => void}
-     * @memberof IServer
+     * @param {IConfiguration} config
+     * @memberof IMvcServer
      */
-    callback(): (request: http.IncomingMessage, response: http.ServerResponse) => void;
+    start(config: IConfiguration);
+
+    /**
+     * stop server.
+     *
+     * @memberof IMvcServer
+     */
+    stop();
 }
 
 /**

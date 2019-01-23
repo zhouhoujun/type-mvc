@@ -1,4 +1,4 @@
-import {  App, MvcHostBuilder, Application } from '@mvx/mvc';
+import {  App, MvcHostBuilder, Application, MvcServerToken } from '@mvx/mvc';
 // import { PlatformServer } from '@ts-ioc/platform-server';
 import { KoaModule } from '@mvx/koa';
 
@@ -8,7 +8,7 @@ import { KoaModule } from '@mvx/koa';
         // DebugLogAspect
     ],
     debug: true,
-    bootstrap: Application
+    bootstrap: MvcServerToken
 })
 class MvcApi {
 

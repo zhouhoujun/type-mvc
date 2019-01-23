@@ -1,8 +1,6 @@
-import { InjectToken, Type } from '@ts-ioc/core';
+import { Type } from '@ts-ioc/core';
 import { IConfiguration } from './IConfiguration';
 import { ILoggerManager, ILogger } from '@ts-ioc/logs';
-import * as http from 'http';
-import * as https from 'https';
 import { IContext } from './IContext';
 import { Next } from './util';
 import { IMiddlewareChain } from './middlewares/MiddlewareChain';
@@ -87,14 +85,6 @@ export interface IApplication extends IBoot<IMvcServer> {
      * @memberof IApplication
      */
     getLogger(name?: string): ILogger;
-
-    /**
-     * get http server.
-     *
-     * @returns {(http.Server | https.Server)}
-     * @memberof IApplication
-     */
-    getHttpServer(): http.Server | https.Server;
 
     /**
      * use middleware.

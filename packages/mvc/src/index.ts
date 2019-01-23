@@ -15,6 +15,7 @@ export * from './IContext';
 
 export * from './injectors';
 export * from './IMvcServer';
+export * from './IListener';
 export * from './MvcServer';
 export * from './IApplication';
 export * from './Application';

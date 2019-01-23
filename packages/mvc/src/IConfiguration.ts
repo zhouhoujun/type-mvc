@@ -72,13 +72,6 @@ export const ConfigurationToken = new InjectToken<IConfiguration>('MVX_Configura
 export interface IConfiguration extends AppConfigure {
 
     /**
-     * set bootstrap applaction.
-     *
-     * @type {Type<IApplication>}
-     * @memberof IConfiguration
-     */
-    bootstrap?: Type<IApplication>;
-    /**
      * aseert url match regexp.
      *
      * @type {RegExp}

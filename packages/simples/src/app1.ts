@@ -5,7 +5,7 @@ import { KoaModule } from '@mvx/koa';
     imports: [
         KoaModule
     ],
-    debug: false
+    debug: true
 })
 class MvcApi {
     constructor() {

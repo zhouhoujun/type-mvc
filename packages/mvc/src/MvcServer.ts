@@ -1,8 +1,6 @@
-import * as http from 'http';
 import { IMvcServer } from './IMvcServer';
-import { Providers, Abstract } from '@ts-ioc/core';
-import { RunnerToken } from '@ts-ioc/bootstrap';
-import { ApplicationToken } from './IApplication';
+import { Abstract, Inject, ContainerToken, IContainer } from '@ts-ioc/core';
+import { IConfiguration } from './IConfiguration';
 
 /**
  * base mvc server.
@@ -13,12 +11,14 @@ import { ApplicationToken } from './IApplication';
  * @implements {IMvcServer}
  */
 @Abstract()
-@Providers([
-    { provide: RunnerToken, useExisting: ApplicationToken }
-])
 export abstract class MvcServer implements IMvcServer {
+
+    @Inject(ContainerToken)
+    container: IContainer;
+
     constructor() {
     }
     abstract use(middleware: any);
-    abstract callback(): (request: http.IncomingMessage, response: http.ServerResponse) => void;
+    abstract start(config: IConfiguration);
+    abstract stop();
 }

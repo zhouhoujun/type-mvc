@@ -1,5 +1,8 @@
 import { IConfiguration } from '../IConfiguration';
 import { createDIModuleDecorator, IDIModuleDecorator, ModuleBuilderToken, AnnotationBuilderToken } from '@ts-ioc/bootstrap';
+import { MvcServerToken } from '../IMvcServer';
+import { lang } from '@ts-ioc/core';
+import { MvcServer } from '../MvcServer';
 import { ApplicationToken } from '../IApplication';
 
 
@@ -30,10 +33,18 @@ export interface IAppDecorator<T extends IAppMetadata> extends IDIModuleDecorato
  * App decorator, define the class as mvc application.
  * @App
  */
-export const App = createDIModuleDecorator<IAppMetadata>('App', ModuleBuilderToken, AnnotationBuilderToken, null,
-    metadata => {
-        if (!metadata.defaultRunnable) {
-            metadata.defaultRunnable = ApplicationToken;
+export const App = createDIModuleDecorator<IAppMetadata>(
+    'App',
+    ModuleBuilderToken,
+    AnnotationBuilderToken,
+    meta => {
+        if (!meta.bootstrap && lang.isExtendsClass(meta.type, MvcServer)) {
+            return MvcServerToken;
         }
-        return metadata;
+        return null;
+    }, null,
+    meta => {
+        if (!meta.defaultRunnable) {
+            meta.defaultRunnable = ApplicationToken
+        }
     });

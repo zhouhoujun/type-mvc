@@ -1,5 +1,5 @@
 import { NonePointcut } from '@ts-ioc/aop';
-import { Middleware, IMiddleware, MvcApplication, IConfiguration, ConfigurationToken, ApplicationToken } from '@mvx/mvc';
+import { Middleware, IMiddleware, IConfiguration, ConfigurationToken, ApplicationToken, IApplication } from '@mvx/mvc';
 import { IContainer, Injectable, Inject } from '@ts-ioc/core';
 
 
@@ -7,12 +7,12 @@ import { IContainer, Injectable, Inject } from '@ts-ioc/core';
 @Middleware({ provide: 'logger' })
 export class Logger implements IMiddleware {
 
-    constructor(@Inject(ApplicationToken) private app: MvcApplication, @Inject(ConfigurationToken) private config: IConfiguration) {
+    constructor() {
 
     }
 
-    setup() {
-        this.app.use(async (ctx, next) => {
+    setup(app: IApplication) {
+        app.use(async (ctx, next) => {
             let start = Date.now();
             await next();
             const ms = Date.now() - start;
