@@ -6,6 +6,7 @@ import { Next } from './util';
 import { IMiddlewareChain } from './middlewares/MiddlewareChain';
 import { IBoot, IConfigureManager, InjectRunnableToken } from '@ts-ioc/bootstrap';
 import { IMvcServer, MvcServerToken } from './IMvcServer';
+import { IRouter } from './router';
 
 
 /**
@@ -60,6 +61,14 @@ export interface IApplication extends IBoot<IMvcServer> {
      * @memberof IApplication
      */
     getMiddleChain(): IMiddlewareChain;
+
+    /**
+     * get router.
+     *
+     * @returns {IRouter}
+     * @memberof IApplication
+     */
+    getRouter(): IRouter;
 
     /**
      * get server.

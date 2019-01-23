@@ -1,4 +1,3 @@
-import { IMiddleware } from '../middlewares';
 import { Token } from '@ts-ioc/core';
 import { IRoute } from './IRoute';
 
@@ -9,7 +8,7 @@ import { IRoute } from './IRoute';
  * @interface IRouter
  * @extends {IMiddleware}
  */
-export interface IRouter extends IMiddleware {
+export interface IRouter {
     /**
      * setting routes map.
      *
@@ -33,6 +32,14 @@ export interface IRouter extends IMiddleware {
      * @memberof IRouter
      */
     getRoot(): IRoute;
+
+    /**
+     * set root route.
+     *
+     * @param {string} [routePrefix]
+     * @memberof IRouter
+     */
+    setRoot(routePrefix?: string): void;
 }
 
 

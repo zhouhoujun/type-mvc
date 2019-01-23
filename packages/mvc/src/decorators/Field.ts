@@ -76,7 +76,7 @@ export function createFieldDecorator<T extends FieldMetadata>(
                 metadata.dbfield = metadata.propertyKey.toString();
             }
             if (metaExtends) {
-                metadata = metaExtends(metadata as T);
+                metaExtends(metadata as T);
             }
             metadata.fieldType = fieldType;
             return metadata;

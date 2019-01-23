@@ -7,7 +7,7 @@ import { Workflow } from '@ts-ioc/activities';
     clean: 'lib',
     test: 'test/**/*.spec.ts',
     assets: {
-        ts: { dest: 'lib', annotation: true, uglify: false }
+        ts: { dest: 'lib', annotation: true, uglify: false, tsconfig: './tsconfig.json' }
     }
 })
 export class MvcBuilder {

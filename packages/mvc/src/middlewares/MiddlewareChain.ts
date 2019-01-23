@@ -98,10 +98,6 @@ export class MiddlewareChain implements IMiddlewareChain {
 
             if (isToken(m)) {
                 let middleware = this.container.resolve(m);
-                if (mdl.name === Middlewares.Router) {
-                    let router = middleware as IRouter;
-                    router.register(...app.getControllers());
-                }
                 if (isFunction(middleware.setup)) {
                     middleware.setup(app);
                 }

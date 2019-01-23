@@ -61,7 +61,7 @@ export function createRouteDecorator<T extends RouteMetadata>(
         },
         metadata => {
             if (metaExtends) {
-                metadata = metaExtends(metadata as T);
+                metaExtends(metadata as T);
             }
             metadata.method = method || RequestMethod.Get;
             return metadata;

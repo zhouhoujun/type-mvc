@@ -1,14 +1,15 @@
-import { IContainer, Inject, ContainerToken, lang, Type, isClass, MapSet, InstanceFactory, hasOwnClassMetadata, Injectable } from '@ts-ioc/core';
+import { IContainer, Inject, ContainerToken, lang, Type, isClass, hasOwnClassMetadata, Injectable } from '@ts-ioc/core';
 import { IConfiguration } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
 import { IApplication, ApplicationToken } from './IApplication';
-import { IMvcServer, MvcServerToken } from './IMvcServer';
+import { IMvcServer } from './IMvcServer';
 import { IContext } from './IContext';
 import { Next } from './util';
 import { MiddlewareChainToken, IMiddlewareChain } from './middlewares';
 import { Boot, RunOptions, IConfigureManager, RunnableOptions, RunnableOptionsToken } from '@ts-ioc/bootstrap';
 import { Controller, Middleware } from './decorators';
 import { MvcHostBuilder } from './MvcHostBuilder';
+import { IRouter, Router } from './router';
 
 /**
  * Default Application of type mvc.
@@ -23,6 +24,7 @@ export class Application extends Boot<IMvcServer> implements IApplication {
 
     protected config: IConfiguration;
     private _loggerMgr: ILoggerManager;
+    protected router: IRouter;
 
     @Inject(ContainerToken)
     container: IContainer;
@@ -31,8 +33,8 @@ export class Application extends Boot<IMvcServer> implements IApplication {
         return this.config as IConfiguration;
     }
 
-    protected controllers: MapSet<Type<any>, InstanceFactory<any>>;
-    protected middlewares: MapSet<Type<any>, InstanceFactory<any>>;
+    protected controllers: Type<any>[];
+    protected middlewares: Type<any>[];
 
     @Inject(MiddlewareChainToken)
     middlewareChain: IMiddlewareChain;
@@ -41,51 +43,18 @@ export class Application extends Boot<IMvcServer> implements IApplication {
 
     constructor(@Inject(RunnableOptionsToken) options: RunnableOptions<IMvcServer>) {
         super(options);
-        this.controllers = new MapSet();
-        this.middlewares = new MapSet();
-        // this.aops = new MapSet();
+        this.controllers = [];
+        this.middlewares = [];
     }
 
     async onInit(options: RunOptions<IMvcServer>) {
         this.configMgr = options.configManager;
         let gcfg = await this.configMgr.getConfig();
-        this.config = lang.assign({
-            assertUrlRegExp: /\/((\w|%|\.))+\.\w+$/,
-            hostname: '',
-            port: 3000,
-            routePrefix: '',
-            setting: {},
-            connections: {},
-            middlewares: ['./middlewares/**/*{.js,.ts}', '!./**/*.d.ts'],
-            controllers: ['./controllers/**/*{.js,.ts}', '!./**/*.d.ts'],
-            aop: ['./aop/**/*{.js,.ts}', '!./**/*.d.ts'],
-            views: './views',
-            viewsOptions: {
-                extension: 'ejs',
-                map: { html: 'nunjucks' }
-            },
-            models: ['./models/**/*{.js,.ts}', '!./**/*.d.ts'],
-            debug: false,
-            session: {
-                key: 'typemvc:sess', /** (string) cookie key (default is koa:sess) */
-                /** (number || 'session') maxAge in ms (default is 1 days) */
-                /** 'session' will result in a cookie that expires when session/browser is closed */
-                /** Warning: If a session cookie is stolen, this cookie will never expire */
-                maxAge: 86400000,
-                overwrite: true, /** (boolean) can overwrite or not (default true) */
-                httpOnly: true, /** (boolean) httpOnly or not (default true) */
-                signed: true, /** (boolean) signed or not (default true) */
-                rolling: false/** (boolean) Force a session identifier cookie to be set on every response. The expiration is reset to the original maxAge, resetting the expiration countdown. default is false **/
-            },
-            contents: ['./public'],
-            isRouteUrl(ctxUrl: string): boolean {
-                let flag = !this.assertUrlRegExp.test(ctxUrl);
-                if (flag && this.routeUrlRegExp) {
-                    return this.routeUrlRegExp.test(ctxUrl);
-                }
-                return flag;
-            }
-        }, gcfg, this.config);
+        console.log(gcfg);
+        this.config = lang.assign(gcfg, this.config);
+
+        this.router = this.container.resolve(Router);
+        this.router.setRoot(this.config.routePrefix);
 
         let builder = options.bootBuilder as MvcHostBuilder;
 
@@ -93,15 +62,18 @@ export class Application extends Boot<IMvcServer> implements IApplication {
             c.forEach((tk, fac) => {
                 if (isClass(tk)) {
                     if (hasOwnClassMetadata(Controller, tk)) {
-                        this.controllers.set(tk, fac);
+                        this.controllers.push(tk);
                     } else if (hasOwnClassMetadata(Middleware, tk)) {
-                        this.middlewares.set(tk, fac);
+                        this.middlewares.push(tk);
                     }
                 }
             })
         });
 
-        await this.getMiddleChain()
+        this.router.register(...this.getControllers());
+
+        let chain = await this.getMiddleChain();
+        await chain
             .use(...[...this.getMiddlewares(), ...builder.middlewares])
             .setup(this);
 
@@ -111,12 +83,16 @@ export class Application extends Boot<IMvcServer> implements IApplication {
         return this.configMgr;
     }
 
+    getRouter(): IRouter {
+        return this.router;
+    }
+
     getControllers(): Type<any>[] {
-        return this.controllers.keys();
+        return this.controllers;
     }
 
     getMiddlewares(): Type<any>[] {
-        return this.middlewares.keys();
+        return this.middlewares;
     }
 
     getMiddleChain(): IMiddlewareChain {

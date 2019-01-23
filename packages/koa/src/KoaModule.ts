@@ -3,10 +3,19 @@ import {
     JsonMiddleware, LogMiddleware, SessionMiddleware, ViewsMiddleware
 } from './middlewares';
 import { DIModule } from '@ts-ioc/bootstrap';
+import { ServerModule } from '@ts-ioc/platform-server';
+import { ServerBootstrapModule } from '@ts-ioc/platform-server-bootstrap';
+import { ServerLogsModule } from '@ts-ioc/platform-server-logs';
+
 import { KoaServer } from './KoaServer';
+import { MvcConfigureRegister } from './MvcConfigureRegister';
 
 @DIModule({
     imports: [
+        ServerModule,
+        ServerBootstrapModule,
+        ServerLogsModule,
+        MvcConfigureRegister,
         KoaServer,
         BodyParserMiddleware,
         ContentMiddleware,
@@ -17,6 +26,10 @@ import { KoaServer } from './KoaServer';
         ViewsMiddleware
     ],
     exports: [
+        ServerModule,
+        ServerBootstrapModule,
+        ServerLogsModule,
+        MvcConfigureRegister,
         KoaServer,
         BodyParserMiddleware,
         ContentMiddleware,

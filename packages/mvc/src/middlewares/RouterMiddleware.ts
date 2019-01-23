@@ -4,20 +4,18 @@ import { IApplication } from '../IApplication';
 
 
 
-@Middleware(MiddlewareTokens.Cors)
-export class CorsMiddleware implements IMiddleware {
+@Middleware(MiddlewareTokens.Router)
+export class RouterMiddleware implements IMiddleware {
+
 
     constructor() {
-
     }
 
     setup(app: IApplication) {
-
         app.use(async (ctx, next) => {
             if ((!ctx.status || ctx.status === 404) && app.getConfig().isRouteUrl(ctx.url)) {
-                return app.getRouter().getRoot().options(app.container, ctx, next);
+                return app.getRouter().getRoot().navigating(app.container, ctx, next);
             }
         });
     }
-
 }

@@ -25,7 +25,7 @@
         "allowSyntheticDefaultImports": true,
         "removeComments": false,
         "noLib": false,
-        "jsx": "react",
+        "jsx": "preserve",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "sourceMap": true,
@@ -37,12 +37,6 @@
         "noImplicitUseStrict": false,
         "noFallthroughCasesInSwitch": true,
         "moduleResolution": "node",
-        "suppressImplicitAnyIndexErrors": true,
-        "skipDefaultLibCheck": true
-    },
-    "exclude": [
-        "lib",
-        "node_modules",
-        "jspm_packages"
-    ]
+        "suppressImplicitAnyIndexErrors": true
+    }
 }
