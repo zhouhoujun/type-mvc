@@ -38,11 +38,12 @@ export const App = createDIModuleDecorator<IAppMetadata>(
     ModuleBuilderToken,
     AnnotationBuilderToken,
     meta => {
-        if (!meta.bootstrap && lang.isExtendsClass(meta.type, MvcServer)) {
+        if (!meta.bootstrap || !lang.isExtendsClass(meta.type, MvcServer)) {
             return MvcServerToken;
         }
         return null;
-    }, null,
+    },
+    null,
     meta => {
         if (!meta.defaultRunnable) {
             meta.defaultRunnable = ApplicationToken

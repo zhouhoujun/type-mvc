@@ -2,13 +2,10 @@ import { IContainer, Inject, ContainerToken, lang, Type, isClass, hasOwnClassMet
 import { IConfiguration } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
 import { IApplication, ApplicationToken } from './IApplication';
-import { IMvcServer } from './IMvcServer';
-import { IContext } from './IContext';
-import { Next } from './util';
-import { MiddlewareChainToken, IMiddlewareChain } from './middlewares';
-import { Boot, RunOptions, IConfigureManager, RunnableOptions, RunnableOptionsToken } from '@ts-ioc/bootstrap';
+import { IMvcServer, IMvcHostBuilder } from './IMvcServer';
+import { MiddlewareChainToken, IMiddlewareChain, CustomMiddleware } from './middlewares';
+import { Boot, RunOptions, IConfigureManager, RunnableOptions, RunnableOptionsToken, IRunnableBuilder } from '@ts-ioc/bootstrap';
 import { Controller, Middleware } from './decorators';
-import { MvcHostBuilder } from './MvcHostBuilder';
 import { IRouter, Router } from './router';
 
 /**
@@ -25,6 +22,7 @@ export class Application extends Boot<IMvcServer> implements IApplication {
     protected config: IConfiguration;
     private _loggerMgr: ILoggerManager;
     protected router: IRouter;
+    protected builder: IMvcHostBuilder;
 
     @Inject(ContainerToken)
     container: IContainer;
@@ -50,15 +48,15 @@ export class Application extends Boot<IMvcServer> implements IApplication {
     async onInit(options: RunOptions<IMvcServer>) {
         this.configMgr = options.configManager;
         let gcfg = await this.configMgr.getConfig();
-        console.log(gcfg);
         this.config = lang.assign(gcfg, this.config);
 
+        this.getServer().init(this.config);
         this.router = this.container.resolve(Router);
         this.router.setRoot(this.config.routePrefix);
 
-        let builder = options.bootBuilder as MvcHostBuilder;
+        this.builder = options.bootBuilder as IMvcHostBuilder;
 
-        builder.getPools().iterator(c => {
+        this.builder.getPools().iterator(c => {
             c.forEach((tk, fac) => {
                 if (isClass(tk)) {
                     if (hasOwnClassMetadata(Controller, tk)) {
@@ -72,15 +70,18 @@ export class Application extends Boot<IMvcServer> implements IApplication {
 
         this.router.register(...this.getControllers());
 
-        let chain = await this.getMiddleChain();
-        await chain
-            .use(...[...this.getMiddlewares(), ...builder.middlewares])
+        this.getMiddleChain()
+            .use(...[...this.getMiddlewares(), ...this.builder.middlewares])
             .setup(this);
 
     }
 
     getConfigureManager(): IConfigureManager<IConfiguration> {
         return this.configMgr;
+    }
+
+    getHostBuilder(): IMvcHostBuilder {
+        return this.builder;
     }
 
     getRouter(): IRouter {
@@ -116,12 +117,16 @@ export class Application extends Boot<IMvcServer> implements IApplication {
         return this.getLoggerManger().getLogger(name);
     }
 
-    use(middleware: (context: IContext, next?: Next) => any) {
+    use(middleware: CustomMiddleware) {
         this.getServer().use(middleware);
     }
 
+    useFac(middlewareFactory: (core?: any, httpServer?: any) => CustomMiddleware) {
+        this.getServer().useFac(middlewareFactory);
+    }
+
     async start() {
-        this.getServer().start(this.config);
+        this.getServer().start();
     }
 
     async stop() {

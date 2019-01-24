@@ -145,7 +145,7 @@ export class BuilderMVC {
 }
 
 
-// Workflow.create()
-//     .use(PackModule)
-//     .bootstrap(BuilderMVC);
+Workflow.create()
+    .use(PackModule)
+    .bootstrap(BuilderMVC);
 

@@ -1,6 +1,7 @@
-import * as http from 'http';
 import { InjectToken } from '@ts-ioc/core';
 import { IConfiguration } from './IConfiguration';
+import { IRunnableBuilder } from '@ts-ioc/bootstrap';
+import { CustomMiddleware } from './middlewares';
 
 
 /**
@@ -11,19 +12,43 @@ import { IConfiguration } from './IConfiguration';
  */
 export interface IMvcServer {
     /**
+     * init server with configure.
+     *
+     * @param {IConfiguration} config
+     * @memberof IMvcServer
+     */
+    init(config: IConfiguration): void;
+
+    /**
      * use middleware.
      *
      * @param {*} middleware
      * @memberof IServer
      */
     use(middleware: any);
+
     /**
-     * start server withconfig.
+     * use middleware factory.
      *
-     * @param {IConfiguration} config
+     * @param {(core?: any, httpServer?: any) => any} middlewareFactory
      * @memberof IMvcServer
      */
-    start(config: IConfiguration);
+    useFac(middlewareFactory: (core?: any, httpServer?: any) => any);
+
+    /**
+     * get http server.
+     *
+     * @returns {*}
+     * @memberof IMvcServer
+     */
+    getHttpServer(): any;
+
+    /**
+     * start server.
+     *
+     * @memberof IMvcServer
+     */
+    start();
 
     /**
      * stop server.
@@ -37,3 +62,8 @@ export interface IMvcServer {
  * core server token. use as singleton.
  */
 export const MvcServerToken = new InjectToken<IMvcServer>('MVC_Server');
+
+
+export interface IMvcHostBuilder extends IRunnableBuilder<IMvcServer> {
+    middlewares: CustomMiddleware[];
+}

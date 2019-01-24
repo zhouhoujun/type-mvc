@@ -1,6 +1,7 @@
 import { Registration, Token } from '@ts-ioc/core';
 import { IContext } from '../IContext';
 import { IApplication } from '../IApplication';
+import { Next } from '../util';
 
 
 
@@ -22,7 +23,7 @@ export interface IMiddleware {
 /**
  * custom middleware.
  */
-export type CustomMiddleware = (context: IContext, next: Promise<any>) => any;
+export type CustomMiddleware = (context: IContext, next: Next) => any | Function;
 
 /**
  * middleware type.
@@ -44,81 +45,53 @@ export enum Middlewares {
     /**
      * context middleware token. to get context of one request.
      */
-    Context = 'Context',
+    Context = 'ContextMiddleware',
     /**
      * BodyParser middleware token.
      */
-    BodyParser = 'BodyParser',
+    BodyParser = 'BodyParserMiddleware',
     /**
      * Content middleware token.
      */
-    Content = 'Content',
+    Content = 'ContentMiddleware',
     /**
      * cors middleware token.
      */
-    Cors = 'Cors',
+    Cors = 'CorsMiddleware',
     /**
      * log middleware token.
      */
-    Log = 'Log',
+    Log = 'LogMiddleware',
     /**
      *
      */
-    Json = 'Json',
+    Json = 'JsonMiddleware',
     /**
      * session middleware token.
      */
-    Session = 'Session',
+    Session = 'SessionMiddleware',
     /**
      * views middleware token.
      */
-    Views = 'Views',
+    Views = 'ViewsMiddleware',
     /**
      * router middleware token.
      */
-    Router = 'Router'
+    Router = 'RouterMiddleware'
 }
 
-/**
- * Inject middleware token.
- *
- * @export
- * @class InjectMiddlewareToken
- * @extends {Registration<IMiddleware>}
- * @template T
- */
-export class InjectMiddlewareToken extends Registration<IMiddleware> {
-    constructor(desc: string) {
-        super('MVX_Middleware', desc);
-    }
-}
 
 /**
- * Middlewawre Tokens
+ * default Middlewawre order.
  */
-export const MiddlewareTokens = {
-    BodyParser: new InjectMiddlewareToken(Middlewares.BodyParser),
-    Json: new InjectMiddlewareToken(Middlewares.Json),
-    Log: new InjectMiddlewareToken(Middlewares.Log),
-    Session: new InjectMiddlewareToken(Middlewares.Session),
-    Content: new InjectMiddlewareToken(Middlewares.Content),
-    Context: new InjectMiddlewareToken(Middlewares.Context),
-    Cors: new InjectMiddlewareToken(Middlewares.Cors),
-    Views: new InjectMiddlewareToken(Middlewares.Views),
-    Router: new InjectMiddlewareToken(Middlewares.Router)
-}
-
-/**
- * default Middlewawre chain.
- */
-export const DefaultMiddlewawreChain = [
-    MiddlewareTokens.BodyParser,
-    MiddlewareTokens.Json,
-    MiddlewareTokens.Log,
-    MiddlewareTokens.Session,
-    MiddlewareTokens.Content,
-    MiddlewareTokens.Context,
-    MiddlewareTokens.Cors,
-    MiddlewareTokens.Views,
-    MiddlewareTokens.Router
+export const DefaultMiddlewawreOrder = [
+    Middlewares.BodyParser,
+    Middlewares.Json,
+    Middlewares.Log,
+    Middlewares.Session,
+    Middlewares.Content,
+    Middlewares.Context,
+    Middlewares.Cors,
+    Middlewares.Views,
+    Middlewares.Router
 ];

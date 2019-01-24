@@ -1,17 +1,17 @@
-import { Middleware, IMiddleware, IApplication, MiddlewareTokens } from '@mvx/mvc';
+import { Middleware, IMiddleware, IApplication, Middlewares } from '@mvx/mvc';
 import { NonePointcut } from '@ts-ioc/aop';
 
 const session = require('koa-session');
 
 @NonePointcut
-@Middleware(MiddlewareTokens.Session)
+@Middleware(Middlewares.Session)
 export class SessionMiddleware implements IMiddleware {
 
     constructor() {
     }
 
     setup(app: IApplication) {
-        app.use(session(app.getConfig().session, app.getServer()));
+        app.useFac((core) => session(app.getConfig().session, core));
     }
 
 }

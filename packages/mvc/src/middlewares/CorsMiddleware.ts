@@ -1,10 +1,10 @@
 import { Middleware } from '../decorators';
-import { MiddlewareTokens, IMiddleware } from './IMiddleware';
+import { IMiddleware, Middlewares } from './IMiddleware';
 import { IApplication } from '../IApplication';
 
 
 
-@Middleware(MiddlewareTokens.Cors)
+@Middleware(Middlewares.Cors)
 export class CorsMiddleware implements IMiddleware {
 
     constructor() {

@@ -1,15 +1,14 @@
 import {
     InjectToken, Token, IContainer, Inject, ContainerToken,
     isClass, isToken, isFunction, isString, getTypeMetadata,
-    lang, Injectable, ParamProviders
+    lang, Injectable
 } from '@ts-ioc/core';
 import {
-    OrderMiddleware, MiddlewareType, InjectMiddlewareToken,
-    IMiddleware, DefaultMiddlewawreChain, Middlewares
+    OrderMiddleware, MiddlewareType,
+    IMiddleware, DefaultMiddlewawreOrder
 } from './IMiddleware';
 import { MiddlewareMetadata } from '../metadata';
 import { Middleware } from '../decorators';
-import { IRouter } from '../router';
 import { IApplication } from '../IApplication';
 
 
@@ -24,17 +23,7 @@ export interface IMiddlewareChain {
      * @param {IApplication} app
      * @memberof IMiddlewareChain
      */
-    setup(app: IApplication);
-
-    /**
-     * get middleware instance.
-     *
-     * @param {string} name middleware name.
-     * @param {...Providers[]} providers
-     * @returns {IMiddleware}
-     * @memberof IMiddlewareChain
-     */
-    resolve(name: string, ...providers: ParamProviders[]): IMiddleware;
+    setup(app: IApplication): void;
 
     /**
      * use middleware
@@ -76,14 +65,7 @@ export class MiddlewareChain implements IMiddlewareChain {
     @Inject(ContainerToken)
     public container: IContainer;
 
-    private _orders: OrderMiddleware[];
-    get orders(): OrderMiddleware[] {
-        if (!this._orders) {
-            this._orders = this.getDefault();
-        }
-        return this._orders;
-    }
-
+    private orders: OrderMiddleware[];
     constructor() {
 
     }
@@ -97,7 +79,7 @@ export class MiddlewareChain implements IMiddlewareChain {
             }
 
             if (isToken(m)) {
-                let middleware = this.container.resolve(m);
+                let middleware = app.getHostBuilder().resolve(m);
                 if (isFunction(middleware.setup)) {
                     middleware.setup(app);
                 }
@@ -107,11 +89,10 @@ export class MiddlewareChain implements IMiddlewareChain {
         });
     }
 
-    resolve(name: string, ...providers: ParamProviders[]): IMiddleware {
-        return this.container.resolve(new InjectMiddlewareToken(name), ...providers);
-    }
-
     use(...middleware: MiddlewareType[]) {
+        if (!this.orders) {
+            this.orders = this.getDefault();
+        }
         middleware.forEach(mdl => {
             if (isToken(mdl)) {
                 this.insert(mdl);
@@ -124,10 +105,6 @@ export class MiddlewareChain implements IMiddlewareChain {
     }
 
     insert(middleware: Token<IMiddleware>, chain?: OrderMiddleware[]) {
-        if (isClass(middleware) && !this.container.has(middleware)) {
-            this.container.register(middleware);
-        }
-
         let meta = this.getMiddlewareMeta(middleware);
         if (meta) {
             this.insertByMeta(meta, middleware, chain);
@@ -150,6 +127,9 @@ export class MiddlewareChain implements IMiddlewareChain {
         let ordMidd = { name: meta.name, middleware: middleware };
         if (chain.length < 1) {
             chain.push(ordMidd);
+            return;
+        }
+        if (chain.some(m => m.name === meta.name)) {
             return;
         }
 
@@ -191,7 +171,7 @@ export class MiddlewareChain implements IMiddlewareChain {
 
     protected getDefault() {
         let chain = [];
-        DefaultMiddlewawreChain.forEach(m => {
+        DefaultMiddlewawreOrder.forEach(m => {
             this.insert(m, chain);
         });
 

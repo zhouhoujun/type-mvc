@@ -6,7 +6,8 @@ import { ServerListenerToken } from './IListener';
 import { AppModuleValidate, AppModuleInjector, AppModuleInjectorToken } from './injectors';
 import { IApplication } from './IApplication';
 import { MvcModule } from './MvcModule';
-import { IMvcServer, MvcServerToken } from './IMvcServer';
+import { IMvcServer, MvcServerToken, IMvcHostBuilder } from './IMvcServer';
+import { MvcCoreModule } from './CoreModule';
 
 /**
  * load type or middleware.
@@ -19,7 +20,7 @@ export type LoadTypeOrMiddleware = LoadType | CustomMiddleware;
  * @export
  * @class AppBuilder
  */
-export class MvcHostBuilder extends ApplicationBuilder<IMvcServer>  {
+export class MvcHostBuilder extends ApplicationBuilder<IMvcServer> implements IMvcHostBuilder  {
 
     middlewares: CustomMiddleware[];
     /**
@@ -30,7 +31,8 @@ export class MvcHostBuilder extends ApplicationBuilder<IMvcServer>  {
      */
     constructor(baseURL?: string) {
         super(baseURL)
-        this.use(MvcModule);
+        this.use(MvcCoreModule)
+            .use(MvcModule);
         this.middlewares = [];
     }
 

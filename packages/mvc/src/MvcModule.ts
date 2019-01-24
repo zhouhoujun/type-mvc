@@ -5,15 +5,13 @@ import * as injectors from './injectors';
 import * as modles from './model';
 import * as middlewares from './middlewares';
 import * as routers from './router';
-import { MvcCoreModule } from './CoreModule';
-// import { MvcConfigureRegister } from './MvcConfigureRegister';
+import { MvcConfigureRegister } from './MvcConfigureRegister';
 import { Application } from './Application';
 
 @DIModule({
     imports: [
-        MvcCoreModule,
         Application,
-        // MvcConfigureRegister,
+        MvcConfigureRegister,
         AopModule,
         LogModule,
         injectors,
@@ -70,7 +68,7 @@ import { Application } from './Application';
         routers,
         middlewares,
         Application,
-        // MvcConfigureRegister,
+        MvcConfigureRegister,
         modles
     ]
 })

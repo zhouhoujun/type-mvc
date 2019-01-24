@@ -1,12 +1,11 @@
 import { Type } from '@ts-ioc/core';
 import { IConfiguration } from './IConfiguration';
 import { ILoggerManager, ILogger } from '@ts-ioc/logs';
-import { IContext } from './IContext';
-import { Next } from './util';
 import { IMiddlewareChain } from './middlewares/MiddlewareChain';
-import { IBoot, IConfigureManager, InjectRunnableToken } from '@ts-ioc/bootstrap';
-import { IMvcServer, MvcServerToken } from './IMvcServer';
+import { IBoot, IConfigureManager, InjectRunnableToken, IRunnableBuilder } from '@ts-ioc/bootstrap';
+import { IMvcServer, MvcServerToken, IMvcHostBuilder } from './IMvcServer';
 import { IRouter } from './router';
+import { CustomMiddleware } from './middlewares';
 
 
 /**
@@ -21,7 +20,13 @@ export const ApplicationToken = new InjectRunnableToken(MvcServerToken);
  * @interface IApp
  */
 export interface IApplication extends IBoot<IMvcServer> {
-
+    /**
+     * host builder
+     *
+     * @returns {IMvcHostBuilder}
+     * @memberof IApplication
+     */
+    getHostBuilder(): IMvcHostBuilder;
     /**
      * get all merged config.
      *
@@ -98,9 +103,17 @@ export interface IApplication extends IBoot<IMvcServer> {
     /**
      * use middleware.
      *
-     * @param {(context: IContext, next?: Next) => any} middleware
+     * @param {*} middleware
      * @memberof IApplication
      */
-    use(middleware: (context: IContext, next?: Next) => any);
+    use(middleware: CustomMiddleware);
+
+    /**
+     * use middleware factory.
+     *
+     * @param {(core?: any, httpServer?: any) => CustomMiddleware} middlewareFactory
+     * @memberof IApplication
+     */
+    useFac(middlewareFactory: (core?: any, httpServer?: any) => CustomMiddleware);
 
 }

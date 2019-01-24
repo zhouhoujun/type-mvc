@@ -1,7 +1,7 @@
-import { Middleware, IMiddleware, IApplication, MiddlewareTokens } from '@mvx/mvc';
+import { Middleware, IMiddleware, IApplication, Middlewares } from '@mvx/mvc';
 import * as json from 'koa-json';
 
-@Middleware(MiddlewareTokens.Json)
+@Middleware(Middlewares.Json)
 export class JsonMiddleware implements IMiddleware {
 
     constructor() {
@@ -10,5 +10,4 @@ export class JsonMiddleware implements IMiddleware {
     setup(app: IApplication) {
         app.use(json());
     }
-
 }

@@ -1,9 +1,9 @@
-import { Middleware, IMiddleware, IApplication, MiddlewareTokens } from '@mvx/mvc';
+import { Middleware, IMiddleware, IApplication, Middlewares } from '@mvx/mvc';
 import { toAbsolutePath } from '@ts-ioc/platform-server';
 
 const views = require('koa-views');
 
-@Middleware(MiddlewareTokens.Views)
+@Middleware(Middlewares.Views)
 export class ViewsMiddleware implements IMiddleware {
 
     constructor() {
@@ -11,7 +11,7 @@ export class ViewsMiddleware implements IMiddleware {
     setup(app: IApplication) {
         let config = app.getConfig();
         let viewPath = toAbsolutePath(config.rootdir, config.views);
-        console.log('view path:', viewPath)
+        console.log('view path:', viewPath);
         app.use(views(viewPath, config.viewsOptions));
     }
 

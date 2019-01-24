@@ -1,5 +1,8 @@
 import { Token, Injectable } from '@ts-ioc/core';
-import { IRoute, RootRoute, RouteBuilder, IRouter } from '../router';
+import { IRouter } from './IRouter';
+import { IRoute } from './IRoute';
+import { RouteBuilder } from './RouteBuilder';
+import { RootRoute } from './RootRoute';
 
 
 @Injectable
@@ -24,6 +27,7 @@ export class Router implements IRouter {
     }
 
     register(...controllers: Token<any>[]) {
+        console.log(controllers);
         this.builder.build(this, ...controllers);
     }
 }
