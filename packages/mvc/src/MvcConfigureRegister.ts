@@ -12,8 +12,10 @@ export class MvcConfigureRegister extends ConfigureRegister<RunnableConfigure> {
         if (config.debug) {
             container.register(DebugLogAspect);
         }
+        // console.log(builder.getPools().values().length);
         // let topContainer = builder.getPools().values().find(c => lang.getClass(c.getBuilder()) !== ContainerBuilder);
-        // lang.assert(topContainer, 'not set run env. use @ts-ioc/platform-server or @ts-ioc/platform-browser');
+        // lang.assert(topContainer, 'not set run env. use @ts-ioc/platform-server or @ts-ioc/platform-brow(ser');
+        console.log(container.parent);
         if (config.controllers) {
             await container.loadModule({ files: config.controllers });
         }

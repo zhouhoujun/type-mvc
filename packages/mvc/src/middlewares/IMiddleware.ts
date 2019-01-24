@@ -1,4 +1,4 @@
-import { Registration, Token } from '@ts-ioc/core';
+import { Token } from '@ts-ioc/core';
 import { IContext } from '../IContext';
 import { IApplication } from '../IApplication';
 import { Next } from '../util';

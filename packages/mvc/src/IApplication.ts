@@ -2,7 +2,7 @@ import { Type } from '@ts-ioc/core';
 import { IConfiguration } from './IConfiguration';
 import { ILoggerManager, ILogger } from '@ts-ioc/logs';
 import { IMiddlewareChain } from './middlewares/MiddlewareChain';
-import { IBoot, IConfigureManager, InjectRunnableToken, IRunnableBuilder } from '@ts-ioc/bootstrap';
+import { IBoot, IConfigureManager, InjectRunnableToken } from '@ts-ioc/bootstrap';
 import { IMvcServer, MvcServerToken, IMvcHostBuilder } from './IMvcServer';
 import { IRouter } from './router';
 import { CustomMiddleware } from './middlewares';

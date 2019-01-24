@@ -4,7 +4,7 @@ import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManage
 import { IApplication, ApplicationToken } from './IApplication';
 import { IMvcServer, IMvcHostBuilder } from './IMvcServer';
 import { MiddlewareChainToken, IMiddlewareChain, CustomMiddleware } from './middlewares';
-import { Boot, RunOptions, IConfigureManager, RunnableOptions, RunnableOptionsToken, IRunnableBuilder } from '@ts-ioc/bootstrap';
+import { Boot, RunOptions, IConfigureManager, RunnableOptions, RunnableOptionsToken } from '@ts-ioc/bootstrap';
 import { Controller, Middleware } from './decorators';
 import { IRouter, Router } from './router';
 

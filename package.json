@@ -24,8 +24,7 @@
     "type": "git",
     "url": "git+https://github.com/zhouhoujun/type-mvc.git"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^10.12.18",
     "@ts-ioc/cli": "^4.0.0-beta22",
