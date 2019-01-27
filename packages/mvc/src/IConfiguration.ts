@@ -1,8 +1,7 @@
-import { ObjectMap, Token, Type, InjectToken } from '@ts-ioc/core';
+import { ObjectMap, Type, InjectToken } from '@ts-ioc/core';
 import { LogConfigure } from '@ts-ioc/logs';
 import { ServerOptions } from 'https';
 import { AppConfigure } from '@ts-ioc/bootstrap';
-import { IApplication } from './IApplication';
 import { RequestMethod } from './RequestMethod';
 
 

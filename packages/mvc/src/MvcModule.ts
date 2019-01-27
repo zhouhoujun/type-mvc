@@ -7,13 +7,15 @@ import * as middlewares from './middlewares';
 import * as routers from './router';
 import { MvcConfigureRegister } from './MvcConfigureRegister';
 import { Application } from './Application';
+import { BootModule } from '@ts-ioc/bootstrap';
 
 @DIModule({
     imports: [
-        Application,
-        MvcConfigureRegister,
         AopModule,
         LogModule,
+        BootModule,
+        MvcConfigureRegister,
+        Application,
         injectors,
         routers,
         middlewares,
@@ -62,13 +64,14 @@ import { Application } from './Application';
         }
     ],
     exports: [
+        MvcConfigureRegister,
         AopModule,
         LogModule,
+        BootModule,
         injectors,
         routers,
         middlewares,
         Application,
-        MvcConfigureRegister,
         modles
     ]
 })
