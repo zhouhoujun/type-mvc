@@ -7,7 +7,7 @@ import { ServerModule } from '@ts-ioc/platform-server';
 import { ServerBootstrapModule } from '@ts-ioc/platform-server-bootstrap';
 import { ServerLogsModule } from '@ts-ioc/platform-server-logs';
 import { KoaServer } from './KoaServer';
-// import { MvcConfigureRegister } from './MvcConfigureRegister';
+import { MvcConfigureRegister } from './MvcConfigureRegister';
 
 @DIModule({
     imports: [
@@ -15,7 +15,7 @@ import { KoaServer } from './KoaServer';
         ServerBootstrapModule,
         ServerLogsModule,
         KoaServer,
-        // MvcConfigureRegister,
+        MvcConfigureRegister,
         BodyParserMiddleware,
         ContentMiddleware,
         ContextMiddleware,
@@ -28,7 +28,7 @@ import { KoaServer } from './KoaServer';
         ServerModule,
         ServerBootstrapModule,
         ServerLogsModule,
-        // MvcConfigureRegister,
+        MvcConfigureRegister,
         KoaServer,
         BodyParserMiddleware,
         ContentMiddleware,
