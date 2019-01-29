@@ -27,7 +27,6 @@ export class Router implements IRouter {
     }
 
     register(...controllers: Token<any>[]) {
-        console.log(controllers);
         this.builder.build(this, ...controllers);
     }
 }

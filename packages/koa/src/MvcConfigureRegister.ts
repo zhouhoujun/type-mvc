@@ -12,15 +12,13 @@ export class MvcConfigureRegister extends ConfigureRegister<IConfiguration> {
         if (config.debug) {
             this.container.register(DebugLogAspect);
         }
-        // console.log(builder.getPools().values().length);
-        // let topContainer = builder.getPools().values().find(c => lang.getClass(c.getBuilder()) !== ContainerBuilder);
-        // lang.assert(topContainer, 'not set run env. use @ts-ioc/platform-server or @ts-ioc/platform-brow(ser');
-        // console.log(container.parent);
+
+        console.log('---------MvcConfigureRegister------------');
         if (config.controllers) {
-            await this.container.loadModule({ files: config.controllers });
+            await this.container.loadModule({ files: config.controllers, basePath: config.baseURL });
         }
         if (config.middlewares) {
-            await this.container.loadModule({ files: config.middlewares });
+            await this.container.loadModule({ files: config.middlewares, basePath: config.baseURL });
         }
         if (config.aop) {
             await this.container.loadModule({ files: config.aop });
