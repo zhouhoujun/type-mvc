@@ -3,7 +3,7 @@ import { IConfiguration } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
 import { IApplication, ApplicationToken } from './IApplication';
 import { IMvcServer, IMvcHostBuilder } from './IMvcServer';
-import { MiddlewareChainToken, IMiddlewareChain, CustomMiddleware } from './middlewares';
+import { MiddlewareChainToken, IMiddlewareChain, CustomMiddleware, MiddlewareType } from './middlewares';
 import { Boot, RunOptions, IConfigureManager, RunnableOptions, RunnableOptionsToken } from '@ts-ioc/bootstrap';
 import { Controller, Middleware } from './decorators';
 import { IRouter, Router } from './router';
@@ -49,7 +49,6 @@ export class Application extends Boot<IMvcServer> implements IApplication {
         this.configMgr = options.configManager;
         let gcfg = await this.configMgr.getConfig();
         this.config = lang.assign(gcfg, this.config);
-
         this.getServer().init(this.config);
         this.router = this.container.resolve(Router);
         this.router.setRoot(this.config.routePrefix);
@@ -70,8 +69,10 @@ export class Application extends Boot<IMvcServer> implements IApplication {
 
         this.router.register(...this.getControllers());
 
+        let midds: MiddlewareType[] = this.builder.middlewares || [];
+        midds = midds.concat(this.getMiddlewares() || []);
         this.getMiddleChain()
-            .use(...[...this.getMiddlewares(), ...this.builder.middlewares])
+            .use(...midds)
             .setup(this);
 
     }

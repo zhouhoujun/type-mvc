@@ -1,13 +1,13 @@
-import {  App, MvcHostBuilder, Application, MvcServerToken } from '@mvx/mvc';
+import { MvcHostBuilder, MvcServerToken } from '@mvx/mvc';
 // import { PlatformServer } from '@ts-ioc/platform-server';
 import { KoaModule } from '@mvx/koa';
+import { DIModule } from '@ts-ioc/bootstrap';
 
-@App({
+@DIModule({
     imports: [
         KoaModule
         // DebugLogAspect
     ],
-    debug: true,
     bootstrap: MvcServerToken
 })
 class MvcApi {
@@ -16,5 +16,5 @@ class MvcApi {
 
 
 MvcHostBuilder.create(__dirname)
-    .useConfiguration()
+    .useConfiguration({ debug: true })
     .bootstrap(MvcApi);

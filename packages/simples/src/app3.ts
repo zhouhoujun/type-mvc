@@ -4,17 +4,21 @@ import { KoaModule } from '@mvx/koa';
 import { Bootstrap } from '@ts-ioc/bootstrap';
 
 @Bootstrap({
-    baseURL: __dirname,
-    globals: [
+    imports: [
         KoaModule
     ],
-    builder: MvcHostBuilder,
     bootstrap: MvcServerToken,
     debug: true
 })
 class MvcApi {
     constructor() {
         console.log('boot application');
+    }
+
+    static main() {
+        console.log('run mvc api...');
+        MvcHostBuilder.create()
+            .bootstrap(MvcApi);
     }
 }
 

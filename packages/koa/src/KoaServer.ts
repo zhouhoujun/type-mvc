@@ -17,14 +17,17 @@ export class KoaServer extends MvcServer {
     init(config: IConfiguration): void {
         this.config = config;
         this.koa = new Koa();
-        if (config.httpsOptions) {
-            this.httpServer = https.createServer(config.httpsOptions, this.koa.callback);
-        } else {
-            this.httpServer = http.createServer(this.koa.callback);
-        }
+
     }
 
     getHttpServer() {
+        if (!this.httpServer) {
+            if (this.config.httpsOptions) {
+                this.httpServer = https.createServer(this.config.httpsOptions, this.koa.callback());
+            } else {
+                this.httpServer = http.createServer(this.koa.callback());
+            }
+        }
         return this.httpServer;
     }
 
@@ -35,7 +38,7 @@ export class KoaServer extends MvcServer {
 
     useFac(middlewareFactory: (core?: any, httpServer?: any) => any) {
         lang.assert(this.koa, 'server has not init with config.')
-        let middleware = middlewareFactory(this.koa, this.httpServer);
+        let middleware = middlewareFactory(this.koa, this.getHttpServer());
         this.koa.use(middleware);
     }
 
@@ -51,9 +54,9 @@ export class KoaServer extends MvcServer {
         }
         let port = config.port || parseInt(process.env.PORT || '0');
         if (config.hostname) {
-            this.httpServer.listen(port, config.hostname, func);
+            this.getHttpServer().listen(port, config.hostname, func);
         } else {
-            this.httpServer.listen(port, func);
+            this.getHttpServer().listen(port, func);
         }
         console.log('service listen on port: ', port);
     }

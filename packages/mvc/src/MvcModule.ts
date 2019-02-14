@@ -5,7 +5,6 @@ import * as injectors from './injectors';
 import * as modles from './model';
 import * as middlewares from './middlewares';
 import * as routers from './router';
-// import { MvcConfigureRegister } from './MvcConfigureRegister';
 import { Application } from './Application';
 import { BootModule } from '@ts-ioc/bootstrap';
 
@@ -14,7 +13,6 @@ import { BootModule } from '@ts-ioc/bootstrap';
         AopModule,
         LogModule,
         BootModule,
-        // MvcConfigureRegister,
         Application,
         injectors,
         routers,
@@ -64,7 +62,6 @@ import { BootModule } from '@ts-ioc/bootstrap';
         }
     ],
     exports: [
-        // MvcConfigureRegister,
         AopModule,
         LogModule,
         BootModule,

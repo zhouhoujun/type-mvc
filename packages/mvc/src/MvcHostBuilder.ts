@@ -6,7 +6,7 @@ import { ServerListenerToken } from './IListener';
 import { AppModuleValidate, AppModuleInjector, AppModuleInjectorToken } from './injectors';
 import { IApplication } from './IApplication';
 import { MvcModule } from './MvcModule';
-import { IMvcServer, MvcServerToken, IMvcHostBuilder } from './IMvcServer';
+import { IMvcServer, IMvcHostBuilder, MvcServerToken } from './IMvcServer';
 import { MvcCoreModule } from './CoreModule';
 
 /**
@@ -79,11 +79,11 @@ export class MvcHostBuilder extends ApplicationBuilder<IMvcServer> implements IM
     /**
      * bootstrap mvc application with App Module.
      *
-     * @param {Token<T>} [app]
+     * @param {Token<any>} [app]
      * @returns {Promise<T>}
      * @memberof Bootstrap
      */
-    async bootstrap(app?: Token<IMvcServer> | IConfiguration): Promise<IApplication> {
+    async bootstrap(app?: Token<any> | IConfiguration): Promise<IApplication> {
         let appType = app || MvcServerToken;
         let instance = await super.bootstrap(appType) as IApplication;
         return instance;
@@ -92,11 +92,11 @@ export class MvcHostBuilder extends ApplicationBuilder<IMvcServer> implements IM
     /**
      * run application.
      *
-     * @param {(Token<IMvcServer> | IConfiguration)} [app]
+     * @param {(Token<any> | IConfiguration)} [app]
      * @returns {Promise<IApplication>}
      * @memberof MvcContainer
      */
-    run(app?: Token<IMvcServer> | IConfiguration): Promise<IApplication> {
+    run(app?: Token<any> | IConfiguration): Promise<IApplication> {
         return this.bootstrap(app);
     }
 

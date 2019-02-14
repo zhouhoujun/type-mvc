@@ -13,7 +13,6 @@ export class MvcConfigureRegister extends ConfigureRegister<IConfiguration> {
             this.container.register(DebugLogAspect);
         }
 
-        console.log('---------MvcConfigureRegister------------');
         if (config.controllers) {
             await this.container.loadModule({ files: config.controllers, basePath: config.baseURL });
         }
