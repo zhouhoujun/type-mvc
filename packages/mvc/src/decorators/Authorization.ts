@@ -1,6 +1,8 @@
 import { TypeMetadata, IClassMethodDecorator, createClassMethodDecorator, ClassMethodDecorator, isClassMetadata, isString } from '@ts-ioc/core';
 
-
+/**
+ * authorization metadata.
+ */
 export interface AuthorizationMetadata extends TypeMetadata {
     /**
      * role
