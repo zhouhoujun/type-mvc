@@ -4,6 +4,7 @@ const inplace = require('json-in-place');
 import * as through from 'through2';
 import * as path from 'path';
 import { Asset, AssetToken, INodeActivityContext, NodeActivityContext } from '@ts-ioc/build';
+import { isString } from '@ts-ioc/core';
 
 let versionSetting = (ctx: INodeActivityContext) => {
     let envArgs = ctx.getEnvArgs();
@@ -44,6 +45,9 @@ let versionSetting = (ctx: INodeActivityContext) => {
 
 let iocVersion = (ctx: INodeActivityContext) => {
     let version = ctx.getPackage().devDependencies['@ts-ioc/core'];
+    if (/^\^/.test(version)) {
+        version = version.substring(1);
+    }
     let envArgs = ctx.getEnvArgs();
     return through.obj(function (file, encoding, callback) {
         if (file.isNull()) {
@@ -111,23 +115,38 @@ let iocVersion = (ctx: INodeActivityContext) => {
                 let packages = ctx.getFolders('packages').filter(f => !/(simples|orm)/.test(f)); // (f => !/(annotations|aop|bootstrap)/.test(f));
 
                 let activities = [];
-                if (!(envArgs.b === false || envArgs.b === 'false')) {
+                if (isString(envArgs.unp) && /\d+.\d+.\d+/.test(envArgs.unp)) {
+                    let cmds = [];
                     packages.forEach(fd => {
-                        let objs = require(path.join(fd, 'taskfile.ts'));
-                        let builder = Object.values(objs).find(v => isPackClass(v));
-                        activities.push(builder);
-                    });
-                }
-                if (envArgs.deploy) {
-                    let cmd = 'npm publish --access=public'; // envArgs.deploy ? 'npm publish --access=public' : 'npm run build';
-                    let cmds = packages.map(fd => {
-                        return `cd ${fd} && ${cmd}`;
+                        let objs = require(path.join(fd, 'package.json'));
+                        if (objs && objs.name) {
+                            cmds.push(`npm unpublish ${objs.name}@${envArgs.unp}`)
+                        }
                     });
                     console.log(cmds);
                     activities.push({
                         shell: cmds,
                         activity: 'shell'
                     });
+                } else {
+                    if (!(envArgs.b === false || envArgs.b === 'false')) {
+                        packages.forEach(fd => {
+                            let objs = require(path.join(fd, 'taskfile.ts'));
+                            let builder = Object.values(objs).find(v => isPackClass(v));
+                            activities.push(builder);
+                        });
+                    }
+                    if (envArgs.deploy) {
+                        let cmd = 'npm publish --access=public'; // envArgs.deploy ? 'npm publish --access=public' : 'npm run build';
+                        let cmds = packages.map(fd => {
+                            return `cd ${fd} && ${cmd}`;
+                        });
+                        console.log(cmds);
+                        activities.push({
+                            shell: cmds,
+                            activity: 'shell'
+                        });
+                    }
                 }
                 return {
                     contextType: NodeActivityContext,

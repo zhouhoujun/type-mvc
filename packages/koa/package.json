@@ -1,6 +1,6 @@
 {
   "name": "@mvx/koa",
-  "version": "2.1.0-rs1",
+  "version": "2.1.0-rs2",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -19,9 +19,9 @@
   },
   "dependencies": {
     "@types/koa": "^2.0.44",
-    "@mvx/mvc": "^2.1.0-rs1",
-    "@ts-ioc/platform-server": "^^4.0.0-rs",
-    "@ts-ioc/platform-server-bootstrap": "^^4.0.0-rs",
+    "@mvx/mvc": "^2.1.0-rs2",
+    "@ts-ioc/platform-server": "^4.0.0-rs",
+    "@ts-ioc/platform-server-bootstrap": "^4.0.0-rs",
     "ejs": "^2.6.1",
     "koa": "^2.6.2",
     "koa-bodyparser": "^4.2.1",
