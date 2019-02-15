@@ -16,7 +16,6 @@ You can install this package either with `npm`
 ```shell
 
 npm install @mvx/mvc
-npm install @mvx/router
 npm install @mvx/koa
 
 
@@ -81,54 +80,76 @@ export class YourSecrityAspect {
 create application
 
 ```ts
-import { MvcContainer,  App, Application, DebugLogAspect } from '@mvx/mvc';
+import { MvcHostBuilder, MvcServerToken } from '@mvx/mvc';
 import { KoaModule } from '@mvx/koa';
-import { RouterModule } from '@mvx/router';
-// 1.
-MvcContainer.create(__dirname)
-    .use(KoaModule, RouterModule)
+import { Bootstrap, DIModule } from '@ts-ioc/bootstrap';
+
+// 1. use MvcHostBuilder to boot application.
+MvcHostBuilder.create(__dirname)
+    .use(KoaModule)
     // .useConfiguration('config path or object')
     //.use(middleware: IMiddleware | Middleware | Token<any>)
     //.useContainerBuilder(...)
     .bootstrap();
 
-// 2.
-@App({
+// 2. use bootstrap module to boot application
+
+@Bootstrap({
+    baseURL: __dirname,
     imports: [
-        KoaModule,
-        RouterModule,
-        DebugLogAspect
+        KoaModule
     ],
-    // debug: false
+    builder: MvcHostBuilder,
+    bootstrap: MvcServerToken,
+    debug: true
 })
-class MvcApi extends Application {
+class MvcApi {
     constructor() {
-        super();
-        console.log('my extends application');
+        console.log('boot application');
     }
 }
 
-MvcContainer.create(__dirname)
-    // .useConfiguration('config path or object')
-    .bootstrap(MvcApi);
 
-// 3.
-@App({
+// 3. use MvcHostBuilder to boot application module.
+
+@DIModule({
     imports: [
-        KoaModule,
-        RouterModule,
+        KoaModule
         // DebugLogAspect
     ],
-    debug: true,
-    bootstrap: Application
+    bootstrap: MvcServerToken
 })
 class MvcApi {
 
 }
 
-MvcContainer.create(__dirname)
-    // .useConfiguration('config path or object')
+MvcHostBuilder.create(__dirname)
+    .useConfiguration({ debug: true })
     .bootstrap(MvcApi);
+
+
+//4. use bootstrap module to boot application by main.
+@Bootstrap({
+    imports: [
+        KoaModule
+    ],
+    bootstrap: MvcServerToken,
+    debug: true
+})
+class MvcApi {
+    constructor() {
+        console.log('boot application');
+    }
+
+    static main() {
+        console.log('run mvc api...');
+        MvcHostBuilder.create(__dirname)
+            .useConfiguration({ debug: true })
+            .bootstrap(MvcApi);
+    }
+}
+
+
 ```
 
 ### Define Model
@@ -138,16 +159,19 @@ MvcContainer.create(__dirname)
 ```ts
 {
     ...
-    modelOptions: <ModelOptions>{
-        classMetaname: 'Model Class Metadata Name',
-        fieldMetaname: 'Model Filed Metadata Name',
-    }
+    /**
+     * model parser.
+     *
+     * @type {ModelOptions}
+     * @memberof IConfiguration
+     */
+    modelParser?: Token<IModelParser<any>>;
     ...
 }
 ```
 
 ```ts
-import { Model, Field } from 'type-mvc';
+import { Model, Field } from '@mvx/mvc';
 
 @Model
 export class User {
@@ -191,8 +215,8 @@ default setting load controllers in your project folder
 define as:
 
 ```ts
-import { Controller, Get, Post, IContext, symbols, Model, Field, Cors } from 'type-mvc';
-import { Inject } from 'tsioc';
+import { Controller, Get, Post, IContext, ContextToken,  RequestMethod, Model, Field, Cors } from '@mvx/mvc';
+import { Inject } from '@ts-ioc/core';
 import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
 
@@ -212,7 +236,7 @@ export class UserController {
         return this.work.workA();
     }
 
-    @Cors([RequestMethod.Post])
+    // @Cors([RequestMethod.Post])
     // also can define as below
     // @Cors(['Post','Get'])
     // @Cors('POST,GET')
@@ -320,19 +344,19 @@ default setting load middlewares in your project folder
 `/middlewares`
 
 ```ts
-import { Middleware, IMiddleware, Application, Configuration } from 'type-mvc';
+import { Middleware, IMiddleware, Application, Configuration } from '@mvx/mvc';
 import { IContainer, Injectable } from '@ts-ioc/core';
 
 
 @Middleware({ provide: 'logger' })
 export class Logger implements IMiddleware {
 
-    constructor(@Inject(ApplicationToken) private app: IApplication, @Inject(ConfigurationToken) private config: IConfiguration) {
+    constructor() {
 
     }
 
-    setup() {
-        this.app.use(async (ctx, next) => {
+    setup(app: IApplication) {
+        app.use(async (ctx, next) => {
             let start = Date.now();
             await next();
             const ms = Date.now() - start;
@@ -351,6 +375,13 @@ export class Logger implements IMiddleware {
 ## Simples
 
 [see simples](https://github.com/zhouhoujun/type-mvc/tree/master/packages/simples)
+
+# Build
+
+* `pk build`: build project
+* `pk build [--setvs=version] --deploy`: build project and publish.
+* `pk build --unp=version`: unpublish.
+
 ## License
 
 MIT © [Houjun](https://github.com/zhouhoujun/)

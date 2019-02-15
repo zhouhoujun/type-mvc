@@ -3,10 +3,11 @@ import {
     Type, IContainer, getMethodMetadata,
     isClass, getTypeMetadata, isPromise,
     isUndefined, isString, isObject, isArray,
-    IParameter, Provider, hasClassMetadata, hasMethodMetadata, isBaseType, ParamProviders, lang
+    IParameter, Provider, hasClassMetadata, hasMethodMetadata,
+    isBaseType, ParamProviders, lang, isFunction
 } from '@ts-ioc/core';
 
-import { IContext } from '../IContext';
+import { IContext, ContextToken } from '../IContext';
 import { Next } from '../util';
 import { HttpError, ForbiddenError, UnauthorizedError, NotFoundError, BadRequestError } from '../errors';
 import { IConfiguration, ConfigurationToken } from '../IConfiguration';
@@ -16,6 +17,7 @@ import { Cors, Authorization, Route } from '../decorators';
 import { AuthorizationToken } from '../IAuthorization';
 import { ResultValue } from '../results';
 import { BaseTypeParserToken, InjectModelParserToken, DefaultModelParserToken } from '../model';
+
 
 declare let Buffer: any;
 
@@ -162,7 +164,6 @@ export class ControllerRoute extends BaseRoute {
             }
             if (corsmetas.length) {
                 return corsmetas.find(cor => {
-                    // console.log('find CorsMetadata:', cor);
                     if (!cor.allowMethods) {
                         return true;
                     }
@@ -239,26 +240,28 @@ export class ControllerRoute extends BaseRoute {
                 });
             }
             let body = ctx.request['body'] || {};
-            let providers = params.map((param, idx) => {
+            let providers: ParamProviders[] = params.map((param, idx) => {
                 try {
                     let ptype = param.type;
-                    if (isBaseType(ptype) && param.name) {
-                        let paramVal = restParams[param.name];
-                        if (isUndefined(paramVal)) {
-                            paramVal = ctx.request.query[param.name];
+                    if (isFunction(ptype)) {
+                        if (isBaseType(ptype)) {
+                            let paramVal = restParams[param.name];
+                            if (isUndefined(paramVal)) {
+                                paramVal = ctx.request.query[param.name];
+                            }
+                            let parser = container.get(BaseTypeParserToken);
+                            return Provider.createParam(param.name, parser.parse(ptype, paramVal));
                         }
-                        let parser = container.get(BaseTypeParserToken);
-                        return Provider.createParam(param.name, parser.parse(ptype, paramVal));
-                    } else if (isClass(ptype)) {
-                        if (!container.has(ptype)) {
-                            container.register(ptype);
+                        if (isClass(ptype)) {
+                            if (!container.has(ptype)) {
+                                container.register(ptype);
+                            }
+                            let parser = container.getRefService(InjectModelParserToken, ptype, DefaultModelParserToken);
+                            let val = parser.parseModel(ptype, body);
+                            return Provider.createParam(param.name || ptype, val, idx);
                         }
-                        let parser = container.getRefService(InjectModelParserToken, ptype, DefaultModelParserToken);
-                        let val = parser.parseModel(ptype, body);
-                        return Provider.createParam(param.name || ptype, val, idx);
-                    } else {
-                        return null;
                     }
+                    return null;
                 } catch (err) {
                     throw new BadRequestError(err.toString());
                 }
