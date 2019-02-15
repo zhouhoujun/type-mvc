@@ -1,8 +1,9 @@
-import { ObjectMap, Type, InjectToken } from '@ts-ioc/core';
+import { ObjectMap, Type, InjectToken, Token } from '@ts-ioc/core';
 import { LogConfigure } from '@ts-ioc/logs';
 import { ServerOptions } from 'https';
 import { AppConfigure } from '@ts-ioc/bootstrap';
 import { RequestMethod } from './RequestMethod';
+import { IModelParser } from './model';
 
 
 /**
@@ -43,16 +44,6 @@ export interface IViewOptions {
     map?: ObjectMap<any>;
 }
 
-/**
- * model options
- *
- * @export
- * @interface ModelOptions
- */
-export interface ModelOptions {
-    classMetaname: string;
-    fieldMetaname: string;
-}
 
 /**
  * configuration token.
@@ -69,7 +60,6 @@ export const ConfigurationToken = new InjectToken<IConfiguration>('MVX_Configura
  * @extends {ObjectMap<any>}
  */
 export interface IConfiguration extends AppConfigure {
-
     /**
      * aseert url match regexp.
      *
@@ -113,10 +103,6 @@ export interface IConfiguration extends AppConfigure {
      * @memberof IConfiguration
      */
     port?: number;
-    /**
-     * system file root directory.
-     */
-    rootdir?: string;
     /**
      * session config.
      *
@@ -197,12 +183,12 @@ export interface IConfiguration extends AppConfigure {
      */
     viewsOptions?: IViewOptions;
     /**
-     * model options.
+     * model parser.
      *
      * @type {ModelOptions}
      * @memberof IConfiguration
      */
-    modelOptions?: ModelOptions;
+    modelParser?: Token<IModelParser<any>>;
 
     /**
      * models match. default `['.\/models\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']` in your project..

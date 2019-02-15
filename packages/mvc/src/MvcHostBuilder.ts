@@ -3,11 +3,9 @@ import { IContainer, Token, LoadType, isFunction, isToken } from '@ts-ioc/core';
 import { CustomMiddleware } from './middlewares';
 import { ApplicationEvents, ApplicationBuilder } from '@ts-ioc/bootstrap';
 import { ServerListenerToken } from './IListener';
-import { AppModuleValidate, AppModuleInjector, AppModuleInjectorToken } from './injectors';
 import { IApplication } from './IApplication';
 import { MvcModule } from './MvcModule';
 import { IMvcServer, IMvcHostBuilder, MvcServerToken } from './IMvcServer';
-import { MvcCoreModule } from './CoreModule';
 
 /**
  * load type or middleware.
@@ -31,19 +29,8 @@ export class MvcHostBuilder extends ApplicationBuilder<IMvcServer> implements IM
      */
     constructor(baseURL?: string) {
         super(baseURL)
-        this.use(MvcCoreModule)
-            .use(MvcModule);
+        this.use(MvcModule);
         this.middlewares = [];
-    }
-
-    protected initEvents() {
-        super.initEvents();
-        this.on(ApplicationEvents.onRootContainerCreated, (container: IContainer) => {
-            container.register(AppModuleValidate)
-                .register(AppModuleInjector);
-            let chain = container.getBuilder().getInjectorChain(container);
-            chain.first(container.resolve(AppModuleInjectorToken));
-        });
     }
 
     /**

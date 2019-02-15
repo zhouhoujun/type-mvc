@@ -10,8 +10,9 @@ export class ViewsMiddleware implements IMiddleware {
     }
     setup(app: IApplication) {
         let config = app.getConfig();
-        let viewPath = toAbsolutePath(config.rootdir, config.views);
+        let viewPath = toAbsolutePath(config.baseURL, config.views);
         console.log('view path:', viewPath);
+        // console.log('view options:', config.viewsOptions);
         app.use(views(viewPath, config.viewsOptions));
     }
 

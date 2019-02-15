@@ -17,7 +17,7 @@ export class ContentMiddleware implements IMiddleware {
         let config = app.getConfig();
         let contents = config.contents || ['./public'];
         contents.forEach((content, idx) => {
-            let staticPath = toAbsolutePath(config.rootdir, content);
+            let staticPath = toAbsolutePath(config.baseURL, content);
             console.log(`content path ${idx + 1}:`, staticPath);
             app.use(serve(staticPath));
         })

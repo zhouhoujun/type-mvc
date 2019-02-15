@@ -7,7 +7,7 @@ import { ServerModule } from '@ts-ioc/platform-server';
 import { ServerBootstrapModule } from '@ts-ioc/platform-server-bootstrap';
 import { ServerLogsModule } from '@ts-ioc/platform-server-logs';
 import { KoaServer } from './KoaServer';
-import { MvcConfigureRegister } from './MvcConfigureRegister';
+import { KoaConfigureRegister} from './MvcConfigureRegister';
 
 @DIModule({
     imports: [
@@ -15,20 +15,19 @@ import { MvcConfigureRegister } from './MvcConfigureRegister';
         ServerBootstrapModule,
         ServerLogsModule,
         KoaServer,
-        MvcConfigureRegister,
         BodyParserMiddleware,
         ContentMiddleware,
         ContextMiddleware,
         JsonMiddleware,
         LogMiddleware,
         SessionMiddleware,
-        ViewsMiddleware
+        ViewsMiddleware,
+        KoaConfigureRegister
     ],
     exports: [
         ServerModule,
         ServerBootstrapModule,
         ServerLogsModule,
-        MvcConfigureRegister,
         KoaServer,
         BodyParserMiddleware,
         ContentMiddleware,
@@ -36,7 +35,8 @@ import { MvcConfigureRegister } from './MvcConfigureRegister';
         JsonMiddleware,
         LogMiddleware,
         SessionMiddleware,
-        ViewsMiddleware
+        ViewsMiddleware,
+        KoaConfigureRegister
     ]
 })
 export class KoaModule {

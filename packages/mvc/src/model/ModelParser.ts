@@ -1,6 +1,6 @@
 import {
     Type, getPropertyMetadata, PropertyMetadata, isUndefined, IContainer,
-    Inject, isClass, ObjectMap, ContainerToken, Injectable, isBaseType, isArray
+    Inject, isClass, ObjectMap, ContainerToken, Injectable, isBaseType, isArray, lang
 } from '@ts-ioc/core';
 import { Model, Field } from '../decorators';
 import { ConfigurationToken, IConfiguration } from '../IConfiguration';
@@ -20,6 +20,10 @@ export class ModelParser {
     }
 
     parseModel(type: Type<any>, objMap: any): any {
+        if (isBaseType(type)) {
+            let parser = this.container.get(BaseTypeParserToken)
+            return parser.parse(type, objMap);
+        }
         let meta = this.getPropertyMeta(type);
         let result = this.container.get(type);
         for (let n in meta) {
@@ -32,8 +36,12 @@ export class ModelParser {
                     if (isBaseType(propmeta.type)) {
                         let parser = this.container.get(BaseTypeParserToken)
                         parmVal = parser.parse(propmeta.type, reqval);
-                    } else if (isArray(reqval)) {
-                        propmeta
+                    } else if (lang.isExtendsClass(propmeta.type, Array)) {
+                        if (isArray(reqval)) {
+                            parmVal = reqval.map(v => this.parseModel(lang.getClass(v), v));
+                        } else {
+                            parmVal = [];
+                        }
                     } else if (isClass(propmeta.type)) {
                         parmVal = this.parseModel(propmeta.type, reqval);
                     }

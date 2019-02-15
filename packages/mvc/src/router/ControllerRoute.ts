@@ -242,13 +242,13 @@ export class ControllerRoute extends BaseRoute {
             let providers = params.map((param, idx) => {
                 try {
                     let ptype = param.type;
-                    if (isBaseType(ptype)) {
+                    if (isBaseType(ptype) && param.name) {
                         let paramVal = restParams[param.name];
                         if (isUndefined(paramVal)) {
                             paramVal = ctx.request.query[param.name];
                         }
                         let parser = container.get(BaseTypeParserToken);
-                        return parser.parse(ptype, paramVal);
+                        return Provider.createParam(param.name, parser.parse(ptype, paramVal));
                     } else if (isClass(ptype)) {
                         if (!container.has(ptype)) {
                             container.register(ptype);

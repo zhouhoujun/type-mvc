@@ -57,9 +57,7 @@ let iocVersion = (ctx: INodeActivityContext) => {
         let contents: string = file.contents.toString('utf8');
         if (envArgs['setvs']) {
             let json = JSON.parse(contents);
-            let replaced = inplace(contents)
-                .set('version', version);
-
+            let replaced = inplace(contents);
             Object.keys(json.peerDependencies || {}).forEach(key => {
                 if (/^@ts-ioc/.test(key)) {
                     replaced.set('peerDependencies.' + key, '^' + version);
@@ -110,7 +108,7 @@ let iocVersion = (ctx: INodeActivityContext) => {
         {
             execute: (ctx: INodeActivityContext) => {
                 let envArgs = ctx.getEnvArgs();
-                let packages = ctx.getFolders('packages').filter(f => !/simples/.test(f)); // (f => !/(annotations|aop|bootstrap)/.test(f));
+                let packages = ctx.getFolders('packages').filter(f => !/(simples|orm)/.test(f)); // (f => !/(annotations|aop|bootstrap)/.test(f));
 
                 let activities = [];
                 if (!(envArgs.b === false || envArgs.b === 'false')) {

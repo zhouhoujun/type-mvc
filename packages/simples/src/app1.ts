@@ -1,11 +1,11 @@
-import { MvcHostBuilder, App, MvcServerToken } from '@mvx/mvc';
+import { MvcHostBuilder, MvcServerToken } from '@mvx/mvc';
 // import { PlatformServer } from '@ts-ioc/platform-server';
 import { KoaModule } from '@mvx/koa';
 import { Bootstrap } from '@ts-ioc/bootstrap';
 
 @Bootstrap({
     baseURL: __dirname,
-    globals: [
+    imports: [
         KoaModule
     ],
     builder: MvcHostBuilder,
@@ -18,6 +18,3 @@ class MvcApi {
     }
 }
 
-// MvcHostBuilder.create(__dirname)
-//     .useConfiguration()
-//     .run(MvcApi);

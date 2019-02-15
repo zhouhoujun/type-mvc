@@ -25,7 +25,7 @@ export class FileResult extends ResultValue {
         let contentType = this.contentType;
         let confige = container.get(ConfigurationToken);
         if (isString(file)) {
-            let filepath = join(confige.rootdir, file);
+            let filepath = join(confige.baseURL, file);
             if (existsSync(filepath)) {
                 readFile(filepath, contentType || 'utf8', (err, data) => {
                     if (err) {

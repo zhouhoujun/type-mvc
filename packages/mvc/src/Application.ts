@@ -1,5 +1,5 @@
-import { IContainer, Inject, ContainerToken, lang, Type, isClass, hasOwnClassMetadata, Injectable } from '@ts-ioc/core';
-import { IConfiguration } from './IConfiguration';
+import { IContainer, Inject, ContainerToken, lang, Type, isClass, hasOwnClassMetadata, Injectable, ResoveWay } from '@ts-ioc/core';
+import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
 import { IApplication, ApplicationToken } from './IApplication';
 import { IMvcServer, IMvcHostBuilder } from './IMvcServer';
@@ -49,6 +49,7 @@ export class Application extends Boot<IMvcServer> implements IApplication {
         this.configMgr = options.configManager;
         let gcfg = await this.configMgr.getConfig();
         this.config = lang.assign(gcfg, this.config);
+        this.container.bindProvider(ConfigurationToken, this.config);
         this.getServer().init(this.config);
         this.router = this.container.resolve(Router);
         this.router.setRoot(this.config.routePrefix);
@@ -60,8 +61,10 @@ export class Application extends Boot<IMvcServer> implements IApplication {
                 if (isClass(tk)) {
                     if (hasOwnClassMetadata(Controller, tk)) {
                         this.controllers.push(tk);
+                        this.container.bindProvider(tk, fac);
                     } else if (hasOwnClassMetadata(Middleware, tk)) {
                         this.middlewares.push(tk);
+                        this.container.bindProvider(tk, fac);
                     }
                 }
             })

@@ -12,4 +12,3 @@ export * from './Authorization';
 export * from './Model';
 export * from './Field';
 export * from './Middleware';
-export * from './App';
