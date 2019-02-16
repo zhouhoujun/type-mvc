@@ -39,14 +39,15 @@ export class Application extends Boot<IMvcServer> implements IApplication {
 
     private configMgr: IConfigureManager<IConfiguration>;
 
-    constructor(@Inject(RunnableOptionsToken) options: RunnableOptions<IMvcServer>) {
-        super(options);
+    constructor() {
+        super();
         this.controllers = [];
         this.middlewares = [];
     }
 
-    async onInit(options: RunOptions<IMvcServer>) {
-        this.configMgr = options.configManager;
+    async onInit(options: RunnableOptions<IMvcServer>, bootOptions: RunOptions<IMvcServer>) {
+        await super.onInit(options, bootOptions);
+        this.configMgr = bootOptions.configManager;
         let gcfg = await this.configMgr.getConfig();
         this.config = lang.assign(gcfg, this.config);
         this.container.bindProvider(ConfigurationToken, this.config);
@@ -54,7 +55,7 @@ export class Application extends Boot<IMvcServer> implements IApplication {
         this.router = this.container.resolve(Router);
         this.router.setRoot(this.config.routePrefix);
 
-        this.builder = options.bootBuilder as IMvcHostBuilder;
+        this.builder = bootOptions.bootBuilder as IMvcHostBuilder;
 
         this.builder.getPools().iterator(c => {
             c.forEach((tk, fac) => {
