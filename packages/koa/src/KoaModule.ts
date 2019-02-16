@@ -7,7 +7,7 @@ import { ServerModule } from '@ts-ioc/platform-server';
 import { ServerBootstrapModule } from '@ts-ioc/platform-server-bootstrap';
 import { ServerLogsModule } from '@ts-ioc/platform-server-logs';
 import { KoaServer } from './KoaServer';
-import { KoaConfigureRegister} from './MvcConfigureRegister';
+import { KoaConfigureRegister} from './KoaConfigureRegister';
 
 @DIModule({
     imports: [

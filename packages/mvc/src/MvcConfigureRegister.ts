@@ -13,7 +13,6 @@ export class MvcConfigureRegister extends ConfigureRegister<IConfiguration> {
         if (config.debug) {
             this.container.register(DebugLogAspect);
         }
-
         if (isToken(config.modelParser)) {
             if (isClass(config.modelParser) && !this.container.has(config.modelParser)) {
                 this.container.register(config.modelParser);

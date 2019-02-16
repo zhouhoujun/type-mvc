@@ -9,7 +9,6 @@ export class KoaConfigureRegister extends ConfigureRegister<IConfiguration> {
         super();
     }
     async register(config: IConfiguration): Promise<void> {
-
         if (config.controllers) {
             await this.container.loadModule({ files: config.controllers, basePath: config.baseURL });
         }
