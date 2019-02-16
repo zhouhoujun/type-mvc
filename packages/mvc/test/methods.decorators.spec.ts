@@ -68,6 +68,7 @@ export class ControllerTest {
         expect(this.app.getConfig().port).toEqual(3000);
     }
 
+
     @After()
     destory() {
         this.app.stop();
