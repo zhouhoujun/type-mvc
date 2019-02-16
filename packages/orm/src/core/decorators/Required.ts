@@ -1,6 +1,6 @@
-import { IFiledDecorator, createFieldDecorator } from './Field';
+import { createFieldDecorator } from './Field';
 import { FieldMetadata } from '../metadata/index';
-import { IPropertyDecorator, isNumber } from '@ts-ioc/core';
+import { IPropertyDecorator } from '@ts-ioc/core';
 
 
 export interface IRequiredDecorator<T extends FieldMetadata> extends IPropertyDecorator<T> {

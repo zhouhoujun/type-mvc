@@ -1,4 +1,7 @@
-import { isString, TypeMetadata, IClassMethodDecorator, MetadataAdapter, MetadataExtends, createClassDecorator, IClassDecorator } from '@ts-ioc/core';
+import {
+    isString, TypeMetadata, IClassMethodDecorator, MetadataAdapter,
+    MetadataExtends, createClassDecorator, IClassDecorator
+} from '@ts-ioc/core';
 import { ModelMetadata } from '../metadata/index';
 
 
@@ -41,7 +44,7 @@ export function createModelDecorator<T extends ModelMetadata>(
         },
         metadata => {
             if (metaExtends) {
-                metadata = metaExtends(metadata as T);
+                metaExtends(metadata as T);
             }
             metadata.modelType = modelType;
             return metadata;
