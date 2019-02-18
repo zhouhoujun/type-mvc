@@ -13,8 +13,8 @@ import { Workflow } from '@ts-ioc/activities';
 export class KoaBuilder {
 }
 
-// if (process.cwd() === __dirname) {
-//     Workflow.create()
-//         .use(PackModule)
-//         .bootstrap(KoaBuilder);
-// }
+if (process.cwd() === __dirname) {
+    Workflow.create()
+        .use(PackModule)
+        .bootstrap(KoaBuilder);
+}
