@@ -1,5 +1,5 @@
-import { PackModule, isPackClass } from '@ts-ioc/pack';
-import { Workflow, SequenceActivityToken, IfActivityToken, ExecuteToken } from '@ts-ioc/activities';
+import { isPackClass } from '@ts-ioc/pack';
+import { SequenceActivityToken, IfActivityToken, ExecuteToken } from '@ts-ioc/activities';
 const inplace = require('json-in-place');
 import * as through from 'through2';
 import * as path from 'path';
@@ -160,9 +160,4 @@ let iocVersion = (ctx: INodeActivityContext) => {
 })
 export class BuilderMVC {
 }
-
-
-Workflow.create()
-    .use(PackModule)
-    .bootstrap(BuilderMVC);
 
