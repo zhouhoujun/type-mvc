@@ -112,7 +112,7 @@ let iocVersion = (ctx: INodeActivityContext) => {
         {
             execute: (ctx: INodeActivityContext) => {
                 let envArgs = ctx.getEnvArgs();
-                let packages = ctx.getFolders('packages').filter(f => !/(simples|orm|cli)/.test(f)); // (f => !/(annotations|aop|bootstrap)/.test(f));
+                let packages = ctx.getFolders('packages').filter(f => !/(simples|orm|cli|model)/.test(f)); // (f => !/(annotations|aop|bootstrap)/.test(f));
 
                 let activities = [];
                 if (isString(envArgs.unp) && /\d+.\d+.\d+/.test(envArgs.unp)) {

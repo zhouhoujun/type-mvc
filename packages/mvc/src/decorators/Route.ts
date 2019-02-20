@@ -38,7 +38,7 @@ export function createRouteDecorator<T extends RouteMetadata>(
                 adapter(args);
             }
             args.next<RouteMetadata>({
-                isMetadata: (arg) => isClassMetadata(arg, ['route', 'method']),
+                isMetadata: (arg) => isClassMetadata(arg, 'route', 'method'),
                 match: (arg) => isString(arg),
                 setMetadata: (metadata, arg) => {
                     metadata.route = arg;
