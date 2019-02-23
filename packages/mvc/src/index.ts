@@ -3,7 +3,6 @@ export * from './decorators';
 export * from './errors';
 export * from './metadata';
 export * from './middlewares';
-export * from './model';
 export * from './results';
 export * from './router';
 export * from './util';

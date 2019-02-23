@@ -2,7 +2,7 @@ import { ConfigureRegister } from '@ts-ioc/bootstrap';
 import { DebugLogAspect } from '@ts-ioc/logs';
 import { Singleton, isToken, isClass } from '@ts-ioc/core';
 import { IConfiguration } from './IConfiguration';
-import { DefaultModelParserToken } from './model';
+import { DefaultModelParserToken } from '@mvx/model';
 
 @Singleton
 export class MvcConfigureRegister extends ConfigureRegister<IConfiguration> {

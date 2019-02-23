@@ -3,7 +3,7 @@ import { LogConfigure } from '@ts-ioc/logs';
 import { ServerOptions } from 'https';
 import { AppConfigure } from '@ts-ioc/bootstrap';
 import { RequestMethod } from './RequestMethod';
-import { IModelParser } from './model';
+import { IModelParser } from '@mvx/model';
 
 
 /**

@@ -7,7 +7,7 @@ import {
     isBaseType, ParamProviders, lang, isFunction
 } from '@ts-ioc/core';
 
-import { IContext, ContextToken } from '../IContext';
+import { IContext } from '../IContext';
 import { Next } from '../util';
 import { HttpError, ForbiddenError, UnauthorizedError, NotFoundError, BadRequestError } from '../errors';
 import { IConfiguration, ConfigurationToken } from '../IConfiguration';
@@ -16,7 +16,7 @@ import { CorsMetadata, RouteMetadata } from '../metadata';
 import { Cors, Authorization, Route } from '../decorators';
 import { AuthorizationToken } from '../IAuthorization';
 import { ResultValue } from '../results';
-import { BaseTypeParserToken, InjectModelParserToken, DefaultModelParserToken } from '../model';
+import { BaseTypeParserToken, InjectModelParserToken, DefaultModelParserToken } from '@mvx/model';
 
 
 declare let Buffer: any;

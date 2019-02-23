@@ -1,7 +1,7 @@
 import { IConfiguration } from './IConfiguration';
-import { IContainer, Token, LoadType, isFunction, isToken } from '@ts-ioc/core';
+import { Token, LoadType, isFunction, isToken } from '@ts-ioc/core';
 import { CustomMiddleware } from './middlewares';
-import { ApplicationEvents, ApplicationBuilder } from '@ts-ioc/bootstrap';
+import { ApplicationBuilder } from '@ts-ioc/bootstrap';
 import { ServerListenerToken } from './IListener';
 import { IApplication } from './IApplication';
 import { MvcModule } from './MvcModule';

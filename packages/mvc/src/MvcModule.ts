@@ -1,7 +1,6 @@
 import { DIModule, DefaultConfigureToken } from '@ts-ioc/bootstrap';
 import { AopModule } from '@ts-ioc/aop';
 import { LogModule } from '@ts-ioc/logs';
-import * as modles from './model';
 import * as middlewares from './middlewares';
 import * as routers from './router';
 import { Application } from './Application';
@@ -9,6 +8,7 @@ import { BootModule } from '@ts-ioc/bootstrap';
 
 import { MvcConfigureRegister } from './MvcConfigureRegister';
 import { MvcCoreModule } from './CoreModule';
+import { ModelModule } from '@mvx/model';
 
 @DIModule({
     asRoot: true,
@@ -20,7 +20,8 @@ import { MvcCoreModule } from './CoreModule';
         Application,
         routers,
         middlewares,
-        modles,
+        ModelModule,
+        // modles,
         MvcConfigureRegister
     ],
     providers: [

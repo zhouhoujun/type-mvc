@@ -1,5 +1,5 @@
 {
-  "name": "type-mvc",
+  "name": "@mvx/orm",
   "version": "2.1.2",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",

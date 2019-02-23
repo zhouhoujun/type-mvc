@@ -15,10 +15,7 @@ import { BaseTypeParserToken } from './IBaseTypeParser';
 @Injectable(DefaultModelParserToken)
 export class ModelParser {
 
-    @Inject(ContainerToken)
-    protected container: IContainer;
-
-    constructor() {
+    constructor(@Inject(ContainerToken) private container: IContainer) {
     }
 
     parseModel(type: Type<any>, objMap: any): any {

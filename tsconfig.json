@@ -4,6 +4,9 @@
         "importHelpers": true,
         "baseUrl": ".",
         "paths": {
+            "@mvx/model": [
+                "packages/model/src"
+            ],
             "@mvx/mvc": [
                 "packages/mvc/src"
             ],
