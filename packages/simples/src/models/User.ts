@@ -1,4 +1,4 @@
-import { Model, Field } from '@mvx/mvc';
+import { Model, Field } from '@mvx/model';
 
 
 @Model
