@@ -5,10 +5,10 @@ import * as middlewares from './middlewares';
 import * as routers from './router';
 import { Application } from './Application';
 import { BootModule } from '@ts-ioc/bootstrap';
-
+import { ModelModule } from '@mvx/model';
 import { MvcConfigureRegister } from './MvcConfigureRegister';
 import { MvcCoreModule } from './CoreModule';
-import { ModelModule } from '@mvx/model';
+
 
 @DIModule({
     asRoot: true,
@@ -21,7 +21,6 @@ import { ModelModule } from '@mvx/model';
         routers,
         middlewares,
         ModelModule,
-        // modles,
         MvcConfigureRegister
     ],
     providers: [

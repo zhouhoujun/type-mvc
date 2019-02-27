@@ -1,10 +1,10 @@
-import { IContainer, Inject, ContainerToken, lang, Type, isClass, hasOwnClassMetadata, Injectable, ResoveWay } from '@ts-ioc/core';
+import { IContainer, Inject, ContainerToken, lang, Type, isClass, hasOwnClassMetadata, Injectable } from '@ts-ioc/core';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
 import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
 import { IApplication, ApplicationToken } from './IApplication';
 import { IMvcServer, IMvcHostBuilder } from './IMvcServer';
 import { MiddlewareChainToken, IMiddlewareChain, CustomMiddleware, MiddlewareType } from './middlewares';
-import { Boot, RunOptions, IConfigureManager, RunnableOptions, RunnableOptionsToken, DefaultConfigureToken } from '@ts-ioc/bootstrap';
+import { Boot, RunOptions, IConfigureManager, RunnableOptions } from '@ts-ioc/bootstrap';
 import { Controller, Middleware } from './decorators';
 import { IRouter, Router } from './router';
 
@@ -50,7 +50,6 @@ export class Application extends Boot<IMvcServer> implements IApplication {
         this.configMgr = bootOptions.configManager;
         let gcfg = await this.configMgr.getConfig();
         this.config = lang.assign(this.config || {}, gcfg, this.config);
-        console.log('onInit:', gcfg, this.container.getRoot().hasRegister(DefaultConfigureToken));
         this.container.bindProvider(ConfigurationToken, this.config);
         this.getServer().init(this.config);
         this.router = this.container.resolve(Router);
