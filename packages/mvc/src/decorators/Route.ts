@@ -1,4 +1,7 @@
-import { createMethodDecorator, IMethodDecorator, MetadataExtends, isClassMetadata, MetadataAdapter, isString, isNumber } from '@tsdi/ioc';
+import {
+    createMethodDecorator, IMethodDecorator, MetadataExtends,
+    isClassMetadata, MetadataAdapter, isString, isNumber
+} from '@tsdi/ioc';
 import { RequestMethod } from '../RequestMethod';
 import { RouteMetadata } from '../metadata';
 

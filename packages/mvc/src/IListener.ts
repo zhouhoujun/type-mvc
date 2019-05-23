@@ -1,4 +1,4 @@
-import { InjectToken } from '@tsdi/core';
+import { InjectToken } from '@tsdi/ioc';
 
 /**
  * custom server listener

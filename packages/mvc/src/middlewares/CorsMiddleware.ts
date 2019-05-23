@@ -1,23 +1,16 @@
 import { Middleware } from '../decorators';
-import { IMiddleware, Middlewares } from './IMiddleware';
-import { IApplication } from '../IApplication';
+import { Middlewares } from '../IMiddleware';
+import { MvcMiddleware } from './MvcMiddleware';
+import { IContext } from '../IContext';
 
 
 
 @Middleware(Middlewares.Cors)
-export class CorsMiddleware implements IMiddleware {
+export class CorsMiddleware extends MvcMiddleware {
 
-    constructor() {
-
+    async execute(ctx: IContext, next: () => Promise<void>) {
+        if ((!ctx.status || ctx.status === 404) && app.getConfig().isRouteUrl(ctx.url)) {
+            return app.getRouter().getRoot().options(app.container, ctx, next);
+        }
     }
-
-    setup(app: IApplication) {
-
-        app.use(async (ctx, next) => {
-            if ((!ctx.status || ctx.status === 404) && app.getConfig().isRouteUrl(ctx.url)) {
-                return app.getRouter().getRoot().options(app.container, ctx, next);
-            }
-        });
-    }
-
 }

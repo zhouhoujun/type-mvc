@@ -1,4 +1,4 @@
-export * from './IMiddleware';
-export * from './MiddlewareChain';
+export * from './MvcMiddleware';
+// export * from './MiddlewareChain';
 export * from './CorsMiddleware';
 export * from './RouterMiddleware';

@@ -8,7 +8,6 @@ import {
 } from '@tsdi/ioc';
 
 import { IContext } from '../IContext';
-import { Next } from '../util';
 import { HttpError, ForbiddenError, UnauthorizedError, NotFoundError, BadRequestError } from '../errors';
 import { IConfiguration, ConfigurationToken } from '../IConfiguration';
 import { methodToString, parseRequestMethod, RequestMethod } from '../RequestMethod';
@@ -41,7 +40,7 @@ export class ControllerRoute extends BaseRoute {
         super(route);
     }
 
-    async options(container: IContainer, ctx: IContext, next: Next): Promise<any> {
+    async options(container: IContainer, ctx: IContext, next: () => Promise<void>): Promise<any> {
         try {
             await this.invokeOption(ctx, container, next);
         } catch (err) {
@@ -55,7 +54,7 @@ export class ControllerRoute extends BaseRoute {
         }
     }
 
-    async navigating(container: IContainer, ctx: IContext, next: Next): Promise<any> {
+    async navigating(container: IContainer, ctx: IContext, next: () => Promise<void>): Promise<any> {
         try {
             if (ctx.method !== 'OPTIONS') {
                 await this.invoke(ctx, container);
@@ -75,7 +74,7 @@ export class ControllerRoute extends BaseRoute {
 
     }
 
-    async invokeOption(ctx: IContext, container: IContainer, next: Next) {
+    async invokeOption(ctx: IContext, container: IContainer, next: () => Promise<void>) {
         let requestOrigin = ctx.get('Origin');
         ctx.vary('Origin');
         if (!requestOrigin) {

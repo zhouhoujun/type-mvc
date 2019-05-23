@@ -1,4 +1,4 @@
-import { DIModule, DefaultConfigureToken } from '@tsdi/boot';
+import { DIModule, DefaultConfigureToken, RegScope } from '@tsdi/boot';
 import { AopModule } from '@tsdi/aop';
 import { LogModule } from '@tsdi/logs';
 import * as middlewares from './middlewares';
@@ -9,6 +9,7 @@ import { MvcCoreModule } from './CoreModule';
 
 
 @DIModule({
+    regScope: RegScope.boot,
     imports: [
         MvcCoreModule,
         AopModule,

@@ -1,5 +1,6 @@
-import { InjectToken } from '@tsdi/ioc';
+import { InjectToken, Type } from '@tsdi/ioc';
 import { IConfiguration } from './IConfiguration';
+import { ILogger } from '@tsdi/logs';
 
 
 /**
@@ -9,6 +10,31 @@ import { IConfiguration } from './IConfiguration';
  * @interface IServer
  */
 export interface IMvcServer {
+
+    /**
+     * get all merged config.
+     *
+     * @returns {IConfiguration}
+     * @memberof IApplication
+     */
+    getConfig(): IConfiguration;
+
+    /**
+     * get all registered controllers.
+     *
+     * @returns {Type<any>[]}
+     * @memberof IApplication
+     */
+    getControllers(): Type<any>[];
+
+    /**
+     * get all registered middlewares
+     *
+     * @returns {Type<any>[]}
+     * @memberof IApplication
+     */
+    getMiddlewares(): Type<any>[];
+
     /**
      * init server with configure.
      *
@@ -40,6 +66,15 @@ export interface IMvcServer {
      * @memberof IMvcServer
      */
     getHttpServer(): any;
+
+    /**
+     * get default logger.
+     *
+     * @param {string} [name]
+     * @returns {ILogger}
+     * @memberof IApplication
+     */
+    getLogger(name?: string): ILogger;
 
     /**
      * start server.

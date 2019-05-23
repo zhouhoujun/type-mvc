@@ -1,7 +1,6 @@
 import { Token } from '@tsdi/ioc';
-import { IContext } from '../IContext';
-import { IApplication } from '../IApplication';
-import { Next } from '../util';
+import { IContext } from './IContext';
+// import { IHandle } from '@tsdi/boot';
 
 
 
@@ -10,20 +9,23 @@ import { Next } from '../util';
  * @export
  * @interface IMiddleware
  */
-export interface IMiddleware {
+export interface IMiddleware { // extends IHandle {
     /**
-     * setup middleware.
-     *
-     * @memberof IMiddleware
-     */
-    setup(app: IApplication);
+        * execute handle.
+        *
+        * @param {T} ctx
+        * @param {() => Promise<void>} next
+        * @returns {Promise<void>}
+        * @memberof IHandle
+        */
+    execute(ctx: IContext, next: () => Promise<void>): Promise<void>
 }
 
 
 /**
  * custom middleware.
  */
-export type CustomMiddleware = (context: IContext, next: Next) => any | Function;
+export type CustomMiddleware = (context: IContext,  next: () => Promise<void>) => any | Function;
 
 /**
  * middleware type.

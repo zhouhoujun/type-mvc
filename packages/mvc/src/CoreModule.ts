@@ -1,19 +1,24 @@
 import { IocExt, ContainerToken, IContainer } from '@tsdi/core';
 import { Controller, Authorization, Middleware } from './decorators';
-import { Inject } from '@tsdi/ioc';
+import { Inject, DecoratorScopes, RuntimeDecoratorRegisterer, DesignDecoratorRegisterer, BindProviderAction, BindMethodProviderAction } from '@tsdi/ioc';
+import { MvcContext } from './MvcContext';
 
 
 @IocExt('setup')
 export class MvcCoreModule {
 
-    constructor(@Inject(ContainerToken) private container: IContainer) {
+    constructor() {
 
     }
 
-    setup() {
-        let lifeScope = this.container.getLifeScope();
-        lifeScope.registerDecorator(Controller, LifeState.onInit, CoreActions.bindProvider);
-        lifeScope.registerDecorator(Authorization, LifeState.onInit, CoreActions.bindProvider);
-        lifeScope.registerDecorator(Middleware, LifeState.onInit, CoreActions.bindProvider);
+    setup(@Inject(ContainerToken) container: IContainer) {
+        container.register(MvcContext);
+        let dreger = container.get(DesignDecoratorRegisterer);
+        dreger.register(Controller, DecoratorScopes.Class, BindProviderAction)
+            .register(Authorization, DecoratorScopes.Class, BindProviderAction)
+            .register(Middleware, DecoratorScopes.Class, BindProviderAction);
+
+        let runtimeRgr = container.get(RuntimeDecoratorRegisterer);
+        runtimeRgr.register(Authorization, DecoratorScopes.Method, BindMethodProviderAction);
     }
 }

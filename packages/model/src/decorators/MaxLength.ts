@@ -1,6 +1,6 @@
 import { IFiledDecorator, createFieldDecorator } from './Field';
 import { MaxLengthMetadata } from '../metadata/index';
-import { IPropertyDecorator, isNumber, isString } from '@tsdi/core';
+import { IPropertyDecorator, isNumber, isString } from '@tsdi/ioc';
 
 
 export interface IMaxLengthDecorator<T extends MaxLengthMetadata> extends IPropertyDecorator<T> {

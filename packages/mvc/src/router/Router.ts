@@ -1,32 +1,28 @@
-import { Token, Injectable } from '@tsdi/ioc';
-import { IRouter } from './IRouter';
-import { IRoute } from './IRoute';
-import { RouteBuilder } from './RouteBuilder';
-import { RootRoute } from './RootRoute';
+import { Component, AfterInit, HandleType } from '@tsdi/boot';
+import { Route } from './Route';
+import { CompositeMiddleware } from '../middlewares';
+import { IContext } from '../IContext';
 
+@Component
+export class Router extends CompositeMiddleware {
 
-@Injectable
-export class Router implements IRouter {
-
-    private root: IRoute;
-
-    constructor(private builder: RouteBuilder) {
-
+    async execute(ctx: IContext, next?: () => Promise<void>): Promise<void> {
+        if ((!ctx.status || ctx.status === 404) && this.isRouteUrl(ctx.url)) {
+            await super.execute(ctx, next);
+        } else {
+            await next();
+        }
     }
 
-    setRoot(routePrefix = '') {
-        this.root = new RootRoute(routePrefix);
+    private assertUrlRegExp = /\/((\w|%|\.))+\.\w+$/;
+    isRouteUrl(ctxUrl: string): boolean {
+        return !this.assertUrlRegExp.test(ctxUrl);
+        // if (flag && this.routeUrlRegExp) {
+        //     return this.routeUrlRegExp.test(ctxUrl);
+        // }
     }
 
-    getRoot(): IRoute {
-        return this.root;
-    }
-
-    routes(map: IRoute) {
-        this.root.add(map);
-    }
-
-    register(...controllers: Token<any>[]) {
-        this.builder.build(this, ...controllers);
+    routes(route: string, handle: HandleType<IContext>) {
+     
     }
 }

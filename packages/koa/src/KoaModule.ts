@@ -4,7 +4,7 @@ import {
 } from './middlewares';
 import { DIModule } from '@tsdi/boot';
 import { ServerModule } from '@tsdi/platform-server';
-import { ServerBootstrapModule } from '@tsdi/platform-server-bootstrap';
+import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
 import { ServerLogsModule } from '@tsdi/platform-server-logs';
 import { KoaServer } from './KoaServer';
 import { KoaConfigureRegister} from './KoaConfigureRegister';

@@ -1,4 +1,4 @@
-import { ClassMetadata } from '@tsdi/core';
+import { ClassMetadata } from '@tsdi/ioc';
 
 /**
  * model metadata.

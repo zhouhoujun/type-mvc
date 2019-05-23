@@ -5,7 +5,9 @@ export * from './metadata';
 export * from './middlewares';
 export * from './results';
 export * from './router';
-export * from './util';
+
+export * from './IContext';
+export * from './IMiddleware';
 
 export * from './IConfiguration';
 export * from './IAuthorization';
@@ -15,9 +17,7 @@ export * from './IContext';
 export * from './IMvcServer';
 export * from './IListener';
 export * from './MvcServer';
-export * from './IApplication';
-export * from './Application';
 export * from './BaseController';
 export * from './MvcModule';
-export * from './MvcHostBuilder';
+export * from './MvcApplication';
 

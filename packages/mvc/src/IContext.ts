@@ -1,17 +1,22 @@
-import { ObjectMap, InjectToken } from '@tsdi/ioc'
+import { ObjectMap } from '@tsdi/ioc'
+import { MvcContext } from './MvcContext';
+import { IHandleContext } from '@tsdi/boot';
 
 /**
- * context token.
- */
-export const ContextToken = new InjectToken<IContext>('MVX_IContext');
-
-/**
- * mvc IContext.
+ * middleware context.
  * @export
  * @interface IContext
  * @extends {Context}
  */
-export interface IContext extends ObjectMap<any> {
+export interface IContext extends ObjectMap<any>, IHandleContext {
+
+    /**
+     * mvc context.
+     *
+     * @type {MvcContext}
+     * @memberof IContext
+     */
+    readonly mvcContext: MvcContext;
 
 }
 
