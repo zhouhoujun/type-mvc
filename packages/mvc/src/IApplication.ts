@@ -1,8 +1,8 @@
-import { Type } from '@ts-ioc/core';
+import { Type } from '@tsdi/core';
 import { IConfiguration } from './IConfiguration';
-import { ILoggerManager, ILogger } from '@ts-ioc/logs';
+import { ILoggerManager, ILogger } from '@tsdi/logs';
 import { IMiddlewareChain } from './middlewares/MiddlewareChain';
-import { IBoot, IConfigureManager, InjectRunnableToken } from '@ts-ioc/bootstrap';
+import { IBoot, IConfigureManager, InjectRunnableToken } from '@tsdi/boot';
 import { IMvcServer, MvcServerToken, IMvcHostBuilder } from './IMvcServer';
 import { IRouter } from './router';
 import { CustomMiddleware } from './middlewares';

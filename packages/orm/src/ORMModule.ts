@@ -1,4 +1,4 @@
-import { DIModule } from '@ts-ioc/bootstrap';
+import { DIModule } from '@tsdi/boot';
 import { ModelModule } from '@mvx/model';
 
 @DIModule({

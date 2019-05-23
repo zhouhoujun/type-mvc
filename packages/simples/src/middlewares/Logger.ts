@@ -1,6 +1,6 @@
-import { NonePointcut } from '@ts-ioc/aop';
+import { NonePointcut } from '@tsdi/aop';
 import { Middleware, IMiddleware, IConfiguration, ConfigurationToken, ApplicationToken, IApplication } from '@mvx/mvc';
-import { IContainer, Injectable, Inject } from '@ts-ioc/core';
+import { IContainer, Injectable, Inject } from '@tsdi/core';
 
 
 @NonePointcut

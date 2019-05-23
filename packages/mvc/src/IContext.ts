@@ -1,4 +1,4 @@
-import { ObjectMap, InjectToken } from '@ts-ioc/core'
+import { ObjectMap, InjectToken } from '@tsdi/ioc'
 
 /**
  * context token.

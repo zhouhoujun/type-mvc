@@ -21,7 +21,7 @@
     "framework",
     "cli",
     "ts-ioc",
-    "@ts-ioc",
+    "@tsdi",
     "tsioc",
     "IoC",
     "AOP",

@@ -1,4 +1,4 @@
-import { Token, Injectable } from '@ts-ioc/core';
+import { Token, Injectable } from '@tsdi/ioc';
 import { IRouter } from './IRouter';
 import { IRoute } from './IRoute';
 import { RouteBuilder } from './RouteBuilder';

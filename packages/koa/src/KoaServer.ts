@@ -2,7 +2,7 @@ import { MvcServer, MvcServerToken, IConfiguration, ServerListenerToken } from '
 import * as Koa from 'koa';
 import * as http from 'http';
 import * as https from 'https';
-import { Injectable, isFunction, lang } from '@ts-ioc/core';
+import { Injectable, isFunction, lang } from '@tsdi/core';
 
 @Injectable(MvcServerToken)
 export class KoaServer extends MvcServer {

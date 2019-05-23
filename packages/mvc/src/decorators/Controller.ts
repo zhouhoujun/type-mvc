@@ -1,4 +1,4 @@
-import { createClassDecorator, ITypeDecorator, isString, Registration, ArgsIterator } from '@ts-ioc/core';
+import { createClassDecorator, ITypeDecorator, isString, Registration, ArgsIterator } from '@tsdi/ioc';
 import { ControllerMetadata } from '../metadata';
 
 /**

@@ -1,7 +1,5 @@
-import { InjectToken } from '@ts-ioc/core';
+import { InjectToken } from '@tsdi/ioc';
 import { IConfiguration } from './IConfiguration';
-import { IRunnableBuilder } from '@ts-ioc/bootstrap';
-import { CustomMiddleware } from './middlewares';
 
 
 /**
@@ -62,8 +60,3 @@ export interface IMvcServer {
  * core server token. use as singleton.
  */
 export const MvcServerToken = new InjectToken<IMvcServer>('MVC_Server');
-
-
-export interface IMvcHostBuilder extends IRunnableBuilder<IMvcServer> {
-    middlewares: CustomMiddleware[];
-}

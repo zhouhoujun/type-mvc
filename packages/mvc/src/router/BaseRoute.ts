@@ -1,8 +1,9 @@
-import { GComposite, IContainer, Mode, isString } from '@ts-ioc/core';
+import { isString } from '@tsdi/ioc';
 import { IRoute } from './IRoute';
 import { notFoundRoute } from './NotFoundRoute';
 import { IContext } from '../IContext';
 import { Next } from '../util';
+import { IContainer } from '@tsdi/core';
 
 
 /**

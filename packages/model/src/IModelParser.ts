@@ -1,4 +1,4 @@
-import { Type, Registration } from '@ts-ioc/core';
+import { Type, Registration } from '@tsdi/core';
 
 /**
  * model parser. parser model from request.

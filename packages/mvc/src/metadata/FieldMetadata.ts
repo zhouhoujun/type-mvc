@@ -1,4 +1,4 @@
-import { PropertyMetadata } from '@ts-ioc/core';
+import { PropertyMetadata } from '@tsdi/ioc';
 
 /**
  * Field metadata.

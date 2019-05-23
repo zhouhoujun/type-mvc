@@ -1,6 +1,7 @@
 import { IMvcServer } from './IMvcServer';
-import { Abstract, Inject, ContainerToken, IContainer } from '@ts-ioc/core';
+import { ContainerToken, IContainer } from '@tsdi/core';
 import { IConfiguration } from './IConfiguration';
+import { Abstract, Inject } from '@tsdi/ioc';
 
 /**
  * base mvc server.

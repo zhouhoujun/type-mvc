@@ -1,4 +1,4 @@
-import { ClassMetadata } from '@ts-ioc/core';
+import { ClassMetadata } from '@tsdi/ioc';
 
 
 /**

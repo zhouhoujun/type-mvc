@@ -1,4 +1,4 @@
-import { Singleton } from '@ts-ioc/core';
+import { Singleton } from '@tsdi/core';
 import { IDbConfiguration, DbConfigurationToken } from './IDbConfiguration';
 
 

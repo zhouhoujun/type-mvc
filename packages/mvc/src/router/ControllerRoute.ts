@@ -1,11 +1,11 @@
 import { BaseRoute } from './BaseRoute';
 import {
-    Type, IContainer, getMethodMetadata,
+    Type, getMethodMetadata,
     isClass, getTypeMetadata, isPromise,
     isUndefined, isString, isObject, isArray,
     IParameter, Provider, hasClassMetadata, hasMethodMetadata,
     isBaseType, ParamProviders, lang, isFunction
-} from '@ts-ioc/core';
+} from '@tsdi/ioc';
 
 import { IContext } from '../IContext';
 import { Next } from '../util';
@@ -17,6 +17,7 @@ import { Cors, Authorization, Route } from '../decorators';
 import { AuthorizationToken } from '../IAuthorization';
 import { ResultValue } from '../results';
 import { BaseTypeParserToken, InjectModelParserToken, DefaultModelParserToken } from '@mvx/model';
+import { IContainer } from '@tsdi/core';
 
 
 declare let Buffer: any;

@@ -1,4 +1,4 @@
-import { NullComponent, IContainer } from '@ts-ioc/core';
+import { IContainer } from '@tsdi/core';
 import { IRoute } from './IRoute';
 import { IContext } from '../IContext';
 import { Next } from '../util';

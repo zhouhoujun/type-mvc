@@ -1,5 +1,5 @@
-import { ConfigureRegister } from '@ts-ioc/bootstrap';
-import { Singleton } from '@ts-ioc/core';
+import { ConfigureRegister } from '@tsdi/boot';
+import { Singleton } from '@tsdi/core';
 import { IConfiguration } from '@mvx/mvc';
 
 

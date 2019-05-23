@@ -1,6 +1,6 @@
 import { Middleware, IMiddleware, IApplication, Middlewares } from '@mvx/mvc';
-import { toAbsolutePath } from '@ts-ioc/platform-server';
-import { DefaultConfigureToken } from '@ts-ioc/bootstrap';
+import { toAbsolutePath } from '@tsdi/platform-server';
+import { DefaultConfigureToken } from '@tsdi/boot';
 
 const views = require('koa-views');
 

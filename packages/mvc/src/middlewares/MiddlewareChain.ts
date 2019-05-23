@@ -1,8 +1,8 @@
 import {
-    InjectToken, Token, IContainer, Inject, ContainerToken,
-    isClass, isToken, isFunction, isString, getTypeMetadata,
+    InjectToken, Token, Inject, isClass, isToken,
+    isFunction, isString, getTypeMetadata,
     lang, Injectable
-} from '@ts-ioc/core';
+} from '@tsdi/ioc';
 import {
     OrderMiddleware, MiddlewareType,
     IMiddleware, DefaultMiddlewawreOrder
@@ -10,6 +10,7 @@ import {
 import { MiddlewareMetadata } from '../metadata';
 import { Middleware } from '../decorators';
 import { IApplication } from '../IApplication';
+import { IContainer, ContainerToken } from '@tsdi/core';
 
 
 

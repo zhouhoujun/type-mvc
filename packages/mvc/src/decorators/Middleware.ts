@@ -1,4 +1,4 @@
-import { createClassDecorator, ITypeDecorator, Token, isString, isToken, Registration } from '@ts-ioc/core';
+import { createClassDecorator, ITypeDecorator, Token, isString, isToken } from '@tsdi/ioc';
 import { MiddlewareMetadata } from '../metadata';
 import { IMiddleware } from '../middlewares/IMiddleware';
 

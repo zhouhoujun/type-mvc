@@ -1,4 +1,4 @@
-import { Token } from '@ts-ioc/core';
+import { Token } from '@tsdi/ioc';
 import { IRoute } from './IRoute';
 
 /**

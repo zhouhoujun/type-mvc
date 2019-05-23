@@ -1,7 +1,7 @@
 import { MvcHostBuilder, MvcServerToken } from '@mvx/mvc';
-// import { PlatformServer } from '@ts-ioc/platform-server';
+// import { PlatformServer } from '@tsdi/platform-server';
 import { KoaModule } from '@mvx/koa';
-import { DIModule } from '@ts-ioc/bootstrap';
+import { DIModule } from '@tsdi/boot';
 
 @DIModule({
     imports: [

@@ -1,4 +1,4 @@
-import { TypeMetadata } from '@ts-ioc/core';
+import { TypeMetadata } from '@tsdi/ioc';
 import { CorsOptions } from '../IConfiguration';
 
 

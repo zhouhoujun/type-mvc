@@ -1,5 +1,5 @@
 import { IContext } from '../IContext';
-import { IContainer } from '@ts-ioc/core';
+import { IContainer } from '@tsdi/core';
 import { ResultValue } from './ResultValue';
 
 /**

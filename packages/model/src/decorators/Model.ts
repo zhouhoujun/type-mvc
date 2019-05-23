@@ -1,7 +1,7 @@
 import {
     isString, TypeMetadata, IClassMethodDecorator, MetadataAdapter,
     MetadataExtends, createClassDecorator, IClassDecorator
-} from '@ts-ioc/core';
+} from '@tsdi/core';
 import { ModelMetadata } from '../metadata/index';
 
 

@@ -1,7 +1,7 @@
 import {
     Type, getPropertyMetadata, PropertyMetadata, isUndefined, IContainer,
     Inject, isClass, ObjectMap, ContainerToken, Injectable, isBaseType, isArray, lang
-} from '@ts-ioc/core';
+} from '@tsdi/core';
 import { Model, Field } from './decorators';
 import { DefaultModelParserToken } from './IModelParser';
 import { BaseTypeParserToken } from './IBaseTypeParser';

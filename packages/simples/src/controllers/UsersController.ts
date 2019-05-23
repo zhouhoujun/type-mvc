@@ -1,5 +1,5 @@
 import { Controller, Get, Post, IContext, ContextToken,  RequestMethod, Cors } from '@mvx/mvc';
-import { Inject } from '@ts-ioc/core';
+import { Inject } from '@tsdi/core';
 import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
 

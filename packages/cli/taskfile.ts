@@ -1,5 +1,5 @@
-import { PackModule, Pack } from '@ts-ioc/pack';
-import { Workflow } from '@ts-ioc/activities';
+import { PackModule, Pack } from '@tsdi/pack';
+import { Workflow } from '@tsdi/activities';
 
 @Pack({
     baseURL: __dirname,

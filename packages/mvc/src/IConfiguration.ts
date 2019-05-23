@@ -1,7 +1,7 @@
-import { ObjectMap, Type, InjectToken, Token } from '@ts-ioc/core';
-import { LogConfigure } from '@ts-ioc/logs';
+import { ObjectMap, Type, InjectToken, Token } from '@tsdi/ioc';
+import { LogConfigure } from '@tsdi/logs';
 import { ServerOptions } from 'https';
-import { AppConfigure } from '@ts-ioc/bootstrap';
+import { RunnableConfigure } from '@tsdi/boot';
 import { RequestMethod } from './RequestMethod';
 import { IModelParser } from '@mvx/model';
 
@@ -59,7 +59,7 @@ export const ConfigurationToken = new InjectToken<IConfiguration>('MVX_Configura
  * @interface IConfiguration
  * @extends {ObjectMap<any>}
  */
-export interface IConfiguration extends AppConfigure {
+export interface IConfiguration extends RunnableConfigure {
     /**
      * aseert url match regexp.
      *

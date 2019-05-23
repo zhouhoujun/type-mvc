@@ -1,10 +1,11 @@
-import { IContainer, Inject, ContainerToken, lang, Type, isClass, hasOwnClassMetadata, Injectable } from '@ts-ioc/core';
+import { Inject, lang, Type, isClass, hasOwnClassMetadata, Injectable } from '@tsdi/ioc';
+import { IContainer, ContainerToken } from '@tsdi/core';
 import { IConfiguration, ConfigurationToken } from './IConfiguration';
-import { ILogger, ILoggerManager, IConfigureLoggerManager, ConfigureLoggerManagerToken } from '@ts-ioc/logs';
+import { ILogger, ILoggerManager, IConfigureLoggerManager } from '@tsdi/logs';
 import { IApplication, ApplicationToken } from './IApplication';
-import { IMvcServer, IMvcHostBuilder } from './IMvcServer';
+import { IMvcServer } from './IMvcServer';
 import { MiddlewareChainToken, IMiddlewareChain, CustomMiddleware, MiddlewareType } from './middlewares';
-import { Boot, RunOptions, IConfigureManager, RunnableOptions } from '@ts-ioc/bootstrap';
+import { IConfigureManager, BootApplication } from '@tsdi/boot';
 import { Controller, Middleware } from './decorators';
 import { IRouter, Router } from './router';
 
@@ -15,8 +16,7 @@ import { IRouter, Router } from './router';
  * @class Application
  * @implements {IApplication}
  */
-@Injectable(ApplicationToken)
-export class Application extends Boot<IMvcServer> implements IApplication {
+export class MvcApplication extends BootApplication implements IApplication {
     name?: string;
 
     protected config: IConfiguration;

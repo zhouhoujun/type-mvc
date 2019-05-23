@@ -1,7 +1,7 @@
 import { MvcHostBuilder, MvcServerToken } from '@mvx/mvc';
-// import { PlatformServer } from '@ts-ioc/platform-server';
+// import { PlatformServer } from '@tsdi/platform-server';
 import { KoaModule } from '@mvx/koa';
-import { Bootstrap } from '@ts-ioc/bootstrap';
+import { Bootstrap } from '@tsdi/boot';
 
 @Bootstrap({
     baseURL: __dirname,

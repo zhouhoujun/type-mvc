@@ -1,4 +1,4 @@
-import { NonePointcut } from '@ts-ioc/aop';
+import { NonePointcut } from '@tsdi/aop';
 import { Middlewares, Middleware, IMiddleware, IApplication } from '@mvx/mvc';
 const bodyParser = require('koa-bodyparser');
 

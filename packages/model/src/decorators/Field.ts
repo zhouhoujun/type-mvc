@@ -1,5 +1,5 @@
 
-import { IPropertyDecorator, PropertyMetadata, createPropDecorator, MetadataExtends, MetadataAdapter, isString, isNumber, isUndefined, isBoolean } from '@ts-ioc/core';
+import { IPropertyDecorator, PropertyMetadata, createPropDecorator, MetadataExtends, MetadataAdapter, isString, isNumber, isUndefined, isBoolean } from '@tsdi/core';
 import { FieldMetadata } from '../metadata/index';
 
 

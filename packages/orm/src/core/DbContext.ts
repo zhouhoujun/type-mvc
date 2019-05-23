@@ -1,5 +1,5 @@
-import { IContainer, Type, Injectable, IContainerBuilder } from '@ts-ioc/core';
-import { ModuleBuilder } from '@ts-ioc/bootstrap';
+import { IContainer, Type, Injectable, IContainerBuilder } from '@tsdi/core';
+import { ModuleBuilder } from '@tsdi/boot';
 import { IDbSet } from './IDbSet';
 import { IConnection } from './IConnection';
 import { DbSet } from './DbSet';

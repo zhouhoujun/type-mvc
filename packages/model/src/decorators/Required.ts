@@ -1,6 +1,6 @@
 import { createFieldDecorator } from './Field';
 import { FieldMetadata } from '../metadata/index';
-import { IPropertyDecorator } from '@ts-ioc/core';
+import { IPropertyDecorator } from '@tsdi/core';
 
 
 export interface IRequiredDecorator<T extends FieldMetadata> extends IPropertyDecorator<T> {

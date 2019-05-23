@@ -1,4 +1,4 @@
-import { Token } from '@ts-ioc/core';
+import { Token } from '@tsdi/ioc';
 import { IContext } from '../IContext';
 import { IApplication } from '../IApplication';
 import { Next } from '../util';

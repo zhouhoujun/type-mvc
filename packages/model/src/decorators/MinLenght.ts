@@ -1,6 +1,6 @@
 import { createFieldDecorator } from './Field';
 import { MinLengthMetadata } from '../metadata/index';
-import { IPropertyDecorator, isNumber, isString } from '@ts-ioc/core';
+import { IPropertyDecorator, isNumber, isString } from '@tsdi/core';
 
 
 export interface IMinLengthDecorator<T extends MinLengthMetadata> extends IPropertyDecorator<T> {

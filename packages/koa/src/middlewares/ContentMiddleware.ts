@@ -2,8 +2,8 @@ import {
     Middleware, IMiddleware,
     IApplication,  Middlewares
 } from '@mvx/mvc';
-import { NonePointcut } from '@ts-ioc/aop';
-import { toAbsolutePath } from '@ts-ioc/platform-server';
+import { NonePointcut } from '@tsdi/aop';
+import { toAbsolutePath } from '@tsdi/platform-server';
 const serve = require('koa-static');
 
 @NonePointcut

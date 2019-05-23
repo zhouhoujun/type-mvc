@@ -1,6 +1,6 @@
 import { IRoute } from './IRoute';
 import { IRouter } from './IRouter';
-import { Token, Injectable, getTypeMetadata, isClass } from '@ts-ioc/core';
+import { Token, Injectable, getTypeMetadata, isClass } from '@tsdi/ioc';
 import { ControllerRoute } from './ControllerRoute';
 import { Controller } from '../decorators';
 import { ControllerMetadata } from '../metadata';

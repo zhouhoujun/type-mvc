@@ -1,23 +1,18 @@
-import { DIModule, DefaultConfigureToken } from '@ts-ioc/bootstrap';
-import { AopModule } from '@ts-ioc/aop';
-import { LogModule } from '@ts-ioc/logs';
+import { DIModule, DefaultConfigureToken } from '@tsdi/boot';
+import { AopModule } from '@tsdi/aop';
+import { LogModule } from '@tsdi/logs';
 import * as middlewares from './middlewares';
 import * as routers from './router';
-import { Application } from './Application';
-import { BootModule } from '@ts-ioc/bootstrap';
 import { ModelModule } from '@mvx/model';
 import { MvcConfigureRegister } from './MvcConfigureRegister';
 import { MvcCoreModule } from './CoreModule';
 
 
 @DIModule({
-    asRoot: true,
     imports: [
         MvcCoreModule,
         AopModule,
         LogModule,
-        BootModule,
-        Application,
         routers,
         middlewares,
         ModelModule,

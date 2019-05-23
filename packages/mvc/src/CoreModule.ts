@@ -1,5 +1,6 @@
-import { IocExt, ContainerToken, Inject, IContainer, LifeState, CoreActions } from '@ts-ioc/core';
+import { IocExt, ContainerToken, IContainer } from '@tsdi/core';
 import { Controller, Authorization, Middleware } from './decorators';
+import { Inject } from '@tsdi/ioc';
 
 
 @IocExt('setup')

@@ -1,5 +1,5 @@
 import { IContext } from './IContext';
-import { Injectable, Inject } from '@ts-ioc/core';
+import { Injectable, Inject } from '@tsdi/ioc';
 import { ViewResult, FileResult, RedirectResult, JsonResult } from './results';
 import { ContextToken } from './IContext';
 import { Stream } from 'stream';

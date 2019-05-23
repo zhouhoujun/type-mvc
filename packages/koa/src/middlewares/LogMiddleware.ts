@@ -1,5 +1,5 @@
 import { Middleware, IMiddleware, IApplication, Middlewares } from '@mvx/mvc';
-import { NonePointcut } from '@ts-ioc/aop';
+import { NonePointcut } from '@tsdi/aop';
 const logger = require('koa-logger')
 
 @NonePointcut

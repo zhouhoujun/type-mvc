@@ -3,7 +3,7 @@
 This repo is for distribution on `npm`. The source for this module is in the
 [main repo](https://github.com/zhouhoujun/type-mvc).
 
-`@mvx/model` is Decorator, Ioc, AOP MVC frameworker. base on ioc [`@ts-ioc`](https://www.npmjs.com/package/@ts-ioc/core). help you develop your project easily.
+`@mvx/model` is Decorator, Ioc, AOP MVC frameworker. base on ioc [`@tsdi`](https://www.npmjs.com/package/@tsdi/core). help you develop your project easily.
 
 
 
@@ -82,7 +82,7 @@ create application
 ```ts
 import { MvcHostBuilder, MvcServerToken } from '@mvx/mvc';
 import { KoaModule } from '@mvx/koa';
-import { Bootstrap, DIModule } from '@ts-ioc/bootstrap';
+import { Bootstrap, DIModule } from '@tsdi/boot';
 
 // 1. use MvcHostBuilder to boot application.
 MvcHostBuilder.create(__dirname)
@@ -216,7 +216,7 @@ define as:
 
 ```ts
 import { Controller, Get, Post, IContext, ContextToken,  RequestMethod, Model, Field, Cors } from '@mvx/mvc';
-import { Inject } from '@ts-ioc/core';
+import { Inject } from '@tsdi/core';
 import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
 
@@ -319,7 +319,7 @@ Auto load Aspect service from folder `/aop` in  your project.
 see simple demo
 
 ```ts
-import { Aspect, Around, Joinpoint, Before } from '@ts-ioc/aop';
+import { Aspect, Around, Joinpoint, Before } from '@tsdi/aop';
 
 @Aspect
 export class DebugLog {
@@ -345,7 +345,7 @@ default setting load middlewares in your project folder
 
 ```ts
 import { Middleware, IMiddleware, Application, Configuration } from '@mvx/mvc';
-import { IContainer, Injectable } from '@ts-ioc/core';
+import { IContainer, Injectable } from '@tsdi/core';
 
 
 @Middleware({ provide: 'logger' })

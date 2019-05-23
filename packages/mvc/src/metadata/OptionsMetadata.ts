@@ -1,4 +1,4 @@
-import { MethodMetadata } from '@ts-ioc/core';
+import { MethodMetadata } from '@tsdi/ioc';
 export interface OptionsMetadata extends MethodMetadata {
     route?: string;
 }

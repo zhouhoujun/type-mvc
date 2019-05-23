@@ -51,21 +51,21 @@ program
             case 'activity':
                 console.log(chalk.gray('init activity project...'));
                 cmds = [
-                    '@ts-ioc/core',
-                    '@ts-ioc/annotations',
-                    '@ts-ioc/aop',
-                    '@ts-ioc/logs',
-                    '@ts-ioc/bootstrap',
-                    '@ts-ioc/activities'
+                    '@tsdi/core',
+                    '@tsdi/annotations',
+                    '@tsdi/aop',
+                    '@tsdi/logs',
+                    '@tsdi/boot',
+                    '@tsdi/activities'
                 ];
                 if (options.browser) {
-                    cmds.push('@ts-ioc/platform-browser');
-                    cmds.push('@ts-ioc/platform-browser-bootstrap');
-                    cmds.push('@ts-ioc/platform-browser-activities');
+                    cmds.push('@tsdi/platform-browser');
+                    cmds.push('@tsdi/platform-browser-bootstrap');
+                    cmds.push('@tsdi/platform-browser-activities');
                 } else {
-                    cmds.push('@ts-ioc/platform-server');
-                    cmds.push('@ts-ioc/platform-server-bootstrap');
-                    cmds.push('@ts-ioc/platform-server-activities');
+                    cmds.push('@tsdi/platform-server');
+                    cmds.push('@tsdi/platform-server-bootstrap');
+                    cmds.push('@tsdi/platform-server-activities');
                 }
                 initcmds = `npm install ${initcmds} ${cmds.join(version) + version} --save${options.dev ? '-dev' : ''}`;
                 console.log(initcmds);
@@ -74,19 +74,19 @@ program
             case 'pack':
                 console.log(chalk.gray('init pack project...'));
                 cmds = [
-                    '@ts-ioc/core',
-                    '@ts-ioc/annotations',
-                    '@ts-ioc/aop',
-                    '@ts-ioc/logs',
-                    '@ts-ioc/bootstrap',
-                    '@ts-ioc/platform-server',
-                    '@ts-ioc/platform-server-bootstrap',
-                    '@ts-ioc/activities',
-                    '@ts-ioc/platform-server-activities',
-                    '@ts-ioc/build',
-                    '@ts-ioc/pack',
-                    '@ts-ioc/unit',
-                    '@ts-ioc/unit-console'
+                    '@tsdi/core',
+                    '@tsdi/annotations',
+                    '@tsdi/aop',
+                    '@tsdi/logs',
+                    '@tsdi/boot',
+                    '@tsdi/platform-server',
+                    '@tsdi/platform-server-bootstrap',
+                    '@tsdi/activities',
+                    '@tsdi/platform-server-activities',
+                    '@tsdi/build',
+                    '@tsdi/pack',
+                    '@tsdi/unit',
+                    '@tsdi/unit-console'
                 ];
                 initcmds = `npm install ${initcmds} ${cmds.join(version) + version} --save${options.dev ? '-dev' : ''}`;
                 console.log(initcmds);
@@ -95,18 +95,18 @@ program
             case 'boot':
                 console.log(chalk.gray('init boot project...'));
                 cmds = [
-                    '@ts-ioc/core',
-                    '@ts-ioc/annotations',
-                    '@ts-ioc/aop',
-                    '@ts-ioc/logs',
-                    '@ts-ioc/bootstrap'
+                    '@tsdi/core',
+                    '@tsdi/annotations',
+                    '@tsdi/aop',
+                    '@tsdi/logs',
+                    '@tsdi/boot'
                 ];
                 if (options.browser) {
-                    cmds.push('@ts-ioc/platform-browser');
-                    cmds.push('@ts-ioc/platform-browser-bootstrap');
+                    cmds.push('@tsdi/platform-browser');
+                    cmds.push('@tsdi/platform-browser-bootstrap');
                 } else {
-                    cmds.push('@ts-ioc/platform-server');
-                    cmds.push('@ts-ioc/platform-server-bootstrap');
+                    cmds.push('@tsdi/platform-server');
+                    cmds.push('@tsdi/platform-server-bootstrap');
                 }
                 initcmds = `npm install ${initcmds} ${cmds.join(version) + version} --save${options.dev ? '-dev' : ''}`;
                 console.log(initcmds);
@@ -115,15 +115,15 @@ program
             default:
                 console.log(chalk.gray('init tsioc project...'));
                 cmds = [
-                    '@ts-ioc/core',
-                    '@ts-ioc/annotations',
-                    '@ts-ioc/aop',
-                    '@ts-ioc/logs'
+                    '@tsdi/core',
+                    '@tsdi/annotations',
+                    '@tsdi/aop',
+                    '@tsdi/logs'
                 ];
                 if (options.browser) {
-                    cmds.push('@ts-ioc/platform-browser');
+                    cmds.push('@tsdi/platform-browser');
                 } else {
-                    cmds.push('@ts-ioc/platform-server');
+                    cmds.push('@tsdi/platform-server');
                 }
                 initcmds = `npm install ${initcmds} ${cmds.join(version) + version} --save${options.dev ? '-dev' : ''}`;
                 console.log(initcmds);
@@ -138,9 +138,9 @@ function requireRegisters() {
 }
 
 function runActivity(fileName, options) {
-    const wf = requireCwd('@ts-ioc/activities');
-    const pk = requireCwd('@ts-ioc/pack');
-    const bd = requireCwd('@ts-ioc/build');
+    const wf = requireCwd('@tsdi/activities');
+    const pk = requireCwd('@tsdi/pack');
+    const bd = requireCwd('@tsdi/build');
     let config;
     if (options.config && isString(options.config)) {
         config = requireCwd(options.config);
@@ -200,8 +200,8 @@ program
             }
             files = path.join(processRoot, files)
         }
-        let unit = requireCwd('@ts-ioc/unit');
-        let ConsoleReporter = requireCwd('@ts-ioc/unit-console').ConsoleReporter;
+        let unit = requireCwd('@tsdi/unit');
+        let ConsoleReporter = requireCwd('@tsdi/unit-console').ConsoleReporter;
         let config;
         if (isString(options.config)) {
             config = requireCwd(options.config);

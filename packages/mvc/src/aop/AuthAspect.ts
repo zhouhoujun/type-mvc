@@ -1,4 +1,4 @@
-import { Aspect, Pointcut } from '@ts-ioc/aop';
+import { Aspect, Pointcut } from '@tsdi/aop';
 import { Controller } from '../decorators';
 
 /**

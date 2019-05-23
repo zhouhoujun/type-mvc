@@ -1,5 +1,5 @@
-import { Type, InjectToken } from '@ts-ioc/core';
-import { LogConfigure } from '@ts-ioc/logs';
+import { Type, InjectToken } from '@tsdi/core';
+import { LogConfigure } from '@tsdi/logs';
 
 
 export const DbConfigurationToken = new InjectToken<IDbConfiguration>('db_config');

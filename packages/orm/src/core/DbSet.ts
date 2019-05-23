@@ -1,6 +1,6 @@
 import { IQueryable } from './IQueryable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Injectable } from '@ts-ioc/core';
+import { Injectable } from '@tsdi/core';
 import { IDbSet } from './IDbSet';
 import { Observable } from 'rxjs/Observable';
 
