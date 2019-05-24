@@ -1,6 +1,7 @@
-import { Handle, CompositeHandle } from '@tsdi/boot';
+import { Handle, Handles } from '@tsdi/boot';
 import { IContext } from '../IContext';
 import { IMiddleware } from '../IMiddleware';
+
 
 /**
  * middleware
@@ -15,6 +16,6 @@ export abstract class MvcMiddleware extends Handle<IContext> implements IMiddlew
 
 }
 
-export class CompositeMiddleware extends CompositeHandle<IContext> {
+export class CompositeMiddleware extends Handles<IContext> {
 
 }

@@ -1,27 +1,33 @@
 import { MvcMiddleware } from '../middlewares';
-import { Input, AfterInit } from '@tsdi/boot';
 import { IContext } from '../IContext';
+import { InjectToken } from '@tsdi/ioc';
 
-export abstract class Route extends MvcMiddleware implements AfterInit {
+export const RouteUrlToken = new InjectToken<string>('route_url');
 
-    constructor(){
-        
-    }
+export abstract class Route extends MvcMiddleware {
 
-    @Input()
     url: string;
-
-    async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        ctx.url
+    constructor(url: string) {
+        super();
+        this.url = this.vaildify(url);
     }
 
-    canNavigate(ctx: IContext){
-       return !ctx.status || ctx.status === 404;
+    execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
+        if (this.canNavigate(ctx)) {
+            return this.navigate(ctx, next);
+        } else {
+            return next();
+        }
     }
 
-    onAfterInit(): void | Promise<void> {
-        let routPath = this.url;
-        if (routPath === '/') {
+    abstract navigate(ctx: IContext, next: () => Promise<void>): Promise<void>;
+
+    canNavigate(ctx: IContext): boolean {
+        return !ctx.status || ctx.status === 404;
+    }
+
+    vaildify(routPath: string, foreNull = false): string {
+        if (foreNull && routPath === '/') {
             routPath = '';
         }
         if (/\/\s*$/.test(routPath)) {
@@ -30,6 +36,6 @@ export abstract class Route extends MvcMiddleware implements AfterInit {
         if (/\?\S*$/.test(routPath)) {
             routPath = routPath.substring(0, routPath.lastIndexOf('?'));
         }
-        this.url = routPath;
+        return routPath;
     }
 }

@@ -1,16 +1,18 @@
-import { Component, AfterInit, HandleType } from '@tsdi/boot';
-import { Route } from './Route';
+import { HandleType } from '@tsdi/boot';
 import { CompositeMiddleware } from '../middlewares';
 import { IContext } from '../IContext';
+import { Singleton } from '@tsdi/ioc';
+import { Route } from './Route';
+import { isString } from 'util';
 
-@Component
+@Singleton
 export class Router extends CompositeMiddleware {
 
-    async execute(ctx: IContext, next?: () => Promise<void>): Promise<void> {
+    execute(ctx: IContext, next?: () => Promise<void>): Promise<void> {
         if ((!ctx.status || ctx.status === 404) && this.isRouteUrl(ctx.url)) {
-            await super.execute(ctx, next);
+            return super.execute(ctx, next);
         } else {
-            await next();
+            return next();
         }
     }
 
@@ -22,7 +24,12 @@ export class Router extends CompositeMiddleware {
         // }
     }
 
-    routes(route: string, handle: HandleType<IContext>) {
-     
+    routes(route: string | Route, handle?: HandleType<IContext>): this {
+        if (route instanceof Route) {
+            this.use(route);
+        } else if (isString(route) && handle) {
+            this.use()
+        }
+        return this;
     }
 }
