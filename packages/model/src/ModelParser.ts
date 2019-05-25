@@ -1,10 +1,11 @@
 import {
-    Type, getPropertyMetadata, PropertyMetadata, isUndefined, IContainer,
-    Inject, isClass, ObjectMap, ContainerToken, Injectable, isBaseType, isArray, lang
-} from '@tsdi/core';
+    Type, getPropertyMetadata, PropertyMetadata, isUndefined,
+    Inject, isClass, ObjectMap, Injectable, isBaseType, isArray, lang
+} from '@tsdi/ioc';
 import { Model, Field } from './decorators';
 import { DefaultModelParserToken } from './IModelParser';
 import { BaseTypeParserToken } from './IBaseTypeParser';
+import { ContainerToken, IContainer } from '@tsdi/core';
 
 /**
  * modle parser.
@@ -32,7 +33,7 @@ export class ModelParser {
                     let propmeta = propmetas.find(p => !!p.type);
                     let reqval = objMap[n];
                     let parmVal;
-                    if (isBaseType(propmeta.type)) {
+                    if (isBaseType(lang.getClass(propmeta.type))) {
                         let parser = this.container.get(BaseTypeParserToken)
                         parmVal = parser.parse(propmeta.type, reqval);
                     } else if (lang.isExtendsClass(propmeta.type, Array)) {

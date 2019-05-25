@@ -1,6 +1,6 @@
 import { IQueryable } from './IQueryable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Injectable } from '@tsdi/core';
+import { Injectable } from '@tsdi/ioc';
 import { IDbSet } from './IDbSet';
 import { Observable } from 'rxjs/Observable';
 
@@ -16,7 +16,7 @@ export class DbSet<TEntity> implements IDbSet<TEntity>, IQueryable<TEntity> {
     }
 
     add(...entity: TEntity[]): Observable<TEntity> {
-        this.adds.next(entity);
+        throw new Error("Method not implemented.");
     }
 
     update(entity: TEntity): Observable<TEntity> {
@@ -28,11 +28,11 @@ export class DbSet<TEntity> implements IDbSet<TEntity>, IQueryable<TEntity> {
     }
 
     remove(entity: TEntity): Observable<TEntity> {
-
+        throw new Error("Method not implemented.");
     }
 
     clear(): Observable<TEntity[]> {
-
+        throw new Error("Method not implemented.");
     }
 
     query(): Observable<TEntity[]> {

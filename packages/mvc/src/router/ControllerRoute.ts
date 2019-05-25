@@ -1,16 +1,19 @@
-import { lang, Injectable, Type, getMethodMetadata, isFunction, isBaseType, isUndefined, ParamProviders, Provider, isClass, IParameter, isObject, isArray, isPromise, hasClassMetadata, hasMethodMetadata, getTypeMetadata, isString } from '@tsdi/ioc';
+import {
+    lang, Injectable, Type, getMethodMetadata, isFunction, isBaseType,
+    isUndefined, ParamProviders, Provider, isClass, IParameter, isObject,
+    isArray, isPromise, hasClassMetadata, hasMethodMetadata, getTypeMetadata,
+    isString, RuntimeLifeScope
+} from '@tsdi/ioc';
 import { Route } from './Route';
-import { IContext } from '../IContext';
-import { IContainer } from '@tsdi/core';
+import { IContext } from '../middlewares';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
 import { RouteMetadata, CorsMetadata } from '../metadata';
-import { BaseTypeParserToken, InjectModelParserToken, DefaultModelParserToken } from '@mvx/model';
-import { BadRequestError, NotFoundError, UnauthorizedError, ForbiddenError, HttpError } from '../errors';
+import { NotFoundError, UnauthorizedError, ForbiddenError, HttpError } from '../errors';
 import { ResultValue } from '../results';
 import { AuthorizationToken } from '../IAuthorization';
 import { Authorization, Cors } from '../decorators';
 import { IConfiguration, ConfigurationToken } from '../IConfiguration';
-
+import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
 declare let Buffer: any;
 
 export function isBuffer(target: any): boolean {
@@ -21,36 +24,23 @@ export function isBuffer(target: any): boolean {
     }
 }
 
-
 @Injectable
 export class ControllerRoute extends Route {
 
-    constructor(private controller: Type<any>) {
-        super();
-    }
-
-    async options(ctx: IContext, next: () => Promise<void>): Promise<any> {
-        try {
-            await this.invokeOption(ctx, next);
-        } catch (err) {
-            if (err instanceof HttpError) {
-                ctx.status = err.code;
-                ctx.message = err.message;
-            } else {
-                ctx.status = 500;
-                console.error(err);
-            }
-        }
+    constructor(url: string, private controller: Type<any>) {
+        super(url);
     }
 
     async navigate(ctx: IContext, next: () => Promise<void>): Promise<any> {
         try {
-            if (ctx.method !== 'OPTIONS') {
-                await this.invoke(ctx, this.container);
-            } else {
-                throw new ForbiddenError();
-            }
-            return next();
+            await this.invokeOption(ctx, async () => {
+                if (ctx.method !== 'OPTIONS') {
+                    await this.invoke(ctx)
+                    await next();
+                } else {
+                    throw new ForbiddenError();
+                }
+            });
         } catch (err) {
             if (err instanceof HttpError) {
                 ctx.status = err.code;
@@ -63,7 +53,7 @@ export class ControllerRoute extends Route {
 
     }
 
-    async invokeOption(ctx: IContext, next: () => Promise<void>) {
+    async invokeOption(ctx: IContext, next: () => Promise<void>): Promise<void> {
         let requestOrigin = ctx.get('Origin');
         ctx.vary('Origin');
         if (!requestOrigin) {
@@ -137,7 +127,7 @@ export class ControllerRoute extends Route {
     }
 
 
-    getCorsMeta(ctx: IContext,  reqMethod: string): CorsMetadata {
+    protected getCorsMeta(ctx: IContext, reqMethod: string): CorsMetadata {
         if (!reqMethod) {
             return null;
         }
@@ -169,8 +159,9 @@ export class ControllerRoute extends Route {
         }
         return null;
     }
-    async invoke(ctx: IContext, container: IContainer) {
+    async invoke(ctx: IContext) {
         let meta = this.getRouteMetaData(ctx, parseRequestMethod(ctx.method));
+        let container = this.container;
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
             if (container.has(AuthorizationToken)) {
@@ -183,10 +174,10 @@ export class ControllerRoute extends Route {
                 }
             }
 
-            let lifeScope = container.getLifeScope();
+            let lifeScope = container.getActionRegisterer().get(RuntimeLifeScope);
 
-            let params = lifeScope.getMethodParameters(this.controller, ctrl, meta.propertyKey);
-            let providers = this.createProvider(container, ctx, ctrl, meta, params);
+            let params = lifeScope.getMethodParameters(this.container, this.controller, ctrl, meta.propertyKey);
+            let providers = await this.createProvider(ctx, ctrl, meta, params);
             let response: any = await container.invoke(this.controller, meta.propertyKey, ctrl, ...providers);
 
             if (isPromise(response)) {
@@ -215,7 +206,7 @@ export class ControllerRoute extends Route {
         }
     }
 
-    protected createProvider(ctx: IContext, ctrl: any, meta: RouteMetadata, params: IParameter[]): ParamProviders[] {
+    protected async createProvider(ctx: IContext, ctrl: any, meta: RouteMetadata, params: IParameter[]): Promise<ParamProviders[]> {
         if (params && params.length) {
             let restParams: any = {};
             if (this.isRestUri(meta.route)) {
@@ -229,32 +220,26 @@ export class ControllerRoute extends Route {
                 });
             }
             let body = ctx.request['body'] || {};
-            let providers: ParamProviders[] = params.map((param, idx) => {
-                try {
-                    let ptype = param.type;
-                    if (isFunction(ptype)) {
-                        if (isBaseType(ptype)) {
-                            let paramVal = restParams[param.name];
-                            if (isUndefined(paramVal)) {
-                                paramVal = ctx.request.query[param.name];
-                            }
-                            let parser = this.container.get(BaseTypeParserToken);
-                            return Provider.createParam(param.name, parser.parse(ptype, paramVal));
+
+            let providers: ParamProviders[] = await Promise.all(params.map(async (param, idx) => {
+                let ptype = param.type;
+                let val = null;
+                if (isFunction(ptype)) {
+                    if (isBaseType(ptype)) {
+                        let paramVal = restParams[param.name];
+                        if (isUndefined(paramVal)) {
+                            paramVal = ctx.request.query[param.name];
                         }
-                        if (isClass(ptype)) {
-                            if (!this.container.has(ptype)) {
-                                this.container.register(ptype);
-                            }
-                            let parser = this.container.getService(InjectModelParserToken, ptype, DefaultModelParserToken);
-                            let val = parser.parseModel(ptype, body);
-                            return Provider.createParam(param.name || ptype, val, idx);
-                        }
+                        let parser = this.container.get(BaseTypeParserToken);
+                        val = parser.parse(ptype, paramVal)
                     }
-                    return null;
-                } catch (err) {
-                    throw new BadRequestError(err.toString());
+                    if (isClass(ptype)) {
+                        val = await this.container.get(BuilderService).resolve(ptype, { scope: body })
+                        return Provider.createParam(param.name || ptype, val, idx);
+                    }
                 }
-            });
+                Provider.createParam(param.name || ptype, val, idx);
+            }))
             return providers.filter(p => p !== null);
         }
 

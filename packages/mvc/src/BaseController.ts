@@ -1,7 +1,6 @@
-import { IContext } from './IContext';
+import { IContext, ContextToken } from './middlewares';
 import { Injectable, Inject } from '@tsdi/ioc';
 import { ViewResult, FileResult, RedirectResult, JsonResult } from './results';
-import { ContextToken } from './IContext';
 import { Stream } from 'stream';
 
 

@@ -1,16 +1,21 @@
-import { Middleware } from '../decorators';
-import { Middlewares } from '../IMiddleware';
-import { MvcMiddleware } from './MvcMiddleware';
-import { IContext } from '../IContext';
+// import { Middleware } from '../decorators';
+// import { Middlewares } from '../IMiddleware';
+// import { MvcMiddleware } from './MvcMiddleware';
+// import { IContext } from '../IContext';
+// import { Router } from '../router';
+// import { Inject } from '@tsdi/ioc';
 
 
 
-@Middleware(Middlewares.Cors)
-export class CorsMiddleware extends MvcMiddleware {
+// @Middleware(Middlewares.Cors)
+// export class CorsMiddleware extends MvcMiddleware {
 
-    async execute(ctx: IContext, next: () => Promise<void>) {
-        if ((!ctx.status || ctx.status === 404) && app.getConfig().isRouteUrl(ctx.url)) {
-            return app.getRouter().getRoot().options(app.container, ctx, next);
-        }
-    }
-}
+//     @Inject()
+//     private router: Router;
+
+//     async execute(ctx: IContext, next: () => Promise<void>) {
+//         if ((!ctx.status || ctx.status === 404) && this.router.isRouteUrl(ctx.url)) {
+//             return this.router.options(ctx, next);
+//         }
+//     }
+// }

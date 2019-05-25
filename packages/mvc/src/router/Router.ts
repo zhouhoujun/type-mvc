@@ -1,9 +1,9 @@
 import { HandleType } from '@tsdi/boot';
-import { CompositeMiddleware } from '../middlewares';
-import { IContext } from '../IContext';
+import { IContext, CompositeMiddleware } from '../middlewares';
 import { Singleton } from '@tsdi/ioc';
-import { Route } from './Route';
-import { isString } from 'util';
+import { RouteUrlToken } from './Route';
+import { CustomRoute, CustomHandleToken } from './CustomRoute';
+import { RouteChecker } from '../services';
 
 @Singleton
 export class Router extends CompositeMiddleware {
@@ -16,20 +16,16 @@ export class Router extends CompositeMiddleware {
         }
     }
 
-    private assertUrlRegExp = /\/((\w|%|\.))+\.\w+$/;
-    isRouteUrl(ctxUrl: string): boolean {
-        return !this.assertUrlRegExp.test(ctxUrl);
-        // if (flag && this.routeUrlRegExp) {
-        //     return this.routeUrlRegExp.test(ctxUrl);
-        // }
+    isRouteUrl(route: string) {
+        return this.container.get(RouteChecker).isRoute(route);
     }
 
-    routes(route: string | Route, handle?: HandleType<IContext>): this {
-        if (route instanceof Route) {
-            this.use(route);
-        } else if (isString(route) && handle) {
-            this.use()
-        }
+    routes(route: string, handle: HandleType<IContext>): this {
+
+        this.use(this.container.resolve(CustomRoute,
+            { provide: RouteUrlToken, useValue: route },
+            { provide: CustomHandleToken, useValue: handle }));
+
         return this;
     }
 }

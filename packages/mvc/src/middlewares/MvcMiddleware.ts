@@ -1,6 +1,7 @@
-import { Handle, Handles } from '@tsdi/boot';
-import { IContext } from '../IContext';
-import { IMiddleware } from '../IMiddleware';
+import { Handle, Handles, HandleType } from '@tsdi/boot';
+import { IContext } from './IContext';
+import { IMiddleware } from './IMiddleware';
+import { isClass } from '@tsdi/ioc';
 
 
 /**
@@ -16,6 +17,13 @@ export abstract class MvcMiddleware extends Handle<IContext> implements IMiddlew
 
 }
 
+
 export class CompositeMiddleware extends Handles<IContext> {
 
+    protected registerHandle(handle: HandleType<IContext>, setup?: boolean): this {
+        if (isClass(handle)) {
+            this.container.register(handle);
+        }
+        return this;
+    }
 }

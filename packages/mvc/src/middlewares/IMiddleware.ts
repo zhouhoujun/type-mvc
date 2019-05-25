@@ -1,5 +1,6 @@
 import { Token } from '@tsdi/ioc';
 import { IContext } from './IContext';
+import { HandleType } from '@tsdi/boot';
 // import { IHandle } from '@tsdi/boot';
 
 
@@ -22,15 +23,11 @@ export interface IMiddleware { // extends IHandle {
 }
 
 
-/**
- * custom middleware.
- */
-export type CustomMiddleware = (context: IContext,  next: () => Promise<void>) => any | Function;
 
 /**
  * middleware type.
  */
-export type MiddlewareType = Token<IMiddleware> | CustomMiddleware;
+export type MiddlewareType = Token<IMiddleware> | HandleType<IContext>;
 
 /**
  *  middlewares with order.

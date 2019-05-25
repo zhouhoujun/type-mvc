@@ -1,8 +1,9 @@
-import { IContainer, Type, Injectable, IContainerBuilder } from '@tsdi/core';
+import { IContainer, IContainerBuilder } from '@tsdi/core';
 import { ModuleBuilder } from '@tsdi/boot';
 import { IDbSet } from './IDbSet';
 import { IConnection } from './IConnection';
 import { DbSet } from './DbSet';
+import { Injectable } from '@tsdi/ioc';
 
 @Injectable
 export class DbContext extends ModuleBuilder<IDbSet<any>> {

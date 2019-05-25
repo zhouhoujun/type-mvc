@@ -9,7 +9,9 @@ export abstract class Route extends MvcMiddleware {
     url: string;
     constructor(url: string) {
         super();
-        this.url = this.vaildify(url);
+        if (url) {
+            this.url = this.vaildify(url);
+        }
     }
 
     execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
@@ -23,7 +25,7 @@ export abstract class Route extends MvcMiddleware {
     abstract navigate(ctx: IContext, next: () => Promise<void>): Promise<void>;
 
     canNavigate(ctx: IContext): boolean {
-        return !ctx.status || ctx.status === 404;
+        return (!ctx.status || ctx.status === 404) && this.url.startsWith(ctx.url);
     }
 
     vaildify(routPath: string, foreNull = false): string {

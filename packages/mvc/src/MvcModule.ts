@@ -1,22 +1,20 @@
-import { DIModule, DefaultConfigureToken, RegScope } from '@tsdi/boot';
+import { DIModule, DefaultConfigureToken, RegFor } from '@tsdi/boot';
 import { AopModule } from '@tsdi/aop';
 import { LogModule } from '@tsdi/logs';
 import * as middlewares from './middlewares';
 import * as routers from './router';
-import { ModelModule } from '@mvx/model';
 import { MvcConfigureRegister } from './MvcConfigureRegister';
 import { MvcCoreModule } from './CoreModule';
 
 
 @DIModule({
-    regScope: RegScope.boot,
+    regFor: RegFor.boot,
     imports: [
         MvcCoreModule,
         AopModule,
         LogModule,
         routers,
         middlewares,
-        ModelModule,
         MvcConfigureRegister
     ],
     providers: [
