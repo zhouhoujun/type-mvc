@@ -1,9 +1,9 @@
 import { NonePointcut } from '@tsdi/aop';
-import { Middlewares, Middleware, IMiddleware, IApplication } from '@mvx/mvc';
+import { MiddlewareTypes, Middleware, IMiddleware, IApplication } from '@mvx/mvc';
 const bodyParser = require('koa-bodyparser');
 
 @NonePointcut
-@Middleware(Middlewares.BodyParser)
+@Middleware(MiddlewareTypes.BodyParser)
 export class BodyParserMiddleware implements IMiddleware {
 
     constructor() {

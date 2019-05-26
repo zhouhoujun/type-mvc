@@ -40,7 +40,7 @@ export interface OrderMiddleware {
 /**
  *  default middleware name.
  */
-export enum Middlewares {
+export enum MiddlewareTypes {
     /**
      * context middleware token. to get context of one request.
      */
@@ -84,13 +84,13 @@ export enum Middlewares {
  * default Middlewawre order.
  */
 export const DefaultMiddlewawreOrder = [
-    Middlewares.BodyParser,
-    Middlewares.Json,
-    Middlewares.Log,
-    Middlewares.Session,
-    Middlewares.Content,
-    Middlewares.Context,
-    Middlewares.Cors,
-    Middlewares.Views,
-    Middlewares.Router
+    MiddlewareTypes.BodyParser,
+    MiddlewareTypes.Json,
+    MiddlewareTypes.Log,
+    MiddlewareTypes.Session,
+    MiddlewareTypes.Content,
+    MiddlewareTypes.Context,
+    MiddlewareTypes.Cors,
+    MiddlewareTypes.Views,
+    MiddlewareTypes.Router
 ];

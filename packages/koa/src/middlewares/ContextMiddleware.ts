@@ -1,7 +1,7 @@
-import { Middleware, IMiddleware, IApplication, ContextToken, Middlewares } from '@mvx/mvc';
+import { Middleware, IMiddleware, IApplication, ContextToken, MiddlewareTypes } from '@mvx/mvc';
 
 
-@Middleware(Middlewares.Context)
+@Middleware(MiddlewareTypes.Context)
 export class ContextMiddleware implements IMiddleware {
 
     constructor() {

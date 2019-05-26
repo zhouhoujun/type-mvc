@@ -1,13 +1,13 @@
 import {
     Middleware, IMiddleware,
-    IApplication,  Middlewares
+    IApplication,  MiddlewareTypes
 } from '@mvx/mvc';
 import { NonePointcut } from '@tsdi/aop';
 import { toAbsolutePath } from '@tsdi/platform-server';
 const serve = require('koa-static');
 
 @NonePointcut
-@Middleware(Middlewares.Content)
+@Middleware(MiddlewareTypes.Content)
 export class ContentMiddleware implements IMiddleware {
 
     constructor() {

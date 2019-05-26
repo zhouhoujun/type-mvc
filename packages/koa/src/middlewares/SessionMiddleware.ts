@@ -1,10 +1,10 @@
-import { Middleware, IMiddleware, IApplication, Middlewares } from '@mvx/mvc';
+import { Middleware, IMiddleware, IApplication, MiddlewareTypes } from '@mvx/mvc';
 import { NonePointcut } from '@tsdi/aop';
 
 const session = require('koa-session');
 
 @NonePointcut
-@Middleware(Middlewares.Session)
+@Middleware(MiddlewareTypes.Session)
 export class SessionMiddleware implements IMiddleware {
 
     constructor() {

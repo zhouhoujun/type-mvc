@@ -1,10 +1,10 @@
-import { Middleware, IMiddleware, IApplication, Middlewares } from '@mvx/mvc';
+import { Middleware, IMiddleware, IApplication, MiddlewareTypes } from '@mvx/mvc';
 import { toAbsolutePath } from '@tsdi/platform-server';
 import { DefaultConfigureToken } from '@tsdi/boot';
 
 const views = require('koa-views');
 
-@Middleware(Middlewares.Views)
+@Middleware(MiddlewareTypes.Views)
 export class ViewsMiddleware implements IMiddleware {
 
     constructor() {

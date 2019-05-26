@@ -1,4 +1,4 @@
-import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization, IApplication, MvcApplication, MvcApplication } from '../src';
+import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization, MvcApplication } from '../src';
 import { AutoWired, Inject, Injectable } from '@tsdi/ioc';
 import { Suite, Before, Test, Assert, ExpectToken, Expect, After } from '@tsdi/unit';
 import { KoaModule } from '@mvx/koa'
@@ -53,10 +53,10 @@ export class TestController {
 @Suite('constroller')
 export class ControllerTest {
 
-    private app: IApplication;
+    private app: MvcApplication;
     @Before()
     async before() {
-        this.app = await MvcApplication.create()
+        this.app = await MvcApplication.run()
             .use(KoaModule)
             .use(TestController)
             .bootstrap();

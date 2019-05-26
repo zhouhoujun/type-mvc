@@ -1,9 +1,6 @@
-import { NonePointcut } from '@tsdi/aop';
-import { Middleware, IMiddleware, IConfiguration, ConfigurationToken, ApplicationToken, IApplication } from '@mvx/mvc';
-import { IContainer, Injectable, Inject } from '@tsdi/core';
+import { Middleware, IMiddleware, IContext } from '@mvx/mvc';
 
 
-@NonePointcut
 @Middleware({ provide: 'logger' })
 export class Logger implements IMiddleware {
 
@@ -11,14 +8,11 @@ export class Logger implements IMiddleware {
 
     }
 
-    setup(app: IApplication) {
-        app.use(async (ctx, next) => {
-            let start = Date.now();
-            await next();
-            const ms = Date.now() - start;
-            console.log(`mylog: ${ctx.method} ${ctx.url} - ${ms}ms`);
-            let end = new Date();
-        });
+    async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
+        let start = Date.now();
+        await next();
+        const ms = Date.now() - start;
+        console.log(`mylog: ${ctx.method} ${ctx.url} - ${ms}ms`);
+        let end = new Date();
     }
-
 }

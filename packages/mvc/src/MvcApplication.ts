@@ -2,7 +2,6 @@ import { Type, LoadType } from '@tsdi/ioc';
 import { LogModule } from '@tsdi/logs';
 import { AopModule } from '@tsdi/aop';
 import { BootApplication, checkBootArgs } from '@tsdi/boot';
-import { MvcCoreModule } from './CoreModule';
 import { MvcContext, MvcOptions, MvcContextToken } from './MvcContext';
 import { MvcModule } from './MvcModule';
 

@@ -1,9 +1,9 @@
-import { Middleware, IMiddleware, IApplication, Middlewares } from '@mvx/mvc';
+import { Middleware, IMiddleware, IApplication, MiddlewareTypes } from '@mvx/mvc';
 import { NonePointcut } from '@tsdi/aop';
 const logger = require('koa-logger')
 
 @NonePointcut
-@Middleware(Middlewares.Log)
+@Middleware(MiddlewareTypes.Log)
 export class LogMiddleware implements IMiddleware {
 
     constructor() {

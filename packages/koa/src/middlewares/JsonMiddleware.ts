@@ -1,7 +1,7 @@
-import { Middleware, IMiddleware, IApplication, Middlewares } from '@mvx/mvc';
+import { Middleware, IMiddleware, IApplication, MiddlewareTypes } from '@mvx/mvc';
 import * as json from 'koa-json';
 
-@Middleware(Middlewares.Json)
+@Middleware(MiddlewareTypes.Json)
 export class JsonMiddleware implements IMiddleware {
 
     constructor() {
