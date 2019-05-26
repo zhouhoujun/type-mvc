@@ -1,8 +1,8 @@
 import { HandleType } from '@tsdi/boot';
 import { IContext, CompositeMiddleware } from '../middlewares';
 import { Singleton } from '@tsdi/ioc';
-import { RouteUrlToken } from './Route';
-import { CustomRoute, CustomHandleToken } from './CustomRoute';
+import { RouteUrlArgToken } from './Route';
+import { CustomRoute, CustomHandleArgToken } from './CustomRoute';
 import { RouteChecker } from '../services';
 
 @Singleton
@@ -21,10 +21,9 @@ export class Router extends CompositeMiddleware {
     }
 
     routes(route: string, handle: HandleType<IContext>): this {
-
         this.use(this.container.resolve(CustomRoute,
-            { provide: RouteUrlToken, useValue: route },
-            { provide: CustomHandleToken, useValue: handle }));
+            { provide: RouteUrlArgToken, useValue: route },
+            { provide: CustomHandleArgToken, useValue: handle }));
 
         return this;
     }

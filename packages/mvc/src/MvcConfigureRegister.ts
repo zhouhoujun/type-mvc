@@ -2,8 +2,6 @@ import { ConfigureRegister } from '@tsdi/boot';
 import { DebugLogAspect } from '@tsdi/logs';
 import { Singleton, isToken, isClass } from '@tsdi/ioc';
 import { IConfiguration } from './IConfiguration';
-import { DefaultModelParserToken } from '@mvx/model';
-
 @Singleton
 export class MvcConfigureRegister extends ConfigureRegister {
     constructor() {

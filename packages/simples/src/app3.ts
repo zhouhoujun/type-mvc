@@ -1,4 +1,4 @@
-import { MvcHostBuilder, MvcServerToken } from '@mvx/mvc';
+import { MvcApplication } from '@mvx/mvc';
 // import { PlatformServer } from '@tsdi/platform-server';
 import { KoaModule } from '@mvx/koa';
 import { Bootstrap } from '@tsdi/boot';
@@ -7,7 +7,6 @@ import { Bootstrap } from '@tsdi/boot';
     imports: [
         KoaModule
     ],
-    bootstrap: MvcServerToken,
     debug: true
 })
 class MvcApi {
@@ -17,9 +16,7 @@ class MvcApi {
 
     static main() {
         console.log('run mvc api...');
-        MvcHostBuilder.create(__dirname)
-            .useConfiguration({ debug: true })
-            .bootstrap(MvcApi);
+        MvcApplication.run(MvcApi);
     }
 }
 

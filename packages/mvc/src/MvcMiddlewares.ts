@@ -43,9 +43,5 @@ export class MvcMiddlewares extends CompositeMiddleware {
             return this.execute(ctx, next)
         });
     }
-
-    protected setupDefault() {
-
-    }
 }
 

@@ -2,9 +2,9 @@ import {
     lang, Injectable, Type, getMethodMetadata, isFunction, isBaseType,
     isUndefined, ParamProviders, Provider, isClass, IParameter, isObject,
     isArray, isPromise, hasClassMetadata, hasMethodMetadata, getTypeMetadata,
-    isString, RuntimeLifeScope
+    isString, RuntimeLifeScope, Inject, InjectToken
 } from '@tsdi/ioc';
-import { MvcRoute } from './Route';
+import { MvcRoute, RouteUrlArgToken } from './Route';
 import { IContext } from '../middlewares';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
 import { RouteMetadata, CorsMetadata } from '../metadata';
@@ -24,10 +24,12 @@ export function isBuffer(target: any): boolean {
     }
 }
 
+export const RouteControllerArgToekn = new InjectToken<Type<any>>('route_controller_args');
+
 @Injectable
 export class ControllerRoute extends MvcRoute {
 
-    constructor(url: string, private controller: Type<any>) {
+    constructor(@Inject(RouteUrlArgToken) url: string, @Inject(RouteControllerArgToekn) private controller: Type<any>) {
         super(url);
     }
 

@@ -3,7 +3,7 @@ import { LogModule } from '@tsdi/logs';
 import { AopModule } from '@tsdi/aop';
 import { BootApplication, checkBootArgs } from '@tsdi/boot';
 import { MvcContext, MvcOptions, MvcContextToken } from './MvcContext';
-import { MvcModule } from './MvcModule';
+import { MvcCoreModule } from './CoreModule';
 
 /**
  * Default Application of type mvc.
@@ -16,44 +16,11 @@ export class MvcApplication extends BootApplication {
 
     async onInit(target: Type<any> | MvcOptions | MvcContext) {
         await super.onInit(target);
-
-        // this.configMgr = bootOptions.configManager;
-        // let gcfg = await this.configMgr.getConfig();
-        // this.config = lang.assign(this.config || {}, gcfg, this.config);
-        // this.container.bindProvider(ConfigurationToken, this.config);
-        // this.getServer().init(this.config);
-        // this.router = this.container.resolve(Router);
-        // this.router.setRoot(this.config.routePrefix);
-
-        // this.builder = bootOptions.bootBuilder as IMvcHostBuilder;
-
-        // this.builder.getPools().iterator(c => {
-        //     c.forEach((tk, fac) => {
-        //         if (isClass(tk)) {
-        //             if (hasOwnClassMetadata(Controller, tk)) {
-        //                 this.controllers.push(tk);
-        //                 this.container.bindProvider(tk, fac);
-        //             } else if (hasOwnClassMetadata(Middleware, tk)) {
-        //                 this.middlewares.push(tk);
-        //                 this.container.bindProvider(tk, fac);
-        //             }
-        //         }
-        //     })
-        // });
-
-        // this.router.register(...this.getControllers());
-
-        // let midds: MiddlewareType[] = this.builder.middlewares || [];
-        // midds = midds.concat(this.getMiddlewares() || []);
-        // this.getMiddleChain()
-        //     .use(...midds)
-        //     .setup(this);
-
     }
 
     getBootDeps() {
         let deps = super.getBootDeps();
-        return [AopModule, LogModule, MvcModule, ...deps];
+        return [AopModule, LogModule, MvcCoreModule, ...deps];
     }
 
     static async run<T extends MvcContext>(target: T | Type<any> | MvcOptions, deps?: LoadType[] | LoadType | string, ...args: string[]): Promise<T> {

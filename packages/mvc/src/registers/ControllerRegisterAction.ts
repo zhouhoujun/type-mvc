@@ -1,7 +1,7 @@
 import { IocDesignAction, DesignActionContext, hasClassMetadata, getTypeMetadata } from '@tsdi/ioc';
 import { Controller } from '../decorators';
 import { ControllerMetadata } from '../metadata';
-import { Router, ControllerRoute } from '../router';
+import { Router, ControllerRoute, RouteUrlArgToken, RouteControllerArgToekn } from '../router';
 
 export class ControllerRegisterAction extends IocDesignAction {
 
@@ -17,7 +17,9 @@ export class ControllerRegisterAction extends IocDesignAction {
                 if (prefix && !/^\//.test(prefix)) {
                     prefix = '/' + prefix;
                 }
-                router.routes(prefix, new ControllerRoute(prefix, ctx.targetType))
+                router.routes(prefix, this.container.get(ControllerRoute,
+                    { provide: RouteUrlArgToken, useValue: prefix },
+                    { provide: RouteControllerArgToekn, useValue: ctx.targetType }))
             });
         }
         next();

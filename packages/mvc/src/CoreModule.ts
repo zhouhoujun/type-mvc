@@ -3,10 +3,11 @@ import { Controller, Authorization, Middleware } from './decorators';
 import { Inject, DecoratorScopes, RuntimeDecoratorRegisterer, DesignDecoratorRegisterer, BindProviderAction, BindMethodProviderAction } from '@tsdi/ioc';
 import { MvcContext } from './MvcContext';
 import { ControllerRegisterAction, MiddlewareRegisterAction } from './registers';
-import { MiddlewareRegisterer } from './middlewares';
-import { Router } from './router';
-import { RouteChecker } from './services';
-
+import * as middlewares from './middlewares';
+import * as routers from './router';
+import * as services from './services';
+import { DefaultConfigureToken } from '@tsdi/boot';
+import { IConfiguration } from './IConfiguration';
 
 @IocExt('setup')
 export class MvcCoreModule {
@@ -16,10 +17,39 @@ export class MvcCoreModule {
     }
 
     setup(@Inject(ContainerToken) container: IContainer) {
-        container.register(MvcContext)
-            .register(Router)
-            .register(MiddlewareRegisterer)
-            .register(RouteChecker);
+        container.register(MvcContext);
+
+        container.use(services, middlewares, routers);
+
+        container.bindProvider(DefaultConfigureToken, <IConfiguration>{
+            hostname: '',
+            port: 3000,
+            routePrefix: '',
+            setting: {},
+            connections: {},
+            middlewares: ['./middlewares/**/*{.js,.ts}', '!./**/*.d.ts'],
+            controllers: ['./controllers/**/*{.js,.ts}', '!./**/*.d.ts'],
+            aop: ['./aop/**/*{.js,.ts}', '!./**/*.d.ts'],
+            views: './views',
+            viewsOptions: {
+                extension: 'ejs',
+                map: { html: 'nunjucks' }
+            },
+            models: ['./models/**/*{.js,.ts}', '!./**/*.d.ts'],
+            debug: false,
+            session: {
+                key: 'typemvc:sess', /** (string) cookie key (default is koa:sess) */
+                /** (number || 'session') maxAge in ms (default is 1 days) */
+                /** 'session' will result in a cookie that expires when session/browser is closed */
+                /** Warning: If a session cookie is stolen, this cookie will never expire */
+                maxAge: 86400000,
+                overwrite: true, /** (boolean) can overwrite or not (default true) */
+                httpOnly: true, /** (boolean) httpOnly or not (default true) */
+                signed: true, /** (boolean) signed or not (default true) */
+                rolling: false/** (boolean) Force a session identifier cookie to be set on every response. The expiration is reset to the original maxAge, resetting the expiration countdown. default is false **/
+            },
+            contents: ['./public']
+        });
 
         container.getActionRegisterer()
             .register(container, ControllerRegisterAction)
