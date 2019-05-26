@@ -3,7 +3,7 @@ import { ContainerToken, IContainer } from '@tsdi/core';
 import { IConfiguration } from './IConfiguration';
 import { Abstract, Inject, Type } from '@tsdi/ioc';
 import { ILoggerManager, ILogger, IConfigureLoggerManager, ConfigureLoggerManger, LogConfigureToken } from '@tsdi/logs';
-import { IRouter } from './router';
+import { Router } from './router';
 
 /**
  * base mvc server.
@@ -20,7 +20,9 @@ export abstract class MvcServer implements IMvcServer {
     container: IContainer;
 
     private _loggerMgr: ILoggerManager;
-    protected router: IRouter;
+
+    @Inject()
+    protected router: Router;
     protected controllers: Type<any>[];
     protected middlewares: Type<any>[];
     protected config: IConfiguration;
@@ -42,7 +44,7 @@ export abstract class MvcServer implements IMvcServer {
         return this.config as IConfiguration;
     }
 
-    getRouter(): IRouter {
+    getRouter(): Router {
         return this.router;
     }
 

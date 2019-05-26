@@ -1,4 +1,4 @@
-import { Route, RouteUrlToken } from './Route';
+import { MvcRoute, RouteUrlToken } from './Route';
 import { IContext } from '../middlewares';
 import { Injectable, Inject, InjectToken } from '@tsdi/ioc';
 import { HandleType } from '@tsdi/boot';
@@ -6,7 +6,7 @@ import { HandleType } from '@tsdi/boot';
 export const CustomHandleToken = new InjectToken<HandleType<IContext>>('custom_route_handle');
 
 @Injectable
-export class CustomRoute extends Route {
+export class CustomRoute extends MvcRoute {
 
 
     constructor(@Inject(RouteUrlToken) url: string, @Inject(CustomHandleToken) protected handle: HandleType<IContext>) {

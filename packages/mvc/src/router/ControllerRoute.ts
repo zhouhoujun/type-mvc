@@ -4,7 +4,7 @@ import {
     isArray, isPromise, hasClassMetadata, hasMethodMetadata, getTypeMetadata,
     isString, RuntimeLifeScope
 } from '@tsdi/ioc';
-import { Route } from './Route';
+import { MvcRoute } from './Route';
 import { IContext } from '../middlewares';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
 import { RouteMetadata, CorsMetadata } from '../metadata';
@@ -25,7 +25,7 @@ export function isBuffer(target: any): boolean {
 }
 
 @Injectable
-export class ControllerRoute extends Route {
+export class ControllerRoute extends MvcRoute {
 
     constructor(url: string, private controller: Type<any>) {
         super(url);
@@ -252,7 +252,7 @@ export class ControllerRoute extends Route {
 
 
     protected getRouteMetaData(ctx: IContext, requestMethod: RequestMethod) {
-        let decoratorName = Route.toString();
+        let decoratorName = MvcRoute.toString();
         let baseURL = this.vaildify(this.url, true);
         let routPath = this.vaildify(ctx.url.replace(baseURL, ''));
         let methodMaps = getMethodMetadata<RouteMetadata>(decoratorName, this.controller);

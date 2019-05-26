@@ -1,10 +1,9 @@
-import { MvcMiddleware } from '../middlewares';
-import { IContext } from '../IContext';
+import { MvcMiddleware, IContext } from '../middlewares';
 import { InjectToken } from '@tsdi/ioc';
 
 export const RouteUrlToken = new InjectToken<string>('route_url');
 
-export abstract class Route extends MvcMiddleware {
+export abstract class MvcRoute extends MvcMiddleware {
 
     url: string;
     constructor(url: string) {
