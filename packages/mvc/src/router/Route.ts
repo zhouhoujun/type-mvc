@@ -36,11 +36,8 @@ export abstract class MvcRoute extends MvcMiddleware {
             return false;
         }
         let routeUrl = this.getReqRoute(ctx);
-        console.log('canNavigate:', routeUrl);
-        console.log('..............................')
-        console.log('canNavigate:', this.url);
-        if (routeUrl === '' || this.url === '') {
-            return routeUrl === this.url;
+        if (this.url === '') {
+            return true;
         }
         return routeUrl.startsWith(this.url);
     }

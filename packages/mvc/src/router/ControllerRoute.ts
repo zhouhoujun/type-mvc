@@ -37,8 +37,8 @@ export class ControllerRoute extends MvcRoute {
         try {
             await this.invokeOption(ctx, async () => {
                 if (ctx.method !== 'OPTIONS') {
-                    await this.invoke(ctx)
-                    await next();
+                    await this.invoke(ctx, next)
+                    // await next();
                 } else {
                     throw new ForbiddenError();
                 }
@@ -161,7 +161,7 @@ export class ControllerRoute extends MvcRoute {
         }
         return null;
     }
-    async invoke(ctx: IContext) {
+    async invoke(ctx: IContext, next: () => Promise<void>) {
         let meta = this.getRouteMetaData(ctx, parseRequestMethod(ctx.method));
         let container = this.container;
         if (meta && meta.propertyKey) {
@@ -202,9 +202,9 @@ export class ControllerRoute extends MvcRoute {
                     ctx.body = response;
                 }
             }
-
+            await next();
         } else {
-            throw new NotFoundError();
+            await next();
         }
     }
 
