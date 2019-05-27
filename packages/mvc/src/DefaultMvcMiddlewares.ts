@@ -23,14 +23,14 @@ export const DefaultMvcMiddlewares: MvcMiddlewareType[] = [
     (config, ctx) => {
         let contents = config.contents || ['./public'];
         contents.forEach((content, idx) => {
-            let staticPath = toAbsolutePath(config.baseURL, content);
+            let staticPath = toAbsolutePath(ctx.getRootPath(), content);
             console.log(`content path ${idx + 1}:`, staticPath);
-            this.use(serve(staticPath));
+            ctx.getKoa().use(serve(staticPath));
         });
     },
     (config, ctx) => {
-        let viewPath = toAbsolutePath(config.baseURL, config.views);
-        console.log('view path:', viewPath);
+        let viewPath = toAbsolutePath(ctx.getRootPath(), config.views);
+        console.log('view path:', viewPath, config.viewsOptions);
         return views(viewPath, config.viewsOptions);
     },
     RouterMiddleware

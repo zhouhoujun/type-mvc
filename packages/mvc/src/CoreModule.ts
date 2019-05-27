@@ -8,6 +8,8 @@ import * as routers from './router';
 import * as services from './services';
 import { DefaultConfigureToken, DIModuleInjectorScope } from '@tsdi/boot';
 import { IConfiguration } from './IConfiguration';
+import { MvcServer } from './MvcServer';
+import { MvcConfigureRegister } from './MvcConfigureRegister';
 
 @IocExt('setup')
 export class MvcCoreModule {
@@ -17,7 +19,9 @@ export class MvcCoreModule {
     }
 
     setup(@Inject(ContainerToken) container: IContainer) {
-        container.register(MvcContext);
+        container.register(MvcContext)
+            .register(MvcServer)
+            .register(MvcConfigureRegister);
 
         container.use(services, middlewares, routers);
 

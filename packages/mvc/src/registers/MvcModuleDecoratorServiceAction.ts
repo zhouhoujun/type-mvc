@@ -18,7 +18,7 @@ export class MvcModuleDecoratorServiceAction extends IocResolveServiceAction {
             if (lang.isExtendsClass(stype, BootContext)) {
                 let metas = getOwnTypeMetadata<MvcModuleMetadata>(ctx.currDecorator, ctx.currTargetType);
                 metas.some(m => {
-                    if (m && lang.isExtendsClass(m.contextType, stype)) {
+                    if (m && m.contextType && lang.isExtendsClass(m.contextType, stype)) {
                         ctx.instance = this.container.get(m.contextType, ...ctx.providers);
                     }
                     return !!ctx.instance;
@@ -31,8 +31,7 @@ export class MvcModuleDecoratorServiceAction extends IocResolveServiceAction {
                         this.resolve(ctx, MvcContext);
                     }
                 }
-            }
-            if (lang.isExtendsClass(stype, Runnable)) {
+            } else if (lang.isExtendsClass(stype, Runnable)) {
                 this.resolve(ctx, MvcServer);
             }
         }

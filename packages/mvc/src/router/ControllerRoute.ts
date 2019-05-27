@@ -11,7 +11,7 @@ import { RouteMetadata, CorsMetadata } from '../metadata';
 import { NotFoundError, UnauthorizedError, ForbiddenError, HttpError } from '../errors';
 import { ResultValue } from '../results';
 import { AuthorizationToken } from '../IAuthorization';
-import { Authorization, Cors } from '../decorators';
+import { Authorization, Cors, Route } from '../decorators';
 import { IConfiguration, ConfigurationToken } from '../IConfiguration';
 import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
 declare let Buffer: any;
@@ -33,8 +33,9 @@ export class ControllerRoute extends MvcRoute {
         super(url);
     }
 
-    async navigate(ctx: IContext, next: () => Promise<void>): Promise<any> {
+    async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
         try {
+            console.log(ctx, this.controller)
             await this.invokeOption(ctx, async () => {
                 if (ctx.method !== 'OPTIONS') {
                     await this.invoke(ctx)
@@ -237,10 +238,9 @@ export class ControllerRoute extends MvcRoute {
                     }
                     if (isClass(ptype)) {
                         val = await this.container.get(BuilderService).resolve(ptype, { scope: body })
-                        return Provider.createParam(param.name || ptype, val, idx);
                     }
                 }
-                Provider.createParam(param.name || ptype, val, idx);
+                return Provider.createParam(param.name || ptype, val, idx);
             }))
             return providers.filter(p => p !== null);
         }
@@ -254,11 +254,12 @@ export class ControllerRoute extends MvcRoute {
 
 
     protected getRouteMetaData(ctx: IContext, requestMethod: RequestMethod) {
-        let decoratorName = MvcRoute.toString();
-        let baseURL = this.vaildify(this.url, true);
-        let routPath = this.vaildify(ctx.url.replace(baseURL, ''));
+        let decoratorName = Route.toString();
+        let subRoute = this.getReqRoute(ctx).replace(this.url, '');
         let methodMaps = getMethodMetadata<RouteMetadata>(decoratorName, this.controller);
         let meta: RouteMetadata;
+
+        console.log('subRoute:', subRoute, methodMaps);
 
         let allMethods: RouteMetadata[] = [];
         for (let name in methodMaps) {
@@ -268,14 +269,14 @@ export class ControllerRoute extends MvcRoute {
 
         allMethods = allMethods.sort((ra, rb) => (rb.route || '').length - (ra.route || '').length);
 
-        meta = allMethods.find(route => (route.route || '') === routPath);
+        meta = allMethods.find(route => (route.route || '') === subRoute);
         if (!meta) {
             meta = allMethods.find(route => {
                 let uri = route.route || '';
                 if (this.isRestUri(uri)) {
                     let idex = uri.indexOf('/:');
                     let url = uri.substring(0, idex);
-                    if (url !== routPath && routPath.indexOf(url) === 0) {
+                    if (url !== subRoute && subRoute.indexOf(url) === 0) {
                         return true;
                     }
                 }

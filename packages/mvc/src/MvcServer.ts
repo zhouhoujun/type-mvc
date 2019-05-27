@@ -3,7 +3,7 @@ import { IConfiguration } from './IConfiguration';
 import { Inject, Injectable } from '@tsdi/ioc';
 import { ILoggerManager, ILogger, IConfigureLoggerManager, ConfigureLoggerManger, LogConfigureToken } from '@tsdi/logs';
 import { Router } from './router';
-import { Service, ConfigureMgrToken } from '@tsdi/boot';
+import { Service, ConfigureMgrToken, ServiceInit } from '@tsdi/boot';
 import * as Koa from 'koa';
 import { MvcMiddlewares } from './middlewares';
 import { MvcContext } from './MvcContext';
@@ -17,7 +17,7 @@ import { MvcContext } from './MvcContext';
  * @implements {IMvcServer}
  */
 @Injectable()
-export class MvcServer extends Service<Koa> {
+export class MvcServer extends Service<Koa> implements ServiceInit {
 
     @Inject(ContainerToken)
     container: IContainer;
@@ -61,10 +61,9 @@ export class MvcServer extends Service<Koa> {
         return this.context as MvcContext;
     }
 
-    async init() {
-        let container = this.getContainer();
+    async onInit() {
         let ctx = this.getMvcContext();
-        this.config = await container.get(ConfigureMgrToken).getConfig();
+        this.config = ctx.configuration || await this.container.resolve(ConfigureMgrToken).getConfig();
         this.getMiddlewares().setup(ctx);
     }
 

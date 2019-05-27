@@ -1,6 +1,6 @@
 import { ConfigureRegister, Handle } from '@tsdi/boot';
 import { DebugLogAspect, LogConfigureToken } from '@tsdi/logs';
-import { Singleton, isArray, isClass, isFunction } from '@tsdi/ioc';
+import { Singleton, isArray, isClass, isFunction, Refs } from '@tsdi/ioc';
 import { IConfiguration } from './IConfiguration';
 import { DefaultMvcMiddlewares } from './DefaultMvcMiddlewares';
 import { MvcContext } from './MvcContext';
@@ -15,6 +15,9 @@ export class MvcConfigureRegister extends ConfigureRegister {
         super();
     }
     async register(config: IConfiguration, ctx: MvcContext): Promise<void> {
+
+        config = ctx.configuration = Object.assign({}, config, ctx.annoation);
+
         if (config.debug || ctx.annoation.debug) {
             this.container.register(DebugLogAspect);
         }
@@ -46,7 +49,7 @@ export class MvcConfigureRegister extends ConfigureRegister {
         }
 
         if (config.controllers) {
-           await this.container.load({
+            await this.container.load({
                 basePath: config.baseURL || ctx.baseURL,
                 files: config.controllers
             });

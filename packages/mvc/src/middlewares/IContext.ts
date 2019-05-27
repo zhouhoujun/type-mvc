@@ -23,5 +23,7 @@ export interface IContext extends KoaContext, ObjectMap<any>, IHandleContext {
      */
     mvcContext: MvcContext;
 
+    routePrefix?: string;
+
 }
 

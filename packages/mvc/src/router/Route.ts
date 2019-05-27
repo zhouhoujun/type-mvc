@@ -23,20 +23,28 @@ export abstract class MvcRoute extends MvcMiddleware {
 
     abstract navigate(ctx: IContext, next: () => Promise<void>): Promise<void>;
 
-    canNavigate(ctx: IContext): boolean {
-        return (!ctx.status || ctx.status === 404) && this.url.startsWith(ctx.url);
+    protected getReqRoute(ctx: IContext): string {
+        let reqUrl = this.vaildify(ctx.url);
+        return reqUrl.replace(ctx.mvcContext.configuration.routePrefix, '');
     }
 
-    vaildify(routPath: string, foreNull = false): string {
-        if (foreNull && routPath === '/') {
-            routPath = '';
+    protected canNavigate(ctx: IContext): boolean {
+        if (ctx.status && ctx.status !== 404) {
+            return false;
         }
-        if (/\/\s*$/.test(routPath)) {
-            routPath = routPath.substring(0, routPath.lastIndexOf('/'));
+        return this.url.startsWith(this.getReqRoute(ctx));
+    }
+
+    protected vaildify(routePath: string, foreNull = false): string {
+        if (foreNull && routePath === '/') {
+            routePath = '';
         }
-        if (/\?\S*$/.test(routPath)) {
-            routPath = routPath.substring(0, routPath.lastIndexOf('?'));
+        if (/\/\s*$/.test(routePath)) {
+            routePath = routePath.substring(0, routePath.lastIndexOf('/'));
         }
-        return routPath;
+        if (/\?\S*$/.test(routePath)) {
+            routePath = routePath.substring(0, routePath.lastIndexOf('?'));
+        }
+        return routePath;
     }
 }
