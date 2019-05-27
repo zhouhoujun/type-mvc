@@ -1,7 +1,8 @@
-import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization, MvcApplication } from '../src';
+import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization, MvcApplication, MvcApp, MvcModule, MvcServer } from '../src';
 import { AutoWired, Inject, Injectable } from '@tsdi/ioc';
 import { Suite, Before, Test, Assert, ExpectToken, Expect, After } from '@tsdi/unit';
-import { KoaModule } from '@mvx/koa'
+import { MvcContext } from '../src/MvcContext';
+
 
 
 @Injectable
@@ -50,28 +51,39 @@ export class TestController {
 
 }
 
+@MvcModule({
+    imports: [
+        TestController
+    ]
+})
+class SimpleApp {
+
+}
+
 @Suite('constroller')
 export class ControllerTest {
 
-    private app: MvcApplication;
+    private ctx: MvcContext;
     @Before()
     async before() {
-        this.app = await MvcApplication.run()
-            .use(KoaModule)
-            .use(TestController)
-            .bootstrap();
+        this.ctx = await MvcApplication.run(SimpleApp);
     }
 
     @Test('application has boot.')
     test1(@Inject(ExpectToken) expect: Expect) {
-        expect(this.app instanceof MvcApplication).toBeTruthy();
-        expect(this.app.getConfig().port).toEqual(3000);
+        expect(this.ctx instanceof MvcContext).toBeTruthy();
+        expect(this.ctx.configuration.port).toEqual(3000);
     }
 
 
+    @Test('application has instance mvc service.')
+    test2(@Inject(ExpectToken) expect: Expect) {
+        expect(this.ctx.runnable instanceof MvcServer).toBeTruthy();
+    }
+
     @After()
     destory() {
-        this.app.stop();
+        this.ctx.runnable.stop();
     }
 
 }

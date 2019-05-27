@@ -1,4 +1,4 @@
-import { BootContext, BootOption, ProcessRunRootToken } from '@tsdi/boot';
+import { BootContext, BootOption, ProcessRunRootToken, Service } from '@tsdi/boot';
 import { Injectable, Refs, InjectToken } from '@tsdi/ioc';
 import { IConfiguration } from './IConfiguration';
 import * as Koa from 'koa';
@@ -45,6 +45,13 @@ export const MvcContextToken = new InjectToken<MvcContext>('MVC_Context');
 @Refs('@MvcModule', BootContext)
 export class MvcContext extends BootContext {
 
+    /**
+     * runable.
+     *
+     * @type {Service<any>}
+     * @memberof MvcContext
+     */
+    runnable: Service<any>;
     /**
      * configuration, meger configure and annoation metadata.
      *

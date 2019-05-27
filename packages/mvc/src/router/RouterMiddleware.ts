@@ -4,7 +4,6 @@ import { Router } from './Router';
 import { Inject } from '@tsdi/ioc';
 
 
-
 @Middleware('Router')
 export class RouterMiddleware extends MvcMiddleware implements IMiddleware {
 
