@@ -1,4 +1,4 @@
-import { MvcApplication, MvcModule, DefaultMvcMiddlewares } from '@mvx/mvc';
+import { MvcApplication, MvcModule, DefaultMvcMiddlewares, MvcServer } from '@mvx/mvc';
 // import { PlatformServer } from '@tsdi/platform-server';
 
 

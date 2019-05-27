@@ -1,7 +1,6 @@
 import { BootContext, BootOption, ProcessRunRootToken } from '@tsdi/boot';
 import { Injectable, Refs, InjectToken } from '@tsdi/ioc';
 import { IConfiguration } from './IConfiguration';
-import { MvcServer } from './MvcServer';
 import * as Koa from 'koa';
 import * as http from 'http';
 import * as https from 'https';
@@ -43,7 +42,6 @@ export interface MvcOptions extends BootOption {
 export const MvcContextToken = new InjectToken<MvcContext>('MVC_Context');
 
 @Injectable()
-@Refs(MvcServer, BootContext)
 @Refs('@MvcModule', BootContext)
 export class MvcContext extends BootContext {
 

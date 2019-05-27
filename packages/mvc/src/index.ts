@@ -11,7 +11,6 @@ export * from './IConfiguration';
 export * from './IAuthorization';
 export * from './RequestMethod';
 
-export * from './IMvcServer';
 export * from './IListener';
 export * from './MvcServer';
 export * from './BaseController';

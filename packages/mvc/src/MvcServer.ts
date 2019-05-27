@@ -1,9 +1,9 @@
 import { ContainerToken, IContainer } from '@tsdi/core';
 import { IConfiguration } from './IConfiguration';
-import { Inject, Injectable } from '@tsdi/ioc';
+import { Inject, Injectable, Refs } from '@tsdi/ioc';
 import { ILoggerManager, ILogger, IConfigureLoggerManager, ConfigureLoggerManger, LogConfigureToken } from '@tsdi/logs';
 import { Router } from './router';
-import { Service, ConfigureMgrToken, ServiceInit } from '@tsdi/boot';
+import { Service, ConfigureMgrToken, ServiceInit, Runnable } from '@tsdi/boot';
 import * as Koa from 'koa';
 import { MvcMiddlewares } from './middlewares';
 import { MvcContext } from './MvcContext';
@@ -17,6 +17,7 @@ import { MvcContext } from './MvcContext';
  * @implements {IMvcServer}
  */
 @Injectable()
+@Refs('@MvcModule', Runnable)
 export class MvcServer extends Service<Koa> implements ServiceInit {
 
     @Inject(ContainerToken)

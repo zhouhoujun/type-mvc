@@ -32,7 +32,12 @@ export class MvcModuleDecoratorServiceAction extends IocResolveServiceAction {
                     }
                 }
             } else if (lang.isExtendsClass(stype, Runnable)) {
-                this.resolve(ctx, MvcServer);
+                let ref = new InjectReference(Runnable, ctx.currDecorator);
+                if (this.container.has(ref)) {
+                    this.resolve(ctx, ref);
+                } else {
+                    this.resolve(ctx, MvcContext);
+                }
             }
         }
         if (!ctx.instance) {

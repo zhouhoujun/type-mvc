@@ -1,5 +1,5 @@
 import { createDIModuleDecorator } from '@tsdi/boot';
-import { ITypeDecorator } from '@tsdi/ioc';
+import { ITypeDecorator, isClass, isFunction } from '@tsdi/ioc';
 import { MvcModuleMetadata } from '../metadata';
 
 /**
@@ -26,4 +26,13 @@ export interface IMvcModuleDecorator<T extends MvcModuleMetadata> extends ITypeD
  *
  * @MvcModule
  */
-export const MvcModule: IMvcModuleDecorator<MvcModuleMetadata> = createDIModuleDecorator<MvcModuleMetadata>('MvcModule') as IMvcModuleDecorator<MvcModuleMetadata>;
+export const MvcModule: IMvcModuleDecorator<MvcModuleMetadata> = createDIModuleDecorator<MvcModuleMetadata>('MvcModule', null, (metadata: MvcModuleMetadata) => {
+
+    // static main.
+    if (isClass(metadata.type) && isFunction(metadata.type['main'])) {
+        setTimeout(() => {
+            metadata.type['main'](metadata);
+        }, 100);
+    }
+    return metadata;
+}) as IMvcModuleDecorator<MvcModuleMetadata>;

@@ -1,4 +1,4 @@
-import { MvcServerToken, MvcApplication, MvcModule } from '@mvx/mvc';
+import { MvcApplication, MvcModule, MvcServer } from '@mvx/mvc';
 // import { PlatformServer } from '@tsdi/platform-server';
 import { DebugLogAspect } from '@tsdi/logs';
 
@@ -6,7 +6,7 @@ import { DebugLogAspect } from '@tsdi/logs';
     imports: [
         // DebugLogAspect
     ],
-    bootstrap: MvcServerToken
+    bootstrap: MvcServer
 })
 class MvcApi {
 
