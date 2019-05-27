@@ -35,7 +35,6 @@ export class ControllerRoute extends MvcRoute {
 
     async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
         try {
-            console.log(ctx, this.controller)
             await this.invokeOption(ctx, async () => {
                 if (ctx.method !== 'OPTIONS') {
                     await this.invoke(ctx)
@@ -71,7 +70,7 @@ export class ControllerRoute extends MvcRoute {
         };
 
 
-        let config = this.container.get<IConfiguration>(ConfigurationToken);
+        let config = ctx.mvcContext.configuration;
         let options = config.corsOptions || {};
 
         if (ctx.method !== 'OPTIONS') {
@@ -258,8 +257,6 @@ export class ControllerRoute extends MvcRoute {
         let subRoute = this.getReqRoute(ctx).replace(this.url, '');
         let methodMaps = getMethodMetadata<RouteMetadata>(decoratorName, this.controller);
         let meta: RouteMetadata;
-
-        console.log('subRoute:', subRoute, methodMaps);
 
         let allMethods: RouteMetadata[] = [];
         for (let name in methodMaps) {

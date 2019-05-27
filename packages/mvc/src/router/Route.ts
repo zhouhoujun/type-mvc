@@ -9,7 +9,7 @@ export abstract class MvcRoute extends MvcMiddleware {
     constructor(url: string) {
         super();
         if (url) {
-            this.url = this.vaildify(url);
+            this.url = this.vaildify(url, true);
         }
     }
 
@@ -24,15 +24,25 @@ export abstract class MvcRoute extends MvcMiddleware {
     abstract navigate(ctx: IContext, next: () => Promise<void>): Promise<void>;
 
     protected getReqRoute(ctx: IContext): string {
-        let reqUrl = this.vaildify(ctx.url);
-        return reqUrl.replace(ctx.mvcContext.configuration.routePrefix, '');
+        let reqUrl = this.vaildify(ctx.url, true);
+        if (ctx.mvcContext.configuration.routePrefix) {
+            return reqUrl.replace(ctx.mvcContext.configuration.routePrefix, '');
+        }
+        return reqUrl;
     }
 
     protected canNavigate(ctx: IContext): boolean {
         if (ctx.status && ctx.status !== 404) {
             return false;
         }
-        return this.url.startsWith(this.getReqRoute(ctx));
+        let routeUrl = this.getReqRoute(ctx);
+        console.log('canNavigate:', routeUrl);
+        console.log('..............................')
+        console.log('canNavigate:', this.url);
+        if (routeUrl === '' || this.url === '') {
+            return routeUrl === this.url;
+        }
+        return routeUrl.startsWith(this.url);
     }
 
     protected vaildify(routePath: string, foreNull = false): string {
