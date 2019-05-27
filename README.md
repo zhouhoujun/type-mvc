@@ -16,91 +16,28 @@ You can install this package either with `npm`
 ```shell
 
 npm install @mvx/mvc
-npm install @mvx/koa
 
 
 ```
 
 ## Documentation
 
-* 1.0.1
-    1. add useServer to add Server Middleware features.
-
-* 0.6.3
-    1. update compile task, zip lib.
-    2. update tsioc for fix bug when inherit class with classAnnations
-
-* 0.5.5
-    1. fix ConsoleLog error console.debug in nuix will not console.
-    2. update components for route.
-    
-* v0.5.3
-
-    1. fix bug in nuix linux load .d.ts file raise error, set default comfig  load module with !./**/*.d.ts exclude.
-
-* v0.5.1 
-    1. add Log aop aspect service. for Log easy.  default user console to log, can config `logLib`,`logConfig` in your `config.js` to use third logger lib. eg. `{ logLib: 'log4js', logConfig:{...} }`.
-    has implements log4js adapter [see code](https://github.com/zhouhoujun/type-mvc/blob/master/packages/mvc/src/logAdapter/Log4jsAdapter.ts)
-
-    2. DebugAspect, config `debug: true`,  in your `config.js`, will auto log debug info.
-    2. [AnnotationLogerAspect](https://github.com/zhouhoujun/type-mvc/blob/master/packages/mvc/src/aop/AnnotationLogerAspect.ts) @annotation(Logger), logger some state via @Logger decorator config. 
-    2. add Annotation Auth aspect service [`AuthAspect`](https://github.com/zhouhoujun/type-mvc/blob/master/packages/mvc/src/aop/AuthAspect.ts) to support yourself auth check easy. eg.
-    
-```ts
-@Aspect
-export class YourSecrityAspect {
-    // before AuthAspect.auth check some.
-    @Before('execution(AuthAspect.auth)', 'authAnnotation')
-    sessionCheck(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
-        //TODO： you check by authAnnotation
-    }
-}
-
-```
-
-* v0.4.1  fix assertUrlRegExp bug.
-* v0.3.20 New Feature：
-    1. Router and Cors middleware will check url is right route or not.
-    add default route Url check in Configuartion.   isRouteUrl method and routeUrlRegExp field.
-* v0.3.19 New Feature:
-    Fix bug, reset context middleware order to fix 500 error, when some time request.
-* v0.3.18 New Feature:
-    1. update tsioc to improvement method invoker.
-    2. fix Model not register bug. get Model return empty object.
-* v0.3.17 New Feature:
-    1. add hostname for http or https to listen.
-* v0.3.12 New Feature:
-    1. es5 support. enable config https http server.
-* v0.3.10 New Feature:
-    1. Restfull params or Query String params can auto set to Controller action(Controller method) via the name of param matched.
-
-
-## Start 
 
 create application
 
 ```ts
-import { MvcHostBuilder, MvcServerToken } from '@mvx/mvc';
-import { KoaModule } from '@mvx/koa';
-import { Bootstrap, DIModule } from '@ts-ioc/bootstrap';
+import { MvcApplication, DefaultMvcMiddlewares, MvcModule, MvcServer } from '@mvx/mvc';
 
 // 1. use MvcHostBuilder to boot application.
-MvcHostBuilder.create(__dirname)
-    .use(KoaModule)
-    // .useConfiguration('config path or object')
-    //.use(middleware: IMiddleware | Middleware | Token<any>)
-    //.useContainerBuilder(...)
-    .bootstrap();
+MvcApplication.run();
 
 // 2. use bootstrap module to boot application
 
-@Bootstrap({
-    baseURL: __dirname,
+@MvcModule({
+    // baseURL: __dirname,
     imports: [
-        KoaModule
+        //...  you service, or controller, some extends module.
     ],
-    builder: MvcHostBuilder,
-    bootstrap: MvcServerToken,
     debug: true
 })
 class MvcApi {
@@ -112,28 +49,27 @@ class MvcApi {
 
 // 3. use MvcHostBuilder to boot application module.
 
-@DIModule({
+@MvcModule({
     imports: [
-        KoaModule
+        // ... /...  you service, or controller, some extends module.
         // DebugLogAspect
     ],
-    bootstrap: MvcServerToken
+    middlewares: DefaultMvcMiddlewares,
+    // bootstrap: MvcServer
 })
 class MvcApi {
 
 }
 
-MvcHostBuilder.create(__dirname)
-    .useConfiguration({ debug: true })
-    .bootstrap(MvcApi);
+MvcApplication.run(MvcApi);
 
 
 //4. use bootstrap module to boot application by main.
-@Bootstrap({
+@MvcModule({
     imports: [
-        KoaModule
+        // ...
     ],
-    bootstrap: MvcServerToken,
+    // bootstrap: MvcServer,
     debug: true
 })
 class MvcApi {
@@ -143,9 +79,7 @@ class MvcApi {
 
     static main() {
         console.log('run mvc api...');
-        MvcHostBuilder.create(__dirname)
-            .useConfiguration({ debug: true })
-            .bootstrap(MvcApi);
+        MvcApplication.run(MvcApi);
     }
 }
 
@@ -216,7 +150,7 @@ define as:
 
 ```ts
 import { Controller, Get, Post, IContext, ContextToken,  RequestMethod, Model, Field, Cors } from '@mvx/mvc';
-import { Inject } from '@ts-ioc/core';
+import { Inject } from '@tsdi/core';
 import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
 
@@ -319,7 +253,7 @@ Auto load Aspect service from folder `/aop` in  your project.
 see simple demo
 
 ```ts
-import { Aspect, Around, Joinpoint, Before } from '@ts-ioc/aop';
+import { Aspect, Around, Joinpoint, Before } from '@tsdi/aop';
 
 @Aspect
 export class DebugLog {
@@ -345,24 +279,22 @@ default setting load middlewares in your project folder
 
 ```ts
 import { Middleware, IMiddleware, Application, Configuration } from '@mvx/mvc';
-import { IContainer, Injectable } from '@ts-ioc/core';
+import { IContainer, Injectable } from '@tsdi/core';
 
 
-@Middleware({ provide: 'logger' })
+@Middleware('logger')
 export class Logger implements IMiddleware {
 
     constructor() {
 
     }
 
-    setup(app: IApplication) {
-        app.use(async (ctx, next) => {
-            let start = Date.now();
-            await next();
-            const ms = Date.now() - start;
-            console.log(`mylog: ${ctx.method} ${ctx.url} - ${ms}ms`);
-            let end = new Date();
-        });
+    async execute (ctx, next) {
+        let start = Date.now();
+        await next();
+        const ms = Date.now() - start;
+        console.log(`mylog: ${ctx.method} ${ctx.url} - ${ms}ms`);
+        let end = new Date();
     }
 
 }
@@ -372,16 +304,64 @@ export class Logger implements IMiddleware {
 
 
 
+
+## changes
+
+* 1.0.1
+    1. add useServer to add Server Middleware features.
+
+* 0.6.3
+    1. update compile task, zip lib.
+    2. update tsioc for fix bug when inherit class with classAnnations
+
+* 0.5.5
+    1. fix ConsoleLog error console.debug in nuix will not console.
+    2. update components for route.
+    
+* v0.5.3
+
+    1. fix bug in nuix linux load .d.ts file raise error, set default comfig  load module with !./**/*.d.ts exclude.
+
+* v0.5.1 
+    1. add Log aop aspect service. for Log easy.  default user console to log, can config `logLib`,`logConfig` in your `config.js` to use third logger lib. eg. `{ logLib: 'log4js', logConfig:{...} }`.
+    has implements log4js adapter [see code](https://github.com/zhouhoujun/type-mvc/blob/master/packages/mvc/src/logAdapter/Log4jsAdapter.ts)
+
+    2. DebugAspect, config `debug: true`,  in your `config.js`, will auto log debug info.
+    2. [AnnotationLogerAspect](https://github.com/zhouhoujun/type-mvc/blob/master/packages/mvc/src/aop/AnnotationLogerAspect.ts) @annotation(Logger), logger some state via @Logger decorator config. 
+    2. add Annotation Auth aspect service [`AuthAspect`](https://github.com/zhouhoujun/type-mvc/blob/master/packages/mvc/src/aop/AuthAspect.ts) to support yourself auth check easy. eg.
+    
+```ts
+@Aspect
+export class YourSecrityAspect {
+    // before AuthAspect.auth check some.
+    @Before('execution(AuthAspect.auth)', 'authAnnotation')
+    sessionCheck(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
+        //TODO： you check by authAnnotation
+    }
+}
+
+```
+
+* v0.4.1  fix assertUrlRegExp bug.
+* v0.3.20 New Feature：
+    1. Router and Cors middleware will check url is right route or not.
+    add default route Url check in Configuartion.   isRouteUrl method and routeUrlRegExp field.
+* v0.3.19 New Feature:
+    Fix bug, reset context middleware order to fix 500 error, when some time request.
+* v0.3.18 New Feature:
+    1. update tsioc to improvement method invoker.
+    2. fix Model not register bug. get Model return empty object.
+* v0.3.17 New Feature:
+    1. add hostname for http or https to listen.
+* v0.3.12 New Feature:
+    1. es5 support. enable config https http server.
+* v0.3.10 New Feature:
+    1. Restfull params or Query String params can auto set to Controller action(Controller method) via the name of param matched.
+
+
 ## Simples
 
 [see simples](https://github.com/zhouhoujun/type-mvc/tree/master/packages/simples)
-
-# Build
-
-* `pk build`: build project
-* `pk build [--setvs=version] --deploy`: build project and publish.
-* `pk build --unp=version`: unpublish.
-
 ## License
 
 MIT © [Houjun](https://github.com/zhouhoujun/)
