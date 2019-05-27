@@ -12,9 +12,6 @@
             ],
             "@mvx/orm": [
                 "packages/orm/src"
-            ],
-            "@mvx/koa": [
-                "packages/koa/src"
             ]
         },
         "module": "commonjs",
