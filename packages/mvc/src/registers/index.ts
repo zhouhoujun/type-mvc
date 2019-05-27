@@ -1,2 +1,2 @@
 export * from './ControllerRegisterAction';
-export * from './MiddlewareRegisterAction';
+export * from './MvcModuleDecoratorServiceAction';

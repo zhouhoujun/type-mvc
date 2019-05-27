@@ -1,11 +1,9 @@
-import { MvcServerToken, MvcApplication } from '@mvx/mvc';
+import { MvcServerToken, MvcApplication, MvcModule } from '@mvx/mvc';
 // import { PlatformServer } from '@tsdi/platform-server';
-import { KoaModule } from '@mvx/koa';
-import { DIModule } from '@tsdi/boot';
+import { DebugLogAspect } from '@tsdi/logs';
 
-@DIModule({
+@MvcModule({
     imports: [
-        KoaModule
         // DebugLogAspect
     ],
     bootstrap: MvcServerToken

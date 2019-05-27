@@ -1,12 +1,12 @@
-import { IocExt, ContainerToken, IContainer } from '@tsdi/core';
-import { Controller, Authorization, Middleware } from './decorators';
-import { Inject, DecoratorScopes, RuntimeDecoratorRegisterer, DesignDecoratorRegisterer, BindProviderAction, BindMethodProviderAction } from '@tsdi/ioc';
+import { IocExt, ContainerToken, IContainer, InjectorDecoratorRegisterer, ServiceDecoratorRegisterer } from '@tsdi/core';
+import { Controller, Authorization, Middleware, MvcModule } from './decorators';
+import { Inject, DecoratorScopes, RuntimeDecoratorRegisterer, DesignDecoratorRegisterer, BindProviderAction, BindMethodProviderAction, IocSetCacheAction } from '@tsdi/ioc';
 import { MvcContext } from './MvcContext';
-import { ControllerRegisterAction, MiddlewareRegisterAction } from './registers';
+import { ControllerRegisterAction, MvcModuleDecoratorServiceAction } from './registers';
 import * as middlewares from './middlewares';
 import * as routers from './router';
 import * as services from './services';
-import { DefaultConfigureToken } from '@tsdi/boot';
+import { DefaultConfigureToken, DIModuleInjectorScope } from '@tsdi/boot';
 import { IConfiguration } from './IConfiguration';
 
 @IocExt('setup')
@@ -53,14 +53,22 @@ export class MvcCoreModule {
 
         container.getActionRegisterer()
             .register(container, ControllerRegisterAction)
-            .register(container, MiddlewareRegisterAction);
+            .register(container, MvcModuleDecoratorServiceAction);
 
         let dreger = container.get(DesignDecoratorRegisterer);
         dreger.register(Controller, DecoratorScopes.Class, BindProviderAction, ControllerRegisterAction)
             .register(Authorization, DecoratorScopes.Class, BindProviderAction)
-            .register(Middleware, DecoratorScopes.Class, BindProviderAction, MiddlewareRegisterAction);
+            .register(Middleware, DecoratorScopes.Class, BindProviderAction)
+            .register(MvcModule, DecoratorScopes.Class, BindProviderAction);
 
         let runtimeRgr = container.get(RuntimeDecoratorRegisterer);
-        runtimeRgr.register(Authorization, DecoratorScopes.Method, BindMethodProviderAction);
+        runtimeRgr.register(Authorization, DecoratorScopes.Method, BindMethodProviderAction)
+            .register(MvcModule, DecoratorScopes.Class, IocSetCacheAction);
+
+
+        container.get(InjectorDecoratorRegisterer)
+            .register(MvcModule, DIModuleInjectorScope);
+
+        container.get(ServiceDecoratorRegisterer).register(MvcModule, MvcModuleDecoratorServiceAction);
     }
 }

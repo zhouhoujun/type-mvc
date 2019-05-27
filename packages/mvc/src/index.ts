@@ -3,7 +3,6 @@ export * from './decorators';
 export * from './errors';
 export * from './metadata';
 export * from './middlewares';
-export * from './MvcMiddlewares';
 export * from './results';
 export * from './router';
 
@@ -16,6 +15,6 @@ export * from './IMvcServer';
 export * from './IListener';
 export * from './MvcServer';
 export * from './BaseController';
-export * from './MvcModule';
+export * from './MvcApp';
 export * from './MvcApplication';
-
+export * from './DefaultMvcMiddlewares';

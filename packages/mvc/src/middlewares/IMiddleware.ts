@@ -1,7 +1,8 @@
-import { Token } from '@tsdi/ioc';
+import { Token, PromiseUtil, Type } from '@tsdi/ioc';
 import { IContext } from './IContext';
-import { HandleType } from '@tsdi/boot';
-// import { IHandle } from '@tsdi/boot';
+import { HandleType, Handle } from '@tsdi/boot';
+import { IConfiguration } from '../IConfiguration';
+import { MvcContext } from '../MvcContext';
 
 
 
@@ -30,67 +31,6 @@ export interface IMiddleware { // extends IHandle {
 export type MiddlewareType = Token<IMiddleware> | HandleType<IContext>;
 
 /**
- *  middlewares with order.
+ * middleware factory.
  */
-export interface OrderMiddleware {
-    name?: string;
-    middleware: Token<IMiddleware>;
-}
-
-/**
- *  default middleware name.
- */
-export enum MiddlewareTypes {
-    /**
-     * context middleware token. to get context of one request.
-     */
-    Context = 'ContextMiddleware',
-    /**
-     * BodyParser middleware token.
-     */
-    BodyParser = 'BodyParserMiddleware',
-    /**
-     * Content middleware token.
-     */
-    Content = 'ContentMiddleware',
-    /**
-     * cors middleware token.
-     */
-    Cors = 'CorsMiddleware',
-    /**
-     * log middleware token.
-     */
-    Log = 'LogMiddleware',
-    /**
-     *
-     */
-    Json = 'JsonMiddleware',
-    /**
-     * session middleware token.
-     */
-    Session = 'SessionMiddleware',
-    /**
-     * views middleware token.
-     */
-    Views = 'ViewsMiddleware',
-    /**
-     * router middleware token.
-     */
-    Router = 'RouterMiddleware'
-}
-
-
-/**
- * default Middlewawre order.
- */
-export const DefaultMiddlewawreOrder = [
-    MiddlewareTypes.BodyParser,
-    MiddlewareTypes.Json,
-    MiddlewareTypes.Log,
-    MiddlewareTypes.Session,
-    MiddlewareTypes.Content,
-    MiddlewareTypes.Context,
-    MiddlewareTypes.Cors,
-    MiddlewareTypes.Views,
-    MiddlewareTypes.Router
-];
+export type MvcMiddlewareType =  Type<Handle<IContext>> | Handle<IContext> | ((config?: IConfiguration, ctx?: MvcContext) => PromiseUtil.ActionHandle<IContext> | void);

@@ -1,6 +1,7 @@
 import { ObjectMap, InjectToken } from '@tsdi/ioc'
 import { MvcContext } from '../MvcContext';
 import { IHandleContext } from '@tsdi/boot';
+import { Context as KoaContext } from 'koa';
 
 /**
  * mvc service middleware context.
@@ -12,7 +13,7 @@ export const ContextToken = new InjectToken<IContext>('Mvc_Service_Context');
  * @interface IContext
  * @extends {Context}
  */
-export interface IContext extends ObjectMap<any>, IHandleContext {
+export interface IContext extends KoaContext, IHandleContext {
 
     /**
      * mvc context.
@@ -20,7 +21,7 @@ export interface IContext extends ObjectMap<any>, IHandleContext {
      * @type {MvcContext}
      * @memberof IContext
      */
-    readonly mvcContext: MvcContext;
+    mvcContext: MvcContext;
 
 }
 

@@ -4,6 +4,7 @@ import { AopModule } from '@tsdi/aop';
 import { BootApplication, checkBootArgs } from '@tsdi/boot';
 import { MvcContext, MvcOptions, MvcContextToken } from './MvcContext';
 import { MvcCoreModule } from './CoreModule';
+import { MvcApp } from './MvcApp';
 
 /**
  * Default Application of type mvc.
@@ -23,8 +24,9 @@ export class MvcApplication extends BootApplication {
         return [AopModule, LogModule, MvcCoreModule, ...deps];
     }
 
-    static async run<T extends MvcContext>(target: T | Type<any> | MvcOptions, deps?: LoadType[] | LoadType | string, ...args: string[]): Promise<T> {
+    static async run<T extends MvcContext>(target?: T | Type<any> | MvcOptions, deps?: LoadType[] | LoadType | string, ...args: string[]): Promise<T> {
         let mdargs = checkBootArgs(deps, ...args);
+        target = target || { module: MvcApp, configures: ['./config.js', './config.ts'] }
         return await new MvcApplication(target, mdargs.deps).run(...mdargs.args) as T;
     }
 

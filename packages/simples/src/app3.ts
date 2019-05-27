@@ -1,12 +1,10 @@
-import { MvcApplication } from '@mvx/mvc';
+import { MvcApplication, MvcModule, DefaultMvcMiddlewares } from '@mvx/mvc';
 // import { PlatformServer } from '@tsdi/platform-server';
-import { KoaModule } from '@mvx/koa';
-import { Bootstrap } from '@tsdi/boot';
 
-@Bootstrap({
-    imports: [
-        KoaModule
-    ],
+
+@MvcModule({
+    imports: [],
+    middlewares: DefaultMvcMiddlewares,
     debug: true
 })
 class MvcApi {

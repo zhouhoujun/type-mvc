@@ -10,3 +10,4 @@ export * from './Route';
 export * from './Cors';
 export * from './Authorization';
 export * from './Middleware';
+export * from './MvcModule';

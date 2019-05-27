@@ -139,10 +139,6 @@ export interface IConfiguration extends RunnableConfigure {
      */
     connections?: ObjectMap<any>;
     /**
-     * custom middleware match path, './middlewares/\*\*\/*{.js,.ts}' in your project.
-     */
-    middlewares?: string | string[];
-    /**
      * global cors default options.
      *
      * @type {CorsOptions}

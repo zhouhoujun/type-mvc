@@ -1,9 +1,12 @@
-import { IMvcServer } from './IMvcServer';
 import { ContainerToken, IContainer } from '@tsdi/core';
 import { IConfiguration } from './IConfiguration';
-import { Abstract, Inject, Type } from '@tsdi/ioc';
+import { Inject, Injectable } from '@tsdi/ioc';
 import { ILoggerManager, ILogger, IConfigureLoggerManager, ConfigureLoggerManger, LogConfigureToken } from '@tsdi/logs';
 import { Router } from './router';
+import { Service, ConfigureMgrToken } from '@tsdi/boot';
+import * as Koa from 'koa';
+import { MvcMiddlewares } from './middlewares';
+import { MvcContext } from './MvcContext';
 
 /**
  * base mvc server.
@@ -13,8 +16,8 @@ import { Router } from './router';
  * @class MvcServer
  * @implements {IMvcServer}
  */
-@Abstract()
-export abstract class MvcServer implements IMvcServer {
+@Injectable()
+export class MvcServer extends Service<Koa> {
 
     @Inject(ContainerToken)
     container: IContainer;
@@ -23,8 +26,10 @@ export abstract class MvcServer implements IMvcServer {
 
     @Inject()
     protected router: Router;
-    protected controllers: Type<any>[];
-    protected middlewares: Type<any>[];
+
+    @Inject(MvcMiddlewares)
+    protected middlewares: MvcMiddlewares;
+
     protected config: IConfiguration;
 
     getLoggerManger(): ILoggerManager {
@@ -41,29 +46,50 @@ export abstract class MvcServer implements IMvcServer {
     }
 
     getConfig(): IConfiguration {
-        return this.config as IConfiguration;
+        return this.config;
     }
 
     getRouter(): Router {
         return this.router;
     }
 
-    getControllers(): Type<any>[] {
-        return this.controllers;
-    }
-
-    getMiddlewares(): Type<any>[] {
+    getMiddlewares(): MvcMiddlewares {
         return this.middlewares;
     }
 
-    constructor() {
+    getMvcContext(): MvcContext {
+        return this.context as MvcContext;
     }
 
-    abstract init(config: IConfiguration): void;
+    async init() {
+        let container = this.getContainer();
+        let ctx = this.getMvcContext();
+        this.config = await container.get(ConfigureMgrToken).getConfig();
+        this.getMiddlewares().setup(ctx);
+    }
 
-    abstract getHttpServer(): any;
-    abstract use(middleware: any);
-    abstract useFac(middlewareFactory: (core?: any, httpServer?: any) => any);
-    abstract start();
-    abstract stop();
+    getHttpServer() {
+        return this.getMvcContext().httpServer;
+    }
+
+    async start() {
+        let config = this.config;
+        let ctx = this.getMvcContext();
+        let listener = ctx.listener;
+        let port = config.port || parseInt(process.env.PORT || '0');
+        if (config.hostname) {
+            this.getHttpServer().listen(port, config.hostname, listener);
+        } else {
+            this.getHttpServer().listen(port, listener);
+        }
+        console.log('service listen on port: ', port);
+    }
+
+    async stop() {
+        let httpServer = this.getHttpServer();
+        if (httpServer) {
+            httpServer.removeAllListeners();
+            httpServer.close();
+        }
+    }
 }

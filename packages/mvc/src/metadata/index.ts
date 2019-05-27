@@ -12,3 +12,4 @@ export * from './CorsMetadata';
 export * from './MiddlewareMetadata';
 export * from './FieldMetadata';
 export * from './ModelMetadata';
+export * from './MvcModuleMetadata';
