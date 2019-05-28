@@ -201,6 +201,8 @@ export class ControllerRoute extends MvcRoute {
                 } else {
                     ctx.body = response;
                 }
+            } else {
+                ctx.body = null;
             }
             await next();
         } else {
