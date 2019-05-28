@@ -30,6 +30,7 @@
   "dependencies": {
     "reflect-metadata": "^0.1.12",
     "@tsdi/annotations": "^5.0.0-beta10",
+    "@tsdi/ioc": "^5.0.0-beta10",
     "@tsdi/aop": "^5.0.0-beta10",
     "@tsdi/boot": "^5.0.0-beta10",
     "@tsdi/cli": "^5.0.0-beta10",
