@@ -1,7 +1,7 @@
 import { Singleton } from '@tsdi/ioc';
 import { CompositeMiddleware } from './MvcMiddleware';
 import { MvcContext } from '../MvcContext';
-import { IContext } from './IContext';
+import { IContext, ContextToken } from './IContext';
 
 
 
@@ -11,6 +11,7 @@ export class MvcMiddlewares extends CompositeMiddleware {
     setup(mvcContext: MvcContext) {
         mvcContext.getKoa().use((ctx: IContext, next) => {
             ctx.mvcContext = mvcContext;
+            mvcContext.getRaiseContainer().bindProvider(ContextToken, ctx);
             return this.execute(ctx, next)
         });
     }
