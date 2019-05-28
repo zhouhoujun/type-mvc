@@ -53,7 +53,8 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
                                     let chgs = new Map<string, any>();
                                     let version = ctx.platform.getEnvArgs().setvs;
                                     chgs.set('version', version);
-                                    let iocVersion = ctx.platform.getPackage().devDependencies['@tsdi/ioc'];
+                                    let iocVersion: string = ctx.platform.getPackage().devDependencies['@tsdi/ioc'];
+                                    iocVersion = iocVersion.replace(/^\^/ig, '');
                                     Object.keys(json.peerDependencies || {}).forEach(key => {
                                         if (/^@mvx/.test(key)) {
                                             chgs.set('peerDependencies.' + key, '^' + version);
