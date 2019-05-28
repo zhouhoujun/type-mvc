@@ -8,6 +8,7 @@ import { MvcModuleMetadata } from './metadata';
 import { MvcMiddlewares } from './middlewares';
 import * as http from 'http';
 import * as https from 'https';
+import { DefaultModelParserToken } from './router';
 
 @Singleton
 export class MvcConfigureRegister extends ConfigureRegister {
@@ -58,6 +59,5 @@ export class MvcConfigureRegister extends ConfigureRegister {
         if (config.logConfig) {
             this.container.registerSingleton(LogConfigureToken, config.logConfig);
         }
-
     }
 }

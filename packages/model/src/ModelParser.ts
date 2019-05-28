@@ -1,11 +1,8 @@
 import {
-    Type, getPropertyMetadata, PropertyMetadata, isUndefined,
-    Inject, isClass, ObjectMap, Injectable, isBaseType, isArray, lang
+    Type, getPropertyMetadata, PropertyMetadata, ObjectMap, Injectable
 } from '@tsdi/ioc';
-import { Model, Field } from './decorators';
-import { DefaultModelParserToken } from './IModelParser';
-import { BaseTypeParserToken } from './IBaseTypeParser';
-import { ContainerToken, IContainer } from '@tsdi/core';
+import { Field } from './decorators';
+import { DefaultModelParserToken, ModelParser } from '@mvx/mvc';
 
 /**
  * modle parser.
@@ -14,47 +11,7 @@ import { ContainerToken, IContainer } from '@tsdi/core';
  * @class ModelParser
  */
 @Injectable(DefaultModelParserToken)
-export class ModelParser {
-
-    constructor(@Inject(ContainerToken) private container: IContainer) {
-    }
-
-    parseModel(type: Type<any>, objMap: any): any {
-        if (isBaseType(type)) {
-            let parser = this.container.get(BaseTypeParserToken)
-            return parser.parse(type, objMap);
-        }
-        let meta = this.getPropertyMeta(type);
-        let result = this.container.get(type);
-        for (let n in meta) {
-            let propmetas = meta[n];
-            if (propmetas.length) {
-                if (!isUndefined(objMap[n])) {
-                    let propmeta = propmetas.find(p => !!p.type);
-                    let reqval = objMap[n];
-                    let parmVal;
-                    if (isBaseType(lang.getClass(propmeta.type))) {
-                        let parser = this.container.get(BaseTypeParserToken)
-                        parmVal = parser.parse(propmeta.type, reqval);
-                    } else if (lang.isExtendsClass(propmeta.type, Array)) {
-                        if (isArray(reqval)) {
-                            parmVal = reqval.map(v => this.parseModel(lang.getClass(v), v));
-                        } else {
-                            parmVal = [];
-                        }
-                    } else if (isClass(propmeta.type)) {
-                        parmVal = this.parseModel(propmeta.type, reqval);
-                    }
-                    result[n] = parmVal;
-                }
-            }
-        }
-        return result;
-    }
-
-    protected getModelDecorator(): string {
-        return Model.toString();
-    }
+export class DefaultModelParser extends ModelParser {
 
     protected getFiledDecorator(): string {
         return Field.toString();

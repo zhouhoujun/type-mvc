@@ -1,9 +1,11 @@
 import { MvcApplication, MvcModule, MvcServer } from '@mvx/mvc';
 // import { PlatformServer } from '@tsdi/platform-server';
 import { DebugLogAspect } from '@tsdi/logs';
+import { ModelModule } from '@mvx/model';
 
 @MvcModule({
     imports: [
+        ModelModule
         // DebugLogAspect
     ],
     bootstrap: MvcServer

@@ -2,18 +2,20 @@ import {
     lang, Injectable, Type, getMethodMetadata, isFunction, isBaseType,
     isUndefined, ParamProviders, Provider, isClass, IParameter, isObject,
     isArray, isPromise, hasClassMetadata, hasMethodMetadata, getTypeMetadata,
-    isString, RuntimeLifeScope, Inject, InjectToken
+    isString, RuntimeLifeScope, Inject, InjectToken, getClassDecorators
 } from '@tsdi/ioc';
 import { MvcRoute, RouteUrlArgToken } from './Route';
 import { IContext } from '../middlewares';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
 import { RouteMetadata, CorsMetadata } from '../metadata';
-import { NotFoundError, UnauthorizedError, ForbiddenError, HttpError } from '../errors';
+import { UnauthorizedError, ForbiddenError, HttpError } from '../errors';
 import { ResultValue } from '../results';
 import { AuthorizationToken } from '../IAuthorization';
 import { Authorization, Cors, Route } from '../decorators';
-import { IConfiguration, ConfigurationToken } from '../IConfiguration';
 import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
+import { ModelParser } from './ModelParser';
+import { DefaultModelParserToken } from './IModelParser';
+import { ResolveServiceContext } from '@tsdi/core';
 declare let Buffer: any;
 
 export function isBuffer(target: any): boolean {
@@ -181,7 +183,7 @@ export class ControllerRoute extends MvcRoute {
             let params = lifeScope.getMethodParameters(this.container, this.controller, ctrl, meta.propertyKey);
             let providers = await this.createProvider(ctx, ctrl, meta, params);
             let response: any = await container.invoke(this.controller, meta.propertyKey, ctrl, ...providers);
-
+            console.log(providers);
             if (isPromise(response)) {
                 response = await response;
             }
@@ -235,10 +237,14 @@ export class ControllerRoute extends MvcRoute {
                             paramVal = ctx.request.query[param.name];
                         }
                         let parser = this.container.get(BaseTypeParserToken);
-                        val = parser.parse(ptype, paramVal)
-                    }
-                    if (isClass(ptype)) {
-                        val = await this.container.get(BuilderService).resolve(ptype, { scope: body })
+                        val = parser.parse(ptype, paramVal);
+                    } else if (isClass(ptype)) {
+                        let mdparser = this.container.getService(ModelParser, ResolveServiceContext.parse({ targetRefs: [ptype, ...getClassDecorators(ptype)], defaultToken: DefaultModelParserToken }));
+                        if (mdparser) {
+                            val = mdparser.parseModel(ptype, body);
+                        } else {
+                            val = await this.container.get(BuilderService).resolve(ptype, { template: body })
+                        }
                     }
                 }
                 return Provider.createParam(param.name || ptype, val, idx);

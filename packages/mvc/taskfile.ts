@@ -23,12 +23,12 @@ import { AfterInit } from '@tsdi/boot';
         ]
     }
 })
-export class PackBuilder implements AfterInit {
+export class MvcBuilder implements AfterInit {
     onAfterInit(): void | Promise<void> {
         console.log('mvc build has inited...')
     }
 }
 
 if (process.cwd() === __dirname) {
-    Workflow.run(PackBuilder);
+    Workflow.run(MvcBuilder);
 }

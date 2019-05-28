@@ -27,6 +27,7 @@ create application
 
 ```ts
 import { MvcApplication, DefaultMvcMiddlewares, MvcModule, MvcServer } from '@mvx/mvc';
+import { ModelModule } from '@mvx/model';
 
 // 1. use MvcHostBuilder to boot application.
 MvcApplication.run();
@@ -36,6 +37,7 @@ MvcApplication.run();
 @MvcModule({
     // baseURL: __dirname,
     imports: [
+        ModelModule, // your orm module adapter
         //...  you service, or controller, some extends module.
     ],
     debug: true
@@ -51,6 +53,7 @@ class MvcApi {
 
 @MvcModule({
     imports: [
+        ModelModule, // your orm module adapter
         // ... /...  you service, or controller, some extends module.
         // DebugLogAspect
     ],
@@ -67,6 +70,7 @@ MvcApplication.run(MvcApi);
 //4. use bootstrap module to boot application by main.
 @MvcModule({
     imports: [
+        ModelModule, // your orm module adapter
         // ...
     ],
     // bootstrap: MvcServer,
@@ -88,21 +92,8 @@ class MvcApi {
 
 ### Define Model
 
-* third ORM Model:  Configuration ModelOptions in your config file. like:
+* third ORM Model:  register yourself module parser extends `ModelParser`.
 
-```ts
-{
-    ...
-    /**
-     * model parser.
-     *
-     * @type {ModelOptions}
-     * @memberof IConfiguration
-     */
-    modelParser?: Token<IModelParser<any>>;
-    ...
-}
-```
 
 ```ts
 import { Model, Field } from '@mvx/mvc';

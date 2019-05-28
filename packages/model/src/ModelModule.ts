@@ -1,16 +1,14 @@
-import { DIModule } from '@tsdi/boot';
-import { BaseTypeParser } from './BaseTypeParser';
-import { ModelParser } from './ModelParser';
+import { DIModule, RegFor } from '@tsdi/boot';
+import { DefaultModelParser } from './ModelParser';
 
 
 @DIModule({
+    regFor: RegFor.boot,
     imports: [
-        BaseTypeParser,
-        ModelParser
+        DefaultModelParser
     ],
     exports: [
-        BaseTypeParser,
-        ModelParser
+        DefaultModelParser
     ]
 })
 export class ModelModule {

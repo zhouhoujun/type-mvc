@@ -1,9 +1,12 @@
 import { MvcApplication, MvcModule, DefaultMvcMiddlewares, MvcServer } from '@mvx/mvc';
+import { ModelModule } from '@mvx/model';
 // import { PlatformServer } from '@tsdi/platform-server';
 
 
 @MvcModule({
-    imports: [],
+    imports: [
+        ModelModule
+    ],
     middlewares: DefaultMvcMiddlewares,
     debug: true
 })
