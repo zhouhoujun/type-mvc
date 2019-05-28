@@ -9,6 +9,5 @@ import { MvcServer } from './MvcServer';
 })
 export class MvcApp {
     constructor() {
-        console.log('MvcApp create new instance....')
     }
 }

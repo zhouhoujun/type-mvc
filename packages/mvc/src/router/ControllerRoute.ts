@@ -94,7 +94,7 @@ export class ControllerRoute extends MvcRoute {
             });
         } else {
             let coremeta = this.getCorsMeta(ctx, ctx.get('Access-Control-Request-Method'));
-            // console.log('coremeta', coremeta);
+
             if (!coremeta) {
                 return next();
             }
@@ -183,7 +183,6 @@ export class ControllerRoute extends MvcRoute {
             let params = lifeScope.getMethodParameters(this.container, this.controller, ctrl, meta.propertyKey);
             let providers = await this.createProvider(ctx, ctrl, meta, params);
             let response: any = await container.invoke(this.controller, meta.propertyKey, ctrl, ...providers);
-            console.log(providers);
             if (isPromise(response)) {
                 response = await response;
             }
