@@ -10,11 +10,6 @@ import { AfterInit } from '@tsdi/boot';
     ],
     baseURL: __dirname,
     template: [
-        <AssetActivityOption>{
-            activity: 'asset',
-            src: 'src/(views|models)/**/*',
-            dist: '../../dist/simples'
-        },
         <LibPackBuilderOption>{
             activity: 'libs',
             outDir: '../../dist/simples',
@@ -22,12 +17,16 @@ import { AfterInit } from '@tsdi/boot';
             test: 'test/**/*.ts',
             annotation: true,
             bundles: [
-                { target: 'es5', targetFolder: 'src', dtsMain: 'index.d.ts' },
-                { input: 'src/index.js', moduleName: ['fesm5', 'main', 'esm5'], outputFile: 'simples.js', format: 'cjs' },
-                { target: 'es2015', input: 'es2015/index.js', moduleName: ['fesm2015', 'esm2015'], outputFile: 'simples.js', format: 'cjs' },
-                { target: 'es2017', input: 'es2017/index.js', moduleName: ['fesm2017', 'esm2017'], outputFile: 'simples.js', format: 'cjs' }
+                { target: 'es5', targetFolder: 'src', moduleName: 'main', moduleFolder: 'src', dtsMain: 'index.d.ts' },
+                { target: 'es2015' },
+                { target: 'es2017' }
             ]
-        }
+        },
+        <AssetActivityOption>{
+            activity: 'asset',
+            src: 'src/{views,public}/**',
+            dist: '../../dist/simples'
+        },
     ]
 })
 export class SimpleBuilder implements AfterInit {
