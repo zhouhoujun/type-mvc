@@ -2,7 +2,7 @@ import {
     isString, TypeMetadata, IClassMethodDecorator, MetadataAdapter,
     MetadataExtends, createClassDecorator, IClassDecorator
 } from '@tsdi/ioc';
-import { ModelMetadata } from '../metadata/index';
+import { ModelMetadata } from '../metadata';
 
 
 /**

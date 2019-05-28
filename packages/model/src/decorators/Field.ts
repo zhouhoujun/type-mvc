@@ -1,6 +1,6 @@
 
 import { IPropertyDecorator, PropertyMetadata, createPropDecorator, MetadataExtends, MetadataAdapter, isString, isNumber, isUndefined, isBoolean } from '@tsdi/ioc';
-import { FieldMetadata } from '../metadata/index';
+import { FieldMetadata } from '../metadata';
 
 
 /**

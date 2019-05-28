@@ -1,5 +1,5 @@
 import { createFieldDecorator } from './Field';
-import { FieldMetadata } from '../metadata/index';
+import { FieldMetadata } from '../metadata';
 import { IPropertyDecorator } from '@tsdi/ioc';
 
 

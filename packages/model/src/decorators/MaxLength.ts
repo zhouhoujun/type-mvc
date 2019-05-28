@@ -1,5 +1,5 @@
 import { IFiledDecorator, createFieldDecorator } from './Field';
-import { MaxLengthMetadata } from '../metadata/index';
+import { MaxLengthMetadata } from '../metadata';
 import { IPropertyDecorator, isNumber, isString } from '@tsdi/ioc';
 
 

@@ -1,5 +1,5 @@
 import { IFiledDecorator, createFieldDecorator } from './Field';
-import { FieldMetadata } from '../metadata/index';
+import { FieldMetadata } from '../metadata';
 
 
 export const NotMaped: IFiledDecorator<FieldMetadata> = createFieldDecorator<FieldMetadata>(

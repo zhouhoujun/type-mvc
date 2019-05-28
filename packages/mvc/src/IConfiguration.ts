@@ -3,7 +3,7 @@ import { LogConfigure } from '@tsdi/logs';
 import { ServerOptions } from 'https';
 import { RunnableConfigure } from '@tsdi/boot';
 import { RequestMethod } from './RequestMethod';
-import { IModelParser } from '@mvx/model';
+import { IModelParser } from './router';
 
 
 /**

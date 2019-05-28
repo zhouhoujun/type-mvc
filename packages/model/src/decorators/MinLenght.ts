@@ -1,5 +1,5 @@
 import { createFieldDecorator } from './Field';
-import { MinLengthMetadata } from '../metadata/index';
+import { MinLengthMetadata } from '../metadata';
 import { IPropertyDecorator, isNumber, isString } from '@tsdi/ioc';
 
 

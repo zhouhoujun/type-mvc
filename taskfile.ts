@@ -129,3 +129,4 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
 export class BuilderMVX {
 
 }
+

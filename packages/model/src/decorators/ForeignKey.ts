@@ -1,6 +1,6 @@
-import { IFiledDecorator, createFieldDecorator } from './Field';
+import { createFieldDecorator } from './Field';
 import { ForeignKeyMetadata } from '../metadata';
-import { IPropertyDecorator, isNumber, isString, Type, isClass } from '@tsdi/ioc';
+import { IPropertyDecorator, isString, Type, isClass } from '@tsdi/ioc';
 
 
 export interface IForeignKeyDecorator<T extends ForeignKeyMetadata> extends IPropertyDecorator<T> {
