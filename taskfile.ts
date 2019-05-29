@@ -20,7 +20,7 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
             body: <ShellActivityOption>{
                 activity: 'shell',
                 shell: (ctx: NodeActivityContext) => {
-                    let packages = ctx.platform.getFolders('packages').filter(f => /(model|mvc)$/.test(f));
+                    let packages = ctx.platform.getFolders('packages').filter(f => /(model|mvc|typeorm-adapter)$/.test(f));
                     let version = ctx.platform.getEnvArgs().unp;
                     let cmds = [];
                     packages.forEach(fd => {
@@ -96,7 +96,7 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
                 },
                 {
                     activity: Activities.each,
-                    each: (ctx: NodeActivityContext) => ctx.platform.getFolders('packages').filter(f => /(model|mvc)$/.test(f)),
+                    each: (ctx: NodeActivityContext) => ctx.platform.getFolders('packages').filter(f => /(model|mvc|typeorm-adapter)$/.test(f)),
                     body: {
                         activity: Activities.execute,
                         action: async (ctx) => {

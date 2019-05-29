@@ -1,6 +1,6 @@
 {
   "name": "mvx-src",
-  "version": "3.0.0-beta3",
+  "version": "3.0.0-beta4",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "scripts": {
     "postinstall": "npm prune"
@@ -77,6 +77,7 @@
     "tslib": "^1.9.3",
     "tslint": "^5.0.0",
     "tslint-stylish": "^2.1.0",
+    "typeorm": "^0.2.17",
     "typescript": "^3.4.5",
     "uuid": "^3.3.2",
     "vinyl-buffer": "^1.0.0",

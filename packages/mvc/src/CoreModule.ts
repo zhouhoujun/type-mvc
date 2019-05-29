@@ -30,7 +30,6 @@ export class MvcCoreModule {
             port: 3000,
             routePrefix: '',
             setting: {},
-            connections: {},
             middlewares: ['./middlewares/**/*{.js,.ts}', '!./**/*.d.ts'],
             controllers: ['./controllers/**/*{.js,.ts}', '!./**/*.d.ts'],
             aop: ['./aop/**/*{.js,.ts}', '!./**/*.d.ts'],

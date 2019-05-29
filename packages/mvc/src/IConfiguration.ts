@@ -3,6 +3,7 @@ import { LogConfigure } from '@tsdi/logs';
 import { ServerOptions } from 'https';
 import { RunnableConfigure } from '@tsdi/boot';
 import { RequestMethod } from './RequestMethod';
+import { any } from 'expect';
 
 
 /**
@@ -43,6 +44,19 @@ export interface IViewOptions {
     map?: ObjectMap<any>;
 }
 
+export interface IConnectionOptions extends ObjectMap<any> {
+    name?: string;
+    /**
+     * db type.
+     */
+    type: string;
+    host: string;
+    port: number;
+    username?: string;
+    password?: string;
+    database: string;
+    entities?: Type<any>[];
+}
 
 /**
  * configuration token.
@@ -114,7 +128,8 @@ export interface IConfiguration extends RunnableConfigure {
      * @type {ObjectMap<any>}
      * @memberof Configuration
      */
-    connections?: ObjectMap<any>;
+    connections?: IConnectionOptions;
+
     /**
      * global cors default options.
      *
@@ -158,10 +173,10 @@ export interface IConfiguration extends RunnableConfigure {
     /**
      * models match. default `['.\/models\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']` in your project..
      *
-     * @type {(string | string[])}
+     * @type {(string[] | Type<any>[])}
      * @memberOf Configuration
      */
-    models?: string | string[];
+    models?: string[] | Type<any>[];
     /**
      * in debug log. defult false.
      *
