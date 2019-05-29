@@ -48,6 +48,8 @@ class MvcApi {
     }
 }
 
+MvcApplication.run({module: MvcApi, ...});
+
 
 // 3. use MvcHostBuilder to boot application module.
 
@@ -87,6 +89,132 @@ class MvcApi {
     }
 }
 
+
+```
+
+### configuration
+
+* default use config file `./config.ts` or `./config.js`.
+```ts
+
+export interface IConfiguration extends RunnableConfigure {
+    /**
+     * https server options.
+     *
+     * @type {ServerOptions}
+     * @memberof IConfiguration
+     */
+    httpsOptions?: ServerOptions;
+    /**
+     * server hostname
+     *
+     * @type {string}
+     * @memberof IConfiguration
+     */
+    hostname?: string;
+    /**
+     * server port.
+     *
+     * @type {number}
+     * @memberof IConfiguration
+     */
+    port?: number;
+    /**
+     * session config.
+     *
+     * @type {ISessionConfig}
+     * @memberof IConfiguration
+     */
+    session?: ISessionConfig;
+    /**
+     * contents path of files, static files. default in 'public'
+     *
+     * @type {(string | string[])}
+     * @memberof Configuration
+     */
+    contents?: string[];
+    /**
+     * web site base url path. route prefix.
+     *
+     * @type {string}
+     * @memberOf Configuration
+     */
+    routePrefix?: string;
+    /**
+     * custom config key value setting.
+     *
+     * @type {IMap<any>}
+     * @memberOf Configuration
+     */
+    setting?: ObjectMap<any>;
+    /**
+     * db config connections.
+     *
+     * @type {ObjectMap<any>}
+     * @memberof Configuration
+     */
+    connections?: ObjectMap<any>;
+    /**
+     * global cors default options.
+     *
+     * @type {CorsOptions}
+     * @memberof Configuration
+     */
+    corsOptions?: CorsOptions;
+    /**
+     * controllers match. default `./controllers/\*\*\/*{.js,.ts}` in your project..
+     *
+     * @type {(string | string[])}
+     * @memberOf Configuration
+     */
+    controllers?: string | string[];
+    /**
+     * aspect service path. default: './aop'
+     *
+     * @type {(string | string[])}
+     * @memberof IConfiguration
+     */
+    aop?: string | string[];
+    /**
+     * used aops.
+     *
+     * @type {Type<any>[]}
+     * @memberof IConfiguration
+     */
+    usedAops?: Type<any>[];
+    /**
+     * views folder, default `./views` in your project.
+     *
+     * @memberof Configuration
+     */
+    views?: string;
+    /**
+     * render view options.
+     *
+     * @memberof Configuration
+     */
+    viewsOptions?: IViewOptions;
+    /**
+     * models match. default `['.\/models\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']` in your project..
+     *
+     * @type {(string | string[])}
+     * @memberOf Configuration
+     */
+    models?: string | string[];
+    /**
+     * in debug log. defult false.
+     *
+     * @memberof IConfiguration
+     */
+    debug?: boolean;
+    /**
+     * log config
+     *
+     * @type {(LogConfigure | Type<LogConfigure>)}
+     * @memberof IConfiguration
+     */
+    logConfig?: LogConfigure | Type<LogConfigure>;
+}
 
 ```
 

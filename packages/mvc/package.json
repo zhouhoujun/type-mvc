@@ -49,6 +49,7 @@
     "@tsdi/logs": "^5.0.0-beta10",
     "@tsdi/platform-server": "^5.0.0-beta10",
     "@tsdi/platform-server-boot": "^5.0.0-beta10",
+    "@tsdi/platform-server-logs": "^5.0.0-beta11",
     "bluebird": "^3.5.5",
     "ts-node": "^7.0.1",
     "tsconfig-paths": "^3.8.0",

@@ -61,28 +61,6 @@ export const ConfigurationToken = new InjectToken<IConfiguration>('MVX_Configura
  */
 export interface IConfiguration extends RunnableConfigure {
     /**
-     * aseert url match regexp.
-     *
-     * @type {RegExp}
-     * @memberof IConfiguration
-     */
-    assertUrlRegExp?: RegExp;
-    /**
-     * route url match  regexp.
-     *
-     * @type {RegExp}
-     * @memberof IConfiguration
-     */
-    routeUrlRegExp?: RegExp;
-    /**
-     * is Route url or not. default will exclude assert url.
-     *
-     * @param {string} ctxUrl
-     * @returns {boolean}
-     * @memberof IConfiguration
-     */
-    isRouteUrl?(ctxUrl: string): boolean;
-    /**
      * https server options.
      *
      * @type {ServerOptions}
@@ -132,7 +110,7 @@ export interface IConfiguration extends RunnableConfigure {
      */
     setting?: ObjectMap<any>;
     /**
-     * custom config connections.
+     * db config connections.
      *
      * @type {ObjectMap<any>}
      * @memberof Configuration
@@ -178,14 +156,6 @@ export interface IConfiguration extends RunnableConfigure {
      * @memberof Configuration
      */
     viewsOptions?: IViewOptions;
-    /**
-     * model parser.
-     *
-     * @type {ModelOptions}
-     * @memberof IConfiguration
-     */
-    modelParser?: Token<IModelParser<any>>;
-
     /**
      * models match. default `['.\/models\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']` in your project..
      *
