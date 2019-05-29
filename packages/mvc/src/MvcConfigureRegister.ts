@@ -21,6 +21,8 @@ export class MvcConfigureRegister extends ConfigureRegister {
 
         if (config.debug) {
             this.container.register(DebugLogAspect);
+            // disable custom log.
+            config.logConfig = null;
         }
 
         let metadata = ctx.annoation as MvcModuleMetadata;
