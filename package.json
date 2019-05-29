@@ -1,6 +1,6 @@
 {
   "name": "mvx-src",
-  "version": "3.0.0-beta2",
+  "version": "3.0.0-beta3",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "scripts": {
     "postinstall": "npm prune"
