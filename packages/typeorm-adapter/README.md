@@ -1,9 +1,9 @@
-# packaged @mvx/model
+# packaged @mvx/typeorm-adapter
 
 This repo is for distribution on `npm`. The source for this module is in the
 [main repo](https://github.com/zhouhoujun/type-mvc).
 
-`@mvx/model` is Decorator, Ioc, AOP MVC frameworker. base on ioc [`@tsdi`](https://www.npmjs.com/package/@tsdi/core). help you develop your project easily.
+`@mvx/typeorm-adapter` is model parser for MVC frameworker. base on ioc [`@tsdi`](https://www.npmjs.com/package/@tsdi/core). help you develop your project easily.
 
 
 
@@ -15,7 +15,7 @@ You can install this package either with `npm`
 
 ```shell
 
-npm install @mvx/mvc
+npm install @mvx/typeorm-adapter
 
 
 ```
@@ -27,7 +27,7 @@ create application
 
 ```ts
 import { MvcApplication, DefaultMvcMiddlewares, MvcModule, MvcServer } from '@mvx/mvc';
-import { TypeOrmModule }  from '@mvx/mvc';
+import { TypeOrmModule }  from '@mvx/typeorm-adapter';
 
 // 1. use MvcHostBuilder to boot application.
 MvcApplication.run();
