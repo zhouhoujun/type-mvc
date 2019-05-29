@@ -3,7 +3,6 @@ import { isClassType, getOwnTypeMetadata, lang, InjectReference } from '@tsdi/io
 import { MvcModuleMetadata } from '../metadata';
 import { BootContext, Runnable } from '@tsdi/boot';
 import { MvcContext } from '../MvcContext';
-import { MvcServer } from '../MvcServer';
 
 
 export class MvcModuleDecoratorServiceAction extends IocResolveServiceAction {
