@@ -1,9 +1,8 @@
-import { ObjectMap, Type, InjectToken, Token } from '@tsdi/ioc';
+import { ObjectMap, Type, InjectToken } from '@tsdi/ioc';
 import { LogConfigure } from '@tsdi/logs';
 import { ServerOptions } from 'https';
 import { RunnableConfigure } from '@tsdi/boot';
 import { RequestMethod } from './RequestMethod';
-import { IModelParser } from './router';
 
 
 /**

@@ -17,9 +17,9 @@ export class MvcConfigureRegister extends ConfigureRegister {
     }
     async register(config: IConfiguration, ctx: MvcContext): Promise<void> {
 
-        config = ctx.configuration = Object.assign({}, config, ctx.annoation);
+        config = ctx.configuration = Object.assign({}, ctx.annoation, config);
 
-        if (config.debug || ctx.annoation.debug) {
+        if (config.debug) {
             this.container.register(DebugLogAspect);
         }
 
