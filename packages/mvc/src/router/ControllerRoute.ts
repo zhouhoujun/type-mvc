@@ -205,10 +205,9 @@ export class ControllerRoute extends MvcRoute {
             } else {
                 ctx.body = null;
             }
-            await next();
-        } else {
-            await next();
+
         }
+        await next();
     }
 
     protected async createProvider(ctx: IContext, ctrl: any, meta: RouteMetadata, params: IParameter[]): Promise<ParamProviders[]> {

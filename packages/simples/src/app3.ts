@@ -8,7 +8,7 @@ import { ModelModule } from '@mvx/model';
         ModelModule
     ],
     middlewares: DefaultMvcMiddlewares,
-    debug: true
+    // debug: true
 })
 class MvcApi {
     constructor() {
