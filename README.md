@@ -150,10 +150,10 @@ export interface IConfiguration extends RunnableConfigure {
     /**
      * db config connections.
      *
-     * @type {ObjectMap<any>}
+     * @type {IConnectionOptions}
      * @memberof Configuration
      */
-    connections?: ObjectMap<any>;
+    connections?: IConnectionOptions;
     /**
      * global cors default options.
      *
