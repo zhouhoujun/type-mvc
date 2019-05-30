@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { createConnection, Connection, getConnection, ConnectionOptions, Repository } from 'typeorm';
 import { Singleton, Inject, Type, isString } from '@tsdi/ioc';
-import { MvcContext, MvcContextToken } from '@mvx/mvc';
+import { MvcContext, MvcContextToken, IConfiguration, IConnectionOptions } from '@mvx/mvc';
 
 
 @Singleton
@@ -30,11 +30,11 @@ export class TypeOrmHelper {
     async getOptions() {
         if (!this.options) {
             let config = this.ctx.configuration;
-            let options = config.connections;
-            if (!this.options.entities) {
+            let options = config.connections || {} as IConnectionOptions;
+            if (!options.entities) {
                 let entities: Type<any>[] = [];
                 if (config.models.some(m => isString(m))) {
-                    let models = await this.ctx.getRaiseContainer().getLoader().loadTypes(...config.models);
+                    let models = await this.ctx.getRaiseContainer().getLoader().loadTypes({ files: config.models, basePath: this.ctx.getRootPath() });
                     models.forEach(ms => {
                         ms.forEach(mdl => {
                             if (mdl && entities.indexOf(mdl) < 0) {
