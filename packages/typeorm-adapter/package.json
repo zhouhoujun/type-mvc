@@ -1,6 +1,6 @@
 {
   "name": "@mvx/typeorm-adapter",
-  "version": "3.0.0-beta5",
+  "version": "3.0.0-beta6",
   "description": "typeorm adapter for mvc, type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -33,7 +33,7 @@
     "@tsdi/ioc": "^5.0.0-beta11",
     "@tsdi/boot": "^5.0.0-beta11",
     "@tsdi/core": "^5.0.0-beta11",
-    "@mvx/mvc": "^3.0.0-beta5",
+    "@mvx/mvc": "^3.0.0-beta6",
     "typeorm": "^0.2.17",
     "bluebird": "^3.5.3",
     "ts-node": "^8.0.1",
