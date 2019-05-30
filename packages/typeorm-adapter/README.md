@@ -90,53 +90,6 @@ class MvcApi {
 
 ```
 
-### Define Model
-
-* third ORM Model:  Configuration ModelOptions in your config file. like:
-
-```ts
-{
-    ...
-    /**
-     * model parser.
-     *
-     * @type {ModelOptions}
-     * @memberof IConfiguration
-     */
-    modelParser?: Token<IModelParser<any>>;
-    ...
-}
-```
-
-```ts
-import { Model, Field } from '@mvx/mvc';
-
-@Model
-export class User {
-    @Field
-    name: string;
-    @Field
-    sex: string;
-    @Field
-    age: number;
-}
-
-@Model
-export class AccountUser extends User {
-    @Field
-    account: string;
-    @Field
-    passwd: string;
-}
-
-@Model
-export class ShoppingCart{
-    @Field
-    owner: User;
-    ....
-}
-```
-
 ### Define Controller
 
 default setting load controllers in your project folder

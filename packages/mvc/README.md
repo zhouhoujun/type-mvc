@@ -221,6 +221,7 @@ export interface IConfiguration extends RunnableConfigure {
 ### Define Model
 
 * third ORM Model:  register yourself module parser extends `ModelParser`.
+* typeorm model use : [`@mvx/typeorm-adapter`](https://www.npmjs.com/package/@mvx/typeorm-adapter)
 
 
 ```ts
