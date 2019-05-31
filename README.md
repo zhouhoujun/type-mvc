@@ -136,6 +136,7 @@ import { User } from '../models';
 
 @Cors
 @Controller('/users')
+@Authorization
 export class UserController {
 
     // @Inject(symbols.IContext)
@@ -159,6 +160,12 @@ export class UserController {
         console.log('user:', user);
         console.log('request body', ctx.request['body']);
         return this.work.save(user);
+    }
+
+    @Authorization('admin')  //pointcut for check role admin 
+    @Delete('/:userId')
+    async delUser(userId: string){
+        // to do...
     }
 
     @Get('/sub')
@@ -235,7 +242,15 @@ export class HomeController extends BaseController {
 
 * default use config file `./config.ts` or `./config.js`.
 ```ts
-
+/**
+ * Configuration.
+ *
+ * Mvc applaction configuration.
+ *
+ * @export
+ * @interface IConfiguration
+ * @extends {ObjectMap<any>}
+ */
 export interface IConfiguration extends RunnableConfigure {
     /**
      * https server options.
@@ -293,6 +308,7 @@ export interface IConfiguration extends RunnableConfigure {
      * @memberof Configuration
      */
     connections?: IConnectionOptions;
+
     /**
      * global cors default options.
      *
@@ -336,10 +352,10 @@ export interface IConfiguration extends RunnableConfigure {
     /**
      * models match. default `['.\/models\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']` in your project..
      *
-     * @type {(string | string[])}
+     * @type {(string[] | Type<any>[])}
      * @memberOf Configuration
      */
-    models?: string | string[];
+    models?: string[] | Type<any>[];
     /**
      * in debug log. defult false.
      *
