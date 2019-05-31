@@ -1,9 +1,9 @@
-# packaged @mvx/mvc
+# packaged @mvx/typeorm-adapter
 
 This repo is for distribution on `npm`. The source for this module is in the
 [main repo](https://github.com/zhouhoujun/type-mvc).
 
-`@mvx/mvc` is Decorator, Ioc, AOP MVC frameworker. base on ioc [`@tsdi`](https://www.npmjs.com/package/@tsdi/core). help you develop your project easily.
+`@mvx/typeorm-adapter` is model parser for MVC frameworker. base on ioc [`@tsdi`](https://www.npmjs.com/package/@tsdi/core). help you develop your project easily.
 
 
 
@@ -15,7 +15,7 @@ You can install this package either with `npm`
 
 ```shell
 
-npm install @mvx/mvc
+npm install @mvx/typeorm-adapter
 
 
 ```
@@ -27,21 +27,17 @@ create application
 
 ```ts
 import { MvcApplication, DefaultMvcMiddlewares, MvcModule, MvcServer } from '@mvx/mvc';
-import { ModelModule } from '@mvx/model';
-// for typeorm model import TypeOrmModule
 import { TypeOrmModule }  from '@mvx/typeorm-adapter';
 
-
-// 1. use MvcApplication to boot application.
+// 1. use MvcHostBuilder to boot application.
 MvcApplication.run();
 
-// 2. use MvcApplication module to boot application
+// 2. use bootstrap module to boot application
 
 @MvcModule({
     // baseURL: __dirname,
     imports: [
-        ModelModule, // your orm module adapter,
-        // TypeOrmModule, // for typeorm model
+        TypeOrmModule
         //...  you service, or controller, some extends module.
     ],
     debug: true
@@ -52,15 +48,12 @@ class MvcApi {
     }
 }
 
-MvcApplication.run({module: MvcApi, ...});
 
-
-// 3. use MvcApplication to boot application module.
+// 3. use MvcHostBuilder to boot application module.
 
 @MvcModule({
     imports: [
-        // ModelModule, // your orm module adapter
-        TypeOrmModule, // for typeorm model
+        TypeOrmModule
         // ... /...  you service, or controller, some extends module.
         // DebugLogAspect
     ],
@@ -74,10 +67,10 @@ class MvcApi {
 MvcApplication.run(MvcApi);
 
 
-//4. use module static main to boot application by main.
+//4. use bootstrap module to boot application by main.
 @MvcModule({
     imports: [
-        ModelModule, // your orm module adapter
+        TypeOrmModule
         // ...
     ],
     // bootstrap: MvcServer,
@@ -97,22 +90,6 @@ class MvcApi {
 
 ```
 
-
-### Auth use `@Authorization` pointcut
-
-* aop pointcut to to dynamic check the controller with `@Authorization` decorator, use your custom auth validation. eg.
-
-```ts
-@Aspect
-export class YourSecrityAspect {
-    // before AuthAspect.auth check some.
-    @Before('execution(AuthAspect.auth)', 'authAnnotation')
-    sessionCheck(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
-        //TODO： you check by authAnnotation
-    }
-}
-
-```
 ### Define Controller
 
 default setting load controllers in your project folder
@@ -136,7 +113,6 @@ import { User } from '../models';
 
 @Cors
 @Controller('/users')
-@Authorization
 export class UserController {
 
     // @Inject(symbols.IContext)
@@ -160,12 +136,6 @@ export class UserController {
         console.log('user:', user);
         console.log('request body', ctx.request['body']);
         return this.work.save(user);
-    }
-
-    @Authorization('admin')  //pointcut for check role admin 
-    @Delete('/:userId')
-    async delUser(userId: string){
-        // to do...
     }
 
     @Get('/sub')
@@ -231,181 +201,6 @@ export class HomeController extends BaseController {
 }
 
 
-```
-
-
-
-
-
-
-### configuration
-
-* default use config file `./config.ts` or `./config.js`.
-```ts
-/**
- * Configuration.
- *
- * Mvc applaction configuration.
- *
- * @export
- * @interface IConfiguration
- * @extends {ObjectMap<any>}
- */
-export interface IConfiguration extends RunnableConfigure {
-    /**
-     * https server options.
-     *
-     * @type {ServerOptions}
-     * @memberof IConfiguration
-     */
-    httpsOptions?: ServerOptions;
-    /**
-     * server hostname
-     *
-     * @type {string}
-     * @memberof IConfiguration
-     */
-    hostname?: string;
-    /**
-     * server port.
-     *
-     * @type {number}
-     * @memberof IConfiguration
-     */
-    port?: number;
-    /**
-     * session config.
-     *
-     * @type {ISessionConfig}
-     * @memberof IConfiguration
-     */
-    session?: ISessionConfig;
-    /**
-     * contents path of files, static files. default in 'public'
-     *
-     * @type {(string | string[])}
-     * @memberof Configuration
-     */
-    contents?: string[];
-    /**
-     * web site base url path. route prefix.
-     *
-     * @type {string}
-     * @memberOf Configuration
-     */
-    routePrefix?: string;
-    /**
-     * custom config key value setting.
-     *
-     * @type {IMap<any>}
-     * @memberOf Configuration
-     */
-    setting?: ObjectMap<any>;
-    /**
-     * db config connections.
-     *
-     * @type {IConnectionOptions}
-     * @memberof Configuration
-     */
-    connections?: IConnectionOptions;
-
-    /**
-     * global cors default options.
-     *
-     * @type {CorsOptions}
-     * @memberof Configuration
-     */
-    corsOptions?: CorsOptions;
-    /**
-     * controllers match. default `./controllers/\*\*\/*{.js,.ts}` in your project..
-     *
-     * @type {(string | string[])}
-     * @memberOf Configuration
-     */
-    controllers?: string | string[];
-    /**
-     * aspect service path. default: './aop'
-     *
-     * @type {(string | string[])}
-     * @memberof IConfiguration
-     */
-    aop?: string | string[];
-    /**
-     * used aops.
-     *
-     * @type {Type<any>[]}
-     * @memberof IConfiguration
-     */
-    usedAops?: Type<any>[];
-    /**
-     * views folder, default `./views` in your project.
-     *
-     * @memberof Configuration
-     */
-    views?: string;
-    /**
-     * render view options.
-     *
-     * @memberof Configuration
-     */
-    viewsOptions?: IViewOptions;
-    /**
-     * models match. default `['.\/models\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']` in your project..
-     *
-     * @type {(string[] | Type<any>[])}
-     * @memberOf Configuration
-     */
-    models?: string[] | Type<any>[];
-    /**
-     * in debug log. defult false.
-     *
-     * @memberof IConfiguration
-     */
-    debug?: boolean;
-    /**
-     * log config
-     *
-     * @type {(LogConfigure | Type<LogConfigure>)}
-     * @memberof IConfiguration
-     */
-    logConfig?: LogConfigure | Type<LogConfigure>;
-}
-
-```
-
-### Define Model
-
-* third ORM Model:  register yourself module parser extends `ModelParser`.
-* typeorm model use : [`@mvx/typeorm-adapter`](https://www.npmjs.com/package/@mvx/typeorm-adapter)
-
-
-```ts
-import { Model, Field } from '@mvx/mvc';
-
-@Model
-export class User {
-    @Field
-    name: string;
-    @Field
-    sex: string;
-    @Field
-    age: number;
-}
-
-@Model
-export class AccountUser extends User {
-    @Field
-    account: string;
-    @Field
-    passwd: string;
-}
-
-@Model
-export class ShoppingCart{
-    @Field
-    owner: User;
-    ....
-}
 ```
 
 ### Define AOP

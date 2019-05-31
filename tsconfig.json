@@ -10,6 +10,9 @@
             "@mvx/mvc": [
                 "packages/mvc/src"
             ],
+            "@mvx/oauth": [
+                "packages/oauth/src"
+            ],
             "@mvx/typeorm-adapter": [
                 "packages/typeorm-adapter/src"
             ],

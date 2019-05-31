@@ -32,10 +32,10 @@ import { ModelModule } from '@mvx/model';
 import { TypeOrmModule }  from '@mvx/typeorm-adapter';
 
 
-// 1. use MvcHostBuilder to boot application.
+// 1. use MvcApplication to boot application.
 MvcApplication.run();
 
-// 2. use bootstrap module to boot application
+// 2. use MvcApplication module to boot application
 
 @MvcModule({
     // baseURL: __dirname,
@@ -55,7 +55,7 @@ class MvcApi {
 MvcApplication.run({module: MvcApi, ...});
 
 
-// 3. use MvcHostBuilder to boot application module.
+// 3. use MvcApplication to boot application module.
 
 @MvcModule({
     imports: [
@@ -74,7 +74,7 @@ class MvcApi {
 MvcApplication.run(MvcApi);
 
 
-//4. use bootstrap module to boot application by main.
+//4. use module static main to boot application by main.
 @MvcModule({
     imports: [
         ModelModule, // your orm module adapter
