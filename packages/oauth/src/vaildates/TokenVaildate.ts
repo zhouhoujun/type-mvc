@@ -15,5 +15,10 @@ export class TokenVaildate {
         if (!currContext.header.token) {
             throw new UnauthorizedError();
         }
+        authAnnotation.forEach(ann => {
+            if (ann.role) {
+                // todo: check role.
+            }
+        });
     }
 }
