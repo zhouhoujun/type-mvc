@@ -28,6 +28,9 @@ create application
 ```ts
 import { MvcApplication, DefaultMvcMiddlewares, MvcModule, MvcServer } from '@mvx/mvc';
 import { ModelModule } from '@mvx/model';
+// for typeorm model import TypeOrmModule
+import { TypeOrmModule }  from '@mvx/typeorm-adapter';
+
 
 // 1. use MvcHostBuilder to boot application.
 MvcApplication.run();
@@ -37,7 +40,8 @@ MvcApplication.run();
 @MvcModule({
     // baseURL: __dirname,
     imports: [
-        ModelModule, // your orm module adapter
+        ModelModule, // your orm module adapter,
+        // TypeOrmModule, // for typeorm model
         //...  you service, or controller, some extends module.
     ],
     debug: true
@@ -55,7 +59,8 @@ MvcApplication.run({module: MvcApi, ...});
 
 @MvcModule({
     imports: [
-        ModelModule, // your orm module adapter
+        // ModelModule, // your orm module adapter
+        TypeOrmModule, // for typeorm model
         // ... /...  you service, or controller, some extends module.
         // DebugLogAspect
     ],
@@ -91,6 +96,7 @@ class MvcApi {
 
 
 ```
+
 
 ### Auth use `@Authorization` pointcut
 
@@ -221,6 +227,10 @@ export class HomeController extends BaseController {
 ```
 
 
+
+
+
+
 ### configuration
 
 * default use config file `./config.ts` or `./config.js`.
@@ -346,7 +356,6 @@ export interface IConfiguration extends RunnableConfigure {
 }
 
 ```
-
 
 ### Define Model
 
