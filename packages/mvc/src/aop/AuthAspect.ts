@@ -2,7 +2,7 @@ import { Aspect, Pointcut } from '@tsdi/aop';
 import { Controller } from '../decorators';
 
 /**
- * Auth aspect. pointcut method with @Authorization decorator, to check your custom auth validation.
+ * Auth aspect pointcut. pointcut for method has @Authorization decorator, to dynamic check your custom auth validation.
  *
  * @export
  * @class AuthAspect

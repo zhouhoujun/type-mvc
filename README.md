@@ -92,6 +92,135 @@ class MvcApi {
 
 ```
 
+### Auth use `@Authorization` pointcut
+
+* aop pointcut to to dynamic check the controller with `@Authorization` decorator, use your custom auth validation. eg.
+
+```ts
+@Aspect
+export class YourSecrityAspect {
+    // before AuthAspect.auth check some.
+    @Before('execution(AuthAspect.auth)', 'authAnnotation')
+    sessionCheck(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
+        //TODO： you check by authAnnotation
+    }
+}
+
+```
+### Define Controller
+
+default setting load controllers in your project folder
+`/controllers`
+
+ * Each Controller action should return type `ResultValue`, also you can return base type or object, it deal with JsonResult.
+ * The action can be `async` or `sync`. Have provide `FileResult`, `JsonResult`,
+`RedirectResult`, `ViewResult`.
+ * Also, you can extend with `BaseController`, it has implements some mothod to create the `ResultValue` types.
+ * Model can auto create in action, it auto load value from request body.
+ * Restfull params or Query String params can auto set to Controller action(Controller method) via the name of param matched. 
+ * Cors by `@Cors` decorator in class or method.
+
+define as:
+
+```ts
+import { Controller, Get, Post, IContext, ContextToken,  RequestMethod, Model, Field, Cors } from '@mvx/mvc';
+import { Inject } from '@tsdi/core';
+import { Mywork } from '../bi/Mywork';
+import { User } from '../models';
+
+@Cors
+@Controller('/users')
+export class UserController {
+
+    // @Inject(symbols.IContext)
+    // context: IContext;
+    constructor(private work: Mywork) {
+
+    }
+
+    @Get('')
+    index() {
+        console.log('home index invorked', this.work);
+        return this.work.workA();
+    }
+
+    // @Cors([RequestMethod.Post])
+    // also can define as below
+    // @Cors(['Post','Get'])
+    // @Cors('POST,GET')
+    @Post('/add')
+    async addUser(user: User, @Inject(ContextToken) ctx: IContext) {
+        console.log('user:', user);
+        console.log('request body', ctx.request['body']);
+        return this.work.save(user);
+    }
+
+    @Get('/sub')
+    sub() {
+        return this.work.workB();
+    }
+
+    @Get('/:name')
+    getPerson(name: string) {
+        return this.work.find(name);
+    }
+
+    @Get('/find/:name')
+    query(name: string, @Inject(ContextToken) ctx) {
+        console.log(ctx);
+        return this.work.find(name);
+    }
+
+    @Get('/test/:id')
+    parmtest(id: number) {
+        if (id === 1) {
+            return this.work.workA();
+        } else if (id === 2) {
+            return this.work.workB();
+        } else {
+            return 'notFound';
+        }
+    }
+
+    @Post('/posttest/:id')
+    postTest(id: number) {
+        return {
+            id: id
+        }
+    }
+
+}
+
+
+@Controller('/')
+export class HomeController extends BaseController {
+
+    // @Inject(ContextToken)
+    // context: IContext;
+    constructor() {
+        super();
+    }
+
+    @Get('')
+    index(): ResultValue {
+        return this.view('index.html');
+    }
+
+    @Get('/index2')
+    home2(): ResultValue {
+        return this.view('index2.html');
+    }
+
+    @Post('/goto/:pageName')
+    gotoPage(pageName: string): ResultValue {
+        return this.redirect( '/' + pageName);
+    }
+}
+
+
+```
+
+
 ### configuration
 
 * default use config file `./config.ts` or `./config.js`.
@@ -218,6 +347,7 @@ export interface IConfiguration extends RunnableConfigure {
 
 ```
 
+
 ### Define Model
 
 * third ORM Model:  register yourself module parser extends `ModelParser`.
@@ -251,119 +381,6 @@ export class ShoppingCart{
     owner: User;
     ....
 }
-```
-
-### Define Controller
-
-default setting load controllers in your project folder
-`/controllers`
-
- * Each Controller action should return type `ResultValue`, also you can return base type or object, it deal with JsonResult.
- * The action can be `async` or `sync`. Have provide `FileResult`, `JsonResult`,
-`RedirectResult`, `ViewResult`.
- * Also, you can extend with `BaseController`, it has implements some mothod to create the `ResultValue` types.
- * Model can auto create in action, it auto load value from request body.
- * Restfull params or Query String params can auto set to Controller action(Controller method) via the name of param matched. 
- * Cors by `@Cors` decorator in class or method.
-
-define as:
-
-```ts
-import { Controller, Get, Post, IContext, ContextToken,  RequestMethod, Model, Field, Cors } from '@mvx/mvc';
-import { Inject } from '@tsdi/core';
-import { Mywork } from '../bi/Mywork';
-import { User } from '../models';
-
-@Cors
-@Controller('/users')
-export class UserController {
-
-    // @Inject(symbols.IContext)
-    // context: IContext;
-    constructor(private work: Mywork) {
-
-    }
-
-    @Get('')
-    index() {
-        console.log('home index invorked', this.work);
-        return this.work.workA();
-    }
-
-    // @Cors([RequestMethod.Post])
-    // also can define as below
-    // @Cors(['Post','Get'])
-    // @Cors('POST,GET')
-    @Post('/add')
-    async addUser(user: User, @Inject(ContextToken) ctx: IContext) {
-        console.log('user:', user);
-        console.log('request body', ctx.request['body']);
-        return this.work.save(user);
-    }
-
-    @Get('/sub')
-    sub() {
-        return this.work.workB();
-    }
-
-    @Get('/:name')
-    getPerson(name: string) {
-        return this.work.find(name);
-    }
-
-    @Get('/find/:name')
-    query(name: string, @Inject(ContextToken) ctx) {
-        console.log(ctx);
-        return this.work.find(name);
-    }
-
-    @Get('/test/:id')
-    parmtest(id: number) {
-        if (id === 1) {
-            return this.work.workA();
-        } else if (id === 2) {
-            return this.work.workB();
-        } else {
-            return 'notFound';
-        }
-    }
-
-    @Post('/posttest/:id')
-    postTest(id: number) {
-        return {
-            id: id
-        }
-    }
-
-}
-
-
-@Controller('/')
-export class HomeController extends BaseController {
-
-    // @Inject(ContextToken)
-    // context: IContext;
-    constructor() {
-        super();
-    }
-
-    @Get('')
-    index(): ResultValue {
-        return this.view('index.html');
-    }
-
-    @Get('/index2')
-    home2(): ResultValue {
-        return this.view('index2.html');
-    }
-
-    @Post('/goto/:pageName')
-    gotoPage(pageName: string): ResultValue {
-        return this.redirect( '/' + pageName);
-    }
-}
-
-
 ```
 
 ### Define AOP

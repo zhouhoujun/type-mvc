@@ -26,6 +26,17 @@ export class MvcApplication extends BootApplication {
         return [AopModule, LogModule, ServerBootstrapModule, ServerLogsModule, MvcCoreModule, ...deps];
     }
 
+    /**
+     * run mvc application.
+     *
+     * @static
+     * @template T
+     * @param {(T | Type<any> | MvcOptions)} [target]
+     * @param {(LoadType[] | LoadType | string)} [deps]
+     * @param {...string[]} args
+     * @returns {Promise<T>}
+     * @memberof MvcApplication
+     */
     static async run<T extends MvcContext>(target?: T | Type<any> | MvcOptions, deps?: LoadType[] | LoadType | string, ...args: string[]): Promise<T> {
         let mdargs = checkBootArgs(deps, ...args);
         target = target || MvcApp;
