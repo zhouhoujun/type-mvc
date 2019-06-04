@@ -1,6 +1,6 @@
 import { ModelParser, DefaultModelParserToken } from '@mvx/mvc';
-import { Singleton, Type, ObjectMap, PropertyMetadata, Refs } from '@tsdi/ioc';
-import { getMetadataArgsStorage, EntityMetadata } from 'typeorm';
+import { Singleton, Type, ObjectMap, PropertyMetadata } from '@tsdi/ioc';
+import { getMetadataArgsStorage } from 'typeorm';
 
 
 @Singleton(DefaultModelParserToken)

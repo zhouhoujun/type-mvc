@@ -2,7 +2,7 @@ import { ConfigureRegister, Handle } from '@tsdi/boot';
 import { DebugLogAspect, LogConfigureToken } from '@tsdi/logs';
 import { Singleton, isArray, isClass, isFunction, Refs } from '@tsdi/ioc';
 import { IConfiguration } from './IConfiguration';
-import { DefaultMvcMiddlewares } from './DefaultMvcMiddlewares';
+import { DefaultMvcMiddlewares, DefaultMvcMiddlewaresToken } from './DefaultMvcMiddlewares';
 import { MvcContext } from './MvcContext';
 import { MvcModuleMetadata } from './metadata';
 import { MvcMiddlewares } from './middlewares';
@@ -25,8 +25,12 @@ export class MvcConfigureRegister extends ConfigureRegister {
             config.logConfig = null;
         }
 
+        if (!this.container.has(DefaultMvcMiddlewaresToken)) {
+            this.container.bindProvider(DefaultMvcMiddlewaresToken, DefaultMvcMiddlewares)
+        }
+
         let metadata = ctx.annoation as MvcModuleMetadata;
-        let mvcMiddles = metadata.middlewares || DefaultMvcMiddlewares;
+        let mvcMiddles = metadata.middlewares || this.container.get(DefaultMvcMiddlewaresToken);
         if (isArray(mvcMiddles)) {
             let middlewares = this.container.get(MvcMiddlewares);
             mvcMiddles.forEach(middle => {

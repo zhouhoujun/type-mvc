@@ -3,10 +3,13 @@ import * as json from 'koa-json';
 import { toAbsolutePath } from '@tsdi/platform-server';
 import { RouterMiddleware } from './router/RouterMiddleware';
 import { MvcMiddlewareType } from './middlewares';
+import { InjectToken } from '@tsdi/ioc';
 const logger = require('koa-logger')
 const serve = require('koa-static');
 const session = require('koa-session');
 const views = require('koa-views');
+
+export const DefaultMvcMiddlewaresToken = new InjectToken<MvcMiddlewareType[]>('Default_Mvc_Middlewares');
 
 /**
  * default middlewares.

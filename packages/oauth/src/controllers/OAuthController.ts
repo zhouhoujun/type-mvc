@@ -18,10 +18,16 @@ export class OAuthController {
 
 
     @Post('/:provider')
-    transport() {
+    transport(provider: string) {
 
     }
 
+    @Post('/authorize')
+    authorize() {
+
+    }
+
+    @Get('/authenticate')
     authenticate() {
 
     }
