@@ -32,6 +32,11 @@ export class OAuthController {
 
     }
 
+    @Get('/endsession')
+    endSession() {
+
+    }
+
 
     async callback() {
 
