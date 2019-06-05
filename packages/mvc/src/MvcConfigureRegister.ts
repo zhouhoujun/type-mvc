@@ -46,8 +46,8 @@ export class MvcConfigureRegister extends ConfigureRegister {
                 }
             });
         }
-        this.container.resolve(MiddlewareRegister)
-            .setup(this.container);
+        // this.container.resolve(MiddlewareRegister)
+        //     .setup(this.container);
         this.container.invoke(MiddlewareRegister, tag => tag.setup);
 
         if (!ctx.httpServer) {
