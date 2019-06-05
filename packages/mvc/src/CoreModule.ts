@@ -2,7 +2,7 @@ import { IocExt, ContainerToken, IContainer, InjectorDecoratorRegisterer, Servic
 import { Controller, Authorization, Middleware, MvcModule } from './decorators';
 import { Inject, DecoratorScopes, RuntimeDecoratorRegisterer, DesignDecoratorRegisterer, BindProviderAction, BindMethodProviderAction, IocSetCacheAction } from '@tsdi/ioc';
 import { MvcContext } from './MvcContext';
-import { ControllerRegisterAction, MvcModuleDecoratorServiceAction } from './registers';
+import { ControllerRegisterAction, MvcModuleDecoratorServiceAction, MiddlewareRegisterAction } from './registers';
 import * as middlewares from './middlewares';
 import * as routers from './router';
 import * as services from './services';
@@ -56,12 +56,13 @@ export class MvcCoreModule {
 
         container.getActionRegisterer()
             .register(container, ControllerRegisterAction)
+            .register(container, MiddlewareRegisterAction)
             .register(container, MvcModuleDecoratorServiceAction);
 
         let dreger = container.get(DesignDecoratorRegisterer);
         dreger.register(Controller, DecoratorScopes.Class, BindProviderAction, ControllerRegisterAction)
             .register(Authorization, DecoratorScopes.Class, BindProviderAction)
-            .register(Middleware, DecoratorScopes.Class, BindProviderAction)
+            .register(Middleware, DecoratorScopes.Class, BindProviderAction, MiddlewareRegisterAction)
             .register(MvcModule, DecoratorScopes.Class, BindProviderAction);
 
         let runtimeRgr = container.get(RuntimeDecoratorRegisterer);

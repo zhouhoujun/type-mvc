@@ -8,6 +8,12 @@ import { IContext, ContextToken } from './IContext';
 @Singleton
 export class MvcMiddlewares extends CompositeMiddleware {
 
+    /**
+     * setup root in koa.
+     *
+     * @param {MvcContext} mvcContext
+     * @memberof MvcMiddlewares
+     */
     setup(mvcContext: MvcContext) {
         mvcContext.getKoa().use((ctx: IContext, next) => {
             ctx.mvcContext = mvcContext;

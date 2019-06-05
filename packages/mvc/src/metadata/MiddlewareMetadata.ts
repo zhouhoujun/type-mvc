@@ -1,4 +1,5 @@
-import { ClassMetadata } from '@tsdi/ioc';
+import { ClassMetadata, Type } from '@tsdi/ioc';
+import { CompositeMiddleware, MvcMiddleware } from '../middlewares';
 
 /**
  * middleware metadata.
@@ -15,18 +16,26 @@ export interface MiddlewareMetadata extends ClassMetadata {
      * @memberof MiddlewareMetadata
      */
     name?: string;
+
+    /**
+     * the middleware reg in.
+     *
+     * @type {Type<CompositeMiddleware>}
+     * @memberof MiddlewareMetadata
+     */
+    regIn?: Type<CompositeMiddleware>;
     /**
      * define middleware setup before one middleware.
      *
-     * @type {string}
+     * @type {(string | Type<MvcMiddleware>)}
      * @memberof MiddlewareMetadata
      */
-    before?: string;
+    before?: string | Type<MvcMiddleware>;
     /**
      * define middleware setup after one middleware.
      *
-     * @type {string}
+     * @type {(string | Type<MvcMiddleware>)}
      * @memberof MiddlewareMetadata
      */
-    after?: string;
+    after?: string | Type<MvcMiddleware>;
 }

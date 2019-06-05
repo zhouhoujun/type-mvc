@@ -1,4 +1,4 @@
-import { Controller, Get, Cors, Post } from '@mvx/mvc';
+import { Controller, Get, Cors, Post, IContext, ContextToken } from '@mvx/mvc';
 import { MvcPassport } from '../passports';
 import { Inject } from '@tsdi/ioc';
 
@@ -11,14 +11,14 @@ export class OAuthController {
 
     @Get('/token')
     token() {
-
+        this.passport.authorize('')
     }
 
 
     @Get('/userinfo')
     @Get('/profile')
     userinfo() {
-        
+
     }
 
 
@@ -32,18 +32,22 @@ export class OAuthController {
 
     }
 
-    @Get('/authenticate')
-    authenticate() {
-
+    @Get('/:provider/authenticate')
+    authenticate(provider: string) {
+        this.passport.authenticate(provider);
     }
 
     @Get('/endsession')
-    endSession() {
-
+    endSession(@Inject(ContextToken) ctx: IContext) {
+        ctx.logout();
+        ctx.redirect('/');
     }
 
-
-    async callback() {
-
+    @Get('/:provider/callback')
+    async callback(provider: string) {
+        this.passport.authenticate(provider, {
+            successRedirect: '/',
+            failureRedirect: '/'
+        })
     }
 }

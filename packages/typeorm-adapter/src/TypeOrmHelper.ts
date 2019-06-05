@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { createConnection, Connection, getConnection, ConnectionOptions, Repository } from 'typeorm';
 import { Singleton, Inject, Type, isString } from '@tsdi/ioc';
-import { MvcContext, MvcContextToken, IConfiguration, IConnectionOptions } from '@mvx/mvc';
+import { MvcContext, MvcContextToken, IConnectionOptions } from '@mvx/mvc';
 
 
 @Singleton

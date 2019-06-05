@@ -1,6 +1,6 @@
 import { Token, PromiseUtil, Type } from '@tsdi/ioc';
 import { IContext } from './IContext';
-import { HandleType, Handle } from '@tsdi/boot';
+import { HandleType, Handle, IHandle } from '@tsdi/boot';
 import { IConfiguration } from '../IConfiguration';
 import { MvcContext } from '../MvcContext';
 
@@ -11,7 +11,7 @@ import { MvcContext } from '../MvcContext';
  * @export
  * @interface IMiddleware
  */
-export interface IMiddleware { // extends IHandle {
+export interface IMiddleware extends IHandle<IContext> {
     /**
         * execute handle.
         *

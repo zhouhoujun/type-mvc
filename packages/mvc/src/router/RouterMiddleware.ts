@@ -1,10 +1,9 @@
-import { Middleware } from '../decorators';
 import { IContext, MvcMiddleware, IMiddleware } from '../middlewares';
 import { Router } from './Router';
-import { Inject } from '@tsdi/ioc';
+import { Inject, Singleton } from '@tsdi/ioc';
 
 
-@Middleware('Router')
+@Singleton
 export class RouterMiddleware extends MvcMiddleware implements IMiddleware {
 
     @Inject()

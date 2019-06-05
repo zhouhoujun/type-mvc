@@ -5,7 +5,7 @@ import { IConfiguration } from './IConfiguration';
 import { DefaultMvcMiddlewares, DefaultMvcMiddlewaresToken } from './DefaultMvcMiddlewares';
 import { MvcContext } from './MvcContext';
 import { MvcModuleMetadata } from './metadata';
-import { MvcMiddlewares } from './middlewares';
+import { MvcMiddlewares, MiddlewareRegister } from './middlewares';
 import * as http from 'http';
 import * as https from 'https';
 
@@ -46,6 +46,9 @@ export class MvcConfigureRegister extends ConfigureRegister {
                 }
             });
         }
+        this.container.resolve(MiddlewareRegister)
+            .setup(this.container);
+        this.container.invoke(MiddlewareRegister, tag => tag.setup);
 
         if (!ctx.httpServer) {
             if (config.httpsOptions) {

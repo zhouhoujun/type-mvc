@@ -1,7 +1,7 @@
 import { Handle, Handles, HandleType } from '@tsdi/boot';
 import { IContext } from './IContext';
 import { IMiddleware } from './IMiddleware';
-import { isClass } from '@tsdi/ioc';
+import { isClass, Injectable } from '@tsdi/ioc';
 
 
 /**
@@ -18,7 +18,12 @@ export abstract class MvcMiddleware extends Handle<IContext> implements IMiddlew
 }
 
 
+@Injectable()
 export class CompositeMiddleware extends Handles<IContext> {
+
+    find(filter: (item: HandleType<IContext>) => boolean) {
+        return this.handles.find(item => filter(item));
+    }
 
     protected registerHandle(handle: HandleType<IContext>, setup?: boolean): this {
         if (isClass(handle)) {

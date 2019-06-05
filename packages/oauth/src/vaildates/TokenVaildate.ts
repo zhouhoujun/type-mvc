@@ -11,8 +11,8 @@ export class TokenVaildate {
 
     @Before('execution(AuthAspect.auth)', 'authAnnotation')
     sessionCheck(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
-        let currContext = this.container.get(ContextToken);
-        if (!currContext.header.token) {
+        let ctx = this.container.get(ContextToken);
+        if (!ctx.isAuthenticated()) {
             throw new UnauthorizedError();
         }
         authAnnotation.forEach(ann => {
