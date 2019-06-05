@@ -8,6 +8,8 @@ const logger = require('koa-logger')
 const serve = require('koa-static');
 const session = require('koa-session');
 const views = require('koa-views');
+const helmet = require('koa-helmet');
+const passport = require('koa-passport');
 
 export const DefaultMvcMiddlewaresToken = new InjectToken<MvcMiddlewareType[]>('Default_Mvc_Middlewares');
 
@@ -15,6 +17,7 @@ export const DefaultMvcMiddlewaresToken = new InjectToken<MvcMiddlewareType[]>('
  * default middlewares.
  */
 export const DefaultMvcMiddlewares: MvcMiddlewareType[] = [
+    () => helmet(),
     () => bodyParser(),
     () => json(),
     () => logger(),
@@ -23,6 +26,8 @@ export const DefaultMvcMiddlewares: MvcMiddlewareType[] = [
             return session(config.session, ctx.getKoa())
         }
     },
+    () => passport.initialize(),
+    () => passport.session(),
     (config, ctx) => {
         let contents = config.contents || ['./public'];
         contents.forEach((content, idx) => {
