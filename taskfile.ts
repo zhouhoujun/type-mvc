@@ -4,6 +4,7 @@ import { PackModule, NodeActivityContext, ShellActivityOption, JsonReplaceActivi
 import { Type, isString } from '@tsdi/ioc';
 import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
 
+
 @Task({
     deps: [
         PackModule,

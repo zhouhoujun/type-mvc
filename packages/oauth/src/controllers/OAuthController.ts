@@ -1,6 +1,6 @@
 import { Controller, Get, Cors, Post, IContext, ContextToken } from '@mvx/mvc';
-import { MvcPassport } from '../passports';
 import { Inject } from '@tsdi/ioc';
+import { MvcPassport } from '../passports';
 
 @Cors
 @Controller('/connect')

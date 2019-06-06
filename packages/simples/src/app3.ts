@@ -1,11 +1,12 @@
 import { MvcApplication, MvcModule, DefaultMvcMiddlewares, MvcServer } from '@mvx/mvc';
 import { ModelModule } from '@mvx/model';
 // import { PlatformServer } from '@tsdi/platform-server';
-
+import { OAuthModule } from '@mvx/oauth';
 
 @MvcModule({
     imports: [
-        ModelModule
+        ModelModule,
+        OAuthModule
     ],
     middlewares: DefaultMvcMiddlewares,
     // debug: true

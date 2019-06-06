@@ -1,6 +1,6 @@
 import { ConfigureRegister, Handle } from '@tsdi/boot';
 import { DebugLogAspect, LogConfigureToken } from '@tsdi/logs';
-import { Singleton, isArray, isClass, isFunction, Refs } from '@tsdi/ioc';
+import { Singleton, isArray, isClass, isFunction } from '@tsdi/ioc';
 import { IConfiguration } from './IConfiguration';
 import { DefaultMvcMiddlewares, DefaultMvcMiddlewaresToken } from './DefaultMvcMiddlewares';
 import { MvcContext } from './MvcContext';
@@ -12,9 +12,8 @@ import * as https from 'https';
 
 @Singleton
 export class MvcConfigureRegister extends ConfigureRegister {
-    constructor() {
-        super();
-    }
+
+
     async register(config: IConfiguration, ctx: MvcContext): Promise<void> {
 
         config = ctx.configuration = Object.assign({}, ctx.annoation, config);
@@ -46,8 +45,9 @@ export class MvcConfigureRegister extends ConfigureRegister {
                 }
             });
         }
-        // this.container.resolve(MiddlewareRegister)
-        //     .setup(this.container);
+
+        console.log(this.container);
+
         this.container.invoke(MiddlewareRegister, tag => tag.setup);
 
         if (!ctx.httpServer) {

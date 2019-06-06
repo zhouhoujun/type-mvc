@@ -1,10 +1,15 @@
-import { Singleton } from '@tsdi/ioc';
-import { KoaPassport } from 'koa-passport';
+// import { Singleton } from '@tsdi/ioc';
+import * as passport from 'koa-passport';
+import { InjectToken, Singleton } from '@tsdi/ioc';
+import { Strategy } from 'passport';
 
 
-@Singleton
-export class MvcPassport extends KoaPassport {
+@Singleton()
+export class MvcPassport {
+
     constructor() {
-        super();
+
     }
+
 }
+

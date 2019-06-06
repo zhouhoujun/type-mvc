@@ -1,10 +1,12 @@
-import { IContext, MvcMiddleware, IMiddleware } from '../middlewares';
+import { IContext, MvcMiddleware, IMiddleware, MiddlewareTypes } from '../middlewares';
 import { Router } from './Router';
 import { Inject, Singleton } from '@tsdi/ioc';
 
 
 @Singleton
 export class RouterMiddleware extends MvcMiddleware implements IMiddleware {
+
+    static middleName = MiddlewareTypes.Router;
 
     @Inject()
     private router: Router;

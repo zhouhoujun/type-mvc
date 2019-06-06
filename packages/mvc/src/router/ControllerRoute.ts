@@ -182,7 +182,7 @@ export class ControllerRoute extends MvcRoute {
 
             let params = lifeScope.getMethodParameters(this.container, this.controller, ctrl, meta.propertyKey);
             let providers = await this.createProvider(ctx, ctrl, meta, params);
-            let response: any = await container.invoke(this.controller, meta.propertyKey, ctrl, ...providers);
+            let response: any = await container.invoke(ctrl, meta.propertyKey, ...providers);
             if (isPromise(response)) {
                 response = await response;
             }
