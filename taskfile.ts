@@ -1,4 +1,4 @@
-import { Workflow, Task, Activities, isAcitvityClass, Activity } from '@tsdi/activities';
+import { Workflow, Task, Activities, isAcitvityClass, Activity, EachTeamplate, ActivityTemplate } from '@tsdi/activities';
 import * as path from 'path';
 import { PackModule, NodeActivityContext, ShellActivityOption, JsonReplaceActivityOption } from '@tsdi/pack';
 import { Type, isString } from '@tsdi/ioc';
@@ -11,7 +11,7 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
         ServerActivitiesModule
     ],
     baseURL: __dirname,
-    template: [
+    template: <ActivityTemplate>[
         {
             activity: Activities.if,
             condition: (ctx: NodeActivityContext) => {
@@ -21,7 +21,7 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
             body: <ShellActivityOption>{
                 activity: 'shell',
                 shell: (ctx: NodeActivityContext) => {
-                    let packages = ctx.platform.getFolders('packages').filter(f => !/(cli|orm|simples|oauth)$/.test(f));
+                    let packages = ctx.platform.getFolders('packages').filter(f => !/(cli|orm|simples)$/.test(f));
                     let version = ctx.platform.getEnvArgs().unp;
                     let cmds = [];
                     packages.forEach(fd => {
@@ -95,9 +95,9 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
                             }]
                     }]
                 },
-                {
+                <EachTeamplate>{
                     activity: Activities.each,
-                    each: (ctx: NodeActivityContext) => ctx.platform.getFolders('packages').filter(f => !/(cli|orm|simples|oauth)$/.test(f)),
+                    each: (ctx: NodeActivityContext) => ctx.platform.getFolders('packages').filter(f => !/(cli|orm|simples)$/.test(f)),
                     body: {
                         activity: Activities.execute,
                         action: async (ctx) => {
