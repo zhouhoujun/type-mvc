@@ -21,7 +21,3 @@ class MvcApi {
         MvcApplication.run(MvcApi);
     }
 }
-
-// MvcHostBuilder.create(__dirname)
-//     .useConfiguration()
-//     .run(MvcApi);

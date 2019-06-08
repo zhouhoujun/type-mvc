@@ -9,7 +9,6 @@ export * from './router';
 
 export * from './BaseController';
 export * from './DefaultMvcMiddlewares';
-export * from './IAuthorization';
 export * from './IConfiguration';
 export * from './IListener';
 export * from './RequestMethod';

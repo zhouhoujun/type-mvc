@@ -1,17 +1,16 @@
 import {
     lang, Injectable, Type, getMethodMetadata, isFunction, isBaseType,
     isUndefined, ParamProviders, Provider, isClass, IParameter, isObject,
-    isArray, isPromise, hasClassMetadata, hasMethodMetadata, getTypeMetadata,
+    isArray, isPromise, getTypeMetadata,
     isString, RuntimeLifeScope, Inject, InjectToken, getClassDecorators
 } from '@tsdi/ioc';
 import { MvcRoute, RouteUrlArgToken } from './Route';
 import { IContext } from '../middlewares';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
 import { RouteMetadata, CorsMetadata } from '../metadata';
-import { UnauthorizedError, ForbiddenError, HttpError } from '../errors';
+import { ForbiddenError, HttpError } from '../errors';
 import { ResultValue } from '../results';
-import { AuthorizationToken } from '../IAuthorization';
-import { Authorization, Cors, Route } from '../decorators';
+import { Cors, Route } from '../decorators';
 import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
 import { ModelParser } from './ModelParser';
 import { DefaultModelParserToken } from './IModelParser';
@@ -36,25 +35,16 @@ export class ControllerRoute extends MvcRoute {
     }
 
     async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        try {
-            await this.invokeOption(ctx, async () => {
-                if (ctx.method !== 'OPTIONS') {
-                    await this.invoke(ctx, next)
-                    // await next();
-                } else {
-                    throw new ForbiddenError();
-                }
-            });
-        } catch (err) {
-            if (err instanceof HttpError) {
-                ctx.status = err.status;
-                ctx.message = err.message;
+        await this.invokeOption(ctx, async () => {
+            if (ctx.method !== 'OPTIONS') {
+                await this.invoke(ctx)
+                    .then(() => {
+                        return next();
+                    });
             } else {
-                ctx.status = 500;
-                console.error(err);
+                throw new ForbiddenError();
             }
-        }
-
+        });
     }
 
     async invokeOption(ctx: IContext, next: () => Promise<void>): Promise<void> {
@@ -163,21 +153,11 @@ export class ControllerRoute extends MvcRoute {
         }
         return null;
     }
-    async invoke(ctx: IContext, next: () => Promise<void>) {
+    async invoke(ctx: IContext) {
         let meta = this.getRouteMetaData(ctx, parseRequestMethod(ctx.method));
         let container = this.container;
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
-            if (container.has(AuthorizationToken)) {
-                let hasAuth = hasClassMetadata(Authorization, ctrl) || hasMethodMetadata(Authorization, ctrl, meta.propertyKey);
-                if (hasAuth) {
-                    let auth = container.get(AuthorizationToken);
-                    if (!auth.isAuth()) {
-                        throw new UnauthorizedError();
-                    }
-                }
-            }
-
             let lifeScope = container.getActionRegisterer().get(RuntimeLifeScope);
 
             let params = lifeScope.getMethodParameters(this.container, this.controller, ctrl, meta.propertyKey);
@@ -207,7 +187,6 @@ export class ControllerRoute extends MvcRoute {
             }
 
         }
-        await next();
     }
 
     protected async createProvider(ctx: IContext, ctrl: any, meta: RouteMetadata, params: IParameter[]): Promise<ParamProviders[]> {

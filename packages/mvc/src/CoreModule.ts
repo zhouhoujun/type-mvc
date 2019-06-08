@@ -6,6 +6,7 @@ import { ControllerRegisterAction, MvcModuleDecoratorServiceAction, MiddlewareRe
 import * as middlewares from './middlewares';
 import * as routers from './router';
 import * as services from './services';
+import * as aop from './aop';
 import { DefaultConfigureToken, DIModuleInjectorScope } from '@tsdi/boot';
 import { IConfiguration } from './IConfiguration';
 import { MvcServer } from './MvcServer';
@@ -23,7 +24,7 @@ export class MvcCoreModule {
             .register(MvcServer)
             .register(MvcConfigureRegister);
 
-        container.use(services, middlewares, routers);
+        container.use(aop, services, middlewares, routers);
 
         container.bindProvider(DefaultConfigureToken, <IConfiguration>{
             hostname: '',

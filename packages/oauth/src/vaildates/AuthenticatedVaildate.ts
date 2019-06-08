@@ -14,7 +14,6 @@ export class AuthenticatedVaildate {
     @Before('execution(AuthAspect.auth)', 'authAnnotation')
     sessionCheck(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
         let ctx = this.container.get(ContextToken);
-        console.log(ctx.isAuthenticated());
         if (!ctx.isAuthenticated()) {
             throw new UnauthorizedError();
         }
