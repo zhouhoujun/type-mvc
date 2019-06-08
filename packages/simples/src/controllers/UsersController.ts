@@ -1,4 +1,4 @@
-import { Controller, Get, Post, IContext, ContextToken,  RequestMethod, Cors } from '@mvx/mvc';
+import { Controller, Get, Post, IContext, ContextToken,  RequestMethod, Cors, Authorization } from '@mvx/mvc';
 import { Inject } from '@tsdi/ioc';
 import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
@@ -19,7 +19,8 @@ export class UserController {
         return this.work.workA();
     }
 
-    @Cors([RequestMethod.Post])
+    @Authorization()
+    // @Cors([RequestMethod.Post])
     @Post('/add')
     async addUser(user: User, @Inject(ContextToken) ctx: IContext) {
         console.log('user:', user);

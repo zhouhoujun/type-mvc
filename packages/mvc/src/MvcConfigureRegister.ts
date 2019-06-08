@@ -18,6 +18,8 @@ export class MvcConfigureRegister extends ConfigureRegister {
 
         config = ctx.configuration = Object.assign({}, ctx.annoation, config);
 
+        ctx.getKoa().keys = config.keys;
+
         if (config.debug) {
             this.container.register(DebugLogAspect);
             // disable custom log.
@@ -45,8 +47,6 @@ export class MvcConfigureRegister extends ConfigureRegister {
                 }
             });
         }
-
-        console.log(this.container);
 
         this.container.invoke(MiddlewareRegister, tag => tag.setup);
 

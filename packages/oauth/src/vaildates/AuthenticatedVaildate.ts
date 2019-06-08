@@ -3,8 +3,10 @@ import { AuthorizationMetadata, ContextToken, UnauthorizedError } from '@mvx/mvc
 import { IContainer, ContainerToken } from '@tsdi/core';
 import { Inject } from '@tsdi/ioc';
 
-@Aspect
-export class TokenVaildate {
+@Aspect({
+    singleton: true
+})
+export class AuthenticatedVaildate {
 
     @Inject(ContainerToken)
     private container: IContainer;
@@ -12,6 +14,7 @@ export class TokenVaildate {
     @Before('execution(AuthAspect.auth)', 'authAnnotation')
     sessionCheck(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
         let ctx = this.container.get(ContextToken);
+        console.log(ctx.isAuthenticated());
         if (!ctx.isAuthenticated()) {
             throw new UnauthorizedError();
         }

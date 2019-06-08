@@ -3,7 +3,7 @@ import { LogConfigure } from '@tsdi/logs';
 import { ServerOptions } from 'https';
 import { RunnableConfigure } from '@tsdi/boot';
 import { RequestMethod } from './RequestMethod';
-import { any } from 'expect';
+import *  as Keygrip from 'keygrip';
 
 
 /**
@@ -73,6 +73,13 @@ export const ConfigurationToken = new InjectToken<IConfiguration>('MVX_Configura
  * @extends {ObjectMap<any>}
  */
 export interface IConfiguration extends RunnableConfigure {
+    /**
+     * keys
+     *
+     * @type {(Keygrip | string[])}
+     * @memberof IConfiguration
+     */
+    keys?: Keygrip | string[];
     /**
      * https server options.
      *

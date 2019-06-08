@@ -1,11 +1,16 @@
 import { HttpError } from '@mvx/mvc';
 
-export class OAuthError extends HttpError {
-    constructor(message = 'OAuthError') {
-        super(401, message);
-    }
+/**
+ * `AuthenticationError` error.
+ *
+ * @api private
+ */
+export class AuthenticationError extends HttpError {
+    public static ErrorName = 'AuthenticationError';
 
-    toString() {
-        return `Http Error: ${this.code}, ${this.message}`;
+    constructor(status: number, message) {
+        super(status || 401, message);
+        this.name = AuthenticationError.ErrorName;
+        Error.captureStackTrace(this, this.constructor);
     }
 }

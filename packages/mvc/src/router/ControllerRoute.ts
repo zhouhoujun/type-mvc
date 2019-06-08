@@ -15,7 +15,7 @@ import { Authorization, Cors, Route } from '../decorators';
 import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
 import { ModelParser } from './ModelParser';
 import { DefaultModelParserToken } from './IModelParser';
-import { ResolveServiceContext } from '@tsdi/core';
+
 declare let Buffer: any;
 
 export function isBuffer(target: any): boolean {
@@ -47,7 +47,7 @@ export class ControllerRoute extends MvcRoute {
             });
         } catch (err) {
             if (err instanceof HttpError) {
-                ctx.status = err.code;
+                ctx.status = err.status;
                 ctx.message = err.message;
             } else {
                 ctx.status = 500;

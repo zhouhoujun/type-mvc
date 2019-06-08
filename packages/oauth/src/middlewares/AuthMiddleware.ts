@@ -1,6 +1,6 @@
 import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext } from '@mvx/mvc';
 import { Inject } from '@tsdi/ioc';
-import { MvcPassport } from '../passports';
+import { Authenticator } from '../passports';
 
 @Middleware({
     name: 'auth',
@@ -11,7 +11,7 @@ export class AuthMiddleware extends CompositeMiddleware {
     private hasInit = false;
 
     @Inject()
-    passport: MvcPassport;
+    passport: Authenticator;
 
     async execute(ctx: IContext, next?: () => Promise<void>): Promise<void> {
         if (!this.hasInit) {

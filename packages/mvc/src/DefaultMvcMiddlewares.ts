@@ -6,7 +6,6 @@ import { MvcMiddlewareType, MiddlewareTypes, bindMiddlewareName } from './middle
 import { InjectToken } from '@tsdi/ioc';
 const logger = require('koa-logger')
 const serve = require('koa-static');
-const session = require('koa-session');
 const views = require('koa-views');
 const helmet = require('koa-helmet');
 const compose = require('koa-compose');
@@ -22,12 +21,6 @@ export const DefaultMvcMiddlewaresToken = new InjectToken<MvcMiddlewareType[]>('
 export const DefaultMvcMiddlewares: MvcMiddlewareType[] = [
     () => bindMiddlewareName(helmet(), MiddlewareTypes.Helmet),
     () => bindMiddlewareName(logger(), MiddlewareTypes.Logger),
-    (config, ctx) => {
-        if (config.session) {
-            return bindMiddlewareName(session(config.session, ctx.getKoa()), MiddlewareTypes.Session);
-        }
-        return void 0;
-    },
     () => bindMiddlewareName(bodyParser(), MiddlewareTypes.BodyParser),
     () => bindMiddlewareName(json(), MiddlewareTypes.Json),
     (config, ctx) => {

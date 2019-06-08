@@ -1,6 +1,6 @@
 export class HttpError extends Error {
 
-    constructor(public code: number, message?: string) {
+    constructor(public status: number, message?: string) {
         super();
 
         if (message) {
@@ -9,7 +9,7 @@ export class HttpError extends Error {
     }
 
     toString() {
-        return `Http Error: ${this.code}, ${this.message}`;
+        return `Http Error: ${this.status}, ${this.message}`;
     }
 
 }

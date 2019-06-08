@@ -14,6 +14,6 @@ export class AuthAspect {
     // pointcut for method has @Authorization decorator.
     @Pointcut('@annotation(Authorization)')
     auth() {
-
+        console.log('AuthAspect...')
     }
 }

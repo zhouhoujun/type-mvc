@@ -3,9 +3,7 @@ import * as controllers from './controllers';
 import * as vaildates from './vaildates';
 import * as middlewares from './middlewares';
 import * as passports from './passports';
-import { MvcPassport } from './passports';
 
-const passport = require('koa-passport');
 
 @DIModule({
     regFor: RegFor.boot,
@@ -14,9 +12,6 @@ const passport = require('koa-passport');
         vaildates,
         controllers,
         middlewares
-    ],
-    providers: [
-        { provide: MvcPassport, useValue: passport }
     ],
     exports: [
         passports,

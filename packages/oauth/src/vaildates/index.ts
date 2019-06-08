@@ -1,1 +1,1 @@
-export * from './TokenVaildate';
+export * from './AuthenticatedVaildate';
