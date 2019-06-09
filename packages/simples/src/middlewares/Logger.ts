@@ -1,12 +1,8 @@
-import { Middleware, IMiddleware, IContext } from '@mvx/mvc';
+import { Middleware, IMiddleware, IContext, MvcMiddleware } from '@mvx/mvc';
 
 
-@Middleware({ provide: 'logger' })
-export class Logger implements IMiddleware {
-
-    constructor() {
-
-    }
+@Middleware({ name: 'logger' })
+export class Logger extends MvcMiddleware {
 
     async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
         let start = Date.now();

@@ -1,4 +1,4 @@
-import { InjectToken, Singleton, Abstract, Inject, Injectable } from '@tsdi/ioc';
+import { Singleton, Abstract } from '@tsdi/ioc';
 import { IContext } from '@mvx/mvc';
 import { Middleware, Context } from 'koa';
 import * as http from 'http';
@@ -20,32 +20,36 @@ export interface AuthenticateOption {
     authInfo?: boolean;
 }
 
+
+
+declare module 'koa' {
+    interface Context {
+        passport: Authenticator;
+        login(user: any, options?: any): Promise<void>;
+        logIn(user, options, done);
+        logout(): void;
+        logOut(): void;
+        isAuthenticated(): boolean;
+        isUnauthenticated(): boolean;
+    }
+}
+
+
 /**
  * `Authenticator` constructor.
  *
  */
 
-@Injectable()
+@Singleton()
 export class Authenticator {
     private strategies: Map<string, Strategy>;
     private serializers;
     private deserializers;
     private infoTransformers: Array<(info, ctx: IContext) => Promise<any>>;
-    private userProperty: string;
-    private user: any;
+    private _userProperty = 'user';
 
-    public get UserProperty() {
-        if (!this.userProperty) {
-            this.userProperty = 'user';
-        }
-        return this.userProperty;
-    }
-
-    public get User() {
-        return this.user;
-    }
-    public set User(val) {
-        this.user = val;
+    get userProperty() {
+        return this._userProperty || 'user';
     }
 
     constructor() {
@@ -151,7 +155,7 @@ export class Authenticator {
      *
      */
     public initialize(userProperty?: string): Middleware {
-        this.userProperty = userProperty;
+        this._userProperty = userProperty || 'user';
 
         return async (ctx: Context, next) => {
             ctx.passport = this;
@@ -614,7 +618,7 @@ export class SessionStrategy extends Strategy {
                 ctx.session.passport.user = undefined;
                 return new PassAction();
             }
-            const property = ctx.passport.UserProperty;
+            const property = ctx.passport.userProperty;
             ctx.state[property] = user;
         }
         return new PassAction();

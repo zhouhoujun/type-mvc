@@ -1,19 +1,6 @@
 import { BaseContext, Context } from 'koa';
 
 
-
-declare module 'koa' {
-    interface Context {
-        login(user: any, options?: any): Promise<void>;
-        logIn(user, options, done);
-        logout(): void;
-        logOut(): void;
-        isAuthenticated(): boolean;
-        isUnauthenticated(): boolean;
-    }
-}
-
-
 /**
  * Intiate a login session for `user`.
  *
@@ -30,7 +17,7 @@ async function login(this: Context, user): Promise<void> {
     if (!this.passport) {
         throw new Error('passport.initialize() middleware not in use');
     }
-    const property = (this.passport && this.passport.UserProperty);
+    const property = (this.passport && this.passport.userProperty);
     this.state[property] = user;
     let obj;
     try {
@@ -55,7 +42,7 @@ function logout(this: Context): void {
     if (!this.passport || !this.session) {
         return;
     }
-    const property = this.passport.UserProperty;
+    const property = this.passport.userProperty;
     this.state[property] = null;
     // if (this._passport && this._passport.session) {
     //     delete this._passport.session.user;
@@ -72,7 +59,7 @@ function isAuthenticated(this: Context): boolean {
     if (!this.passport) {
         return false;
     }
-    const property = this.passport.UserProperty;
+    const property = this.passport.userProperty;
     return (this.state[property]) ? true : false;
 }
 

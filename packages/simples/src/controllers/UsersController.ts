@@ -35,7 +35,7 @@ export class UserController {
     }
 
     @Cors
-    @Authorization()
+    // @Authorization()
     @Get('/:name')
     getPerson(name: string) {
         return this.work.find(name);
