@@ -1,3 +1,9 @@
+/**
+ * auth state.
+ *
+ * @export
+ * @enum {number}
+ */
 export enum AuthState {
     SUCCESS,
     FAIL,
@@ -6,7 +12,12 @@ export enum AuthState {
     ERROR
 }
 
-
+/**
+ * auth action
+ *
+ * @export
+ * @class AuthAction
+ */
 export class AuthAction {
     constructor(public type: AuthState) {
 

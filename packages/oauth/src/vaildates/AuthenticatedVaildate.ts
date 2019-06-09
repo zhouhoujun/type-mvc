@@ -12,15 +12,16 @@ export class AuthenticatedVaildate {
     private container: IContainer;
 
     @Before('execution(AuthAspect.auth)', 'authAnnotation')
-    sessionCheck(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
+    authenticated(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
         let ctx = this.container.get(ContextToken);
         if (!ctx.isAuthenticated()) {
             throw new UnauthorizedError();
         }
-        authAnnotation.forEach(ann => {
-            if (ann.role) {
-                // todo: check role.
-            }
-        });
+
+        // authAnnotation.forEach(ann => {
+        //     if (ann.role) {
+        //         // todo: check role.
+        //     }
+        // });
     }
 }

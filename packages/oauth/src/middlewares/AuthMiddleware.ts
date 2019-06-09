@@ -1,6 +1,6 @@
 import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext } from '@mvx/mvc';
 import { Inject } from '@tsdi/ioc';
-import { Authenticator } from '../passports';
+import { Authenticator, PassportBuildService } from '../passports';
 
 @Middleware({
     name: 'auth',
@@ -22,6 +22,9 @@ export class AuthMiddleware extends CompositeMiddleware {
     }
 
     protected async setup(context: MvcContext) {
+        let services = context.getRaiseContainer().getServices(PassportBuildService);
+        await Promise.all(services.map(s => s.build(this.passport)));
+
         this.use(this.passport.initialize());
         this.use(this.passport.session());
     }

@@ -57,8 +57,6 @@ export class Authenticator {
         this.serializers = [];
         this.deserializers = [];
         this.infoTransformers = [];
-        // this.userProperty = "user";
-
         this.use(new SessionStrategy());
     }
 
