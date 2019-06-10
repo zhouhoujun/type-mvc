@@ -4,7 +4,7 @@ import { Authenticator } from '../passports';
 
 @Cors
 @Controller('/connect')
-export class OAuthController {
+export class IdentityController {
 
     @Inject()
     passport: Authenticator;

@@ -25,6 +25,7 @@ export interface AuthenticateOption {
 declare module 'koa' {
     interface Context {
         passport: Authenticator;
+        hasRole?(...role: string[]): boolean;
         login(user: any, options?: any): Promise<void>;
         logIn(user, options, done);
         logout(): void;
@@ -617,7 +618,7 @@ export class SessionStrategy extends Strategy {
                 return new PassAction();
             }
             const property = ctx.passport.userProperty;
-            ctx.state[property] = user;
+            ctx[property] = user;
         }
         return new PassAction();
     }

@@ -23,8 +23,7 @@ export class AuthMiddleware extends CompositeMiddleware {
 
     protected async setup(context: MvcContext) {
         let services = context.getRaiseContainer().getServices(PassportBuildService);
-        await Promise.all(services.map(s => s.build(this.passport)));
-
+        await Promise.all(services.map(s => s.build(this.passport, context.configuration)));
         this.use(this.passport.initialize());
         this.use(this.passport.session());
     }

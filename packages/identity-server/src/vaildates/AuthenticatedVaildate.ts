@@ -1,7 +1,7 @@
 import { Aspect, Joinpoint, Before } from '@tsdi/aop';
-import { AuthorizationMetadata, ContextToken, UnauthorizedError } from '@mvx/mvc'
+import { AuthorizationMetadata, ContextToken, UnauthorizedError, ForbiddenError } from '@mvx/mvc'
 import { IContainer, ContainerToken } from '@tsdi/core';
-import { Inject } from '@tsdi/ioc';
+import { Inject, isFunction } from '@tsdi/ioc';
 
 @Aspect({
     singleton: true
@@ -18,10 +18,10 @@ export class AuthenticatedVaildate {
             throw new UnauthorizedError();
         }
 
-        // authAnnotation.forEach(ann => {
-        //     if (ann.role) {
-        //         // todo: check role.
-        //     }
-        // });
+        if (isFunction(ctx.hasRole) && authAnnotation && authAnnotation.length) {
+            if (ctx.hasRole(...authAnnotation.map(a => a.role).filter(a => a))) {
+                throw new ForbiddenError();
+            }
+        }
     }
 }

@@ -10,11 +10,14 @@
             "@mvx/mvc": [
                 "packages/mvc/src"
             ],
-            "@mvx/oauth": [
-                "packages/oauth/src"
-            ],
             "@mvx/typeorm-adapter": [
                 "packages/typeorm-adapter/src"
+            ],
+            "@mvx/identity-server": [
+                "packages/identity-server/src"
+            ],
+            "@mvx/oauth": [
+                "packages/oauth/src"
             ],
             "@mvx/orm": [
                 "packages/orm/src"

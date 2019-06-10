@@ -1,6 +1,6 @@
-import { ConfigureRegister, Handle } from '@tsdi/boot';
+import { ConfigureRegister, Handle, BuilderService } from '@tsdi/boot';
 import { DebugLogAspect, LogConfigureToken } from '@tsdi/logs';
-import { Singleton, isArray, isClass, isFunction } from '@tsdi/ioc';
+import { Singleton, isArray, isClass, isFunction, lang } from '@tsdi/ioc';
 import { IConfiguration } from './IConfiguration';
 import { DefaultMvcMiddlewares, DefaultMvcMiddlewaresToken } from './DefaultMvcMiddlewares';
 import { MvcContext } from './MvcContext';
@@ -8,7 +8,9 @@ import { MvcModuleMetadata } from './metadata';
 import { MvcMiddlewares, MiddlewareRegister } from './middlewares';
 import * as http from 'http';
 import * as https from 'https';
-
+import { MvcServer } from './MvcServer';
+import { RegFor } from '@tsdi/boot';
+const mount = require('koa-mount');
 
 @Singleton
 export class MvcConfigureRegister extends ConfigureRegister {
@@ -16,6 +18,7 @@ export class MvcConfigureRegister extends ConfigureRegister {
 
     async register(config: IConfiguration, ctx: MvcContext): Promise<void> {
 
+        let orgConfig = config;
         config = ctx.configuration = Object.assign({}, ctx.annoation, config);
 
         ctx.getKoa().keys = config.keys;
@@ -67,6 +70,17 @@ export class MvcConfigureRegister extends ConfigureRegister {
 
         if (config.logConfig) {
             this.container.registerSingleton(LogConfigureToken, config.logConfig);
+        }
+
+        if (config.subsites && config.subsites.length) {
+            await Promise.all(config.subsites.map(async site => {
+                let service = await this.container.get(BuilderService).createRunnable({ module: site.mvcModule, regFor: RegFor.child, configures: [lang.omit(orgConfig, 'subsites')] }) as MvcServer;
+                let subCtx = service.getMvcContext();
+                let koa = subCtx.getKoa();
+                if (koa) {
+                    ctx.getKoa().use(mount(site.routePrefix, koa));
+                }
+            }));
         }
     }
 }

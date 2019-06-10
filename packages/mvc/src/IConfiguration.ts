@@ -64,6 +64,17 @@ export interface IConnectionOptions extends ObjectMap<any> {
 export const ConfigurationToken = new InjectToken<IConfiguration>('MVX_Configuration');
 
 /**
+ * sub sites.
+ *
+ * @export
+ * @interface SubSite
+ */
+export interface SubSite {
+    routePrefix: string;
+    mvcModule: Type<any>;
+}
+
+/**
  * Configuration.
  *
  * Mvc applaction configuration.
@@ -74,7 +85,7 @@ export const ConfigurationToken = new InjectToken<IConfiguration>('MVX_Configura
  */
 export interface IConfiguration extends RunnableConfigure {
     /**
-     * keys
+     * cookies keys
      *
      * @type {(Keygrip | string[])}
      * @memberof IConfiguration
@@ -122,6 +133,14 @@ export interface IConfiguration extends RunnableConfigure {
      * @memberOf Configuration
      */
     routePrefix?: string;
+
+    /**
+     * sub sites.
+     *
+     * @type {SubSite[]}
+     * @memberof IConfiguration
+     */
+    subsites?: SubSite[];
     /**
      * custom config key value setting.
      *

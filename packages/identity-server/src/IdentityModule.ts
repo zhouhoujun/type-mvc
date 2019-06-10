@@ -1,11 +1,12 @@
-import { RegFor, DIModule } from '@tsdi/boot';
+import { RegFor } from '@tsdi/boot';
 import * as controllers from './controllers';
 import * as vaildates from './vaildates';
 import * as middlewares from './middlewares';
 import * as passports from './passports';
+import { MvcModule } from '@mvx/mvc';
 
 
-@DIModule({
+@MvcModule({
     regFor: RegFor.boot,
     imports: [
         passports,
@@ -20,6 +21,6 @@ import * as passports from './passports';
         middlewares
     ]
 })
-export class OAuthModule {
+export class IdentityModule {
 
 }
