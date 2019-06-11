@@ -1,11 +1,13 @@
 import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext } from '@mvx/mvc';
 import { Inject } from '@tsdi/ioc';
 import { Authenticator, PassportBuildService } from '../passports';
+import { RegisterFor, RegFor } from '@tsdi/boot';
 
 @Middleware({
     name: 'auth',
     after: MiddlewareTypes.BodyParser
 })
+@RegisterFor(RegFor.all)
 export class AuthMiddleware extends CompositeMiddleware {
 
     private hasInit = false;

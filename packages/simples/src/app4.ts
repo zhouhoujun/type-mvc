@@ -6,10 +6,10 @@ import { IdentityModule } from '@mvx/identity-server';
 @MvcModule({
     imports: [
         ModelModule,
-        IdentityModule
+        // IdentityModule
     ],
     subsites: [
-        // { mvcModule: IdentityModule, routePrefix: '/api' }
+        { mvcModule: IdentityModule, routePrefix: '/api' }
     ],
     middlewares: DefaultMvcMiddlewares,
     // debug: true
