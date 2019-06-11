@@ -2,6 +2,7 @@ import { BootContext, BootOption, ProcessRunRootToken, Service } from '@tsdi/boo
 import { Injectable, Refs, InjectToken } from '@tsdi/ioc';
 import { IConfiguration } from './IConfiguration';
 import * as Koa from 'koa';
+import { Application } from 'koa';
 import * as http from 'http';
 import * as https from 'https';
 import { runMainPath } from '@tsdi/platform-server';
@@ -67,6 +68,8 @@ export class MvcContext extends BootContext {
         }
         return this.koa;
     }
+
+    app: Application;
 
     getRootPath() {
         if (this.baseURL) {

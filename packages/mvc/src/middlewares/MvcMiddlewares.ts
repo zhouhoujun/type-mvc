@@ -17,6 +17,7 @@ export class MvcMiddlewares extends CompositeMiddleware {
     setup(mvcContext: MvcContext) {
         mvcContext.getKoa().use((ctx: IContext, next) => {
             ctx.mvcContext = mvcContext;
+            mvcContext.app = ctx.app;
             mvcContext.getRaiseContainer().bindProvider(ContextToken, ctx);
             return this.execute(ctx, next)
         });

@@ -8,7 +8,6 @@ import { MvcModuleMetadata } from './metadata';
 import { MvcMiddlewares, MiddlewareRegister } from './middlewares';
 import * as http from 'http';
 import * as https from 'https';
-import { MvcServer } from './MvcServer';
 import { RegFor } from '@tsdi/boot';
 import { AopModule } from '@tsdi/aop';
 import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
@@ -65,7 +64,6 @@ export class MvcConfigureRegister extends ConfigureRegister {
             }
         }
 
-        console.log(this.container);
         if (config.controllers) {
             await this.container.load({
                 basePath: ctx.getRootPath(),
@@ -77,21 +75,19 @@ export class MvcConfigureRegister extends ConfigureRegister {
             this.container.registerSingleton(LogConfigureToken, config.logConfig);
         }
 
-        console.log(ctx.getRootPath());
-        console.log(this.container);
-        console.log('--------------------------------\n')
-
         if (config.subsites && config.subsites.length) {
             await Promise.all(config.subsites.map(async site => {
-                let subCtx = await this.container.get(BuilderService).boot<MvcContext>({
-                    module: site.mvcModule,
-                    regFor: RegFor.child,
-                    configures: [lang.omit(orgConfig, 'subsites')],
-                    deps: [AopModule, LogModule, ServerBootstrapModule, ServerLogsModule, MvcCoreModule]
-                }, ctx => {
-                    ctx.autorun = false;
-                    ctx.setRaiseContainer(this.container.get(ContainerPoolToken).create());
-                });
+                let subCtx = await this.container.get(BuilderService).boot<MvcContext>(
+                    {
+                        module: site.mvcModule,
+                        regFor: RegFor.child,
+                        configures: [lang.omit(orgConfig, 'subsites')],
+                        deps: [AopModule, LogModule, ServerBootstrapModule, ServerLogsModule, MvcCoreModule]
+                    },
+                    ctx => {
+                        ctx.autorun = false;
+                    }
+                );
                 let koa = subCtx.getKoa();
                 if (koa) {
                     ctx.getKoa().use(mount(site.routePrefix, koa));

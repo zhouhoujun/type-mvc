@@ -1,5 +1,6 @@
 import { MvcMiddleware, Middleware, MiddlewareTypes, IContext, MvcContext, MiddlewareFunc } from '@mvx/mvc';
 const session = require('koa-session');
+import { Application } from 'koa';
 
 @Middleware({
     name: MiddlewareTypes.Session,
@@ -8,7 +9,7 @@ const session = require('koa-session');
 export class SessionMiddleware extends MvcMiddleware {
 
     private middleware: MiddlewareFunc;
-    getMiddleware(context: MvcContext) {
+    getMiddleware(context: MvcContext, koa: Application) {
         if (!this.middleware) {
             this.middleware = session(Object.assign({
                 key: 'typemvc:sess', /** (string) cookie key (default is koa:sess) */
@@ -20,12 +21,12 @@ export class SessionMiddleware extends MvcMiddleware {
                 httpOnly: true, /** (boolean) httpOnly or not (default true) */
                 signed: true, /** (boolean) signed or not (default true) */
                 rolling: false/** (boolean) Force a session identifier cookie to be set on every response. The expiration is reset to the original maxAge, resetting the expiration countdown. default is false **/
-            }, context.configuration.session), context.getKoa());
+            }, context.configuration.session), koa);
         }
         return this.middleware;
     }
 
     execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        return this.getMiddleware(ctx.mvcContext)(ctx, next);
+        return this.getMiddleware(ctx.mvcContext, ctx.app)(ctx, next);
     }
 }
