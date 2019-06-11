@@ -1,5 +1,5 @@
-import { ConfigureRegister, Handle, BuilderService } from '@tsdi/boot';
-import { DebugLogAspect, LogConfigureToken } from '@tsdi/logs';
+import { ConfigureRegister, Handle, BuilderService, ContainerPoolToken } from '@tsdi/boot';
+import { DebugLogAspect, LogConfigureToken, LogModule } from '@tsdi/logs';
 import { Singleton, isArray, isClass, isFunction, lang } from '@tsdi/ioc';
 import { IConfiguration } from './IConfiguration';
 import { DefaultMvcMiddlewares, DefaultMvcMiddlewaresToken } from './DefaultMvcMiddlewares';
@@ -10,6 +10,10 @@ import * as http from 'http';
 import * as https from 'https';
 import { MvcServer } from './MvcServer';
 import { RegFor } from '@tsdi/boot';
+import { AopModule } from '@tsdi/aop';
+import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
+import { ServerLogsModule } from '@tsdi/platform-server-logs';
+import { MvcCoreModule } from './CoreModule';
 const mount = require('koa-mount');
 
 @Singleton
@@ -61,6 +65,7 @@ export class MvcConfigureRegister extends ConfigureRegister {
             }
         }
 
+        console.log(this.container);
         if (config.controllers) {
             await this.container.load({
                 basePath: ctx.getRootPath(),
@@ -72,10 +77,21 @@ export class MvcConfigureRegister extends ConfigureRegister {
             this.container.registerSingleton(LogConfigureToken, config.logConfig);
         }
 
+        console.log(ctx.getRootPath());
+        console.log(this.container);
+        console.log('--------------------------------\n')
+
         if (config.subsites && config.subsites.length) {
             await Promise.all(config.subsites.map(async site => {
-                let service = await this.container.get(BuilderService).createRunnable({ module: site.mvcModule, regFor: RegFor.child, configures: [lang.omit(orgConfig, 'subsites')] }) as MvcServer;
-                let subCtx = service.getMvcContext();
+                let subCtx = await this.container.get(BuilderService).boot<MvcContext>({
+                    module: site.mvcModule,
+                    regFor: RegFor.child,
+                    configures: [lang.omit(orgConfig, 'subsites')],
+                    deps: [AopModule, LogModule, ServerBootstrapModule, ServerLogsModule, MvcCoreModule]
+                }, ctx => {
+                    ctx.autorun = false;
+                    ctx.setRaiseContainer(this.container.get(ContainerPoolToken).create());
+                });
                 let koa = subCtx.getKoa();
                 if (koa) {
                     ctx.getKoa().use(mount(site.routePrefix, koa));

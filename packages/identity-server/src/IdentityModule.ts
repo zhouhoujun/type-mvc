@@ -7,6 +7,7 @@ import { MvcModule } from '@mvx/mvc';
 
 
 @MvcModule({
+    baseURL: __dirname,
     regFor: RegFor.boot,
     imports: [
         passports,
