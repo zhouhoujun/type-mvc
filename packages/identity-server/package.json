@@ -1,6 +1,6 @@
 {
   "name": "@mvx/identity-server",
-  "version": "3.0.0-beta.11",
+  "version": "3.0.0-beta.12",
   "description": "identity server for mvc, type-mvc is base on koa.  Decorator, Ioc, AOP mvc framework on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -34,8 +34,8 @@
     "@tsdi/boot": "^5.0.4",
     "@tsdi/core": "^5.0.4",
     "@types/koa-session": "^5.10.0",
-    "@mvx/mvc": "^3.0.0-beta.11",
-    "@mvx/identity": "^3.0.0-beta.11",
+    "@mvx/mvc": "^3.0.0-beta.12",
+    "@mvx/identity": "^3.0.0-beta.12",
     "koa-session": "^5.12.0",
     "uid-ts": "0.0.3",
     "typeorm": "^0.2.17",
