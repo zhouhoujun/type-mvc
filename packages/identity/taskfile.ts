@@ -11,15 +11,15 @@ import { AfterInit } from '@tsdi/components';
     baseURL: __dirname,
     template: <LibPackBuilderOption>{
         activity: 'libs',
-        outDir: '../../dist/oauth',
+        outDir: '../../dist/oidc',
         src: 'src/**/*.ts',
         test: 'test/**/*.ts',
         annotation: true,
         bundles: [
             { target: 'es5', targetFolder: 'src', dtsMain: 'index.d.ts' },
-            { input: 'src/index.js', moduleName: ['fesm5', 'main', 'esm5'], outputFile: 'oauth.js', format: 'cjs' },
-            { target: 'es2015', input: 'es2015/index.js', moduleName: ['fesm2015', 'esm2015'], outputFile: 'oauth.js', format: 'cjs' },
-            { target: 'es2017', input: 'es2017/index.js', moduleName: ['fesm2017', 'esm2017'], outputFile: 'oauth.js', format: 'cjs' }
+            { input: 'src/index.js', moduleName: ['fesm5', 'main', 'esm5'], outputFile: 'oidc.js', format: 'cjs' },
+            { target: 'es2015', input: 'es2015/index.js', moduleName: ['fesm2015', 'esm2015'], outputFile: 'oidc.js', format: 'cjs' },
+            { target: 'es2017', input: 'es2017/index.js', moduleName: ['fesm2017', 'esm2017'], outputFile: 'oidc.js', format: 'cjs' }
         ]
     }
 })

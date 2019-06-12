@@ -13,6 +13,7 @@ import { AopModule } from '@tsdi/aop';
 import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
 import { ServerLogsModule } from '@tsdi/platform-server-logs';
 import { MvcCoreModule } from './CoreModule';
+import { Application } from 'koa';
 const mount = require('koa-mount');
 
 @Singleton
@@ -75,20 +76,27 @@ export class MvcConfigureRegister extends ConfigureRegister {
             this.container.registerSingleton(LogConfigureToken, config.logConfig);
         }
 
-        if (config.subsites && config.subsites.length) {
-            await Promise.all(config.subsites.map(async site => {
-                let subCtx = await this.container.get(BuilderService).boot<MvcContext>(
-                    {
-                        module: site.mvcModule,
-                        regFor: RegFor.child,
-                        configures: [lang.omit(orgConfig, 'subsites')],
-                        deps: [AopModule, LogModule, ServerBootstrapModule, ServerLogsModule, MvcCoreModule]
-                    },
-                    ctx => {
-                        ctx.autorun = false;
-                    }
-                );
-                let koa = subCtx.getKoa();
+        if (config.subSites && config.subSites.length) {
+            await Promise.all(config.subSites.map(async site => {
+                let koa: Application;
+                if (isClass(site.app)) {
+                    let subCtx = await this.container.get(BuilderService).boot<MvcContext>(
+                        {
+                            module: site.app,
+                            regFor: RegFor.child,
+                            configures: [lang.omit(orgConfig, 'subsites')],
+                            deps: [AopModule, LogModule, ServerBootstrapModule, ServerLogsModule, MvcCoreModule]
+                        },
+                        ctx => {
+                            ctx.autorun = false;
+                        }
+                    );
+                    koa = subCtx.getKoa() as any;
+                } else if (isFunction(site.app)) {
+                    koa = await site.app(orgConfig);
+                } else {
+                    koa = site.app;
+                }
                 if (koa) {
                     ctx.getKoa().use(mount(site.routePrefix, koa));
                 }

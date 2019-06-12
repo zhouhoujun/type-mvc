@@ -1,6 +1,7 @@
 import { ObjectMap, Type, InjectToken } from '@tsdi/ioc';
 import { LogConfigure } from '@tsdi/logs';
 import { ServerOptions } from 'https';
+import { Application } from 'koa';
 import { RunnableConfigure } from '@tsdi/boot';
 import { RequestMethod } from './RequestMethod';
 import *  as Keygrip from 'keygrip';
@@ -70,8 +71,20 @@ export const ConfigurationToken = new InjectToken<IConfiguration>('MVX_Configura
  * @interface SubSite
  */
 export interface SubSite {
+    /**
+     * sub app route prefix.
+     *
+     * @type {string}
+     * @memberof SubSite
+     */
     routePrefix: string;
-    mvcModule: Type<any>;
+    /**
+     * sub app
+     *
+     * @type {(Application | Type<any>)}
+     * @memberof SubSite
+     */
+    app: Application | Type<any> | ((configuration: IConfiguration) => Promise<Application>);
 }
 
 /**
@@ -140,7 +153,7 @@ export interface IConfiguration extends RunnableConfigure {
      * @type {SubSite[]}
      * @memberof IConfiguration
      */
-    subsites?: SubSite[];
+    subSites?: SubSite[];
     /**
      * custom config key value setting.
      *

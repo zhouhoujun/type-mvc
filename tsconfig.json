@@ -13,6 +13,9 @@
             "@mvx/typeorm-adapter": [
                 "packages/typeorm-adapter/src"
             ],
+            "@mvx/identity": [
+                "packages/identity/src"
+            ],
             "@mvx/identity-server": [
                 "packages/identity-server/src"
             ],

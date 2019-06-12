@@ -1,15 +1,16 @@
 import { MvcApplication, MvcModule, DefaultMvcMiddlewares, MvcServer } from '@mvx/mvc';
 import { ModelModule } from '@mvx/model';
 // import { PlatformServer } from '@tsdi/platform-server';
-import { IdentityModule } from '@mvx/identity-server';
+import { IdentityServiceModule } from '@mvx/identity-server';
+import { IdentityModule } from '@mvx/identity';
 
 @MvcModule({
     imports: [
         ModelModule,
-        // IdentityModule
+        IdentityModule
     ],
-    subsites: [
-        { mvcModule: IdentityModule, routePrefix: '/api' }
+    subSites: [
+        { app: IdentityServiceModule, routePrefix: '/api' }
     ],
     middlewares: DefaultMvcMiddlewares,
     // debug: true

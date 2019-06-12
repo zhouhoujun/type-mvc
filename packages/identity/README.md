@@ -1,4 +1,4 @@
-# packaged @mvx/typeorm-adapter
+# packaged @mvx/identity
 
 This repo is for distribution on `npm`. The source for this module is in the
 [main repo](https://github.com/zhouhoujun/type-mvc).
