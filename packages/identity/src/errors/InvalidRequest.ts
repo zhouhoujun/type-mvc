@@ -1,4 +1,5 @@
-import { HttpError } from '@mvx/mvc';
+import { OIDCError } from './OIDCError';
+
 
 /**
  * invaild request error.
@@ -7,7 +8,7 @@ import { HttpError } from '@mvx/mvc';
  * @class InvalidRequest
  * @extends {HttpError}
  */
-export class InvalidRequest extends HttpError {
+export class InvalidRequest extends OIDCError {
     constructor(msg = 'invaild scope') {
         super(400, msg)
     }

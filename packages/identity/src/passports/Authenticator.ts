@@ -1,36 +1,23 @@
 import { Singleton, Abstract } from '@tsdi/ioc';
-import { IContext } from '@mvx/mvc';
+import { IContext, MvcContext } from '@mvx/mvc';
 import { Middleware, Context } from 'koa';
 import * as http from 'http';
 import { AuthenticationError } from '../errors';
 import { contextExtends } from './ContextExtends';
-import { AuthState, AuthAction, FailAction, RedirectAction, PassAction, SuccessAction } from './AuthResult';
+import { ValidationResult, PassResult } from './results';
+import { AuthenticateOption } from './AuthenticateOption';
 
-/**
- * authenticate option.
- *
- * @export
- * @interface AuthenticateOption
- */
-export interface AuthenticateOption {
-    session?: boolean;
-    successRedirect?: string;
-    successReturnToOrRedirect?: string;
-    failureRedirect?: string;
-    assignProperty?: any;
-    failureFlash?: string | { type: string, message: string };
-    failureMessage?: string | boolean;
-    failWithError?: boolean;
-    successFlash?: string | { type: string, message: string };
-    successMessage?: string | boolean;
-    authInfo?: boolean;
+export interface VaildFailure {
+    challenge: string | any;
+    status: number;
 }
-
 
 
 declare module 'koa' {
     interface Context {
         passport: Authenticator;
+        failures: VaildFailure[],
+        mvcContext: MvcContext;
         hasRole?(...role: string[]): boolean;
         login(user: any, options?: any): Promise<void>;
         logIn(user, options, done);
@@ -265,7 +252,7 @@ export class Authenticator {
             // }
 
             // accumulator for failures from each strategy in the chain
-            const failures = [];
+            const failures = ctx.failures = [];
 
             function allFailed() {
                 if (callback) {
@@ -330,59 +317,7 @@ export class Authenticator {
                 }
                 try {
                     const res = await strategy.authenticate(ctx, options);
-                    switch (res.type) {
-                        case AuthState.FAIL: {
-                            const { challenge, status } = (res as FailAction);
-                            // push this failure into the accumulator and attempt authentication
-                            // using the next strategy
-                            failures.push({ challenge, status });
-                            break;
-                        }
-                        case AuthState.REDIRECT: {
-                            const { url, status } = (res as RedirectAction);
-                            ctx.status = status;
-                            ctx.redirect(url);
-                            return;
-                        }
-                        case AuthState.SUCCESS: {
-                            const { user, info } = (res as SuccessAction);
-                            if (callback) {
-                                return callback(null, user, info);
-                            }
-
-                            if (options.successMessage) {
-                                if (!(info.type in ctx.session.message)) {
-                                    ctx.session.message[info.type] = [];
-                                }
-                                ctx.session.message[info.type].push(info.message);
-                            }
-                            if (options.assignProperty) {
-                                ctx.state[options.assignProperty] = user;
-                                return next();
-                            }
-
-                            await ctx.login(user);
-                            if (options.authInfo !== false) {
-                                ctx.state.authInfo = await this.transformAuthInfo(info, ctx);
-                            }
-                            if (options.successReturnToOrRedirect) {
-                                let url = options.successReturnToOrRedirect;
-                                if (ctx.session && ctx.session.returnTo) {
-                                    url = ctx.session.returnTo;
-                                    delete ctx.session.returnTo;
-                                }
-                                return ctx.redirect(url);
-                            }
-                            if (options.successRedirect) {
-                                return ctx.redirect(options.successRedirect);
-                            }
-                            return await next();
-                        }
-                        case AuthState.PASS:
-                        default: {
-                            return await next();
-                        }
-                    }
+                    await res.execute(ctx, next, callback);
                 } catch (error) {
                     if (callback) {
                         return callback(error);
@@ -575,7 +510,7 @@ export abstract class Strategy {
     name: string;
     protected authenticator: Authenticator;
 
-    public abstract authenticate(ctx: Context, options?: any): Promise<AuthAction>;
+    public abstract authenticate(ctx: Context, options?: any): Promise<ValidationResult>;
 
     public registerAuthenticator(authenticator: Authenticator) {
         this.authenticator = authenticator;
@@ -604,7 +539,7 @@ export class SessionStrategy extends Strategy {
      * This strategy is registered automatically by Passport.
      *
      */
-    public async authenticate(ctx: IContext, options = {}): Promise<AuthAction> {
+    public async authenticate(ctx: IContext, options = {}): Promise<ValidationResult> {
         if (!ctx.passport) {
             throw new Error('passport.initialize() middleware not in use');
         }
@@ -621,11 +556,11 @@ export class SessionStrategy extends Strategy {
             const user = ctx.passport.deserializeUser(su, ctx);
             if (!user) {
                 ctx.session.passport.user = undefined;
-                return new PassAction();
+                return new PassResult();
             }
             const property = ctx.passport.userProperty;
             ctx[property] = user;
         }
-        return new PassAction();
+        return new PassResult();
     }
 }
