@@ -6,6 +6,12 @@ import { AuthenticationError } from '../errors';
 import { contextExtends } from './ContextExtends';
 import { AuthState, AuthAction, FailAction, RedirectAction, PassAction, SuccessAction } from './AuthResult';
 
+/**
+ * authenticate option.
+ *
+ * @export
+ * @interface AuthenticateOption
+ */
 export interface AuthenticateOption {
     session?: boolean;
     successRedirect?: string;
