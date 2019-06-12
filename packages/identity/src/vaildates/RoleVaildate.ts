@@ -6,7 +6,7 @@ import { Inject, isFunction } from '@tsdi/ioc';
 @Aspect({
     singleton: true
 })
-export class AuthenticatedVaildate {
+export class RoleVaildate {
 
     @Inject(ContainerToken)
     private container: IContainer;
@@ -14,13 +14,6 @@ export class AuthenticatedVaildate {
     @Before('execution(AuthAspect.auth)', 'authAnnotation')
     vaildate(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
         let ctx = this.container.resolve(ContextToken);
-        if (!ctx.isUnauthenticated) {
-            return;
-        }
-        if (!ctx.isAuthenticated()) {
-            throw new UnauthorizedError();
-        }
-
         if (isFunction(ctx.hasRole) && authAnnotation && authAnnotation.length) {
             if (ctx.hasRole(...authAnnotation.map(a => a.role).filter(a => a))) {
                 throw new ForbiddenError();

@@ -14,6 +14,5 @@ export * from './IListener';
 export * from './RequestMethod';
 export * from './MvcApp';
 export * from './MvcContext'
-export * from './MvcConfigureRegister';
 export * from './MvcServer';
 export * from './MvcApplication';
