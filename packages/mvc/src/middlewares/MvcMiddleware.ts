@@ -17,7 +17,13 @@ export abstract class MvcMiddleware extends Handle<IContext> implements IMiddlew
 
 }
 
-
+/**
+ * composite middleware.
+ *
+ * @export
+ * @class CompositeMiddleware
+ * @extends {Handles<IContext>}
+ */
 @Injectable()
 export class CompositeMiddleware extends Handles<IContext> {
 

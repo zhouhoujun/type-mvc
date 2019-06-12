@@ -5,6 +5,12 @@ import { IContainer, ContainerToken } from '@tsdi/core';
 import { CompositeMiddleware } from './MvcMiddleware';
 import { MvcMiddlewares } from './MvcMiddlewares';
 
+/**
+ * middleware register.
+ *
+ * @export
+ * @class MiddlewareRegister
+ */
 @Singleton
 export class MiddlewareRegister {
 
@@ -19,6 +25,12 @@ export class MiddlewareRegister {
     }
 
 
+    /**
+     * setup middleware.
+     *
+     * @param {IContainer} container
+     * @memberof MiddlewareRegister
+     */
     setup(@Inject(ContainerToken) container: IContainer) {
         this.map.forEach((meta, middle) => {
             let middlewares: CompositeMiddleware = container.resolve(MvcMiddlewares);

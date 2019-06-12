@@ -4,7 +4,13 @@ import { MvcContext } from '../MvcContext';
 import { IContext, ContextToken } from './IContext';
 
 
-
+/**
+ * mvc middlewares.
+ *
+ * @export
+ * @class MvcMiddlewares
+ * @extends {CompositeMiddleware}
+ */
 @Singleton
 export class MvcMiddlewares extends CompositeMiddleware {
 
