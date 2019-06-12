@@ -96,9 +96,6 @@ export enum MiddlewareTypes {
     Router = 'router'
 }
 
-
-
-
 /**
  * middleware type.
  */
