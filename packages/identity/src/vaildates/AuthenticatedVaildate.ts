@@ -1,5 +1,5 @@
 import { Aspect, Joinpoint, Before } from '@tsdi/aop';
-import { AuthorizationMetadata, ContextToken, UnauthorizedError, ForbiddenError } from '@mvx/mvc'
+import { AuthorizationMetadata, ContextToken, UnauthorizedError, ForbiddenError, AuthorizationPointcut } from '@mvx/mvc'
 import { IContainer, ContainerToken } from '@tsdi/core';
 import { Inject, isFunction } from '@tsdi/ioc';
 
@@ -11,7 +11,7 @@ export class AuthenticatedVaildate {
     @Inject(ContainerToken)
     private container: IContainer;
 
-    @Before('execution(AuthAspect.auth)', 'authAnnotation')
+    @Before(AuthorizationPointcut, 'authAnnotation')
     vaildate(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
         let ctx = this.container.resolve(ContextToken);
         if (!ctx.isUnauthenticated) {
