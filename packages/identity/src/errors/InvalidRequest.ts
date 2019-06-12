@@ -1,5 +1,4 @@
-import { OIDCError } from './OIDCError';
-
+import { AuthenticationError } from './AuthenticationError';
 
 /**
  * invaild request error.
@@ -8,8 +7,8 @@ import { OIDCError } from './OIDCError';
  * @class InvalidRequest
  * @extends {HttpError}
  */
-export class InvalidRequest extends OIDCError {
-    constructor(msg = 'invaild scope') {
-        super(400, msg)
+export class InvalidRequest extends AuthenticationError {
+    constructor(message = 'invaild_scope') {
+        super(400, message)
     }
 }

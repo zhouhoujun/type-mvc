@@ -1,20 +1,6 @@
 import { Context } from 'koa';
 
 /**
- * auth state.
- *
- * @export
- * @enum {number}
- */
-export enum VaildateState {
-    SUCCESS,
-    FAIL,
-    REDIRECT,
-    PASS,
-    ERROR
-}
-
-/**
  * auth action
  *
  * @export

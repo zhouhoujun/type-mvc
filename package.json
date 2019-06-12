@@ -74,6 +74,7 @@
     "koa-views": "^6.1.5",
     "minimatch": "^3.0.4",
     "nunjucks": "^3.1.2",
+    "oauth": "^0.9.15",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^5.5.11",
     "through2": "^2.0.3",

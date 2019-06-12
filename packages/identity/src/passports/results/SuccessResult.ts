@@ -1,4 +1,4 @@
-import { ValidationResult, VaildateState } from './ValidationResult';
+import { ValidationResult } from './ValidationResult';
 import { Context } from 'koa';
 import { AuthenticateOption } from '../AuthenticateOption';
 

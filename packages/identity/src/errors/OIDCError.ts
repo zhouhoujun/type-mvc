@@ -1,5 +1,4 @@
-import { HttpError } from '@mvx/mvc';
-import { lang } from '@tsdi/ioc';
+import { AuthenticationError } from './AuthenticationError';
 
 /**
  * error.
@@ -8,13 +7,17 @@ import { lang } from '@tsdi/ioc';
  * @class OIDCError
  * @extends {HttpError}
  */
-export class OIDCError extends HttpError {
-    error: string;
-    expose: boolean;
-    constructor(status: number, message: string) {
+export class OIDCError extends AuthenticationError {
+
+    constructor(message: string, public code: string, public uri?: string, status?: number) {
         super(status, message);
-        this.name = lang.getClassName(this);
-        this.error = message;
+        if (!status) {
+            switch (code) {
+                case 'access_denied': status = 403; break;
+                case 'server_error': status = 502; break;
+                case 'temporarily_unavailable': status = 503; break;
+            }
+        }
         this.expose = status < 500;
     }
 }
