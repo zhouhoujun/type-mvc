@@ -3,6 +3,13 @@ import { Inject } from '@tsdi/ioc';
 import { Authenticator, PassportBuildService } from '../passports';
 import { RegisterFor, RegFor } from '@tsdi/boot';
 
+/**
+ * authentication middleware.
+ *
+ * @export
+ * @class AuthMiddleware
+ * @extends {CompositeMiddleware}
+ */
 @Middleware({
     name: 'auth',
     after: MiddlewareTypes.BodyParser

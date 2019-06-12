@@ -2,6 +2,13 @@ import { MvcMiddleware, Middleware, MiddlewareTypes, IContext, MvcContext, Middl
 const session = require('koa-session');
 import { Application } from 'koa';
 
+/**
+ * session middleware.
+ *
+ * @export
+ * @class SessionMiddleware
+ * @extends {MvcMiddleware}
+ */
 @Middleware({
     name: MiddlewareTypes.Session,
     before: MiddlewareTypes.BodyParser
