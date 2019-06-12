@@ -11,7 +11,7 @@ import { lang } from '@tsdi/ioc';
 export class AuthenticationError extends HttpError {
     error: string;
     expose: boolean;
-    constructor(status: number, message: string) {
+    constructor(status: number, message: string, public error_description?: string) {
         super(status, message);
         this.name = lang.getClassName(this);
         this.error = message;

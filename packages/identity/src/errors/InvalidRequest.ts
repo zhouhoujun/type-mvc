@@ -8,7 +8,7 @@ import { AuthenticationError } from './AuthenticationError';
  * @extends {HttpError}
  */
 export class InvalidRequest extends AuthenticationError {
-    constructor(message = 'invaild_scope') {
-        super(400, message)
+    constructor(description?: string, status = 400) {
+        super(status, '', description || 'request is invalid')
     }
 }
