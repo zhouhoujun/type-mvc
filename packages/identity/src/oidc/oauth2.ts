@@ -4,12 +4,25 @@ import * as querystring from 'querystring';
 import * as URL from 'url';
 import { AuthenticationError } from '../errors';
 
+/**
+ * oauth2 error.
+ *
+ * @export
+ * @class OAuth2Error
+ * @extends {AuthenticationError}
+ */
 export class OAuth2Error extends AuthenticationError {
     constructor(status: number, message: string, error_description?: string) {
         super(status, message, error_description);
     }
 }
 
+/**
+ * oauth2
+ *
+ * @export
+ * @class OAuth2
+ */
 export class OAuth2 {
     private accessTokenName: string;
     private authMethod: string;

@@ -38,7 +38,6 @@
     "@types/koa-session": "^5.10.0",
     "@mvx/mvc": "^3.0.0-beta.12",
     "koa-session": "^5.12.0",
-    "uid-ts": "0.0.3",
     "oauth": "^0.9.15"
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme"

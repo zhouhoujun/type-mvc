@@ -14,21 +14,22 @@ export interface OIDCOption {
     sessionKey?: string;
     identifierField?: string;
     scope: string | string[];
-    store: SessionStore;
+    store?: SessionStore;
 
-    issuer?: any;
+    issuer?: string;
     authorizationURL?: string;
     tokenURL?: string;
     clientID: string;
     clientSecret: string;
     callbackURL?: string;
+    userInfoURL?: string;
     customHeaders?: any;
     skipUserProfile?: boolean | ((issuer: string, subject: string) => Promise<any>);
     passReqToCallback?: string;
 }
 
 
-@Injectable(Strategy, 'oidc')
+@Injectable(Strategy, 'openidconnect')
 export class OIDCStrategy extends Strategy {
 
     protected stateStore: StateStore;
@@ -77,16 +78,6 @@ export class OIDCStrategy extends Strategy {
                 throw new OIDCError(ctx.query.error_description, ctx.query.error, ctx.query.error_uri);
             }
         }
-
-        // let callbackURL = options.callbackURL || this.options.callbackURL;
-        // if (callbackURL) {
-        //     const parsed = parse(callbackURL);
-        //     if (!parsed.protocol) {
-        //         // The callback URL is relative, resolve a fully qualified URL from the
-        //         // URL of the originating request.
-        //         callbackURL = resolve(ctx.request.origin, callbackURL);
-        //     }
-        // }
 
         if (ctx.query && ctx.query.code) {
             let state = ctx.query.state;
@@ -249,7 +240,7 @@ export class OIDCStrategy extends Strategy {
             // be loaded.  The configuration is typically either pre-configured or
             // discovered dynamically.  When using dynamic discovery, a user supplies
             // their identifer as input.
-  
+
             let identifier;
             let idfield = this.options.identifierField;
             if (ctx.body && ctx.body[idfield]) {
@@ -257,32 +248,32 @@ export class OIDCStrategy extends Strategy {
             } else if (ctx.query && ctx.query[idfield]) {
                 identifier = ctx.query[idfield];
             }
+
+
+            // let callbackURL = options.callbackURL || this.options.callbackURL;
+            // if (callbackURL) {
+            //     const parsed = parse(callbackURL);
+            //     if (!parsed.protocol) {
+            //         // The callback URL is relative, resolve a fully qualified URL from the
+            //         // URL of the originating request.
+            //         callbackURL = resolve(ctx.request.origin, callbackURL);
+            //     }
+            // }
+
+
         }
     }
 
-
     /**
-     * Retrieve user profile from service provider.
+     * Return extra parameters to be included in the authorization request.
      *
-     * OAuth 2.0-based authentication strategies can overrride this function in
-     * order to load the user's profile from the service provider.  This assists
-     * applications (and users of those applications) in the initial registration
-     * process by automatically submitting required information.
+     * Some OAuth 2.0 providers allow additional, non-standard parameters to be
+     * included when requesting authorization.  Since these parameters are not
+     * standardized by the OAuth 2.0 specification, OAuth 2.0-based authentication
+     * strategies can overrride this function in order to populate these parameters
+     * as required by the provider.
+     *
      */
-    protected async userProfile(accessToken: string) {
-        return {};
-    }
-
-    /**
-  * Return extra parameters to be included in the authorization request.
-  *
-  * Some OAuth 2.0 providers allow additional, non-standard parameters to be
-  * included when requesting authorization.  Since these parameters are not
-  * standardized by the OAuth 2.0 specification, OAuth 2.0-based authentication
-  * strategies can overrride this function in order to populate these parameters
-  * as required by the provider.
-  *
-  */
     protected authorizationParams(options): any {
         return {};
     }
@@ -292,14 +283,6 @@ export class OIDCStrategy extends Strategy {
             return isFunction(this.options.skipUserProfile) ? await this.options.skipUserProfile(issuer, subject) : false;
         }
         return true;
-    }
-
-    private async loadUserProfile(issuer: string, subject: string) {
-        if (this.options.skipUserProfile) {
-            return isFunction(this.options.skipUserProfile) ? await this.options.skipUserProfile(issuer, subject) : null;
-        }
-
-        return await this.userProfile(accessToken);
     }
 
     private parseOAuthError(err: Error | OAuth2Error) {
