@@ -16,6 +16,7 @@ declare module 'koa' {
         passport: IAuthenticator;
         failures: VaildFailure[],
         mvcContext: MvcContext;
+        connection?: any;
         hasRole?(...role: string[]): boolean;
         login(user: any, options?: any): Promise<void>;
         logIn(user, options, done);
@@ -37,6 +38,12 @@ export const AuthenticatorToken = new InjectToken<IAuthenticator>('Authenticator
  */
 export interface IAuthenticator {
 
+    /**
+     * user property.
+     *
+     * @type {string}
+     * @memberof IAuthenticator
+     */
     readonly userProperty: string;
     /**
      * Utilize the given `strategy` with optional `name`, overridding the strategy's
@@ -225,7 +232,7 @@ export interface IAuthenticator {
      * @api public
      */
     serializeUser(fn: (user: any, ctx: Context) => Promise<any>): any;
-    serializeUser(user: object, ctx: Context): any;
+    serializeUser(user: object, ctx?: Context): Promise<any>;
     /**
      * Registers a function used to deserialize user objects out of the session.
      *
@@ -240,7 +247,7 @@ export interface IAuthenticator {
      * @api public
      */
     deserializeUser(fn: (obj: any, ctx: Context) => Promise<any>): any;
-    deserializeUser(obj: any, ctx: Context): any;
+    deserializeUser(obj: any, ctx?: Context): Promise<any>;
     /**
      * Registers a function used to transform auth info.
      *

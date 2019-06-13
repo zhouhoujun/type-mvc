@@ -39,7 +39,7 @@ export class SessionStrategy extends Strategy {
             // NOTE: Stream pausing is desirable in the case where later middleware is
             //       listening for events emitted from request.  For discussion on the
             //       matter, refer to: https://github.com/jaredhanson/passport/pull/106
-            const user = ctx.passport.deserializeUser(su, ctx);
+            const user = await ctx.passport.deserializeUser(su, ctx);
             if (!user) {
                 ctx.session.passport.user = undefined;
                 return new PassResult();

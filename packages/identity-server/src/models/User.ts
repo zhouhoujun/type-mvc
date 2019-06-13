@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Column } from 'typeorm';
 
-@Entity('OAuthUser')
+@Entity('User')
 export class User {
 
     @PrimaryColumn({default: ''})

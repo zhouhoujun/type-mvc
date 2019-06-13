@@ -1,51 +1,49 @@
 import { Controller, Get, Cors, Post, IContext, ContextToken } from '@mvx/mvc';
 import { Inject } from '@tsdi/ioc';
-import { Authenticator } from '@mvx/identity';
 
 @Cors
 @Controller('/connect')
 export class IdentityController {
 
-    @Inject()
-    passport: Authenticator;
+    constructor() {
+
+    }
+
+    @Inject(ContextToken)
+    ctx: IContext;
 
     @Get('/token')
     token() {
-        this.passport.authorize('')
+        return this.ctx.passport.serializeUser(this.ctx.user);
     }
 
 
     @Get('/userinfo')
     @Get('/profile')
     userinfo() {
-
+        return this.ctx.passport.deserializeUser(this.ctx.session)
     }
 
 
-    @Post('/:provider')
-    transport(provider: string) {
-
-    }
-
-    @Post('/authorize')
-    authorize() {
-
+    @Post('/:provider/authorize')
+    authorize(provider: string) {
+        return this.ctx.passport.authorize(provider);
     }
 
     @Get('/:provider/authenticate')
     authenticate(provider: string) {
-        this.passport.authenticate(provider);
+        this.ctx.passport.authenticate(provider);
     }
 
     @Get('/endsession')
-    endSession(@Inject(ContextToken) ctx: IContext) {
-        ctx.logout();
-        ctx.redirect('/');
+    endSession() {
+        this.ctx.logout();
+        this.ctx.redirect('/');
     }
 
     @Get('/:provider/callback')
     async callback(provider: string) {
-        this.passport.authenticate(provider, {
+        this.ctx.passport.authenticate(provider, {
             successRedirect: '/',
             failureRedirect: '/'
         })

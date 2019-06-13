@@ -18,6 +18,14 @@ export class RedirectResult extends ValidationResult {
         super();
     }
 
+    /**
+     * execute.
+     *
+     * @param {Context} ctx
+     * @param {() => Promise<void>} next
+     * @returns {Promise<void>}
+     * @memberof RedirectResult
+     */
     async execute(ctx: Context, next: () => Promise<void>): Promise<void> {
         ctx.status = this.status;
         ctx.redirect(this.url);

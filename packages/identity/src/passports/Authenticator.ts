@@ -1,4 +1,4 @@
-import { Singleton } from '@tsdi/ioc';
+import { Singleton, isFunction, isString } from '@tsdi/ioc';
 import { Middleware, Context } from 'koa';
 import * as http from 'http';
 import { contextExtends } from './ContextExtends';
@@ -7,6 +7,7 @@ import { AuthenticateOption } from './AuthenticateOption';
 import { Strategy } from './Strategy';
 import { SessionStrategy } from './SessionStrategy';
 import { AuthenticationError } from '../errors';
+import { IAuthenticator, AuthenticatorToken } from './IAuthenticator';
 
 
 /**
@@ -14,8 +15,8 @@ import { AuthenticationError } from '../errors';
  *
  */
 
-@Singleton()
-export class Authenticator {
+@Singleton(AuthenticatorToken)
+export class Authenticator implements IAuthenticator {
     private strategies: Map<string, Strategy>;
     private serializers;
     private deserializers;
@@ -202,7 +203,7 @@ export class Authenticator {
     public authenticate(strategyNames: string | string[],
         options: any = {},
         callback?: (this: void, err: Error, user?, info?, status?) => void): Middleware {
-        if (typeof options === 'function') {
+        if (isFunction(options)) {
             callback = options;
             options = {};
         }
@@ -218,7 +219,7 @@ export class Authenticator {
         // It is not feasible to construct a chain of multiple strategies that involve
         // redirection (for example both Facebook and Twitter), since the first one to
         // redirect will halt the chain.
-        if (typeof strategyNames === 'string') {
+        if (isString(strategyNames)) {
             strategyNames = [strategyNames];
             multi = false;
         }
@@ -269,7 +270,7 @@ export class Authenticator {
                 for (const failure of failures) {
                     status = failure.status;
                     rstatus = rstatus || status;
-                    if (typeof failure.challenge === 'string') {
+                    if (isString(failure.challenge)) {
                         rchallenge.push(failure.challenge);
                     }
                 }
@@ -410,9 +411,9 @@ export class Authenticator {
      * @api public
      */
     public deserializeUser(fn: (obj: any, ctx: Context) => Promise<any>);
-    public async deserializeUser(obj: any, ctx: Context);
-    public async deserializeUser(obj, ctx?) {
-        if (typeof obj === 'function') {
+    public async deserializeUser(obj: any, ctx: Context): Promise<any>;
+    public async deserializeUser(obj, ctx?): Promise<any> {
+        if (isFunction(obj)) {
             return this.deserializers.push(obj);
         }
 
@@ -466,9 +467,9 @@ export class Authenticator {
      * @api public
      */
     public transformAuthInfo(fn: (info, ctx: Context) => Promise<any>): void;
-    public transformAuthInfo(info: { type: string, message: string }, ctx: Context);
-    public async transformAuthInfo(info, ctx?) {
-        if (typeof info === 'function') {
+    public transformAuthInfo(info: { type: string, message: string }, ctx: Context): Promise<any>;
+    public async transformAuthInfo(info, ctx?): Promise<any> {
+        if (isFunction(info)) {
             return this.infoTransformers.push(info);
         }
 

@@ -1,6 +1,8 @@
 import * as crypto from 'crypto';
 import { Context } from 'koa';
 
+
+
 export namespace OIDCUtils {
 
     /**
@@ -25,7 +27,7 @@ export namespace OIDCUtils {
         var trustProxy = options.proxy;
 
         var proto = (ctx.headers['x-forwarded-proto'] || '').toLowerCase()
-            , tls = ctx.connection.encrypted || (trustProxy && 'https' == proto.split(/\s*,\s*/)[0])
+            , tls = ctx.connection.encrypted || (trustProxy && 'https' === proto.split(/\s*,\s*/)[0])
             , host = (trustProxy && ctx.headers['x-forwarded-host']) || ctx.headers.host
             , protocol = tls ? 'https' : 'http'
             , path = ctx.url || '';

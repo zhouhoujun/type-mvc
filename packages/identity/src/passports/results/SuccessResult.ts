@@ -1,5 +1,5 @@
-import { ValidationResult } from './ValidationResult';
 import { Context } from 'koa';
+import { ValidationResult } from './ValidationResult';
 import { AuthenticateOption } from '../AuthenticateOption';
 
 /**
