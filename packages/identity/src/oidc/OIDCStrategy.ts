@@ -6,8 +6,8 @@ import { SessionStore, StateStore } from '../stores';
 import { parse, resolve, format } from 'url';
 import { OAuth2, OAuth2Error } from './oauth2';
 
-// ctx, iss, sub, profile, jwtClaims, accessToken, refreshToken, params
-export type VerifyFunction = (ctx: Context, iss: string, sub: string, profile: any, jwtClaims?: string, accessToken?: string, refreshToken?: string, params?: any)
+
+export type OIDCVerifyFunction = (ctx: Context, iss: string, sub: string, profile: any, jwtClaims?: string, accessToken?: string, refreshToken?: string, params?: any)
     => Promise<{ user, info }>;
 
 export interface OIDCOption {
@@ -35,7 +35,7 @@ export class OIDCStrategy extends Strategy {
     protected stateStore: StateStore;
     protected options: OIDCOption;
 
-    constructor(options: OIDCOption, protected verify: VerifyFunction) {
+    constructor(options: OIDCOption, protected verify: OIDCVerifyFunction) {
         super();
         this.name = 'openidconnect';
         this.init(options);
@@ -305,6 +305,4 @@ export class OIDCStrategy extends Strategy {
         }
         return e;
     }
-
-
 }

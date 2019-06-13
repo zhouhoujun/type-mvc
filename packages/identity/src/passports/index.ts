@@ -4,6 +4,7 @@ export * from './IStrategy';
 export * from './results';
 export * from './Strategy';
 export * from './SessionStrategy';
+export * from './LocalStrategy';
 export * from './ContextExtends';
 export * from './Authenticator';
 export * from './PassportBuildService';
