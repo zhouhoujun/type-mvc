@@ -1,6 +1,5 @@
 import { Context } from 'koa';
 
-
 /**
  * auth action
  *

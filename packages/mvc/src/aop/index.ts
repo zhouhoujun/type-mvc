@@ -1,1 +1,1 @@
-export * from './AuthAspect';
+export * from './AuthorizationAspect';

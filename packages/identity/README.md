@@ -290,8 +290,8 @@ export class Logger implements IMiddleware {
 ```ts
 @Aspect
 export class YourSecrityAspect {
-    // before AuthAspect.auth check some.
-    @Before('execution(AuthAspect.auth)', 'authAnnotation')
+    // before AuthorizationAspect.authProcess check some.
+    @Before('execution(AuthorizationAspect.authProcess)', 'authAnnotation')
     sessionCheck(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
         //TODO： you check by authAnnotation
     }

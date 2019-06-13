@@ -1,39 +1,43 @@
-import { Singleton } from '@tsdi/ioc';
 import { Middleware, Context } from 'koa';
-import * as http from 'http';
-import { contextExtends } from './ContextExtends';
-import { FailResult } from './results';
 import { AuthenticateOption } from './AuthenticateOption';
-import { Strategy } from './Strategy';
-import { SessionStrategy } from './SessionStrategy';
-import { AuthenticationError } from '../errors';
+import { IStrategy } from './IStrategy';
+import { InjectToken } from '@tsdi/ioc';
+import { MvcContext } from '@mvx/mvc';
 
+
+export interface VaildFailure {
+    challenge: string | any;
+    status: number;
+}
+
+
+declare module 'koa' {
+    interface Context {
+        passport: IAuthenticator;
+        failures: VaildFailure[],
+        mvcContext: MvcContext;
+        hasRole?(...role: string[]): boolean;
+        login(user: any, options?: any): Promise<void>;
+        logIn(user, options, done);
+        logout(): void;
+        logOut(): void;
+        isAuthenticated(): boolean;
+        isUnauthenticated(): boolean;
+    }
+}
+
+/**
+ * IAuthenticator token.
+ */
+export const AuthenticatorToken = new InjectToken<IAuthenticator>('Authenticator');
 
 /**
  * `Authenticator` constructor.
  *
  */
+export interface IAuthenticator {
 
-@Singleton()
-export class Authenticator {
-    private strategies: Map<string, Strategy>;
-    private serializers;
-    private deserializers;
-    private infoTransformers: Array<(info, ctx: Context) => Promise<any>>;
-    private _userProperty = 'user';
-
-    get userProperty() {
-        return this._userProperty || 'user';
-    }
-
-    constructor() {
-        this.strategies = new Map();
-        this.serializers = [];
-        this.deserializers = [];
-        this.infoTransformers = [];
-        this.use(new SessionStrategy());
-    }
-
+    readonly userProperty: string;
     /**
      * Utilize the given `strategy` with optional `name`, overridding the strategy's
      * default name.
@@ -45,22 +49,8 @@ export class Authenticator {
      *     passport.use('api', new http.BasicStrategy(...));
      *
      */
-    public use(strategy: Strategy);
-    public use(name: string, strategy: Strategy);
-    public use(name: any, strategy?: Strategy) {
-        if (strategy === undefined) {
-            strategy = name;
-            name = strategy.name;
-        }
-        if (!name) {
-            throw new Error('Authentication strategies must have a name');
-        }
-
-        this.strategies.set(name, strategy);
-
-        return this;
-    }
-
+    use(strategy: IStrategy): any;
+    use(name: string, strategy: IStrategy): any;
     /**
      * Un-utilize the `strategy` with given `name`.
      *
@@ -77,11 +67,7 @@ export class Authenticator {
      *     passport.unuse('legacy-api');
      *
      */
-    public unuse(name: string) {
-        this.strategies.delete(name);
-        return this;
-    }
-
+    unuse(name: string): this;
     /**
      * Passport's primary initialization middleware.
      *
@@ -125,27 +111,7 @@ export class Authenticator {
      *     });
      *
      */
-    public initialize(userProperty?: string): Middleware {
-        this._userProperty = userProperty || 'user';
-
-        return async (ctx: Context, next) => {
-            ctx.passport = this;
-            const session = ctx.session;
-            if (!session) {
-                throw new Error('Session middleware is needed with passport middleware!');
-            }
-            if (!('passport' in session)) {
-                ctx.session.passport = { user: undefined };
-            }
-            if (!('message' in session)) {
-                session.message = {};
-            }
-            ctx.session = session;
-            contextExtends(ctx);
-            await next();
-        };
-    }
-
+    initialize(userProperty?: string): Middleware;
     /**
      * Authenticates requests.
      *
@@ -194,123 +160,8 @@ export class Authenticator {
      *       // request will be redirected to Twitter
      *     });
      */
-    public authenticate(strategyNames: string | string[],
-        callback?: (this: void, err: Error, user?, info?, status?) => void): Middleware;
-    public authenticate(strategyNames: string | string[],
-        options: AuthenticateOption,
-        callback?: (this: void, err: Error, user?, info?, status?) => void): Middleware;
-    public authenticate(strategyNames: string | string[],
-        options: any = {},
-        callback?: (this: void, err: Error, user?, info?, status?) => void): Middleware {
-        if (typeof options === 'function') {
-            callback = options;
-            options = {};
-        }
-
-        let multi = true;
-        // Cast `strategy` to an array, allowing authentication to pass through a chain of
-        // strategies.  The first strategy to succeed, redirect, or error will halt
-        // the chain.  Authentication failures will proceed through each strategy in
-        // series, ultimately failing if all strategies fail.
-        //
-        // This is typically used on API endpoints to allow clients to authenticate
-        // using their preferred choice of Basic, Digest, token-based schemes, etc.
-        // It is not feasible to construct a chain of multiple strategies that involve
-        // redirection (for example both Facebook and Twitter), since the first one to
-        // redirect will halt the chain.
-        if (typeof strategyNames === 'string') {
-            strategyNames = [strategyNames];
-            multi = false;
-        }
-
-        return async (ctx: Context, next) => {
-            // if (http.IncomingMessage.prototype.logIn
-            //     && http.IncomingMessage.prototype.logIn !== IncomingMessageExt.logIn) {
-            //     require('../framework/connect').__monkeypatchNode();
-            // }
-
-            // accumulator for failures from each strategy in the chain
-            const failures = ctx.failures = [];
-
-            function allFailed() {
-                if (callback) {
-                    if (!multi) {
-                        return callback(null, false, failures[0].challenge, failures[0].status);
-                    } else {
-                        const challenges = failures.map(f => f.challenge);
-                        const statuses = failures.map(f => f.status);
-                        return callback(null, false, challenges, statuses);
-                    }
-                }
-
-                // Strategies are ordered by priority.  For the purpose of flashing a
-                // message, the first failure will be displayed.
-                // const challenge = (failures[0] || {}).challenge || {};
-                if (options.failureMessage && failures[0].challenge.type) {
-                    const challenge = failures[0].challenge;
-                    if (!(challenge.type in ctx.session.message)) {
-                        ctx.session.message[challenge.type] = [];
-                    }
-                    ctx.session.message[challenge.type].push(challenge.messages);
-                }
-                if (options.failureRedirect) {
-                    return ctx.redirect(options.failureRedirect);
-                }
-
-                // When failure handling is not delegated to the application, the default
-                // is to respond with 401 Unauthorized.  Note that the WWW-Authenticate
-                // header will be set according to the strategies in use (see
-                // actions#fail).  If multiple strategies failed, each of their challenges
-                // will be included in the response.
-
-                const rchallenge = [];
-                let rstatus;
-                let status;
-                for (const failure of failures) {
-                    status = failure.status;
-                    rstatus = rstatus || status;
-                    if (typeof failure.challenge === 'string') {
-                        rchallenge.push(failure.challenge);
-                    }
-                }
-
-                ctx.status = rstatus || 401;
-                if (ctx.status === 401 && rchallenge.length) {
-                    ctx.set('WWW-Authenticate', rchallenge);
-                }
-                if (options.failWithError) {
-                    throw new AuthenticationError(rstatus, http.STATUS_CODES[ctx.status]);
-                }
-                // console.log("==================");
-                // console.log(http.STATUS_CODES[ctx.status]);
-                // ctx.res.statusMessage = http.STATUS_CODES[ctx.status];
-                ctx.response.message = http.STATUS_CODES[ctx.status];
-                ctx.res.end(http.STATUS_CODES[ctx.status]);
-            }
-
-            for (const strategyName of strategyNames) {
-                const strategy = this.strategies.get(strategyName);
-                if (!strategy) {
-                    throw new Error(`Unknown authentication strategy "${strategyName}"`);
-                }
-                try {
-                    const res = await strategy.authenticate(ctx, options);
-                    if (res instanceof FailResult) {
-                        await res.execute(ctx, next);
-                    } else {
-                        return await res.execute(ctx, next, callback);
-                    }
-                } catch (error) {
-                    if (callback) {
-                        return callback(error);
-                    }
-                    throw error;
-                }
-            }
-            return allFailed();
-        };
-    }
-
+    authenticate(strategyNames: string | string[], callback?: (this: void, err: Error, user?: any, info?: any, status?: any) => void): Middleware;
+    authenticate(strategyNames: string | string[], options: AuthenticateOption, callback?: (this: void, err: Error, user?: any, info?: any, status?: any) => void): Middleware;
     /**
      * Middleware that will authorize a third-party account using the given
      * `strategy` name, with optional `options`.
@@ -326,11 +177,7 @@ export class Authenticator {
      *
      *    passport.authorize('twitter-authz', { failureRedirect: '/account' });
      */
-    public authorize(strategy: string | string[], options: AuthenticateOption = {}, callback?) {
-        options.assignProperty = 'account';
-        return this.authenticate(strategy, options, callback);
-    }
-
+    authorize(strategy: string | string[], options?: AuthenticateOption, callback?: any): import("koa-compose").Middleware<import("koa").ParameterizedContext<any, {}>>;
     /**
      * Middleware that will restore login state from a session.
      *
@@ -365,10 +212,7 @@ export class Authenticator {
      *
      * @api public
      */
-    public session(options?: AuthenticateOption): Middleware {
-        return this.authenticate('session', options);
-    }
-
+    session(options?: AuthenticateOption): Middleware;
     /**
      * Registers a function used to serialize user objects into the session.
      *
@@ -380,22 +224,8 @@ export class Authenticator {
      *
      * @api public
      */
-    public serializeUser(fn: (user: any, ctx: Context) => Promise<any>);
-    public async serializeUser(user: object, ctx: Context);
-    public async serializeUser(user, ctx?) {
-        if (typeof user === 'function') {
-            return this.serializers.push(user);
-        }
-
-        for (const layer of this.serializers) {
-            const obj = await layer(user, ctx);
-            if (obj || obj === 0) {
-                return obj;
-            }
-        }
-        throw new Error('Failed to serialize user into session');
-    }
-
+    serializeUser(fn: (user: any, ctx: Context) => Promise<any>): any;
+    serializeUser(user: object, ctx: Context): any;
     /**
      * Registers a function used to deserialize user objects out of the session.
      *
@@ -409,24 +239,8 @@ export class Authenticator {
      *
      * @api public
      */
-    public deserializeUser(fn: (obj: any, ctx: Context) => Promise<any>);
-    public async deserializeUser(obj: any, ctx: Context);
-    public async deserializeUser(obj, ctx?) {
-        if (typeof obj === 'function') {
-            return this.deserializers.push(obj);
-        }
-
-        for (const layer of this.deserializers) {
-            const user = await layer(obj, ctx);
-            if (user) {
-                return user;
-            } else if (user === null || user === false) {
-                return false;
-            }
-        }
-        throw new Error('Failed to deserialize user out of session');
-    }
-
+    deserializeUser(fn: (obj: any, ctx: Context) => Promise<any>): any;
+    deserializeUser(obj: any, ctx: Context): any;
     /**
      * Registers a function used to transform auth info.
      *
@@ -465,25 +279,9 @@ export class Authenticator {
      *
      * @api public
      */
-    public transformAuthInfo(fn: (info, ctx: Context) => Promise<any>): void;
-    public transformAuthInfo(info: { type: string, message: string }, ctx: Context);
-    public async transformAuthInfo(info, ctx?) {
-        if (typeof info === 'function') {
-            return this.infoTransformers.push(info);
-        }
-
-        // private implementation that traverses the chain of transformers,
-        // attempting to transform auth info
-
-        for (const layer of this.infoTransformers) {
-            const tinfo = await layer(info, ctx);
-            if (tinfo) {
-                return tinfo;
-            }
-        }
-        return info;
-    }
+    transformAuthInfo(fn: (info: any, ctx: Context) => Promise<any>): void;
+    transformAuthInfo(info: {
+        type: string;
+        message: string;
+    }, ctx: Context): any;
 }
-
-
-

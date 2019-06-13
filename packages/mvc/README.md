@@ -26,7 +26,7 @@ npm install @mvx/mvc
 create application
 
 ```ts
-import { MvcApplication, DefaultMvcMiddlewares, MvcModule, MvcServer } from '@mvx/mvc';
+import { AuthorizationPointcut, MvcApplication, DefaultMvcMiddlewares, MvcModule, MvcServer } from '@mvx/mvc';
 import { ModelModule } from '@mvx/model';
 // for typeorm model import TypeOrmModule
 import { TypeOrmModule }  from '@mvx/typeorm-adapter';
@@ -105,8 +105,8 @@ class MvcApi {
 ```ts
 @Aspect
 export class YourSecrityAspect {
-    // before AuthAspect.auth check some.
-    @Before('execution(AuthAspect.auth)', 'authAnnotation')
+    // before AuthorizationAspect.authProcess check some.
+    @Before(AuthorizationPointcut, 'authAnnotation')
     sessionCheck(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
         //TODO： you check by authAnnotation
     }

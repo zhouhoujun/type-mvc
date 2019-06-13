@@ -13,7 +13,7 @@ import { Context } from 'koa';
  */
 export class FailResult extends ValidationResult {
 
-    constructor(public challenge: string, public status: number) {
+    constructor(private challenge: string, private status: number) {
         super();
     }
 

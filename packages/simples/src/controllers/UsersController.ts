@@ -4,6 +4,7 @@ import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
 
 @Cors
+// @Authorization()
 @Controller('/users')
 export class UserController {
 
