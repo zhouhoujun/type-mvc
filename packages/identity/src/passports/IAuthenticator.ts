@@ -177,7 +177,7 @@ export interface IAuthenticator {
      *
      *    passport.authorize('twitter-authz', { failureRedirect: '/account' });
      */
-    authorize(strategy: string | string[], options?: AuthenticateOption, callback?: any): import("koa-compose").Middleware<import("koa").ParameterizedContext<any, {}>>;
+    authorize(strategy: string | string[], options?: AuthenticateOption, callback?: any): Middleware;
     /**
      * Middleware that will restore login state from a session.
      *
