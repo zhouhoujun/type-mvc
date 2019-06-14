@@ -82,8 +82,8 @@ export interface IStrategyOption extends ObjectMap<any> {
 
 export interface PassportConfigure {
     strategies: IStrategyOption[];
-    serializers: Type<ISerializeUser>[];
-    deserializers: Type<IDeserializeUser>[];
+    serializers?: Type<ISerializeUser>[];
+    deserializers?: Type<IDeserializeUser>[];
 }
 
 /**

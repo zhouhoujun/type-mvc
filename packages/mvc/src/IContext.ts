@@ -1,5 +1,5 @@
 import { ObjectMap, InjectToken } from '@tsdi/ioc'
-import { MvcContext } from '../MvcContext';
+import { MvcContext } from './MvcContext';
 import { IHandleContext } from '@tsdi/boot';
 import { Context as KoaContext } from 'koa';
 

@@ -2,19 +2,21 @@ import { Strategy, ValidationResult, FailResult, SuccessResult, PassResult } fro
 import { Context } from 'koa';
 import { OIDCError, InternalOAuthError, InvalidToken, NoOpenIDError } from '../errors';
 import { Injectable, isArray, isFunction, Inject, Singleton, PromiseUtil } from '@tsdi/ioc';
-import { SessionStore, StateStore } from '../stores';
+import { SessionStore, StateStore, OIDCUtils } from '../stores';
 import { parse, resolve, format } from 'url';
 import { OAuth2, OAuth2Error } from './oauth2';
 import { IStrategyOption } from '@mvx/mvc';
 import { AfterInit, Input, Component, TemplateOptionToken } from '@tsdi/components';
 import { IContainer, ContainerToken } from '@tsdi/core';
+import { RedirectResult } from './results';
+import { stringify } from 'querystring';
 const webfinger = require('webfinger').webfinger;
 const request = require('request');
 
 export type OIDCVerifyFunction = (ctx: Context, iss: string, sub: string, profile: any, jwtClaims?: string, accessToken?: string, refreshToken?: string, params?: any)
     => Promise<{ user, info }>;
 
-export interface OIDCParams {
+export interface OIDCConfigure {
     issuer?: string;
     authorizationURL?: string;
     tokenURL?: string;
@@ -24,9 +26,14 @@ export interface OIDCParams {
     callbackURL?: string;
     registrationURL?: string
     _raw?: any;
+    nonce?: any;
+    display?: string;
+    prompt?: string;
+    timestamp?: number;
+    params?: any;
 }
 
-export interface OIDCOption extends IStrategyOption, OIDCParams {
+export interface OIDCOption extends IStrategyOption, OIDCConfigure {
     sessionKey?: string;
     identifierField?: string;
     scope: string | string[];
@@ -35,11 +42,23 @@ export interface OIDCOption extends IStrategyOption, OIDCParams {
     skipUserProfile?: boolean | ((issuer: string, subject: string) => Promise<any>);
     passReqToCallback?: string;
     verify: OIDCVerifyFunction;
+    getClient?: (issuer: string) => Promise<any>;
+    /**
+     * Return extra parameters to be included in the authorization request.
+     *
+     * Some OAuth 2.0 providers allow additional, non-standard parameters to be
+     * included when requesting authorization.  Since these parameters are not
+     * standardized by the OAuth 2.0 specification, OAuth 2.0-based authentication
+     * strategies can overrride this function in order to populate these parameters
+     * as required by the provider.
+     *
+     */
+    authorizationParams: (options) => any;
 }
 
 
 @Component({
-    selector: 'strategy-openidconnect'
+    selector: 'strategy-oidc'
 })
 export class OIDCStrategy extends Strategy implements AfterInit {
 
@@ -59,6 +78,18 @@ export class OIDCStrategy extends Strategy implements AfterInit {
     @Input() protected verify: OIDCVerifyFunction;
     @Input() protected passReqToCallback: string;
     @Input() protected skipUserProfile?: boolean | ((issuer: string, subject: string) => Promise<any>);
+
+    /**
+     * Return extra parameters to be included in the authorization request.
+     *
+     * Some OAuth 2.0 providers allow additional, non-standard parameters to be
+     * included when requesting authorization.  Since these parameters are not
+     * standardized by the OAuth 2.0 specification, OAuth 2.0-based authentication
+     * strategies can overrride this function in order to populate these parameters
+     * as required by the provider.
+     *
+     */
+    @Input() protected authorizationParams: (options) => any;
 
     @Inject(TemplateOptionToken)
     options: OIDCOption;
@@ -80,6 +111,10 @@ export class OIDCStrategy extends Strategy implements AfterInit {
 
         if (this.stateStore) {
             this.stateStore = new SessionStore(this.sessionKey);
+        }
+
+        if (!(this.authorizationURL && this.tokenURL) && this.options.getClient) {
+            throw new Error('OpenID Connect authentication requires getClientCallback option')
         }
 
     }
@@ -265,37 +300,69 @@ export class OIDCStrategy extends Strategy implements AfterInit {
                 identifier = ctx.query[idfield];
             }
 
-            let params = await this.getParams(identifier);
+            let meta = await this.getConfigure(identifier);
+            let callbackURL = options.callbackURL || this.callbackURL;
+            if (callbackURL) {
+                const parsed = parse(callbackURL);
+                if (!parsed.protocol) {
+                    // The callback URL is relative, resolve a fully qualified URL from the
+                    // URL of the originating request.
+                    callbackURL = resolve(ctx.request.origin, callbackURL);
+                }
+            }
+            meta.callbackURL = callbackURL;
 
-            // let callbackURL = options.callbackURL || this.options.callbackURL;
-            // if (callbackURL) {
-            //     const parsed = parse(callbackURL);
-            //     if (!parsed.protocol) {
-            //         // The callback URL is relative, resolve a fully qualified URL from the
-            //         // URL of the originating request.
-            //         callbackURL = resolve(ctx.request.origin, callbackURL);
-            //     }
-            // }
 
-            // this.stateStore.store()
+            let params = await this.authorizationParams(options);
+            params['response_type'] = 'code';
+            params['client_id'] = meta.clientID;
+            if (callbackURL) { params.redirect_uri = callbackURL; }
+            var scope = options.scope || this.scope;
+            if (isArray(scope)) { scope = scope.join(' '); }
+            if (scope) {
+                params.scope = 'openid ' + scope;
+            } else {
+                params.scope = 'openid';
+            }
 
-            return new PassResult();
+            // Optional Parameters
+
+            var simple_optional_params = ['max_age', 'ui_locals', 'id_token_hint', 'login_hint', 'acr_values'];
+            simple_optional_params.filter(x => { return x in meta }).map(y => { params[y] = meta[y] });
+
+            if (meta.display && ['page', 'popup', 'touch', 'wap'].indexOf(meta.display) !== -1) {
+                params.display = meta.display;
+            }
+            if (meta.prompt && ['none', 'login', 'consent', 'select_account'].indexOf(meta.prompt) !== -1) {
+                params.prompt = meta.prompt;
+            }
+
+            if (meta.nonce && typeof meta.nonce === 'boolean') { params.nonce = OIDCUtils.uid(20); }
+            if (meta.nonce && typeof meta.nonce === 'number') { params.nonce = OIDCUtils.uid(meta.nonce); }
+            if (meta.nonce && typeof meta.nonce === 'string') { params.nonce = meta.nonce; }
+
+            if (params.max_age) {
+                meta.timestamp = Math.floor(Date.now() / 1000);
+            }
+
+            meta.params = params;
+            for (let param in params) {
+                if (meta[param]) {
+                    delete meta[param]; // Remove redundant information.
+                }
+            }
+
+            // State Storage/Management
+            try {
+                let state = await this.stateStore.store(ctx, meta);
+                params.state = state;
+                var location = meta.authorizationURL + '?' + stringify(params);
+                return new RedirectResult(location);
+            } catch (ex) {
+                throw ex;
+            }
 
         }
-    }
-
-    /**
-     * Return extra parameters to be included in the authorization request.
-     *
-     * Some OAuth 2.0 providers allow additional, non-standard parameters to be
-     * included when requesting authorization.  Since these parameters are not
-     * standardized by the OAuth 2.0 specification, OAuth 2.0-based authentication
-     * strategies can overrride this function in order to populate these parameters
-     * as required by the provider.
-     *
-     */
-    protected authorizationParams(options): any {
-        return {};
     }
 
     private async shouldLoadUserProfile(issuer: string, subject: string): Promise<boolean> {
@@ -327,25 +394,25 @@ export class OIDCStrategy extends Strategy implements AfterInit {
     }
 
 
-    protected async getParams(identifier: string): Promise<OIDCParams> {
+    protected async getConfigure(identifier: string): Promise<OIDCConfigure> {
         if (this.authorizationURL && this.tokenURL) {
-            return await this.manualParams(identifier);
+            return await this.manualConfigure(identifier);
         } else {
-            return await this.dynamicParams(identifier);
+            return await this.dynamicConfigure(identifier);
         }
     }
 
-    protected async dynamicParams(identifier: string): Promise<OIDCParams> {
+    protected async dynamicConfigure(identifier: string): Promise<OIDCConfigure> {
         let issuer = await this.container.resolve(Resolver).resolve(identifier);
         let url = issuer + '/.well-known/openid-configuration';
-        let defer = PromiseUtil.defer<string>();
-        request.get(url, (err, res, body) => {
+        let defer = PromiseUtil.defer<OIDCConfigure>();
+        request.get(url, async (err, res, body) => {
             if (err) { return defer.reject(err); }
             if (res.statusCode !== 200) {
                 return defer.reject(new Error('Unexpected status code from OpenID provider configuration: ' + res.statusCode));
             }
 
-            var config = {} as OIDCParams;
+            var config = {} as OIDCConfigure;
 
             try {
                 var json = JSON.parse(body);
@@ -358,27 +425,25 @@ export class OIDCStrategy extends Strategy implements AfterInit {
 
                 config._raw = json;
 
-                //cb(null, config);
             } catch (ex) {
                 return defer.reject(new Error('Failed to parse OpenID provider configuration'));
             }
 
+
             // TODO: Pass registrationURL here.
-            registrar.resolve(config.issuer, function (err, client) {
-                if (err) { return defer.reject(err); }
-                config.clientID = client.id;
-                config.clientSecret = client.secret;
-                if (client.redirectURIs) {
-                    config.callbackURL = client.redirectURIs[0];
-                }
-                return defer.resolve(config);
-            });
+            let client = await this.options.getClient(config.issuer);
+            config.clientID = client.id;
+            config.clientSecret = client.secret;
+            if (client.redirectURIs) {
+                config.callbackURL = client.redirectURIs[0];
+            }
+            return defer.resolve(config);
         });
 
         return defer.promise;
     }
 
-    protected async manualParams(identifier: string): Promise<OIDCParams> {
+    protected async manualConfigure(identifier: string): Promise<OIDCConfigure> {
         var missing = ['issuer', 'authorizationURL', 'tokenURL', 'clientID', 'clientSecret'].filter(opt => !this.options[opt]);
         if (missing.length) {
             throw new Error('Manual OpenID configuration is missing required parameter(s) - ' + missing.join(', '));
@@ -392,7 +457,7 @@ export class OIDCStrategy extends Strategy implements AfterInit {
             clientID: this.clientID,
             clientSecret: this.clientSecret,
             callbackURL: this.callbackURL
-        } as OIDCParams
+        } as OIDCConfigure
 
         Object.keys(this.options).map(opt => {
             if (['nonce', 'display', 'prompt', 'max_age', 'ui_locals', 'id_token_hint', 'login_hint', 'acr_values'].indexOf(opt) !== -1) {
