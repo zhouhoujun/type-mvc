@@ -1,3 +1,5 @@
+export * from './IContext';
+export * from './IConfiguration';
 export * from './aop';
 export * from './decorators';
 export * from './errors';
@@ -9,7 +11,6 @@ export * from './router';
 
 export * from './BaseController';
 export * from './DefaultMvcMiddlewares';
-export * from './IConfiguration';
 export * from './IListener';
 export * from './RequestMethod';
 export * from './MvcApp';

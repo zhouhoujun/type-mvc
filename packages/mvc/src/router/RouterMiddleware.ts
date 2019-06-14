@@ -1,6 +1,7 @@
-import { IContext, MvcMiddleware, IMiddleware, MiddlewareTypes } from '../middlewares';
+import { MvcMiddleware, IMiddleware, MiddlewareTypes } from '../middlewares';
 import { Router } from './Router';
 import { Inject, Singleton } from '@tsdi/ioc';
+import { IContext } from '../IContext';
 
 
 @Singleton

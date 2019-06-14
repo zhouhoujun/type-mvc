@@ -1,9 +1,10 @@
 import { HandleType } from '@tsdi/boot';
-import { IContext, CompositeMiddleware } from '../middlewares';
+import { CompositeMiddleware } from '../middlewares';
 import { Singleton } from '@tsdi/ioc';
 import { RouteUrlArgToken } from './Route';
 import { CustomRoute, CustomHandleArgToken } from './CustomRoute';
 import { RouteChecker } from '../services';
+import { IContext } from '../IContext';
 
 @Singleton
 export class Router extends CompositeMiddleware {

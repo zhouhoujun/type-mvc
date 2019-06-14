@@ -8,3 +8,6 @@ export * from './LocalStrategy';
 export * from './ContextExtends';
 export * from './Authenticator';
 export * from './PassportBuildService';
+export * from './oauth2';
+export * from './OAuth2Strategy';
+export * from './OIDCStrategy';

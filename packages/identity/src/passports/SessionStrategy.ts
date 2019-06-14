@@ -1,11 +1,16 @@
 import { Strategy } from './Strategy';
-import { Injectable } from '@tsdi/ioc';
 import { Context } from 'koa';
 import { ValidationResult, PassResult } from './results';
 
-
-@Injectable(Strategy, 'session')
+/**
+ * session.
+ *
+ * @export
+ * @class SessionStrategy
+ * @extends {Strategy}
+ */
 export class SessionStrategy extends Strategy {
+
     /**
      * `SessionStrategy` constructor.
      *

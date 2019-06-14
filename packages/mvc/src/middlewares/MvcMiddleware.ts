@@ -1,5 +1,5 @@
 import { Handle, Handles, HandleType } from '@tsdi/boot';
-import { IContext } from './IContext';
+import { IContext } from '../IContext';
 import { IMiddleware } from './IMiddleware';
 import { isClass, Injectable } from '@tsdi/ioc';
 

@@ -5,6 +5,7 @@ import { Application } from 'koa';
 import { RunnableConfigure } from '@tsdi/boot';
 import { RequestMethod } from './RequestMethod';
 import *  as Keygrip from 'keygrip';
+import { IContext } from './IContext';
 
 
 /**
@@ -57,6 +58,32 @@ export interface IConnectionOptions extends ObjectMap<any> {
     password?: string;
     database: string;
     entities?: Type<any>[];
+}
+
+export interface IDeserializeUser {
+    deserializeUser(obj: any, ctx?: IContext): Promise<any>;
+}
+
+export interface ISerializeUser {
+    serializeUser(user: any, ctx: IContext): Promise<any>;
+}
+
+/**
+ * strategy option.
+ *
+ * @export
+ * @interface IStrategyOption
+ */
+export interface IStrategyOption extends ObjectMap<any> {
+    element: string | Type<any>;
+    name?: string;
+    verify?: Function
+}
+
+export interface PassportConfigure {
+    strategies: IStrategyOption[];
+    serializers: Type<ISerializeUser>[];
+    deserializers: Type<IDeserializeUser>[];
 }
 
 /**
@@ -146,7 +173,6 @@ export interface IConfiguration extends RunnableConfigure {
      * @memberOf Configuration
      */
     routePrefix?: string;
-
     /**
      * sub sites.
      *
@@ -168,7 +194,6 @@ export interface IConfiguration extends RunnableConfigure {
      * @memberof Configuration
      */
     connections?: IConnectionOptions;
-
     /**
      * global cors default options.
      *
@@ -183,6 +208,12 @@ export interface IConfiguration extends RunnableConfigure {
      * @memberOf Configuration
      */
     controllers?: string | string[];
+    /**
+     * passports config.
+     *
+     * @memberof IConfiguration
+     */
+    passports?: PassportConfigure;
     /**
      * aspect service path. default: './aop'
      *
@@ -259,7 +290,6 @@ export interface CorsOptions {
      * @memberof CorsOptions
      */
     keepHeadersOnError?: boolean;
-
     /**
      * allow cors request methods
      *
@@ -267,7 +297,6 @@ export interface CorsOptions {
      * @memberof CorsOptions
      */
     allowMethods?: string | (string | RequestMethod)[];
-
     /**
      * allow cors request headers, 'Access-Control-Request-Headers'
      *
@@ -275,7 +304,6 @@ export interface CorsOptions {
      * @memberof CorsOptions
      */
     allowHeaders?: string | string[];
-
     /**
      * set cors cache max age.  Access-Control-Max-Age.
      *

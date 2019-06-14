@@ -1,4 +1,4 @@
-import { IContext, ContextToken } from './middlewares';
+import { IContext, ContextToken } from './IContext';
 import { Injectable, Inject } from '@tsdi/ioc';
 import { ViewResult, FileResult, RedirectResult, JsonResult } from './results';
 import { Stream } from 'stream';

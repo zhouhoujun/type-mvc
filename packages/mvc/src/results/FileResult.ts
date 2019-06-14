@@ -1,6 +1,6 @@
 import { ResultValue } from './ResultValue';
 import { Stream } from 'stream';
-import { IContext } from '../middlewares';
+import { IContext } from '../IContext';
 import { ConfigurationToken } from '../IConfiguration';
 import { isString, Defer } from '@tsdi/ioc';
 import { existsSync, readFile } from 'fs';

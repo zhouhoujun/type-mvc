@@ -1,5 +1,5 @@
 import { MvcRoute, RouteUrlArgToken } from './Route';
-import { IContext } from '../middlewares';
+import { IContext } from '../IContext';
 import { Injectable, Inject, InjectToken } from '@tsdi/ioc';
 import { HandleType } from '@tsdi/boot';
 

@@ -5,7 +5,7 @@ import {
     isString, RuntimeLifeScope, Inject, InjectToken, getClassDecorators
 } from '@tsdi/ioc';
 import { MvcRoute, RouteUrlArgToken } from './Route';
-import { IContext } from '../middlewares';
+import { IContext } from '../IContext';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
 import { RouteMetadata, CorsMetadata } from '../metadata';
 import { ForbiddenError, HttpError } from '../errors';

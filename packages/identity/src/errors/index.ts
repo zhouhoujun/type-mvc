@@ -1,3 +1,4 @@
+export * from './NoOpenIDError';
 export * from './AuthenticationError';
 export * from './OIDCError';
 export * from './InvalidToken';

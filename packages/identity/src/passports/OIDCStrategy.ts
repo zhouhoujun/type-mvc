@@ -1,71 +1,87 @@
-import { Strategy, ValidationResult, FailResult, SuccessResult } from '../passports';
+import { Strategy, ValidationResult, FailResult, SuccessResult, PassResult } from '../passports';
 import { Context } from 'koa';
-import { OIDCError, InternalOAuthError, InvalidToken } from '../errors';
-import { Injectable, isArray, isFunction } from '@tsdi/ioc';
+import { OIDCError, InternalOAuthError, InvalidToken, NoOpenIDError } from '../errors';
+import { Injectable, isArray, isFunction, Inject, Singleton, PromiseUtil } from '@tsdi/ioc';
 import { SessionStore, StateStore } from '../stores';
 import { parse, resolve, format } from 'url';
 import { OAuth2, OAuth2Error } from './oauth2';
-
+import { IStrategyOption } from '@mvx/mvc';
+import { AfterInit, Input, Component, TemplateOptionToken } from '@tsdi/components';
+import { IContainer, ContainerToken } from '@tsdi/core';
+const webfinger = require('webfinger').webfinger;
+const request = require('request');
 
 export type OIDCVerifyFunction = (ctx: Context, iss: string, sub: string, profile: any, jwtClaims?: string, accessToken?: string, refreshToken?: string, params?: any)
     => Promise<{ user, info }>;
 
-export interface OIDCOption {
+export interface OIDCParams {
+    issuer?: string;
+    authorizationURL?: string;
+    tokenURL?: string;
+    userInfoURL?: string;
+    clientID: string;
+    clientSecret: string;
+    callbackURL?: string;
+    registrationURL?: string
+    _raw?: any;
+}
+
+export interface OIDCOption extends IStrategyOption, OIDCParams {
     sessionKey?: string;
     identifierField?: string;
     scope: string | string[];
     store?: SessionStore;
-
-    issuer?: string;
-    authorizationURL?: string;
-    tokenURL?: string;
-    clientID: string;
-    clientSecret: string;
-    callbackURL?: string;
-    userInfoURL?: string;
     customHeaders?: any;
     skipUserProfile?: boolean | ((issuer: string, subject: string) => Promise<any>);
     passReqToCallback?: string;
+    verify: OIDCVerifyFunction;
 }
 
 
-@Injectable(Strategy, 'openidconnect')
-export class OIDCStrategy extends Strategy {
+@Component({
+    selector: 'strategy-openidconnect'
+})
+export class OIDCStrategy extends Strategy implements AfterInit {
 
-    protected stateStore: StateStore;
-    protected options: OIDCOption;
+    @Input('store') protected stateStore: StateStore;
+    @Input() protected scope: string | string[];
+    @Input() protected identifierField: string;
 
-    constructor(options: OIDCOption, protected verify: OIDCVerifyFunction) {
-        super();
-        this.name = 'openidconnect';
-        this.init(options);
-    }
+    @Input() protected issuer: string;
+    @Input() protected sessionKey: string;
+    @Input() protected tokenURL: string;
+    @Input() protected authorizationURL: string;
+    @Input() protected clientID: string;
+    @Input() protected clientSecret: string;
+    @Input() protected callbackURL?: string;
+    @Input() protected userInfoURL?: string;
+    @Input() protected customHeaders?: any;
+    @Input() protected verify: OIDCVerifyFunction;
+    @Input() protected passReqToCallback: string;
+    @Input() protected skipUserProfile?: boolean | ((issuer: string, subject: string) => Promise<any>);
 
+    @Inject(TemplateOptionToken)
+    options: OIDCOption;
 
-    protected init(options: OIDCOption) {
-        this.options = options = Object.assign({}, {
-            identifierField: 'openid_identifier',
-            sessionKey: ('oauth2:' + parse(options.authorizationURL).hostname)
-        }, options);
+    @Inject(ContainerToken)
+    container: IContainer;
 
-        if (options.store instanceof StateStore) {
-            this.stateStore = options.store;
-        } else {
-            this.stateStore = new SessionStore(options.sessionKey);
+    async onAfterInit(): Promise<void> {
+        if (!this.name) {
+            this.name = 'openidconnect';
+        }
+        if (!this.identifierField) {
+            this.identifierField = 'openid_identifier';
         }
 
-        if (options.authorizationURL && options.tokenURL) {
-            // This OpenID Connect strategy is configured to work with a specific
-            // provider.  Override the discovery process with pre-configured endpoints.
-            this.configure(require('./setup/manual')(options));
-            // this.configure(require('./setup/dynamic')(options));
-        } else {
-            this.configure(require('./setup/dynamic')(options));
+        if (!this.sessionKey) {
+            this.sessionKey = ('oauth2:' + parse(this.authorizationURL).hostname)
         }
-    }
 
-    configure(identifier) {
-        // this._setup = identifier;
+        if (this.stateStore) {
+            this.stateStore = new SessionStore(this.sessionKey);
+        }
+
     }
 
 
@@ -226,7 +242,7 @@ export class OIDCStrategy extends Strategy {
                 }
             }
 
-            const { user, info } = await this.verify(ctx, this.options.passReqToCallback ? iss : undefined, sub, profile, jwtClaims, accessToken, refreshToken, accessTokenResult);
+            const { user, info } = await this.verify(ctx, this.passReqToCallback ? iss : undefined, sub, profile, jwtClaims, accessToken, refreshToken, accessTokenResult);
 
             if (!user) {
                 // TODO, not sure 401 is the correct meaning
@@ -242,13 +258,14 @@ export class OIDCStrategy extends Strategy {
             // their identifer as input.
 
             let identifier;
-            let idfield = this.options.identifierField;
+            let idfield = this.identifierField;
             if (ctx.body && ctx.body[idfield]) {
                 identifier = ctx.body[idfield];
             } else if (ctx.query && ctx.query[idfield]) {
                 identifier = ctx.query[idfield];
             }
 
+            let params = await this.getParams(identifier);
 
             // let callbackURL = options.callbackURL || this.options.callbackURL;
             // if (callbackURL) {
@@ -260,6 +277,9 @@ export class OIDCStrategy extends Strategy {
             //     }
             // }
 
+            // this.stateStore.store()
+
+            return new PassResult();
 
         }
     }
@@ -279,8 +299,8 @@ export class OIDCStrategy extends Strategy {
     }
 
     private async shouldLoadUserProfile(issuer: string, subject: string): Promise<boolean> {
-        if (this.options.skipUserProfile) {
-            return isFunction(this.options.skipUserProfile) ? await this.options.skipUserProfile(issuer, subject) : false;
+        if (this.skipUserProfile) {
+            return isFunction(this.skipUserProfile) ? await this.skipUserProfile(issuer, subject) : false;
         }
         return true;
     }
@@ -304,5 +324,117 @@ export class OIDCStrategy extends Strategy {
             e = err;
         }
         return e;
+    }
+
+
+    protected async getParams(identifier: string): Promise<OIDCParams> {
+        if (this.authorizationURL && this.tokenURL) {
+            return await this.manualParams(identifier);
+        } else {
+            return await this.dynamicParams(identifier);
+        }
+    }
+
+    protected async dynamicParams(identifier: string): Promise<OIDCParams> {
+        let issuer = await this.container.resolve(Resolver).resolve(identifier);
+        let url = issuer + '/.well-known/openid-configuration';
+        let defer = PromiseUtil.defer<string>();
+        request.get(url, (err, res, body) => {
+            if (err) { return defer.reject(err); }
+            if (res.statusCode !== 200) {
+                return defer.reject(new Error('Unexpected status code from OpenID provider configuration: ' + res.statusCode));
+            }
+
+            var config = {} as OIDCParams;
+
+            try {
+                var json = JSON.parse(body);
+
+                config.issuer = json.issuer;
+                config.authorizationURL = json.authorization_endpoint;
+                config.tokenURL = json.token_endpoint;
+                config.userInfoURL = json.userinfo_endpoint;
+                config.registrationURL = json.registration_endpoint;
+
+                config._raw = json;
+
+                //cb(null, config);
+            } catch (ex) {
+                return defer.reject(new Error('Failed to parse OpenID provider configuration'));
+            }
+
+            // TODO: Pass registrationURL here.
+            registrar.resolve(config.issuer, function (err, client) {
+                if (err) { return defer.reject(err); }
+                config.clientID = client.id;
+                config.clientSecret = client.secret;
+                if (client.redirectURIs) {
+                    config.callbackURL = client.redirectURIs[0];
+                }
+                return defer.resolve(config);
+            });
+        });
+
+        return defer.promise;
+    }
+
+    protected async manualParams(identifier: string): Promise<OIDCParams> {
+        var missing = ['issuer', 'authorizationURL', 'tokenURL', 'clientID', 'clientSecret'].filter(opt => !this.options[opt]);
+        if (missing.length) {
+            throw new Error('Manual OpenID configuration is missing required parameter(s) - ' + missing.join(', '));
+        }
+
+        var params = {
+            issuer: this.issuer,
+            authorizationURL: this.authorizationURL,
+            tokenURL: this.tokenURL,
+            userInfoURL: this.userInfoURL,
+            clientID: this.clientID,
+            clientSecret: this.clientSecret,
+            callbackURL: this.callbackURL
+        } as OIDCParams
+
+        Object.keys(this.options).map(opt => {
+            if (['nonce', 'display', 'prompt', 'max_age', 'ui_locals', 'id_token_hint', 'login_hint', 'acr_values'].indexOf(opt) !== -1) {
+                params[opt] = this.options[opt];
+            }
+        });
+
+        return params;
+    }
+}
+
+
+const REL = 'http://openid.net/specs/connect/1.0/issuer';
+
+@Singleton()
+export class Resolver {
+
+    resolve(identifier): Promise<string> {
+        let defer = PromiseUtil.defer<string>();
+        webfinger(identifier, REL, { webfingerOnly: true }, (err, jrd) => {
+            if (err) {
+                return defer.reject(err);
+            }
+            if (!jrd.links) {
+                return defer.reject(new NoOpenIDError('No links in resource descriptor', jrd));
+            }
+
+            var issuer;
+            for (var i = 0; i < jrd.links.length; i++) {
+                var link = jrd.links[i];
+                if (link.rel === REL) {
+                    issuer = link.href;
+                    break;
+                }
+            }
+
+            if (!issuer) {
+                return defer.reject(new NoOpenIDError('No OpenID Connect issuer in resource descriptor', jrd));
+            }
+            return defer.resolve(issuer);
+        });
+
+        return defer.promise;
     }
 }

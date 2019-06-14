@@ -1,18 +1,46 @@
 import { Strategy } from './Strategy';
 import { Context } from 'koa';
 import { ValidationResult, FailResult, SuccessResult } from './results';
-import { Injectable } from '@tsdi/ioc';
+import { Component, Input, AfterInit } from '@tsdi/components';
+import { IStrategyOption } from '@mvx/mvc';
+
 
 
 export type LocalVerify = (username: string, password: string) => Promise<{ user, info }>;
 
-@Injectable(Strategy, 'local')
-export class LocalStrategy extends Strategy {
+/**
+ * LocalStrategy Option
+ *
+ * @export
+ * @interface LocalStrategyOption
+ * @extends {IStrategyOption}
+ */
+export interface LocalStrategyOption extends IStrategyOption {
+    usernameField?: string;
+    passwordField?: string;
+    verify: LocalVerify
+}
 
-    name = 'local';
 
-    constructor(private verify: LocalVerify, private usernameField = 'username', private passwordField = 'password') {
-        super();
+@Component({
+    selector: 'strategy-local'
+})
+export class LocalStrategy extends Strategy implements AfterInit {
+
+    @Input() protected verify: LocalVerify;
+    @Input() protected usernameField;
+    @Input() protected passwordField;
+
+    async onAfterInit(): Promise<void> {
+        if (!this.name) {
+            this.name = 'local';
+        }
+        if (!this.usernameField) {
+            this.usernameField = 'username';
+        }
+        if (!this.passwordField) {
+            this.passwordField = 'password';
+        }
     }
 
     async authenticate(ctx: Context, options?: any): Promise<ValidationResult> {

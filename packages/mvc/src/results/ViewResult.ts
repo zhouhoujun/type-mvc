@@ -1,5 +1,5 @@
 import { ResultValue } from './ResultValue';
-import { IContext } from '../middlewares';
+import { IContext } from '../IContext';
 import { IContainer } from '@tsdi/core';
 
 

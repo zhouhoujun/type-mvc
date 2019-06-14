@@ -1,4 +1,4 @@
-import { Type, Registration, InjectToken } from '@tsdi/ioc';
+import { Type, InjectToken } from '@tsdi/ioc';
 
 /**
  * model parser. parser model from request.

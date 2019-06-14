@@ -12,7 +12,7 @@ export interface StoreMeta {
     grant_type?: string;
 
     identifierField?: string;
-    scope: string | string[];
+    scope?: string | string[];
     issuer?: any;
     authorizationURL?: string;
     tokenURL?: string;

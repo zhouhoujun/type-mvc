@@ -1,4 +1,4 @@
-import { IocDesignAction, DesignActionContext, getOwnTypeMetadata, lang, Type } from '@tsdi/ioc';
+import { IocDesignAction, DesignActionContext, getOwnTypeMetadata, lang } from '@tsdi/ioc';
 import { MiddlewareRegister, IMiddleware, MiddlewareClass } from '../middlewares';
 import { MiddlewareMetadata } from '../metadata';
 
