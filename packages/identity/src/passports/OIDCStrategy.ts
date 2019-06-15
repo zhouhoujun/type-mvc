@@ -1,7 +1,7 @@
-import { Strategy, ValidationResult, FailResult, SuccessResult, PassResult } from '../passports';
+import { Strategy, ValidationResult, FailResult, SuccessResult } from '../passports';
 import { Context } from 'koa';
-import { OIDCError, InternalOAuthError, InvalidToken, NoOpenIDError } from '../errors';
-import { Injectable, isArray, isFunction, Inject, Singleton, PromiseUtil } from '@tsdi/ioc';
+import { OIDCError, InternalOAuthError, NoOpenIDError } from '../errors';
+import { isArray, isFunction, Inject, Singleton, PromiseUtil } from '@tsdi/ioc';
 import { SessionStore, StateStore, OIDCUtils } from '../stores';
 import { parse, resolve, format } from 'url';
 import { OAuth2, OAuth2Error } from './oauth2';
