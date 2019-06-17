@@ -17,7 +17,7 @@ declare module 'koa' {
         failures: VaildFailure[],
         mvcContext: MvcContext;
         connection?: any;
-        hasRole?(...role: string[]): boolean;
+        hasRole(...role: string[]): boolean;
         login(user: any, options?: any): Promise<void>;
         logIn(user, options, done);
         logout(): void;
@@ -45,6 +45,14 @@ export interface IAuthenticator {
      * @memberof IAuthenticator
      */
     readonly userProperty: string;
+
+    /**
+     * user roles property.
+     *
+     * @type {string}
+     * @memberof IAuthenticator
+     */
+    readonly rolesProperty: string;
     /**
      * Utilize the given `strategy` with optional `name`, overridding the strategy's
      * default name.

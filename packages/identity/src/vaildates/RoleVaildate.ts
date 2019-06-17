@@ -15,7 +15,7 @@ export class RoleVaildate {
     vaildate(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
         let ctx = this.container.resolve(ContextToken);
         if (isFunction(ctx.hasRole) && authAnnotation && authAnnotation.length) {
-            if (ctx.hasRole(...authAnnotation.map(a => a.role).filter(a => a))) {
+            if (!ctx.hasRole(...authAnnotation.map(a => a.role).filter(a => a))) {
                 throw new ForbiddenError();
             }
         }

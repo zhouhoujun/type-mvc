@@ -22,9 +22,13 @@ export class Authenticator implements IAuthenticator {
     private deserializers;
     private infoTransformers: Array<(info, ctx: Context) => Promise<any>>;
     private _userProperty = 'user';
-
+    private _rolesProperty = 'roles';
     get userProperty() {
-        return this._userProperty || 'user';
+        return this._userProperty;
+    }
+
+    get rolesProperty() {
+        return this._rolesProperty;
     }
 
     constructor() {
@@ -126,8 +130,9 @@ export class Authenticator implements IAuthenticator {
      *     });
      *
      */
-    public initialize(userProperty?: string): Middleware {
+    public initialize(userProperty?: string, rolesProperty?: string): Middleware {
         this._userProperty = userProperty || 'user';
+        this._rolesProperty = rolesProperty || 'roles';
 
         return async (ctx: Context, next) => {
             ctx.passport = this;

@@ -72,6 +72,20 @@ function isUnauthenticated(): boolean {
     return !this.isAuthenticated();
 }
 
+function hasRole(this: Context, ...roles: string[]): boolean {
+    if (!this.passport) {
+        return false;
+    }
+    if (!roles.length) {
+        return true;
+    }
+    const property = this.passport.rolesProperty;
+    if ((this.state[property])) {
+        return this.state[property].some(role => roles.indexOf(role) > 0);
+    }
+    return false;
+}
+
 /**
  * context extends.
  *
@@ -107,5 +121,10 @@ export function contextExtends(ctx: BaseContext): void {
             writable: false,
             enumerable: false,
         },
+        hasRole: {
+            value: hasRole,
+            writable: false,
+            enumerable: false,
+        }
     });
 }
