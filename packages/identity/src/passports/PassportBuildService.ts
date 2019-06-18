@@ -5,6 +5,7 @@ import { IStrategy } from './IStrategy';
 import { ComponentBuilder } from '@tsdi/components';
 import { Strategy } from './Strategy';
 import { IContainer, ContainerToken } from '@tsdi/core';
+import { SerializeUser, DeserializeUser, TransformAuthInfo } from '../services';
 
 /**
  * 
@@ -42,11 +43,10 @@ export class ConfigurePassportBuildService extends PassportBuildService {
 
     async build(passport: Authenticator, configuration: IConfiguration): Promise<void> {
         if (configuration.passports) {
-            let { strategies, serializers, deserializers } = configuration.passports;
+            let { strategies, serializers, deserializers, authInfos } = configuration.passports;
             if (strategies.length) {
                 await Promise.all(strategies.map(async p => {
                     let strategy = await this.createStrategy(p);
-                    console.log(strategy, p);
                     if (strategy instanceof Strategy) {
                         passport.use(strategy);
                     }
@@ -58,9 +58,13 @@ export class ConfigurePassportBuildService extends PassportBuildService {
                     if (!this.container.has(ser)) {
                         this.container.register(ser);
                     }
-
-                    passport.serializeUser((obj, ctx) => this.container.get(ser).serializeUser(obj, ctx as IContext));
+                    passport.serializeUser((user, ctx) => this.container.resolve(ser).serializeUser(user, ctx as IContext));
                 });
+            } else {
+                this.container.getServices(SerializeUser)
+                    .forEach(ser => {
+                        passport.serializeUser((user, ctx) => ser.serializeUser(user, ctx as IContext))
+                    });
             }
 
             if (deserializers && deserializers.length) {
@@ -69,8 +73,28 @@ export class ConfigurePassportBuildService extends PassportBuildService {
                         this.container.register(ser);
                     }
 
-                    passport.deserializeUser((obj, ctx) => this.container.get(ser).deserializeUser(obj, ctx as IContext));
+                    passport.deserializeUser((obj, ctx) => this.container.resolve(ser).deserializeUser(obj, ctx as IContext));
                 });
+            } else {
+                this.container.getServices(DeserializeUser)
+                    .forEach(ser => {
+                        passport.deserializeUser((obj, ctx) => ser.deserializeUser(obj, ctx as IContext))
+                    });
+            }
+
+            if (authInfos && authInfos.length) {
+                authInfos.forEach(ser => {
+                    if (!this.container.has(ser)) {
+                        this.container.register(ser);
+                    }
+
+                    passport.transformAuthInfo((info, ctx) => this.container.resolve(ser).authInfo(info, ctx as IContext));
+                });
+            } else {
+                this.container.getServices(TransformAuthInfo)
+                    .forEach(ser => {
+                        passport.transformAuthInfo((info, ctx) => ser.authInfo(info, ctx))
+                    });
             }
         }
     }

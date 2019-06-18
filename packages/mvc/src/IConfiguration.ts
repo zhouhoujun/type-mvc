@@ -68,6 +68,10 @@ export interface ISerializeUser {
     serializeUser(user: any, ctx: IContext): Promise<any>;
 }
 
+export interface ITransformAuthInfo {
+    authInfo(info, ctx: IContext): Promise<any>;
+}
+
 /**
  * strategy option.
  *
@@ -84,6 +88,7 @@ export interface PassportConfigure {
     strategies: IStrategyOption[];
     serializers?: Type<ISerializeUser>[];
     deserializers?: Type<IDeserializeUser>[];
+    authInfos?: Type<ITransformAuthInfo>[];
 }
 
 /**

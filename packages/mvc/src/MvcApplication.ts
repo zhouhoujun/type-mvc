@@ -7,7 +7,6 @@ import { ServerLogsModule } from '@tsdi/platform-server-logs';
 import { MvcContext, MvcOptions, MvcContextToken } from './MvcContext';
 import { MvcCoreModule } from './CoreModule';
 import { MvcApp } from './MvcApp';
-import { ComponentsModule, ElementModule } from '@tsdi/components';
 
 /**
  * Default Application of type mvc.
@@ -24,7 +23,7 @@ export class MvcApplication extends BootApplication {
 
     getBootDeps() {
         let deps = super.getBootDeps();
-        return [AopModule, LogModule, ServerBootstrapModule, ComponentsModule, ElementModule, ServerLogsModule, MvcCoreModule, ...deps];
+        return [AopModule, LogModule, ServerBootstrapModule, ServerLogsModule, MvcCoreModule, ...deps];
     }
 
     /**
