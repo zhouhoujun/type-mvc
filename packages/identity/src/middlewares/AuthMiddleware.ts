@@ -14,7 +14,6 @@ import { RegisterFor, RegFor } from '@tsdi/boot';
     name: 'auth',
     after: MiddlewareTypes.BodyParser
 })
-@RegisterFor(RegFor.all)
 export class AuthMiddleware extends CompositeMiddleware {
 
     private hasInit = false;
@@ -27,7 +26,8 @@ export class AuthMiddleware extends CompositeMiddleware {
             await this.setup(ctx.mvcContext);
             this.hasInit = true;
         }
-        await super.execute(ctx, next);
+        await super.execute(ctx);
+        await next();
     }
 
     protected async setup(context: MvcContext) {

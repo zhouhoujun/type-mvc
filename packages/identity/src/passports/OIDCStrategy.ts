@@ -1,13 +1,12 @@
 import { Strategy, ValidationResult, FailResult, SuccessResult } from '../passports';
 import { Context } from 'koa';
 import { OIDCError, InternalOAuthError, NoOpenIDError } from '../errors';
-import { isArray, isFunction, Inject, Singleton, PromiseUtil } from '@tsdi/ioc';
+import { isArray, isFunction, Inject, Singleton, PromiseUtil, ContainerFactory, ContainerFactoryToken } from '@tsdi/ioc';
 import { SessionStore, StateStore, OIDCUtils } from '../stores';
 import { parse, resolve, format } from 'url';
 import { OAuth2, OAuth2Error } from './oauth2';
 import { IStrategyOption } from '@mvx/mvc';
 import { AfterInit, Input, Component, TemplateOptionToken } from '@tsdi/components';
-import { IContainer, ContainerToken } from '@tsdi/core';
 import { RedirectResult } from './results';
 import { stringify } from 'querystring';
 const webfinger = require('webfinger').webfinger;
@@ -94,8 +93,8 @@ export class OIDCStrategy extends Strategy implements AfterInit {
     @Inject(TemplateOptionToken)
     options: OIDCOption;
 
-    @Inject(ContainerToken)
-    container: IContainer;
+    @Inject(ContainerFactoryToken)
+    containerFactory: ContainerFactory;
 
     async onAfterInit(): Promise<void> {
         if (!this.name) {
@@ -403,7 +402,7 @@ export class OIDCStrategy extends Strategy implements AfterInit {
     }
 
     protected async dynamicConfigure(identifier: string): Promise<OIDCConfigure> {
-        let issuer = await this.container.resolve(Resolver).resolve(identifier);
+        let issuer = await this.containerFactory().resolve(Resolver).resolve(identifier);
         let url = issuer + '/.well-known/openid-configuration';
         let defer = PromiseUtil.defer<OIDCConfigure>();
         request.get(url, async (err, res, body) => {

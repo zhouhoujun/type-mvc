@@ -20,11 +20,5 @@ export class AuthenticatedVaildate {
         if (!ctx.isAuthenticated()) {
             throw new UnauthorizedError();
         }
-
-        if (isFunction(ctx.hasRole) && authAnnotation && authAnnotation.length) {
-            if (ctx.hasRole(...authAnnotation.map(a => a.role).filter(a => a))) {
-                throw new ForbiddenError();
-            }
-        }
     }
 }
