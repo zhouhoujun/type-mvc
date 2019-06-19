@@ -5,7 +5,7 @@
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
   "scripts": {
-    "postinstall": "npm prune"
+    "build": "tsdi build"
   },
   "keywords": ["mvc", "AOP", "ioc", "frameworker", "koa", "tsioc", "server", "ts-ioc"],
   "author": "houjun",

@@ -1,7 +1,7 @@
 import * as http from 'http';
 import * as https from 'https';
 import * as querystring from 'querystring';
-import * as URL from 'url';
+import { parse } from 'url';
 import { AuthenticationError } from '../errors';
 
 /**
@@ -153,7 +153,7 @@ export class OAuth2 {
     public request(method: string, url: string, headers: any = {},
         postBody?: string | Buffer, accessToken?: string): Promise<{ result: string, response: any }> {
 
-        const parsedUrl = URL.parse(url, true);
+        const parsedUrl = parse(url, true);
         if (parsedUrl.protocol === 'https:' && !parsedUrl.port) {
             parsedUrl.port = '443';
         }

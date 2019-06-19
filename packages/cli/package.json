@@ -8,8 +8,7 @@
     "mvx": "./lib/cli.js"
   },
   "scripts": {
-    "reinstall": "npm cache clean && npm install",
-    "build": "ts-node -r tsconfig-paths/register taskfile.ts"
+    "build": "tsdi build"
   },
   "keywords": [
     "activity",

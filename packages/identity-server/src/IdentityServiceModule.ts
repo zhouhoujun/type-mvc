@@ -1,6 +1,6 @@
 import { RegFor } from '@tsdi/boot';
 import * as controllers from './controllers';
-import { MvcModule, getMvcMiddlewares } from '@mvx/mvc';
+import { MvcModule } from '@mvx/mvc';
 import { IdentityModule } from '@mvx/identity';
 import { TypeOrmModule } from '@mvx/typeorm-adapter';
 
@@ -15,8 +15,7 @@ import { TypeOrmModule } from '@mvx/typeorm-adapter';
     exports: [
         TypeOrmModule,
         controllers
-    ],
-    middlewares: getMvcMiddlewares(false)
+    ]
 })
 export class IdentityServiceModule {
 
