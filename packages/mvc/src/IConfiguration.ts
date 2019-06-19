@@ -79,7 +79,7 @@ export interface ITransformAuthInfo {
  * @interface IStrategyOption
  */
 export interface IStrategyOption extends ObjectMap<any> {
-    element: string | Type<any>;
+    strategy: string | Type<any>;
     name?: string;
     verify?: Function
 }

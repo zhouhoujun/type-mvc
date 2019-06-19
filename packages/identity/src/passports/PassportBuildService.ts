@@ -2,10 +2,12 @@ import { Authenticator } from './Authenticator';
 import { Abstract, Inject, Injectable } from '@tsdi/ioc';
 import { IConfiguration, IStrategyOption, IContext } from '@mvx/mvc';
 import { IStrategy } from './IStrategy';
-import { ComponentBuilder } from '@tsdi/components';
+import { ComponentBuilder, ElementDecoratorRegisterer, Component, ComponentSelectorHandle } from '@tsdi/components';
 import { Strategy } from './Strategy';
 import { IContainer, ContainerToken } from '@tsdi/core';
 import { SerializeUser, DeserializeUser, TransformAuthInfo } from '../services';
+import { StrategySelectorHandle } from './StrategySelectorHandle';
+import { BuildHandleRegisterer } from '@tsdi/boot';
 
 /**
  * 
@@ -42,6 +44,12 @@ export class ConfigurePassportBuildService extends PassportBuildService {
     private container: IContainer;
 
     async build(passport: Authenticator, configuration: IConfiguration): Promise<void> {
+        let register = this.container.get(BuildHandleRegisterer);
+        if (!register.get(StrategySelectorHandle)) {
+            this.container.get(BuildHandleRegisterer).register(this.container, StrategySelectorHandle);
+            this.container.get(ElementDecoratorRegisterer)
+                .registerBefore(Component, ComponentSelectorHandle, StrategySelectorHandle);
+        }
         if (configuration.passports) {
             let { strategies, serializers, deserializers, authInfos } = configuration.passports;
             if (strategies.length) {

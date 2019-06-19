@@ -57,7 +57,7 @@ export interface OIDCOption extends IStrategyOption, OIDCConfigure {
 
 
 @Component({
-    selector: 'strategy-oidc'
+    selector: 'oidc'
 })
 export class OIDCStrategy extends Strategy implements AfterInit {
 

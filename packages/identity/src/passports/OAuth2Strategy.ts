@@ -121,7 +121,7 @@ export interface OAuth2Option extends IStrategyOption {
 *
 */
 @Component({
-    selector: 'strategy-oauth2'
+    selector: 'oauth2'
 })
 export class OAuth2Strategy extends Strategy implements AfterInit {
 

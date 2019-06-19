@@ -11,3 +11,4 @@ export * from './PassportBuildService';
 export * from './oauth2';
 export * from './OAuth2Strategy';
 export * from './OIDCStrategy';
+export * from './StrategySelectorHandle';

@@ -23,7 +23,7 @@ export interface LocalStrategyOption extends IStrategyOption {
 
 
 @Component({
-    selector: 'strategy-local'
+    selector: 'local'
 })
 export class LocalStrategy extends Strategy implements AfterInit {
 

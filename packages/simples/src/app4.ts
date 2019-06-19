@@ -18,7 +18,7 @@ const oauthProviderId = 'markus'
     passports: {
         strategies: [
             {
-                element: 'strategy-oidc',
+                strategy: 'oidc',
                 scope: '',
                 isLiberty: true,
                 issuer: 'http://localhost:' + port,
@@ -31,7 +31,7 @@ const oauthProviderId = 'markus'
             }
         ]
     },
-    middlewares: DefaultMvcMiddlewares,
+    // middlewares: DefaultMvcMiddlewares,
     // debug: true
 })
 class MvcApi {

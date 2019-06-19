@@ -82,7 +82,7 @@ export class MvcConfigureRegister extends ConfigureRegister {
     async register(config: IConfiguration, ctx: MvcContext): Promise<void> {
 
         let orgConfig = config;
-        config = ctx.configuration = Object.assign({}, ctx.annoation, config);
+        config = ctx.configuration = Object.assign({}, config, ctx.annoation);
 
         ctx.getKoa().keys = config.keys;
 
@@ -141,7 +141,7 @@ export class MvcConfigureRegister extends ConfigureRegister {
                 if (isClass(site.app)) {
                     let subCtx = await MvcApplication.run(
                         {
-                            autorun:  false,
+                            autorun: false,
                             module: site.app,
                             regFor: RegFor.child,
                             configures: [lang.omit(orgConfig, 'subsites')]
