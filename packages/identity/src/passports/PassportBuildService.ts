@@ -56,7 +56,6 @@ export class ConfigurePassportBuildService extends PassportBuildService {
                 await Promise.all(strategies.map(async p => {
                     let strategy = await this.createStrategy(p);
                     if (strategy instanceof Strategy) {
-                        console.log(strategy);
                         passport.use(strategy);
                     }
                 }));
