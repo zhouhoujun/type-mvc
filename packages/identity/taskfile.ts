@@ -14,6 +14,7 @@ import { AfterInit } from '@tsdi/components';
         outDir: '../../dist/identity',
         src: 'src/**/*.ts',
         test: 'test/**/*.ts',
+        externalLibs: ['querystring'],
         annotation: true,
         bundles: [
             { target: 'es5', targetFolder: 'src', dtsMain: 'index.d.ts' },
