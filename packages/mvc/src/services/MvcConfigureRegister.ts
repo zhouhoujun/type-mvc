@@ -8,8 +8,10 @@ import { LogConfigureToken, ConfigureLoggerManger } from '@tsdi/logs';
 export class MvcConfigureRegister extends ConfigureRegister {
 
     async register(config: IConfiguration, ctx?: MvcContext): Promise<void> {
-        let logConfig =  config.logConfig || ctx.annoation.logConfig;
-        this.container.bindProvider(LogConfigureToken, logConfig);
-        ctx.logManager = this.container.resolve(ConfigureLoggerManger);
+        let logConfig = config.logConfig || ctx.annoation.logConfig;
+        if (logConfig) {
+            this.container.bindProvider(LogConfigureToken, logConfig);
+            ctx.logManager = this.container.resolve(ConfigureLoggerManger);
+        }
     }
 }
