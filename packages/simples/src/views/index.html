@@ -20,6 +20,7 @@
         <div>
             <button id="reqA">Get Test</button>
             <button id="postt">Post Test</button>
+            <button id="query">query Test</button>
         </div>
         <code id="repA"></code>
 
@@ -35,7 +36,7 @@
         $(function () {
 
             $('#reqA').click(function () {
-                $.getJSON('/users/zh', function (data) {
+                $.get('/users/zh', function (data) {
                     console.log('respone data:', data);
                     $('#repA').text(JSON.stringify(data));
                 });
@@ -47,6 +48,14 @@
                     $('#repA').text(JSON.stringify(data));
                 });
             });
+
+            $('#query').click(function () {
+                $.get('/users/query', {key: 'zhang', age: 30, role: 'student' }, function (data) {
+                    console.log('respone data:', data);
+                    $('#repA').text(JSON.stringify(data));
+                });
+            });
+            
         });
     </script>
 </body>

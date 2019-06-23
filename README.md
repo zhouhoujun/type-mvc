@@ -179,9 +179,15 @@ export class UserController {
     }
 
     @Get('/find/:name')
-    query(name: string, @Inject(ContextToken) ctx) {
+    find(@Inject(ContextToken) ctx, name: string) {
         console.log(ctx);
         return this.work.find(name);
+    }
+
+    // match request query param name.
+    @Get('/query')
+    query(key: string, role: string, age?: number){
+        return { key: key, age: age, role: role}
     }
 
     @Get('/test/:id')
