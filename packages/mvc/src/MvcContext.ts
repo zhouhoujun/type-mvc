@@ -6,6 +6,7 @@ import { Application } from 'koa';
 import * as http from 'http';
 import * as https from 'https';
 import { runMainPath } from '@tsdi/platform-server';
+import { ILoggerManager } from '@tsdi/logs';
 
 /**
  * mvc boot option
@@ -46,6 +47,13 @@ export const MvcContextToken = new InjectToken<MvcContext>('MVC_Context');
 @Refs('@MvcModule', BootContext)
 export class MvcContext extends BootContext {
 
+    /**
+     * logManager
+     *
+     * @type {ILoggerManager}
+     * @memberof MvcContext
+     */
+    logManager: ILoggerManager;
     /**
      * runable.
      *

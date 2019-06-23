@@ -11,7 +11,6 @@ export default {
             {
                 strategy: 'oidc',
                 scope: '',
-                isLiberty: true,
                 issuer: 'http://localhost:' + port,
                 clientID: 'markus01',
                 clientSecret: 'markus01',
