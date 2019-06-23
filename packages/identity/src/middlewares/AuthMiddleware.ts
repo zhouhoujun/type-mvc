@@ -1,7 +1,6 @@
 import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext } from '@mvx/mvc';
 import { Inject } from '@tsdi/ioc';
 import { Authenticator, PassportBuildService, ConfigurePassportBuildService } from '../passports';
-import { RegisterFor, RegFor } from '@tsdi/boot';
 
 /**
  * authentication middleware.
