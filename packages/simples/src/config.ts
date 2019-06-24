@@ -7,6 +7,7 @@ export default {
 
     // debug: true
     passports: {
+        serializers: [],
         strategies: [
             {
                 strategy: 'oidc',

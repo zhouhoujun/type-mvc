@@ -11,7 +11,7 @@ import * as aop from './aop';
 import { DefaultConfigureToken, DIModuleInjectorScope, BootApplication, checkBootArgs } from '@tsdi/boot';
 import { IConfiguration } from './IConfiguration';
 import { MvcServer } from './MvcServer';
-import { ConfigureRegister, Handle, BuilderService } from '@tsdi/boot';
+import { ConfigureRegister, Handle } from '@tsdi/boot';
 import { DebugLogAspect, LogConfigureToken, LogModule } from '@tsdi/logs';
 import { Singleton, isArray, isClass, isFunction, lang } from '@tsdi/ioc';
 import { DefaultMvcMiddlewares, DefaultMvcMiddlewaresToken } from './DefaultMvcMiddlewares';

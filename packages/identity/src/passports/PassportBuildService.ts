@@ -1,5 +1,5 @@
 import { Authenticator } from './Authenticator';
-import { Abstract, Inject, Injectable } from '@tsdi/ioc';
+import { Abstract, Inject, Injectable, isClass, isFunction } from '@tsdi/ioc';
 import { IConfiguration, IStrategyOption, IContext } from '@mvx/mvc';
 import { IStrategy } from './IStrategy';
 import { ComponentBuilder, ElementDecoratorRegisterer, Component, ComponentSelectorHandle } from '@tsdi/components';
@@ -63,10 +63,14 @@ export class ConfigurePassportBuildService extends PassportBuildService {
 
             if (serializers && serializers.length) {
                 serializers.forEach(ser => {
-                    if (!this.container.has(ser)) {
-                        this.container.register(ser);
+                    if (isClass(ser)) {
+                        if (!this.container.has(ser)) {
+                            this.container.register(ser);
+                        }
+                        passport.serializeUser((user, ctx) => this.container.resolve(ser).serializeUser(user, ctx as IContext));
+                    } else if (isFunction(ser)) {
+                        passport.serializeUser(ser);
                     }
-                    passport.serializeUser((user, ctx) => this.container.resolve(ser).serializeUser(user, ctx as IContext));
                 });
             } else {
                 this.container.getServices(SerializeUser)
@@ -76,27 +80,33 @@ export class ConfigurePassportBuildService extends PassportBuildService {
             }
 
             if (deserializers && deserializers.length) {
-                deserializers.forEach(ser => {
-                    if (!this.container.has(ser)) {
-                        this.container.register(ser);
+                deserializers.forEach(desr => {
+                    if (isClass(desr)) {
+                        if (!this.container.has(desr)) {
+                            this.container.register(desr);
+                        }
+                        passport.deserializeUser((obj, ctx) => this.container.resolve(desr).deserializeUser(obj, ctx as IContext));
+                    } else if (isFunction(desr)) {
+                        passport.deserializeUser(desr);
                     }
-
-                    passport.deserializeUser((obj, ctx) => this.container.resolve(ser).deserializeUser(obj, ctx as IContext));
                 });
             } else {
                 this.container.getServices(DeserializeUser)
-                    .forEach(ser => {
-                        passport.deserializeUser((obj, ctx) => ser.deserializeUser(obj, ctx as IContext))
+                    .forEach(desr => {
+                        passport.deserializeUser((obj, ctx) => desr.deserializeUser(obj, ctx as IContext))
                     });
             }
 
             if (authInfos && authInfos.length) {
-                authInfos.forEach(ser => {
-                    if (!this.container.has(ser)) {
-                        this.container.register(ser);
+                authInfos.forEach(trans => {
+                    if (isClass(trans)) {
+                        if (!this.container.has(trans)) {
+                            this.container.register(trans);
+                        }
+                        passport.transformAuthInfo((info, ctx) => this.container.resolve(trans).authInfo(info, ctx as IContext));
+                    } else if (isFunction(trans)) {
+                        passport.transformAuthInfo(trans);
                     }
-
-                    passport.transformAuthInfo((info, ctx) => this.container.resolve(ser).authInfo(info, ctx as IContext));
                 });
             } else {
                 this.container.getServices(TransformAuthInfo)

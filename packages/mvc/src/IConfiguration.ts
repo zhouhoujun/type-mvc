@@ -64,13 +64,19 @@ export interface IDeserializeUser {
     deserializeUser(obj: any, ctx?: IContext): Promise<any>;
 }
 
+export type DeserializeUser = Type<IDeserializeUser> | ((obj: any, ctx?: IContext) => Promise<any>)
+
 export interface ISerializeUser {
     serializeUser(user: any, ctx: IContext): Promise<any>;
 }
 
+export type SerializeUser = Type<ISerializeUser> | ((user: any, ctx: IContext) => Promise<any>);
+
 export interface ITransformAuthInfo {
     authInfo(info, ctx: IContext): Promise<any>;
 }
+
+export type TransformAuthInfo = Type<ITransformAuthInfo> | ((info, ctx: IContext) => Promise<any>);
 
 /**
  * strategy option.
@@ -86,9 +92,9 @@ export interface IStrategyOption extends ObjectMap<any> {
 
 export interface PassportConfigure {
     strategies: IStrategyOption[];
-    serializers?: Type<ISerializeUser>[];
-    deserializers?: Type<IDeserializeUser>[];
-    authInfos?: Type<ITransformAuthInfo>[];
+    serializers?: SerializeUser[];
+    deserializers?: DeserializeUser[];
+    authInfos?: TransformAuthInfo[];
 }
 
 /**
