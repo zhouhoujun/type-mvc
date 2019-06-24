@@ -25,7 +25,8 @@ export class MvcMiddlewares extends CompositeMiddleware {
             ctx.mvcContext = mvcContext;
             mvcContext.app = ctx.app;
             mvcContext.getRaiseContainer().bindProvider(ContextToken, ctx);
-            return this.execute(ctx, next)
+            ctx.getRaiseContainer = () => mvcContext.getRaiseContainer();
+            return this.execute(ctx, next);
         });
     }
 }

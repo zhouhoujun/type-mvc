@@ -6,34 +6,7 @@ import { RunnableConfigure } from '@tsdi/boot';
 import { RequestMethod } from './RequestMethod';
 import *  as Keygrip from 'keygrip';
 import { IContext } from './IContext';
-
-
-/**
- * seetion config.
- *
- * @export
- * @interface ISessionConfig
- */
-export interface ISessionConfig {
-    /** (string) cookie key (default is koa:sess) */
-    key: string;
-    /** (number || 'session') maxAge in ms (default is 1 days) */
-    /** 'session' will result in a cookie that expires when session/browser is closed */
-    /** Warning: If a session cookie is stolen, this cookie will never expire */
-    maxAge: number;
-    /** (boolean) can overwrite or not (default true) */
-    overwrite: boolean;
-    /** (boolean) httpOnly or not (default true) */
-    httpOnly: boolean;
-    /** (boolean) signed or not (default true) */
-    signed: boolean;
-    /**
-     *
-     * @type {false}
-     * @memberof ISessionConfig
-     */
-    rolling: boolean;
-}
+import  { opts as SessionConfig } from 'koa-session';
 
 /**
  * view options
@@ -64,19 +37,19 @@ export interface IDeserializeUser {
     deserializeUser(obj: any, ctx?: IContext): Promise<any>;
 }
 
-export type DeserializeUser = Type<IDeserializeUser> | ((obj: any, ctx?: IContext) => Promise<any>)
+export type DeserializeUserOption = Type<IDeserializeUser> | ((obj: any, ctx?: IContext) => Promise<any>)
 
 export interface ISerializeUser {
     serializeUser(user: any, ctx: IContext): Promise<any>;
 }
 
-export type SerializeUser = Type<ISerializeUser> | ((user: any, ctx: IContext) => Promise<any>);
+export type SerializeUserOption = Type<ISerializeUser> | ((user: any, ctx: IContext) => Promise<any>);
 
 export interface ITransformAuthInfo {
     authInfo(info, ctx: IContext): Promise<any>;
 }
 
-export type TransformAuthInfo = Type<ITransformAuthInfo> | ((info, ctx: IContext) => Promise<any>);
+export type TransformAuthInfoOption = Type<ITransformAuthInfo> | ((info, ctx: IContext) => Promise<any>);
 
 /**
  * strategy option.
@@ -92,9 +65,9 @@ export interface IStrategyOption extends ObjectMap<any> {
 
 export interface PassportConfigure {
     strategies: IStrategyOption[];
-    serializers?: SerializeUser[];
-    deserializers?: DeserializeUser[];
-    authInfos?: TransformAuthInfo[];
+    serializers?: SerializeUserOption[];
+    deserializers?: DeserializeUserOption[];
+    authInfos?: TransformAuthInfoOption[];
 }
 
 /**
@@ -166,10 +139,10 @@ export interface IConfiguration extends RunnableConfigure {
     /**
      * session config.
      *
-     * @type {ISessionConfig}
+     * @type {SessionConfig}
      * @memberof IConfiguration
      */
-    session?: ISessionConfig;
+    session?: SessionConfig;
     /**
      * contents path of files, static files. default in 'public'
      *

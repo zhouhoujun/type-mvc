@@ -4,10 +4,22 @@ const port = 3000;
 const oauthProviderId = 'markus';
 
 export default {
-
     // debug: true
     passports: {
-        serializers: [],
+        serializers: [
+            (user, ctx) => {
+                console.log('serializers', user);
+                return user ? user.id : '';
+            }
+        ],
+        deserializers: [
+            async (obj, ctx) => {
+                let container =  ctx.getRaiseContainer();
+                // todo get dao service.
+                console.log('deserializers', obj);
+                return obj;
+            }
+        ],
         strategies: [
             {
                 strategy: 'oidc',

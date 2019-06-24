@@ -50,7 +50,7 @@ export class SessionStrategy extends Strategy {
                 return new PassResult();
             }
             const property = ctx.passport.userProperty;
-            ctx[property] = user;
+            ctx.state[property] = user;
         }
         return new PassResult();
     }

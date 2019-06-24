@@ -30,7 +30,6 @@ async function login(this: Context, user): Promise<void> {
         throw new Error('Should use session middleware before passport middleware');
     }
     this.session.passport.user = obj;
-    return Promise.resolve();
 }
 
 /**
