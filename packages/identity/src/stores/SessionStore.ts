@@ -53,7 +53,7 @@ export class SessionStore extends StateStore {
     public async verify(ctx: Context, providedState: string): Promise<VerifyResult> {
         if (!ctx.session) {
             throw new Error(`OAuth 2.0 authentication requires session support
-            when using state. Did you forget to use express-session middleware?`);
+            when using state. Did you forget to use koa-session middleware?`);
         }
 
         const key = this.key;
