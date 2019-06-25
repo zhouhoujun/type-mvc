@@ -14,7 +14,7 @@
     "ioc",
     "framework",
     "koa",
-    "express",
+    "tsdi",
     "tsioc",
     "server",
     "ts-ioc"

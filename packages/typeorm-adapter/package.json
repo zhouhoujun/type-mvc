@@ -13,7 +13,7 @@
     "ioc",
     "frameworker",
     "koa",
-    "express",
+    "tsdi",
     "tsioc",
     "server",
     "ts-ioc"

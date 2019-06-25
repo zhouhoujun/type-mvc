@@ -7,7 +7,17 @@
   "scripts": {
     "build": "tsdi build"
   },
-  "keywords": ["mvc", "AOP", "ioc", "frameworker", "koa", "tsioc", "server", "ts-ioc"],
+  "keywords": [
+    "mvc",
+    "AOP",
+    "ioc",
+    "frameworker",
+    "koa",
+    "tsdi",
+    "tsioc",
+    "server",
+    "ts-ioc"
+  ],
   "author": "houjun",
   "license": "MIT",
   "bugs": {

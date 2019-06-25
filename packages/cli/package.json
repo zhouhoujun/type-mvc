@@ -20,6 +20,7 @@
     "cli",
     "ts-ioc",
     "@tsdi",
+    "tsdi",
     "tsioc",
     "IoC",
     "AOP",
