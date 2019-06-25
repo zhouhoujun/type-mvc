@@ -28,53 +28,46 @@ create application
 ```ts
 import { MvcApplication, DefaultMvcMiddlewares, MvcModule, MvcServer } from '@mvx/mvc';
 import { TypeOrmModule }  from '@mvx/typeorm-adapter';
-
-// 1. use MvcHostBuilder to boot application.
-MvcApplication.run();
-
-// 2. use bootstrap module to boot application
+import { IdentityModule } from '@mvx/identity';
 
 @MvcModule({
-    // baseURL: __dirname,
     imports: [
-        TypeOrmModule
-        //...  you service, or controller, some extends module.
+        ModelModule,
+        IdentityModule
     ],
-    debug: true
-})
-class MvcApi {
-    constructor() {
-        console.log('boot application');
+    //// also can set option in config file.
+    // port: 8000,
+    // middlewares: DefaultMvcMiddlewares,
+    // debug: true
+    passports: {
+        serializers: [
+            (user, ctx) => {
+                console.log('serializers', user);
+                return user ? user.id : '';
+            }
+        ],
+        deserializers: [
+            async (obj, ctx) => {
+                let container =  ctx.getRaiseContainer();
+                // todo get dao service.
+                console.log('deserializers', obj);
+                return obj;
+            }
+        ],
+        strategies: [
+            {
+                strategy: 'oidc',
+                scope: '',
+                issuer: 'http://localhost:' + port,
+                clientID: 'markus01',
+                clientSecret: 'markus01',
+                authorizationURL: 'http://localhost:' + port + '/oidc/endpoint/' + oauthProviderId + '/authorize',
+                tokenURL: 'http://localhost:' + port + '/token',
+                callbackURL: 'http://localhost:3000/callback',
+                userInfoURL: 'http://localhost:' + port + '/me'
+            }
+        ]
     }
-}
-
-
-// 3. use MvcHostBuilder to boot application module.
-
-@MvcModule({
-    imports: [
-        TypeOrmModule
-        // ... /...  you service, or controller, some extends module.
-        // DebugLogAspect
-    ],
-    middlewares: DefaultMvcMiddlewares,
-    // bootstrap: MvcServer
-})
-class MvcApi {
-
-}
-
-MvcApplication.run(MvcApi);
-
-
-//4. use bootstrap module to boot application by main.
-@MvcModule({
-    imports: [
-        TypeOrmModule
-        // ...
-    ],
-    // bootstrap: MvcServer,
-    debug: true
 })
 class MvcApi {
     constructor() {
@@ -86,6 +79,7 @@ class MvcApi {
         MvcApplication.run(MvcApi);
     }
 }
+
 
 
 ```
