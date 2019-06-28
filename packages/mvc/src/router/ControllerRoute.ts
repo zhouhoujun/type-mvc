@@ -8,7 +8,7 @@ import { MvcRoute, RouteUrlArgToken } from './Route';
 import { IContext } from '../IContext';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
 import { RouteMetadata, CorsMetadata } from '../metadata';
-import { ForbiddenError, HttpError } from '../errors';
+import { ForbiddenError } from '../errors';
 import { ResultValue } from '../results';
 import { Cors, Route } from '../decorators';
 import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
