@@ -1,6 +1,6 @@
 import { HandleType } from '@tsdi/boot';
 import { CompositeMiddleware } from '../middlewares';
-import { Singleton } from '@tsdi/ioc';
+import { Singleton, PromiseUtil } from '@tsdi/ioc';
 import { RouteUrlArgToken } from './Route';
 import { CustomRoute, CustomHandleArgToken } from './CustomRoute';
 import { RouteChecker } from '../services';
@@ -13,22 +13,17 @@ export class Router extends CompositeMiddleware {
 
     execute(ctx: IContext, next?: () => Promise<void>): Promise<void> {
         if ((!ctx.status || ctx.status === 404) && this.isRouteUrl(ctx.url)) {
-            if(!this.sorted) {
-                this.handles = this.handles.sort((a, b)=> {
-                    if(a instanceof CustomRoute && b instanceof CustomRoute){
-                        if(b.url > a.url){
-                            return 1;
-                        } else if(a.url === b.url){
-                            return 0;
-                        } else {
-                            return -1;
-                        }
+            if (!this.sorted) {
+                this.handles = this.handles.sort((a, b) => {
+                    if (a instanceof CustomRoute && b instanceof CustomRoute) {
+                        return (b.url || '').length - (a.url || '').length;
                     }
                     return -1;
                 });
+                this.resetFuncs();
                 this.sorted = true;
-
             }
+            ctx.__routerNext = next;
             return super.execute(ctx, next);
         } else {
             return next();

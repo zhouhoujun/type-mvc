@@ -16,7 +16,7 @@ export abstract class MvcRoute extends MvcMiddleware {
 
     execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
         if (this.canNavigate(ctx)) {
-            return this.navigate(ctx, next);
+            return this.navigate(ctx, ctx.__routerNext);
         } else {
             return next();
         }

@@ -37,10 +37,8 @@ export class ControllerRoute extends MvcRoute {
     async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
         await this.invokeOption(ctx, async () => {
             if (ctx.method !== 'OPTIONS') {
-                await this.invoke(ctx)
-                    .then(() => {
-                        return next();
-                    });
+                await this.invoke(ctx);
+                await next();
             } else {
                 throw new ForbiddenError();
             }
@@ -239,7 +237,7 @@ export class ControllerRoute extends MvcRoute {
 
     protected getRouteMetaData(ctx: IContext, requestMethod: RequestMethod) {
         let decoratorName = Route.toString();
-        let subRoute = this.getReqRoute(ctx).replace(this.url, '');
+        let subRoute = this.vaildify(this.getReqRoute(ctx).replace(this.url, ''), true);
         let methodMaps = getMethodMetadata<RouteMetadata>(decoratorName, this.controller);
         let meta: RouteMetadata;
 
@@ -251,10 +249,10 @@ export class ControllerRoute extends MvcRoute {
 
         allMethods = allMethods.sort((ra, rb) => (rb.route || '').length - (ra.route || '').length);
 
-        meta = allMethods.find(route => (route.route || '') === subRoute);
+        meta = allMethods.find(route => this.vaildify(route.route || '', true) === subRoute);
         if (!meta) {
             meta = allMethods.find(route => {
-                let uri = route.route || '';
+                let uri = this.vaildify(route.route || '', true);
                 if (this.isRestUri(uri)) {
                     let idex = uri.indexOf('/:');
                     let url = uri.substring(0, idex);
