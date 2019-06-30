@@ -7,6 +7,7 @@ import { Service, ConfigureMgrToken, ServiceInit, Runnable } from '@tsdi/boot';
 import * as Koa from 'koa';
 import { MvcMiddlewares } from './middlewares';
 import { MvcContext } from './MvcContext';
+import * as https from 'https';
 
 /**
  * base mvc server.
@@ -22,6 +23,8 @@ export class MvcServer extends Service<Koa> implements ServiceInit {
 
     @Inject(ContainerToken)
     container: IContainer;
+
+    uri: string;
 
     private _loggerMgr: ILoggerManager;
 
@@ -77,12 +80,14 @@ export class MvcServer extends Service<Koa> implements ServiceInit {
         let ctx = this.getMvcContext();
         let listener = ctx.listener;
         let port = config.port || parseInt(process.env.PORT || '0');
+        let server = this.getHttpServer();
         if (config.hostname) {
-            this.getHttpServer().listen(port, config.hostname, listener);
+            server.listen(port, config.hostname, listener);
         } else {
-            this.getHttpServer().listen(port, listener);
+            server.listen(port, listener);
         }
-        console.log('service listen on port: ', port);
+        this.uri = `${server instanceof https.Server ? 'https' : 'http'}://${config.hostname || '127.0.0.1'}:${port}`;
+        console.log('service start: ', this.uri);
     }
 
     async stop() {

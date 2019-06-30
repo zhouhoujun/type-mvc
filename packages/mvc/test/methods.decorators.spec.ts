@@ -1,9 +1,9 @@
-import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization, MvcApplication, MvcApp, MvcModule, MvcServer } from '../src';
+import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization, MvcApplication, MvcApp, MvcModule, MvcServer, IContext, Cors, RequestMethod } from '../src';
 import { AutoWired, Inject, Injectable } from '@tsdi/ioc';
 import { Suite, Before, Test, Assert, ExpectToken, Expect, After } from '@tsdi/unit';
-import { MvcContext } from '../src/MvcContext';
-
-
+import { MvcContext, MvcContextToken } from '../src/MvcContext';
+import expect = require('expect');
+import Axios from 'axios';
 
 @Injectable
 export class Car {
@@ -19,14 +19,22 @@ export class Car {
 @Authorization
 @Controller('/api')
 export class TestController {
-    @Get('get/:id')
-    getTest() {
-        return {};
+    @Get('/:id')
+    getTest(id: string) {
+        return { id: id };
     }
 
-    @Post('post/:id')
-    postTest() {
-        return {};
+    @Post('/')
+    postTest(@Inject(MvcContextToken) ctx: IContext) {
+        console.log(ctx.body);
+        return ctx.body;
+    }
+
+    @Post('/cors')
+    @Cors(RequestMethod.Post)
+    corsPostTest(@Inject(MvcContextToken) ctx: IContext) {
+        console.log(ctx.body);
+        return ctx.body
     }
 
     @Put('put/:id')
@@ -77,8 +85,35 @@ export class ControllerTest {
 
 
     @Test('application has instance mvc service.')
-    test2(@Inject(ExpectToken) expect: Expect) {
+    test2() {
         expect(this.ctx.runnable instanceof MvcServer).toBeTruthy();
+    }
+
+    @Test('application api get.')
+    async test3() {
+        let mvcserver = this.ctx.runnable as MvcServer;
+        expect(mvcserver instanceof MvcServer).toBeTruthy();
+        let res = await Axios.get(mvcserver.uri + '/api/test');
+        expect(res.status).toEqual(200);
+        expect(res.data).toBeDefined();
+        expect(res.data.id).toEqual('test');
+    }
+
+    @Test('application api post 204.')
+    async test4() {
+        let mvcserver = this.ctx.runnable as MvcServer;
+        expect(mvcserver instanceof MvcServer).toBeTruthy();
+        let res = await Axios.post(mvcserver.uri + '/api', { test: 'post test' });
+        expect(res.status).toEqual(204);
+    }
+
+    @Test('application api post cors 200.')
+    async test5() {
+        let mvcserver = this.ctx.runnable as MvcServer;
+        expect(mvcserver instanceof MvcServer).toBeTruthy();
+        let res = await Axios.post(mvcserver.uri + '/api/cors', { test: 'post test' });
+        console.log(res);
+        expect(res.status).toEqual(200);
     }
 
     @After()

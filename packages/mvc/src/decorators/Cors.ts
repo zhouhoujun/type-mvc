@@ -3,7 +3,7 @@ import {
     createClassMethodDecorator, ClassMethodDecorator, MetadataAdapter, MetadataExtends
 } from '@tsdi/ioc';
 import { CorsMetadata } from '../metadata';
-import { RequestMethod } from '../RequestMethod';
+import { RequestMethod, RequestMethods, RequestMethodType } from '../RequestMethod';
 
 /**
  * Cors Decorator, define controller class or controller method support cors request.
@@ -19,11 +19,11 @@ export interface ICorsDecorator<T extends CorsMetadata> extends IClassMethodDeco
      * Cors Decorator, define controller class or controller method support cors.
      * @Cors
      *
-     * @param {(string | string[] | RequestMethod[])} [allowMethods] allow request methods cors, 'Access-Control-Expose-Headers'.
+     * @param {(RequestMethodType | RequestMethodType[])} [allowMethods] allow request methods cors, 'Access-Control-Expose-Headers'.
      * @param {number} [maxAge] set cors cache max age,  Access-Control-Max-Age.
      * @param {(string | string[])} [allowHeaders] allow cors request headers, 'Access-Control-Request-Headers'.
      */
-    (allowMethods?: string | string[] | RequestMethod[], maxAge?: number, allowHeaders?: string | string[]): ClassMethodDecorator;
+    (allowMethods?: RequestMethodType | RequestMethodType[], maxAge?: number, allowHeaders?: string | string[]): ClassMethodDecorator;
 
     /**
      * Cors Decorator, define controller class or controller method support cors.
