@@ -14,13 +14,23 @@ export abstract class MvcRoute extends MvcMiddleware {
         }
     }
 
+    protected getRouterNext(ctx: IContext): () => Promise<void> {
+        return ctx.__routerNext;
+    }
+
     execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        if (this.canNavigate(ctx)) {
-            return this.navigate(ctx, ctx.__routerNext);
+        if (this.math(ctx)) {
+            if (ctx.__cors) {
+                return this.options(ctx, this.getRouterNext(ctx))
+            } else {
+                return this.navigate(ctx, this.getRouterNext(ctx));
+            }
         } else {
             return next();
         }
     }
+
+    abstract options(ctx: IContext, next: () => Promise<void>): Promise<void>;
 
     abstract navigate(ctx: IContext, next: () => Promise<void>): Promise<void>;
 
@@ -32,7 +42,7 @@ export abstract class MvcRoute extends MvcMiddleware {
         return reqUrl;
     }
 
-    protected canNavigate(ctx: IContext): boolean {
+    protected math(ctx: IContext): boolean {
         if (ctx.status && ctx.status !== 404) {
             return false;
         }

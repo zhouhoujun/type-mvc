@@ -8,7 +8,6 @@ export const CustomHandleArgToken = new InjectToken<HandleType<IContext>>('custo
 @Injectable
 export class CustomRoute extends MvcRoute {
 
-
     constructor(@Inject(RouteUrlArgToken) url: string, @Inject(CustomHandleArgToken) protected handle: HandleType<IContext>) {
         super(url)
     }
@@ -16,4 +15,9 @@ export class CustomRoute extends MvcRoute {
     async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
         await this.parseAction(this.handle)(ctx, next);
     }
+
+    options(ctx: IContext, next: () => Promise<void>): Promise<void> {
+        return next();
+    }
+
 }

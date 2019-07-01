@@ -6,7 +6,7 @@ import { RunnableConfigure } from '@tsdi/boot';
 import { RequestMethod } from './RequestMethod';
 import *  as Keygrip from 'keygrip';
 import { IContext } from './IContext';
-import  { opts as SessionConfig } from 'koa-session';
+import { opts as SessionConfig } from 'koa-session';
 
 /**
  * view options
@@ -253,6 +253,7 @@ export interface IConfiguration extends RunnableConfigure {
  * @interface CorsOptions
  */
 export interface CorsOptions {
+    origin?: string | ((ctx: IContext) => string | Promise<string>);
     /**
      * enable Access-Control-Allow-Credentials
      *

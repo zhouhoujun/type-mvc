@@ -1,6 +1,6 @@
 import { HandleType } from '@tsdi/boot';
 import { CompositeMiddleware } from '../middlewares';
-import { Singleton, PromiseUtil } from '@tsdi/ioc';
+import { Singleton } from '@tsdi/ioc';
 import { RouteUrlArgToken } from './Route';
 import { CustomRoute, CustomHandleArgToken } from './CustomRoute';
 import { RouteChecker } from '../services';

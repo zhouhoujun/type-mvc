@@ -5,7 +5,7 @@ import { IContext } from '../IContext';
 
 
 @Singleton
-export class RouterMiddleware extends MvcMiddleware implements IMiddleware {
+export class CorsMiddleware extends MvcMiddleware implements IMiddleware {
 
     static middleName = MiddlewareTypes.Router;
 
@@ -14,7 +14,7 @@ export class RouterMiddleware extends MvcMiddleware implements IMiddleware {
 
     async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
         if ((!ctx.status || ctx.status === 404) && this.router.isRouteUrl(ctx.url)) {
-            ctx.__cors = false;
+            ctx.__cors = true;
             await this.container.get(Router).execute(ctx, next);
         }
     }

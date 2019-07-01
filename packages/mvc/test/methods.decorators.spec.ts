@@ -3,7 +3,8 @@ import { AutoWired, Inject, Injectable } from '@tsdi/ioc';
 import { Suite, Before, Test, Assert, ExpectToken, Expect, After } from '@tsdi/unit';
 import { MvcContext, MvcContextToken } from '../src/MvcContext';
 import expect = require('expect');
-import Axios from 'axios';
+import axios from 'axios';
+import { stringify } from 'querystring';
 
 @Injectable
 export class Car {
@@ -16,7 +17,7 @@ export class Car {
     }
 }
 
-@Authorization
+@Authorization()
 @Controller('/api')
 export class TestController {
     @Get('/:id')
@@ -74,6 +75,7 @@ export class ControllerTest {
     private ctx: MvcContext;
     @Before()
     async before() {
+        // axios.defaults.withCredentials = true;
         this.ctx = await MvcApplication.run(SimpleApp);
     }
 
@@ -93,26 +95,39 @@ export class ControllerTest {
     async test3() {
         let mvcserver = this.ctx.runnable as MvcServer;
         expect(mvcserver instanceof MvcServer).toBeTruthy();
-        let res = await Axios.get(mvcserver.uri + '/api/test');
+        let res = await axios.get(mvcserver.uri + '/api/test');
         expect(res.status).toEqual(200);
         expect(res.data).toBeDefined();
         expect(res.data.id).toEqual('test');
     }
 
-    @Test('application api post 204.')
+    @Test('application api post 200.')
     async test4() {
         let mvcserver = this.ctx.runnable as MvcServer;
         expect(mvcserver instanceof MvcServer).toBeTruthy();
-        let res = await Axios.post(mvcserver.uri + '/api', { test: 'post test' });
-        expect(res.status).toEqual(204);
+        let res = await axios.post(mvcserver.uri + '/api', stringify({ test: 'post test' }));
+        expect(res.status).toEqual(200);
     }
 
     @Test('application api post cors 200.')
     async test5() {
         let mvcserver = this.ctx.runnable as MvcServer;
         expect(mvcserver instanceof MvcServer).toBeTruthy();
-        let res = await Axios.post(mvcserver.uri + '/api/cors', { test: 'post test' });
-        console.log(res);
+        // let res = await axios({
+        //     method: 'POST',
+        //     headers: {
+        //         'Access-Control-Allow-Origin': '*',
+        //         'Access-Control-Max-Age': 36000,
+        //         'Access-Control-Allow-Credentials': true,
+        //         'Access-Control-Allow-Methods': 'GET,HEAD,PUT,POST,DELETE,PATCH'
+        //         // 'content-type': 'application/x-www-form-urlencoded'
+        //     },
+        //     data: stringify({ test: 'post test' }),
+        //     url: 'http:127.0.0.1:3500/post'// mvcserver.uri + '/api/cors',
+        //   })
+        let res = await axios.post(mvcserver.uri + '/api/cors', stringify({ test: 'post test' }));
+        // let res = await axios.post('http://127.0.0.1:3500/post', { test: 'post test' });
+        // console.log(res.data, res.status, res.statusText);
         expect(res.status).toEqual(200);
     }
 

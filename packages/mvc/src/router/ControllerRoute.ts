@@ -8,7 +8,7 @@ import { MvcRoute, RouteUrlArgToken } from './Route';
 import { IContext } from '../IContext';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
 import { RouteMetadata, CorsMetadata } from '../metadata';
-import { ForbiddenError } from '../errors';
+import { HttpError, ForbiddenError } from '../errors';
 import { ResultValue } from '../results';
 import { Cors, Route } from '../decorators';
 import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
@@ -34,34 +34,70 @@ export class ControllerRoute extends MvcRoute {
         super(url);
     }
 
+    async options(ctx: IContext, next: () => Promise<void>): Promise<void> {
+        try {
+            await this.invokeOption(ctx, next);
+        } catch (err) {
+            if (err instanceof HttpError) {
+                ctx.status = err.status;
+                ctx.message = err.message;
+            } else {
+                ctx.status = 500;
+                console.error(err);
+            }
+        }
+    }
+
     async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        await this.invokeOption(ctx, async () => {
+        try {
+            console.log(ctx.url, ctx.status);
             if (ctx.method !== 'OPTIONS') {
                 await this.invoke(ctx);
-                await next();
             } else {
                 throw new ForbiddenError();
             }
-        });
+            return await next();
+        } catch (err) {
+            if (err instanceof HttpError) {
+                ctx.status = err.status;
+                ctx.message = err.message;
+            } else {
+                ctx.status = 500;
+                console.error(err);
+            }
+        }
     }
+
+
 
     async invokeOption(ctx: IContext, next: () => Promise<void>): Promise<void> {
         let requestOrigin = ctx.get('Origin');
         ctx.vary('Origin');
         if (!requestOrigin) {
-            return next();
+            return await next();
         }
-        let origin = requestOrigin;
+
+        let config = ctx.mvcContext.configuration;
+        let options = config.corsOptions || {};
+
+        let origin;
+        if (isFunction(options.origin)) {
+            origin = options.origin(ctx);
+            if (isPromise(origin)) {
+                origin = await origin;
+            }
+            if (!origin) {
+                return await next();
+            }
+        } else {
+            origin = options.origin || requestOrigin;
+        }
         let headersSet: any = {};
 
         let set = (key, value) => {
             ctx.set(key, value);
             headersSet[key] = value;
         };
-
-
-        let config = ctx.mvcContext.configuration;
-        let options = config.corsOptions || {};
 
         if (ctx.method !== 'OPTIONS') {
             set('Access-Control-Allow-Origin', origin);
@@ -74,17 +110,19 @@ export class ControllerRoute extends MvcRoute {
             }
 
             if (!options.keepHeadersOnError) {
-                return next();
+                return await next();
             }
-            return next().catch(err => {
+
+            try {
+                return await next();
+            } catch (err) {
                 err.headers = Object.assign({}, err.headers, headersSet);
                 throw err;
-            });
+            };
         } else {
             let coremeta = this.getCorsMeta(ctx, ctx.get('Access-Control-Request-Method'));
-
             if (!coremeta) {
-                return next();
+                return await next();
             }
             options = Object.assign({}, options, coremeta);
             ctx.set('Access-Control-Allow-Origin', origin);
