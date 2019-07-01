@@ -20,17 +20,11 @@ export abstract class MvcRoute extends MvcMiddleware {
 
     execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
         if (this.math(ctx)) {
-            if (ctx.__cors) {
-                return this.options(ctx, this.getRouterNext(ctx))
-            } else {
-                return this.navigate(ctx, this.getRouterNext(ctx));
-            }
+            return this.navigate(ctx, this.getRouterNext(ctx));
         } else {
             return next();
         }
     }
-
-    abstract options(ctx: IContext, next: () => Promise<void>): Promise<void>;
 
     abstract navigate(ctx: IContext, next: () => Promise<void>): Promise<void>;
 

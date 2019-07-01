@@ -14,8 +14,10 @@ export class RouterMiddleware extends MvcMiddleware implements IMiddleware {
 
     async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
         if ((!ctx.status || ctx.status === 404) && this.router.isRouteUrl(ctx.url)) {
-            ctx.__cors = false;
-            await this.container.get(Router).execute(ctx, next);
+            // ctx.__cors = false;
+            return await this.container.get(Router).execute(ctx, next);
+        } else {
+            return await next();
         }
     }
 }

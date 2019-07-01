@@ -2,7 +2,7 @@ import {
     lang, Injectable, Type, getMethodMetadata, isFunction, isBaseType,
     isUndefined, ParamProviders, Provider, isClass, IParameter, isObject,
     isArray, isPromise, getTypeMetadata,
-    isString, RuntimeLifeScope, Inject, InjectToken, getClassDecorators
+    isString, RuntimeLifeScope, Inject, InjectToken, getClassDecorators, isNumber
 } from '@tsdi/ioc';
 import { MvcRoute, RouteUrlArgToken } from './Route';
 import { IContext } from '../IContext';
@@ -34,37 +34,18 @@ export class ControllerRoute extends MvcRoute {
         super(url);
     }
 
-    async options(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        try {
-            await this.invokeOption(ctx, next);
-        } catch (err) {
-            if (err instanceof HttpError) {
-                ctx.status = err.status;
-                ctx.message = err.message;
-            } else {
-                ctx.status = 500;
-                console.error(err);
-            }
-        }
-    }
-
     async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
         try {
-            console.log(ctx.url, ctx.status);
-            if (ctx.method !== 'OPTIONS') {
-                await this.invoke(ctx);
-            } else {
-                throw new ForbiddenError();
-            }
-            return await next();
+            await this.invokeOption(ctx, async () => {
+                if (ctx.method !== 'OPTIONS') {
+                    await this.invoke(ctx);
+                    return await next();
+                } else {
+                    throw new ForbiddenError();
+                }
+            });
         } catch (err) {
-            if (err instanceof HttpError) {
-                ctx.status = err.status;
-                ctx.message = err.message;
-            } else {
-                ctx.status = 500;
-                console.error(err);
-            }
+            this.catchHttpError(ctx, err);
         }
     }
 
@@ -117,7 +98,7 @@ export class ControllerRoute extends MvcRoute {
                 return await next();
             } catch (err) {
                 err.headers = Object.assign({}, err.headers, headersSet);
-                throw err;
+                this.catchHttpError(ctx, err);
             };
         } else {
             let coremeta = this.getCorsMeta(ctx, ctx.get('Access-Control-Request-Method'));
@@ -151,11 +132,19 @@ export class ControllerRoute extends MvcRoute {
             if (allowH) {
                 ctx.set('Access-Control-Allow-Headers', allowH);
             }
-
             ctx.status = 204;
         }
     }
 
+
+    protected catchHttpError(ctx: IContext, err: HttpError){
+        if (err instanceof HttpError || (err && isNumber(err[status]))) {
+            ctx.status = err.status;
+            ctx.message = err.message;
+        } else {
+            ctx.status = 500;
+        }
+    }
 
     protected getCorsMeta(ctx: IContext, reqMethod: string): CorsMetadata {
         if (!reqMethod) {
@@ -198,30 +187,30 @@ export class ControllerRoute extends MvcRoute {
 
             let params = lifeScope.getMethodParameters(this.container, this.controller, ctrl, meta.propertyKey);
             let providers = await this.createProvider(ctx, ctrl, meta, params);
-            let response: any = await container.invoke(ctrl, meta.propertyKey, ...providers);
-            if (isPromise(response)) {
-                response = await response;
+            let result: any = await container.invoke(ctrl, meta.propertyKey, ...providers);
+            if (isPromise(result)) {
+                result = await result;
             }
-            if (isBaseType(response) || isArray(response) || isBuffer(response)) {
-                if (isBuffer(response)) {
+            if (isBaseType(result) || isArray(result) || isBuffer(result)) {
+                if (isBuffer(result)) {
                     if (typeof Buffer !== 'undefined') {
-                        ctx.body = Buffer.from(response)
+                        ctx.body = Buffer.from(result)
                     } else {
-                        ctx.body = response;
+                        ctx.body = result;
                     }
                 } else {
-                    ctx.body = response;
+                    ctx.body = result;
                 }
-            } else if (isObject(response)) {
-                if (response instanceof ResultValue) {
-                    await response.sendValue(ctx, container);
+            } else if (isObject(result)) {
+                if (result instanceof ResultValue) {
+                    await result.sendValue(ctx, container);
                 } else {
-                    ctx.body = response;
+                    ctx.body = result;
                 }
             } else {
-                ctx.body = null;
+                ctx.body = result;
+                ctx.status = 200;
             }
-
         }
     }
 

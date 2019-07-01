@@ -28,7 +28,3 @@ export class ModelBuilder implements AfterInit {
         console.log('model build has inited...')
     }
 }
-
-if (process.cwd() === __dirname) {
-    Workflow.run(ModelBuilder);
-}

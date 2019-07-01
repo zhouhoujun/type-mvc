@@ -28,7 +28,3 @@ export class MvcBuilder implements AfterInit {
         console.log('mvc build has inited...')
     }
 }
-
-if (process.cwd() === __dirname) {
-    Workflow.run(MvcBuilder);
-}

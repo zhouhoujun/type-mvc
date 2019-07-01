@@ -28,7 +28,3 @@ export class TypeormAdapterBuilder implements AfterInit {
         console.log('typeorm adapter build has inited...')
     }
 }
-
-if (process.cwd() === __dirname) {
-    Workflow.run(TypeormAdapterBuilder);
-}

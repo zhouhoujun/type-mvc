@@ -15,9 +15,4 @@ export class CustomRoute extends MvcRoute {
     async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
         await this.parseAction(this.handle)(ctx, next);
     }
-
-    options(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        return next();
-    }
-
 }

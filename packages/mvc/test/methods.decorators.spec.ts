@@ -105,11 +105,12 @@ export class ControllerTest {
     async test4() {
         let mvcserver = this.ctx.runnable as MvcServer;
         expect(mvcserver instanceof MvcServer).toBeTruthy();
-        let res = await axios.post(mvcserver.uri + '/api', stringify({ test: 'post test' }));
+        let res = await axios.post(mvcserver.uri + '/api', { test: 'post test', firstName: 'Fred',
+        lastName: 'Flintstone' });
         expect(res.status).toEqual(200);
     }
 
-    @Test('application api post cors 200.')
+    @Test('application api post2 200.')
     async test5() {
         let mvcserver = this.ctx.runnable as MvcServer;
         expect(mvcserver instanceof MvcServer).toBeTruthy();

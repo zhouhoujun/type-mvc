@@ -28,7 +28,3 @@ export class IdentityServerBuilder implements AfterInit {
         console.log('identity server build has inited...')
     }
 }
-
-if (process.cwd() === __dirname) {
-    Workflow.run(IdentityServerBuilder);
-}

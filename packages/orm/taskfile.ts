@@ -28,7 +28,3 @@ export class PackBuilder implements AfterInit {
         console.log('orm build has inited...')
     }
 }
-
-if (process.cwd() === __dirname) {
-    Workflow.run(PackBuilder);
-}
