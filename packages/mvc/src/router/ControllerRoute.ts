@@ -137,13 +137,12 @@ export class ControllerRoute extends MvcRoute {
     }
 
 
-    protected catchHttpError(ctx: IContext, err: HttpError){
-        if (err instanceof HttpError || (err && isNumber(err[status]))) {
+    protected catchHttpError(ctx: IContext, err: HttpError) {
+        if (err instanceof HttpError) {
             ctx.status = err.status;
             ctx.message = err.message;
-        } else {
-            ctx.status = 500;
         }
+        throw err;
     }
 
     protected getCorsMeta(ctx: IContext, reqMethod: string): CorsMetadata {
