@@ -1,6 +1,6 @@
 {
   "name": "@mvx/mvc",
-  "version": "3.0.0-beta.19",
+  "version": "3.0.0-beta.20",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc framework on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -35,7 +35,7 @@
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-compose": "^4.1.0",
-    "koa-helmet": "^4.1.0",
+    "koa-helmet": "^4.2.0",
     "koa-convert": "^1.2.0",
     "koa-json": "^2.0.2",
     "koa-logger": "^3.2.0",

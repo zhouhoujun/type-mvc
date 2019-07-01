@@ -1,7 +1,6 @@
-import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization, MvcApplication, MvcApp, MvcModule, MvcServer, IContext, Cors, RequestMethod } from '../src';
+import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization, MvcApplication, MvcApp, MvcModule, MvcServer, IContext, Cors, RequestMethod, ContextToken, MvcContext } from '../src';
 import { AutoWired, Inject, Injectable } from '@tsdi/ioc';
 import { Suite, Before, Test, Assert, ExpectToken, Expect, After } from '@tsdi/unit';
-import { MvcContext, MvcContextToken } from '../src/MvcContext';
 import expect = require('expect');
 import axios from 'axios';
 import { stringify } from 'querystring';
@@ -26,16 +25,16 @@ export class TestController {
     }
 
     @Post('/')
-    postTest(@Inject(MvcContextToken) ctx: IContext) {
-        console.log(ctx.body);
-        return ctx.body;
+    postTest(@Inject(ContextToken) ctx: IContext) {
+        console.log(ctx.request.body);
+        return ctx.request.body;
     }
 
     @Post('/cors')
     @Cors(RequestMethod.Post)
-    corsPostTest(@Inject(MvcContextToken) ctx: IContext) {
-        console.log(ctx.body);
-        return ctx.body
+    corsPostTest(@Inject(ContextToken) ctx: IContext) {
+        console.log(ctx.request.body);
+        return ctx.request.body;
     }
 
     @Put('put/:id')
@@ -105,8 +104,9 @@ export class ControllerTest {
     async test4() {
         let mvcserver = this.ctx.runnable as MvcServer;
         expect(mvcserver instanceof MvcServer).toBeTruthy();
-        let res = await axios.post(mvcserver.uri + '/api', { test: 'post test', firstName: 'Fred',
-        lastName: 'Flintstone' });
+        let res = await axios.post(mvcserver.uri + '/api', stringify({ test: 'post test', firstName: 'Fred',
+        lastName: 'Flintstone' }));
+        expect(res.data).toBeDefined();
         expect(res.status).toEqual(200);
     }
 
@@ -129,6 +129,7 @@ export class ControllerTest {
         let res = await axios.post(mvcserver.uri + '/api/cors', stringify({ test: 'post test' }));
         // let res = await axios.post('http://127.0.0.1:3500/post', { test: 'post test' });
         // console.log(res.data, res.status, res.statusText);
+        expect(res.data).toBeDefined();
         expect(res.status).toEqual(200);
     }
 

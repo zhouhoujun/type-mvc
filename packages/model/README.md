@@ -177,7 +177,7 @@ export class UserController {
     @Post('/add')
     async addUser(user: User, @Inject(ContextToken) ctx: IContext) {
         console.log('user:', user);
-        console.log('request body', ctx.request['body']);
+        console.log('request body', ctx.request.body);
         return this.work.save(user);
     }
 

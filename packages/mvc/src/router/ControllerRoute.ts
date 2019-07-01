@@ -226,7 +226,7 @@ export class ControllerRoute extends MvcRoute {
                     restParams[pname.substring(1)] = val;
                 });
             }
-            let body = ctx.request['body'] || {};
+            let body = ctx.request.body || {};
 
             let providers: ParamProviders[] = await Promise.all(params.map(async (param, idx) => {
                 let ptype = param.type;
