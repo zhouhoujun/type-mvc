@@ -106,31 +106,61 @@ export class ControllerTest {
         expect(mvcserver instanceof MvcServer).toBeTruthy();
         let res = await axios.post(mvcserver.uri + '/api', stringify({ test: 'post test', firstName: 'Fred',
         lastName: 'Flintstone' }));
-        expect(res.data).toBeDefined();
         expect(res.status).toEqual(200);
+        expect(res.data).toBeDefined();
+        expect(res.data.test).toEqual('post test')
     }
 
     @Test('application api post2 200.')
     async test5() {
         let mvcserver = this.ctx.runnable as MvcServer;
         expect(mvcserver instanceof MvcServer).toBeTruthy();
+        let res = await axios.post(mvcserver.uri + '/api/cors', stringify({ test: 'post test' }));
+        expect(res.data).toBeDefined();
+        expect(res.status).toEqual(200);
+        expect(res.data).toBeDefined();
+        expect(res.data.test).toEqual('post test')
+    }
+
+    // @Test('application api cors post 204.')
+    // async test6() {
+    //     let mvcserver = this.ctx.runnable as MvcServer;
+    //     expect(mvcserver instanceof MvcServer).toBeTruthy();
+    //     let res = await axios.post(mvcserver.uri + '/api', { test: 'post test' }, {
+    //         headers: {
+    //             Origin: 'http://192.168.0.10:3500'
+    //         },
+    //         // adapter: require('axios/lib/adapters/xhr')
+    //     });
+    //     expect(res.status).toEqual(204);
+    // }
+
+    @Test('application api cors post 200.')
+    async test7() {
+        let mvcserver = this.ctx.runnable as MvcServer;
+        expect(mvcserver instanceof MvcServer).toBeTruthy();
         // let res = await axios({
         //     method: 'POST',
         //     headers: {
-        //         'Access-Control-Allow-Origin': '*',
-        //         'Access-Control-Max-Age': 36000,
-        //         'Access-Control-Allow-Credentials': true,
-        //         'Access-Control-Allow-Methods': 'GET,HEAD,PUT,POST,DELETE,PATCH'
+        //         Origin: 'http://127.0.0.1:3500'
+        //         // 'Access-Control-Allow-Origin': '*',
+        //         // 'Access-Control-Max-Age': 36000,
+        //         // 'Access-Control-Allow-Credentials': true,
+        //         // 'Access-Control-Allow-Methods': 'GET,HEAD,PUT,POST,DELETE,PATCH',
         //         // 'content-type': 'application/x-www-form-urlencoded'
         //     },
         //     data: stringify({ test: 'post test' }),
-        //     url: 'http:127.0.0.1:3500/post'// mvcserver.uri + '/api/cors',
-        //   })
-        let res = await axios.post(mvcserver.uri + '/api/cors', stringify({ test: 'post test' }));
-        // let res = await axios.post('http://127.0.0.1:3500/post', { test: 'post test' });
-        // console.log(res.data, res.status, res.statusText);
+        //     url: mvcserver.uri + '/api/cors',
+        //   });
+        let res = await axios.post(mvcserver.uri + '/api/cors', { test: 'post test' }, {
+            headers: {
+                Origin: 'http://127.0.0.1:3500'
+            }
+        });
         expect(res.data).toBeDefined();
         expect(res.status).toEqual(200);
+        expect(res.data).toBeDefined();
+        expect(res.data.test).toEqual('post test')
     }
 
     @After()
