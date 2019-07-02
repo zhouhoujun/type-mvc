@@ -19,7 +19,7 @@ export interface MvcOptions extends BootOption {
     /**
      * annoation metadata config.
      *
-     * @type {AnnotationConfigure<any>}
+     * @type {IConfiguration}
      * @memberof AnnoationContext
      */
     annoation?: IConfiguration;
@@ -57,10 +57,10 @@ export class MvcContext extends BootContext {
     /**
      * runable.
      *
-     * @type {Service<any>}
+     * @type {Service}
      * @memberof MvcContext
      */
-    runnable: Service<any>;
+    runnable: Service;
     /**
      * configuration, meger configure and annoation metadata.
      *

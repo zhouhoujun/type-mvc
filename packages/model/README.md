@@ -99,7 +99,7 @@ class MvcApi {
      * @type {ModelOptions}
      * @memberof IConfiguration
      */
-    modelParser?: Token<IModelParser<any>>;
+    modelParser?: Token<IModelParser>;
     ...
 }
 ```

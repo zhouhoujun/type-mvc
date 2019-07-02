@@ -1,4 +1,4 @@
-import { Type, InjectToken } from '@tsdi/core';
+import { Type, InjectToken } from '@tsdi/ioc';
 import { LogConfigure } from '@tsdi/logs';
 
 

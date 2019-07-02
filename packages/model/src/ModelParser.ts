@@ -17,7 +17,7 @@ export class DefaultModelParser extends ModelParser {
         return Field.toString();
     }
 
-    protected getPropertyMeta(type: Type<any>): ObjectMap<PropertyMetadata[]> {
+    protected getPropertyMeta(type: Type): ObjectMap<PropertyMetadata[]> {
         return getPropertyMetadata<PropertyMetadata>(this.getFiledDecorator(), type);
     }
 

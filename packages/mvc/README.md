@@ -240,7 +240,9 @@ export class HomeController extends BaseController {
 ```
 
 
+### startup extension Service 
 
+imports class extends `StartupService`, will inovke your configure service code.
 
 
 
@@ -255,7 +257,7 @@ export class HomeController extends BaseController {
  *
  * @export
  * @interface IConfiguration
- * @extends {ObjectMap<any>}
+ * @extends {ObjectMap}
  */
 export interface IConfiguration extends RunnableConfigure {
     /**
@@ -303,10 +305,10 @@ export interface IConfiguration extends RunnableConfigure {
     /**
      * custom config key value setting.
      *
-     * @type {IMap<any>}
+     * @type {ObjectMap}
      * @memberOf Configuration
      */
-    setting?: ObjectMap<any>;
+    setting?: ObjectMap;
     /**
      * db config connections.
      *
@@ -339,10 +341,10 @@ export interface IConfiguration extends RunnableConfigure {
     /**
      * used aops.
      *
-     * @type {Type<any>[]}
+     * @type {Type[]}
      * @memberof IConfiguration
      */
-    usedAops?: Type<any>[];
+    usedAops?: Type[];
     /**
      * views folder, default `./views` in your project.
      *
@@ -358,10 +360,10 @@ export interface IConfiguration extends RunnableConfigure {
     /**
      * models match. default `['.\/models\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']` in your project..
      *
-     * @type {(string[] | Type<any>[])}
+     * @type {(string[] | Type[])}
      * @memberOf Configuration
      */
-    models?: string[] | Type<any>[];
+    models?: string[] | Type[];
     /**
      * in debug log. defult false.
      *

@@ -1,4 +1,4 @@
-import { Injectable } from '@tsdi/core';
+import { Injectable } from '@tsdi/ioc';
 import { DbError } from './DbError';
 
 

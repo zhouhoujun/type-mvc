@@ -13,12 +13,12 @@ import { BaseTypeParserToken } from '@tsdi/boot';
  * @class ModelParser
  */
 @Abstract()
-export abstract class ModelParser implements IModelParser<any> {
+export abstract class ModelParser implements IModelParser {
 
     constructor(@Inject(ContainerToken) private container: IContainer) {
     }
 
-    parseModel(type: Type<any>, objMap: any): any {
+    parseModel(type: Type, objMap: any): any {
         if (isBaseType(type)) {
             let parser = this.container.get(BaseTypeParserToken)
             return parser.parse(type, objMap);
@@ -51,6 +51,6 @@ export abstract class ModelParser implements IModelParser<any> {
         return result;
     }
 
-    protected abstract getPropertyMeta(type: Type<any>): ObjectMap<PropertyMetadata[]>;
+    protected abstract getPropertyMeta(type: Type): ObjectMap<PropertyMetadata[]>;
 
 }

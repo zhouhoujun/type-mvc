@@ -3,17 +3,16 @@ import { ModuleBuilder } from '@tsdi/boot';
 import { IDbSet } from './IDbSet';
 import { IConnection } from './IConnection';
 import { DbSet } from './DbSet';
-import { Injectable } from '@tsdi/ioc';
+import { Injectable, Type } from '@tsdi/ioc';
 
 @Injectable
-export class DbContext extends ModuleBuilder<IDbSet<any>> {
+export class DbContext {
 
     container: IContainer;
     containerBuilder: IContainerBuilder;
-    protected log: Type<any>;
+    protected log: Type;
 
     constructor() {
-        super();
     }
 
     getDbSet<TEntity>(entityType: Type<TEntity>): DbSet<TEntity> {

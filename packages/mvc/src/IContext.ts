@@ -45,7 +45,7 @@ declare module 'koa' {
  * @interface IContext
  * @extends {Context}
  */
-export interface IContext extends KoaContext, ObjectMap<any>, IHandleContext {
+export interface IContext extends KoaContext, ObjectMap, IHandleContext {
 
     /**
      * mvc context.

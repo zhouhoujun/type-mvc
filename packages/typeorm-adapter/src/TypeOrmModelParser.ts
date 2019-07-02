@@ -6,7 +6,7 @@ import { getMetadataArgsStorage } from 'typeorm';
 @Singleton(DefaultModelParserToken)
 export class TypeOrmModelParser extends ModelParser {
 
-    protected getPropertyMeta(type: Type<any>): ObjectMap<PropertyMetadata[]> {
+    protected getPropertyMeta(type: Type): ObjectMap<PropertyMetadata[]> {
         let metas = {};
         getMetadataArgsStorage().columns.filter(col => col.target === type)
             .forEach(col => {

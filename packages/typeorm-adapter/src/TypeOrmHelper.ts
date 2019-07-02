@@ -32,7 +32,7 @@ export class TypeOrmHelper {
             let config = this.ctx.configuration;
             let options = config.connections || {} as IConnectionOptions;
             if (!options.entities) {
-                let entities: Type<any>[] = [];
+                let entities: Type[] = [];
                 if (config.models.some(m => isString(m))) {
                     let models = await this.ctx.getRaiseContainer().getLoader().loadTypes({ files: config.models, basePath: this.ctx.getRootPath() });
                     models.forEach(ms => {
@@ -43,7 +43,7 @@ export class TypeOrmHelper {
                         });
                     });
                 } else {
-                    entities = config.models as Type<any>[];
+                    entities = config.models as Type[];
                 }
                 options.entities = entities;
             }

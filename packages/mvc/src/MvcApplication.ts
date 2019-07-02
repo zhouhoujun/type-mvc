@@ -35,11 +35,7 @@ const mount = require('koa-mount');
  * @class Application
  * @implements {IApplication}
  */
-export class MvcApplication extends BootApplication {
-
-    async onInit(target: Type<any> | MvcOptions | MvcContext) {
-        await super.onInit(target);
-    }
+export class MvcApplication extends BootApplication<MvcContext> {
 
     getBootDeps() {
         let deps = super.getBootDeps();
@@ -51,13 +47,13 @@ export class MvcApplication extends BootApplication {
      *
      * @static
      * @template T
-     * @param {(T | Type<any> | MvcOptions)} [target]
+     * @param {(T | Type | MvcOptions)} [target]
      * @param {(LoadType[] | LoadType | string)} [deps]
      * @param {...string[]} args
      * @returns {Promise<T>}
      * @memberof MvcApplication
      */
-    static async run<T extends MvcContext>(target?: T | Type<any> | MvcOptions, deps?: LoadType[] | LoadType | string, ...args: string[]): Promise<T> {
+    static async run<T extends MvcContext>(target?: T | Type | MvcOptions, deps?: LoadType[] | LoadType | string, ...args: string[]): Promise<T> {
         let mdargs = checkBootArgs(deps, ...args);
         target = target || MvcApp;
         return await new MvcApplication(target, mdargs.deps).run(...mdargs.args) as T;
@@ -77,7 +73,7 @@ export class MvcApplication extends BootApplication {
  * @extends {ConfigureRegister}
  */
 @Singleton
-export class MvcConfigureRegister extends ConfigureRegister {
+export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
 
     async register(config: IConfiguration, ctx: MvcContext): Promise<void> {
 
@@ -134,6 +130,9 @@ export class MvcConfigureRegister extends ConfigureRegister {
         if (config.logConfig) {
             this.container.registerSingleton(LogConfigureToken, config.logConfig);
         }
+
+        this.container.get(MvcMiddlewares)
+            .setup(ctx);
 
         if (config.subSites && config.subSites.length) {
             await Promise.all(config.subSites.map(async site => {

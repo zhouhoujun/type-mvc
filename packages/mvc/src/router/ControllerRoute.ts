@@ -25,12 +25,12 @@ export function isBuffer(target: any): boolean {
     }
 }
 
-export const RouteControllerArgToekn = new InjectToken<Type<any>>('route_controller_args');
+export const RouteControllerArgToekn = new InjectToken<Type>('route_controller_args');
 
 @Injectable
 export class ControllerRoute extends MvcRoute {
 
-    constructor(@Inject(RouteUrlArgToken) url: string, @Inject(RouteControllerArgToekn) private controller: Type<any>) {
+    constructor(@Inject(RouteUrlArgToken) url: string, @Inject(RouteControllerArgToekn) private controller: Type) {
         super(url);
     }
 

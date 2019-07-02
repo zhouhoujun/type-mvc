@@ -16,10 +16,10 @@ import { opts as SessionConfig } from 'koa-session';
  */
 export interface IViewOptions {
     extension: string,
-    map?: ObjectMap<any>;
+    map?: ObjectMap;
 }
 
-export interface IConnectionOptions extends ObjectMap<any> {
+export interface IConnectionOptions extends ObjectMap {
     name?: string;
     /**
      * db type.
@@ -30,7 +30,7 @@ export interface IConnectionOptions extends ObjectMap<any> {
     username?: string;
     password?: string;
     database: string;
-    entities?: Type<any>[];
+    entities?: Type[];
 }
 
 export interface IDeserializeUser {
@@ -57,8 +57,8 @@ export type TransformAuthInfoOption = Type<ITransformAuthInfo> | ((info, ctx: IC
  * @export
  * @interface IStrategyOption
  */
-export interface IStrategyOption extends ObjectMap<any> {
-    strategy: string | Type<any>;
+export interface IStrategyOption extends ObjectMap {
+    strategy: string | Type;
     name?: string;
     verify?: Function
 }
@@ -92,10 +92,10 @@ export interface SubSite {
     /**
      * sub app
      *
-     * @type {(Application | Type<any>)}
+     * @type {(Application | Type)}
      * @memberof SubSite
      */
-    app: Application | Type<any> | ((configuration: IConfiguration) => Promise<Application>);
+    app: Application | Type | ((configuration: IConfiguration) => Promise<Application>);
 }
 
 /**
@@ -105,7 +105,7 @@ export interface SubSite {
  *
  * @export
  * @interface IConfiguration
- * @extends {ObjectMap<any>}
+ * @extends {ObjectMap}
  */
 export interface IConfiguration extends RunnableConfigure {
     /**
@@ -167,10 +167,10 @@ export interface IConfiguration extends RunnableConfigure {
     /**
      * custom config key value setting.
      *
-     * @type {IMap<any>}
+     * @type {ObjectMap}
      * @memberOf Configuration
      */
-    setting?: ObjectMap<any>;
+    setting?: ObjectMap;
     /**
      * db config connections.
      *
@@ -208,10 +208,10 @@ export interface IConfiguration extends RunnableConfigure {
     /**
      * used aops.
      *
-     * @type {Type<any>[]}
+     * @type {Type[]}
      * @memberof IConfiguration
      */
-    usedAops?: Type<any>[];
+    usedAops?: Type[];
     /**
      * views folder, default `./views` in your project.
      *
@@ -227,10 +227,10 @@ export interface IConfiguration extends RunnableConfigure {
     /**
      * models match. default `['.\/models\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']` in your project..
      *
-     * @type {(string[] | Type<any>[])}
+     * @type {(string[] | Type[])}
      * @memberOf Configuration
      */
-    models?: string[] | Type<any>[];
+    models?: string[] | Type[];
     /**
      * in debug log. defult false.
      *

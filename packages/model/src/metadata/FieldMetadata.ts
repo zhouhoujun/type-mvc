@@ -22,7 +22,7 @@ export interface FieldMetadata extends PropertyMetadata {
      * @type {string}
      * @memberof FieldMetadata
      */
-    refType?: Type<any>;
+    refType?: Type;
 
     /**
      * db type.

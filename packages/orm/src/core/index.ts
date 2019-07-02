@@ -1,10 +1,10 @@
-export * from './metadata';
-export * from './decorators';
-export * from './actions';
-export * from './errors';
-export * from './query';
-export * from './storage';
+// export * from './metadata';
+// export * from './decorators';
+// export * from './actions';
+// export * from './query';
+// export * from './storage';
 
+export * from './errors';
 export * from  './DbSet';
 export * from './FieldType';
 export * from './IConnection';

@@ -1,13 +1,11 @@
-import { ContainerToken, IContainer } from '@tsdi/core';
 import { IConfiguration } from './IConfiguration';
 import { Inject, Injectable, Refs } from '@tsdi/ioc';
-import { ILoggerManager, ILogger, IConfigureLoggerManager, ConfigureLoggerManger, LogConfigureToken } from '@tsdi/logs';
 import { Router } from './router';
-import { Service, ConfigureMgrToken, ServiceInit, Runnable } from '@tsdi/boot';
+import { Service, ServiceInit, Runnable } from '@tsdi/boot';
 import * as Koa from 'koa';
-import { MvcMiddlewares } from './middlewares';
 import { MvcContext } from './MvcContext';
 import * as https from 'https';
+
 
 /**
  * base mvc server.
@@ -19,35 +17,17 @@ import * as https from 'https';
  */
 @Injectable()
 @Refs('@MvcModule', Runnable)
-export class MvcServer extends Service<Koa> implements ServiceInit {
-
-    @Inject(ContainerToken)
-    container: IContainer;
+export class MvcServer extends Service<Koa, MvcContext> implements ServiceInit {
 
     uri: string;
-
-    private _loggerMgr: ILoggerManager;
+    port: number;
+    hostname: string;
 
     @Inject()
     protected router: Router;
 
-    @Inject(MvcMiddlewares)
-    protected middlewares: MvcMiddlewares;
 
     protected config: IConfiguration;
-
-    getLoggerManger(): ILoggerManager {
-        if (!this._loggerMgr) {
-            let cfg = this.getConfig();
-            this._loggerMgr = this.container.resolve<IConfigureLoggerManager>(ConfigureLoggerManger, { provide: LogConfigureToken, useValue: cfg.logConfig })
-        }
-        return this._loggerMgr;
-    }
-
-
-    getLogger(name?: string): ILogger {
-        return this.getLoggerManger().getLogger(name);
-    }
 
     getConfig(): IConfiguration {
         return this.config;
@@ -57,36 +37,26 @@ export class MvcServer extends Service<Koa> implements ServiceInit {
         return this.router;
     }
 
-    getMiddlewares(): MvcMiddlewares {
-        return this.middlewares;
-    }
-
-    getMvcContext(): MvcContext {
-        return this.context as MvcContext;
-    }
-
     async onInit() {
-        let ctx = this.getMvcContext();
-        this.config = ctx.configuration || await this.container.resolve(ConfigureMgrToken).getConfig();
-        this.getMiddlewares().setup(ctx);
+        this.config = this.context.configuration;
+        this.port = this.config.port || parseInt(process.env.PORT || '0');
+        this.hostname = this.config.hostname;
+        this.uri = `${this.context.httpServer instanceof https.Server ? 'https' : 'http'}://${this.hostname || '127.0.0.1'}:${this.port}`;
     }
 
     getHttpServer() {
-        return this.getMvcContext().httpServer;
+        return this.context.httpServer;
     }
 
     async start() {
-        let config = this.config;
-        let ctx = this.getMvcContext();
+        let ctx = this.context;
         let listener = ctx.listener;
-        let port = config.port || parseInt(process.env.PORT || '0');
         let server = this.getHttpServer();
-        if (config.hostname) {
-            server.listen(port, config.hostname, listener);
+        if (this.hostname) {
+            server.listen(this.port, this.hostname, listener);
         } else {
-            server.listen(port, listener);
+            server.listen(this.port, listener);
         }
-        this.uri = `${server instanceof https.Server ? 'https' : 'http'}://${config.hostname || '127.0.0.1'}:${port}`;
         console.log('service start: ', this.uri);
     }
 

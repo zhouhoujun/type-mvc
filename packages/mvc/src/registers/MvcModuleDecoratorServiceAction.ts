@@ -6,7 +6,7 @@ import { MvcContext } from '../MvcContext';
 
 
 export class MvcModuleDecoratorServiceAction extends IocResolveServiceAction {
-    execute(ctx: ResolveServiceContext<any>, next: () => void): void {
+    execute(ctx: ResolveServiceContext, next: () => void): void {
         if (!isClassType(ctx.currTargetType)) {
             return next();
         }

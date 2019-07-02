@@ -6,7 +6,7 @@ import { Type, InjectToken } from '@tsdi/ioc';
  * @export
  * @interface IModelParser
  */
-export interface IModelParser<T> {
+export interface IModelParser<T = any> {
 
     /**
      * parse model.
@@ -24,4 +24,4 @@ export interface IModelParser<T> {
 /**
  * default module parser token.
  */
-export const DefaultModelParserToken = new InjectToken<IModelParser<any>>('DefaultModelParser')
+export const DefaultModelParserToken = new InjectToken<IModelParser>('DefaultModelParser')
