@@ -276,7 +276,6 @@ export class RealtimeService extends StartupService<MvcContext> {
 @MvcModule({
     // port: 8000,
     imports: [
-        ModelModule,
         IdentityModule,
         TypeOrmModule,
         RealtimeService
