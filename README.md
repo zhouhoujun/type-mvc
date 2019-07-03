@@ -240,7 +240,64 @@ export class HomeController extends BaseController {
 ```
 
 
+### startup extension Service 
 
+imports class extends `StartupService`, will inovke your configure service code.
+
+socket.io sample.
+
+```ts
+@Singleton
+export class RealtimeService extends StartupService<MvcContext> {
+
+    io: Server;
+
+    @Inject(RootMessageQueueToken)
+    queue: MessageQueue<MessageContext>;
+
+    constructor() {
+        super();
+    }
+
+
+    async configureService(ctx: MvcContext): Promise<void> {
+        let logger = ctx.logManager.getLogger();
+        logger.info('create socket server...');
+        this.io = SockerServer(ctx.httpServer);
+        this.io.on('connection', sock => {
+            logger.info('socket client connected', sock.id);
+        });
+    }
+
+}
+
+
+
+@MvcModule({
+    // port: 8000,
+    imports: [
+        ModelModule,
+        IdentityModule,
+        TypeOrmModule,
+        RealtimeService
+    ]
+    // middlewares: DefaultMvcMiddlewares,
+    // debug: true
+})
+class MvcApp {
+    constructor() {
+        console.log('boot application');
+    }
+
+    // static main() {
+    //     console.log('run mvc api...');
+    //     MvcApplication.run(MvcApp);
+    // }
+}
+
+MvcApplication.run(MvcApp);
+
+```
 
 
 
