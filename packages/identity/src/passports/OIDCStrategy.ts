@@ -316,7 +316,7 @@ export class OIDCStrategy extends Strategy implements AfterInit {
             params['response_type'] = 'code';
             params['client_id'] = meta.clientID;
             if (callbackURL) { params.redirect_uri = callbackURL; }
-            var scope = options.scope || this.scope;
+            let scope = options.scope || this.scope;
             if (isArray(scope)) { scope = scope.join(' '); }
             if (scope) {
                 params.scope = 'openid ' + scope;
@@ -326,8 +326,9 @@ export class OIDCStrategy extends Strategy implements AfterInit {
 
             // Optional Parameters
 
-            var simple_optional_params = ['max_age', 'ui_locals', 'id_token_hint', 'login_hint', 'acr_values'];
-            simple_optional_params.filter(x => { return x in meta }).map(y => { params[y] = meta[y] });
+            ['max_age', 'ui_locals', 'id_token_hint', 'login_hint', 'acr_values']
+                .filter(x => { return x in meta })
+                .forEach(y => { params[y] = meta[y] });
 
             if (meta.display && ['page', 'popup', 'touch', 'wap'].indexOf(meta.display) !== -1) {
                 params.display = meta.display;
@@ -443,12 +444,12 @@ export class OIDCStrategy extends Strategy implements AfterInit {
     }
 
     protected async manualConfigure(identifier: string): Promise<OIDCConfigure> {
-        var missing = ['issuer', 'authorizationURL', 'tokenURL', 'clientID', 'clientSecret'].filter(opt => !this.options[opt]);
+        let missing = ['issuer', 'authorizationURL', 'tokenURL', 'clientID', 'clientSecret'].filter(opt => !this.options[opt]);
         if (missing.length) {
             throw new Error('Manual OpenID configuration is missing required parameter(s) - ' + missing.join(', '));
         }
 
-        var params = {
+        let params = {
             issuer: this.issuer,
             authorizationURL: this.authorizationURL,
             tokenURL: this.tokenURL,
@@ -484,9 +485,9 @@ export class Resolver {
                 return defer.reject(new NoOpenIDError('No links in resource descriptor', jrd));
             }
 
-            var issuer;
-            for (var i = 0; i < jrd.links.length; i++) {
-                var link = jrd.links[i];
+            let issuer;
+            for (let i = 0; i < jrd.links.length; i++) {
+                let link = jrd.links[i];
                 if (link.rel === REL) {
                     issuer = link.href;
                     break;
