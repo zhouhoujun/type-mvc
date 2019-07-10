@@ -2,12 +2,12 @@ import { Authenticator } from './Authenticator';
 import { Abstract, Inject, Injectable, isClass, isFunction } from '@tsdi/ioc';
 import { IConfiguration, IStrategyOption, IContext } from '@mvx/mvc';
 import { IStrategy } from './IStrategy';
-import { ComponentBuilder, ElementDecoratorRegisterer, Component, ComponentSelectorHandle } from '@tsdi/components';
+import { ComponentBuilder, Component, ComponentSelectorHandle } from '@tsdi/components';
 import { Strategy } from './Strategy';
 import { IContainer, ContainerToken } from '@tsdi/core';
 import { SerializeUser, DeserializeUser, TransformAuthInfo } from '../services';
 import { StrategySelectorHandle } from './StrategySelectorHandle';
-import { BuildHandleRegisterer } from '@tsdi/boot';
+import { StartupDecoratorRegisterer, StartupScopes, HandleRegisterer } from '@tsdi/boot';
 
 /**
  * 
@@ -44,10 +44,11 @@ export class ConfigurePassportBuildService extends PassportBuildService {
     private container: IContainer;
 
     async build(passport: Authenticator, configuration: IConfiguration): Promise<void> {
-        let register = this.container.get(BuildHandleRegisterer);
+        let startRegister = this.container.get(StartupDecoratorRegisterer);
+        let register = startRegister.getRegisterer(StartupScopes.Build);
         if (!register.get(StrategySelectorHandle)) {
-            this.container.get(BuildHandleRegisterer).register(this.container, StrategySelectorHandle);
-            this.container.get(ElementDecoratorRegisterer)
+            this.container.get(HandleRegisterer).register(this.container, StrategySelectorHandle);
+            startRegister.getRegisterer(StartupScopes.TranslateTemplate)
                 .registerBefore(Component, ComponentSelectorHandle, StrategySelectorHandle);
         }
         if (configuration.passports) {

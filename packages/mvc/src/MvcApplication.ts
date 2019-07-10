@@ -1,14 +1,14 @@
 
-import { IocExt, ContainerToken, IContainer, InjectorDecoratorRegisterer, ServiceDecoratorRegisterer } from '@tsdi/core';
+import { IocExt, ContainerToken, IContainer } from '@tsdi/core';
 import { Controller, Authorization, Middleware, MvcModule } from './decorators';
-import { Inject, DecoratorScopes, RuntimeDecoratorRegisterer, DesignDecoratorRegisterer, BindProviderAction, BindMethodProviderAction, IocSetCacheAction, Type, LoadType } from '@tsdi/ioc';
+import { Inject, DecoratorScopes, RuntimeDecoratorRegisterer, DesignDecoratorRegisterer, BindProviderAction, BindMethodProviderAction, IocSetCacheAction, Type, LoadType, DecoratorProvider, InjectReference, ProviderTypes } from '@tsdi/ioc';
 import { MvcContext, MvcOptions, MvcContextToken } from './MvcContext';
-import { ControllerRegisterAction, MvcModuleDecoratorServiceAction, MiddlewareRegisterAction } from './registers';
+import { ControllerRegisterAction, MiddlewareRegisterAction } from './registers';
 import * as middlewares from './middlewares';
 import * as routers from './router';
 import * as services from './services';
 import * as aop from './aop';
-import { DefaultConfigureToken, DIModuleInjectorScope, BootApplication, checkBootArgs } from '@tsdi/boot';
+import { DefaultConfigureToken, DIModuleInjectorScope, BootApplication, checkBootArgs, BootContext, Startup } from '@tsdi/boot';
 import { IConfiguration } from './IConfiguration';
 import { MvcServer } from './MvcServer';
 import { ConfigureRegister, Handle } from '@tsdi/boot';
@@ -196,8 +196,7 @@ class MvcCoreModule {
 
         container.getActionRegisterer()
             .register(container, ControllerRegisterAction)
-            .register(container, MiddlewareRegisterAction)
-            .register(container, MvcModuleDecoratorServiceAction);
+            .register(container, MiddlewareRegisterAction);
 
         let dreger = container.get(DesignDecoratorRegisterer);
         dreger.register(Controller, DecoratorScopes.Class, BindProviderAction, ControllerRegisterAction)
@@ -210,10 +209,35 @@ class MvcCoreModule {
             .register(MvcModule, DecoratorScopes.Class, IocSetCacheAction);
 
 
-        container.get(InjectorDecoratorRegisterer)
+        container.get(DesignDecoratorRegisterer).getRegisterer(DecoratorScopes.Injector)
             .register(MvcModule, DIModuleInjectorScope);
 
-        container.get(ServiceDecoratorRegisterer).register(MvcModule, MvcModuleDecoratorServiceAction);
+
+        container.get(DecoratorProvider)
+            .bindProviders(MvcModule,
+                {
+                    provide: BootContext,
+                    deps: [ContainerToken],
+                    useFactory: (container: IContainer, ...providers: ProviderTypes[]) => {
+                        let ref = new InjectReference(BootContext, MvcModule.toString());
+                        if (container.has(ref)) {
+                            return container.get(ref, ...providers);
+                        } else {
+                            return container.get(MvcContext, ...providers);
+                        }
+                    }
+                },
+                {
+                    provide: Startup,
+                    deps: [ContainerToken],
+                    useFactory: (container: IContainer, ...providers: ProviderTypes[]) => {
+                        let ref = new InjectReference(Startup, MvcModule.toString());
+                        if (container.has(ref)) {
+                            return container.get(ref, ...providers);
+                        }
+                        return null;
+                    }
+                });
     }
 }
 
