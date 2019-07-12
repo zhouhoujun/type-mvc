@@ -2,11 +2,11 @@ import { Strategy } from './Strategy';
 import { Context } from 'koa';
 import { ValidationResult, FailResult, SuccessResult } from './results';
 import { Component, Input, AfterInit } from '@tsdi/components';
-import { IStrategyOption } from '@mvx/mvc';
+import { IStrategyOption, IContext } from '@mvx/mvc';
 
 
 
-export type LocalVerify = (username: string, password: string) => Promise<{ user, info }>;
+export type LocalVerify = (username: string, password: string, ctx: IContext) => Promise<{ user, info }>;
 
 /**
  * LocalStrategy Option
@@ -47,7 +47,7 @@ export class LocalStrategy extends Strategy implements AfterInit {
         let username = ctx.body[this.usernameField] || ctx.query[this.usernameField];
         let password = ctx.body[this.passwordField] || ctx.query[this.passwordField];
 
-        let { user, info } = await this.verify(username, password);
+        let { user, info } = await this.verify(username, password, ctx as IContext);
 
         if (!user) {
             // TODO, not sure 401 is the correct meaning
