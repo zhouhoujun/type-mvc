@@ -1,6 +1,6 @@
 import { MvcMiddleware, Middleware, MiddlewareTypes, IContext, MvcContext, MiddlewareFunc, ContextToken } from '@mvx/mvc';
 const session = require('koa-session');
-import { Application } from 'koa';
+import  * as Koa from 'koa';
 import { stores, Session } from 'koa-session';
 import { Abstract, Inject } from '@tsdi/ioc';
 
@@ -34,7 +34,7 @@ export abstract class SessionStorage implements stores {
 export class SessionMiddleware extends MvcMiddleware {
 
     private middleware: MiddlewareFunc;
-    getMiddleware(context: MvcContext, koa: Application) {
+    getMiddleware(context: MvcContext, koa: any) {
         if (!this.middleware) {
             let sessCfg = context.configuration.session;
             if (sessCfg) {

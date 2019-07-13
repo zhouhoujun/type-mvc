@@ -14,6 +14,7 @@ import { Cors, Route } from '../decorators';
 import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
 import { ModelParser } from './ModelParser';
 import { DefaultModelParserToken } from './IModelParser';
+import { isMiddlewareFunc, isMvcMiddleware, MvcMiddleware, MvcMiddlewares } from '../middlewares';
 
 declare let Buffer: any;
 
@@ -190,7 +191,11 @@ export class ControllerRoute extends MvcRoute {
             if (isPromise(result)) {
                 result = await result;
             }
-            if (isBaseType(result) || isArray(result) || isBuffer(result)) {
+            if (isMiddlewareFunc(result)) {
+                await result(ctx);
+            } else if (result instanceof MvcMiddleware || result instanceof MvcMiddlewares) {
+                await result.execute(ctx, null);
+            } else if (isBaseType(result) || isArray(result) || isBuffer(result)) {
                 if (isBuffer(result)) {
                     if (typeof Buffer !== 'undefined') {
                         ctx.body = Buffer.from(result)

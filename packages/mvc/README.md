@@ -120,7 +120,7 @@ default setting load controllers in your project folder
 
  * Each Controller action should return type `ResultValue`, also you can return base type or object, it deal with JsonResult.
  * The action can be `async` or `sync`. Have provide `FileResult`, `JsonResult`,
-`RedirectResult`, `ViewResult`.
+`RedirectResult`, `ViewResult` or mvc Middleware.
  * Also, you can extend with `BaseController`, it has implements some mothod to create the `ResultValue` types.
  * Model can auto create in action, it auto load value from request body.
  * Restfull params or Query String params can auto set to Controller action(Controller method) via the name of param matched. 

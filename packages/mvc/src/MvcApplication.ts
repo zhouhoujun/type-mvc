@@ -23,7 +23,7 @@ import { RegFor } from '@tsdi/boot';
 import { AopModule } from '@tsdi/aop';
 import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
 import { ServerLogsModule } from '@tsdi/platform-server-logs';
-import { Application } from 'koa';
+import * as Koa from 'koa';
 import { MvcApp } from './MvcApp';
 const mount = require('koa-mount');
 
@@ -136,7 +136,7 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
 
         if (config.subSites && config.subSites.length) {
             await Promise.all(config.subSites.map(async site => {
-                let koa: Application;
+                let koa: Koa;
                 if (isClass(site.app)) {
                     let subCtx = await MvcApplication.run(
                         {

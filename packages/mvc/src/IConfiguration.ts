@@ -1,7 +1,7 @@
 import { ObjectMap, Type, InjectToken } from '@tsdi/ioc';
 import { LogConfigure } from '@tsdi/logs';
 import { ServerOptions } from 'https';
-import { Application } from 'koa';
+import * as Koa from 'koa';
 import { RunnableConfigure } from '@tsdi/boot';
 import { RequestMethod } from './RequestMethod';
 import *  as Keygrip from 'keygrip';
@@ -92,10 +92,10 @@ export interface SubSite {
     /**
      * sub app
      *
-     * @type {(Application | Type)}
+     * @type {(Koa | Type)}
      * @memberof SubSite
      */
-    app: Application | Type | ((configuration: IConfiguration) => Promise<Application>);
+    app: Koa | Type | ((configuration: IConfiguration) => Promise<Koa>);
 }
 
 /**
