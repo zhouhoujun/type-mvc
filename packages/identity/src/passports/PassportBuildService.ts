@@ -10,7 +10,7 @@ import { StrategySelectorHandle } from './StrategySelectorHandle';
 import { StartupDecoratorRegisterer, StartupScopes, HandleRegisterer } from '@tsdi/boot';
 
 /**
- * 
+ * PassportBuildService
  *
  * @export
  * @abstract
@@ -44,12 +44,10 @@ export class ConfigurePassportBuildService extends PassportBuildService {
     private container: IContainer;
 
     async build(passport: Authenticator, configuration: IConfiguration): Promise<void> {
-        let startRegister = this.container.get(StartupDecoratorRegisterer);
-        let register = startRegister.getRegisterer(StartupScopes.Build);
-        if (!register.get(StrategySelectorHandle)) {
+        let register = this.container.resolve(StartupDecoratorRegisterer).getRegisterer(StartupScopes.TranslateTemplate);
+        if (!register.has(StrategySelectorHandle)) {
             this.container.get(HandleRegisterer).register(this.container, StrategySelectorHandle);
-            startRegister.getRegisterer(StartupScopes.TranslateTemplate)
-                .registerBefore(Component, ComponentSelectorHandle, StrategySelectorHandle);
+            register.registerBefore(Component, ComponentSelectorHandle, StrategySelectorHandle);
         }
         if (configuration.passports) {
             let { strategies, serializers, deserializers, authInfos } = configuration.passports;

@@ -1,11 +1,17 @@
+
+/**
+ * http error
+ *
+ * @export
+ * @class HttpError
+ * @extends {Error}
+ */
 export class HttpError extends Error {
 
     constructor(public status: number, message?: string) {
         super();
-
-        if (message) {
-            this.message = message;
-        }
+        this.message = message;
+        Error.captureStackTrace(this);
     }
 
     toString() {

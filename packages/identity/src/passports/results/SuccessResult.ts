@@ -26,9 +26,6 @@ export class SuccessResult extends ValidationResult {
         let user = this.user;
         let info = this.info;
         let options = this.options;
-        if (callback) {
-            return callback(null, user, info);
-        }
 
         if (options.successMessage) {
             if (!(info.type in ctx.session.message)) {
@@ -45,6 +42,11 @@ export class SuccessResult extends ValidationResult {
         if (options.authInfo !== false) {
             ctx.state.authInfo = await ctx.passport.transformAuthInfo(info, ctx);
         }
+
+        if (callback) {
+            return callback(null, user, info);
+        }
+
         if (options.successReturnToOrRedirect) {
             let url = options.successReturnToOrRedirect;
             if (ctx.session && ctx.session.returnTo) {

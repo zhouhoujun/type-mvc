@@ -28,7 +28,7 @@
     "url": "git+https://github.com/zhouhoujun/type-mvc.git"
   },
   "dependencies": {
-    "typeorm": "^0.2.17"
+    "typeorm": "^0.2.18"
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.12",

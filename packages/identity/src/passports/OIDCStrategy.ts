@@ -293,8 +293,8 @@ export class OIDCStrategy extends Strategy implements AfterInit {
 
             let identifier;
             let idfield = this.identifierField;
-            if (ctx.body && ctx.body[idfield]) {
-                identifier = ctx.body[idfield];
+            if (ctx.request.body && ctx.request.body[idfield]) {
+                identifier = ctx.request.body[idfield];
             } else if (ctx.query && ctx.query[idfield]) {
                 identifier = ctx.query[idfield];
             }

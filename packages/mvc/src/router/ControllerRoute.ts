@@ -14,7 +14,7 @@ import { Cors, Route } from '../decorators';
 import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
 import { ModelParser } from './ModelParser';
 import { DefaultModelParserToken } from './IModelParser';
-import { isMiddlewareFunc, isMvcMiddleware, MvcMiddleware, MvcMiddlewares } from '../middlewares';
+import { MvcMiddleware, MvcMiddlewares } from '../middlewares';
 
 declare let Buffer: any;
 
@@ -139,10 +139,9 @@ export class ControllerRoute extends MvcRoute {
 
 
     protected catchHttpError(ctx: IContext, err: HttpError) {
-        if (err instanceof HttpError) {
-            ctx.status = err.status;
-            ctx.message = err.message;
-        }
+        ctx.status = err.status;
+        ctx.message =  err.message || err.toString();
+        // ctx.throw(err.status || 500, err.message || err.toString());
         throw err;
     }
 
@@ -191,7 +190,9 @@ export class ControllerRoute extends MvcRoute {
             if (isPromise(result)) {
                 result = await result;
             }
-            if (isMiddlewareFunc(result)) {
+
+            // middleware.
+            if (isFunction(result)) {
                 await result(ctx);
             } else if (result instanceof MvcMiddleware || result instanceof MvcMiddlewares) {
                 await result.execute(ctx, null);

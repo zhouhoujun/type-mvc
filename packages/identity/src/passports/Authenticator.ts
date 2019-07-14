@@ -287,8 +287,6 @@ export class Authenticator implements IAuthenticator {
                 if (options.failWithError) {
                     throw new AuthenticationError(rstatus, http.STATUS_CODES[ctx.status]);
                 }
-                // console.log("==================");
-                // console.log(http.STATUS_CODES[ctx.status]);
                 // ctx.res.statusMessage = http.STATUS_CODES[ctx.status];
                 ctx.response.message = http.STATUS_CODES[ctx.status];
                 ctx.res.end(http.STATUS_CODES[ctx.status]);

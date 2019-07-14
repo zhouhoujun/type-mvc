@@ -21,7 +21,11 @@ export class TypeOrmHelper {
         let options = await this.getOptions()
         if (!this.hasInit) {
             this.hasInit = true;
-            return await createConnection(options);
+            try {
+                return await createConnection(options);
+            } catch (err) {
+                console.error(err);
+            }
         }
         return await getConnection(options.name);
     }

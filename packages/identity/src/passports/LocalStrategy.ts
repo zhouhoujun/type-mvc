@@ -44,8 +44,8 @@ export class LocalStrategy extends Strategy implements AfterInit {
     }
 
     async authenticate(ctx: Context, options?: any): Promise<ValidationResult> {
-        let username = ctx.body[this.usernameField] || ctx.query[this.usernameField];
-        let password = ctx.body[this.passwordField] || ctx.query[this.passwordField];
+        let username = ctx.request.body[this.usernameField] || ctx.query[this.usernameField];
+        let password = ctx.request.body[this.passwordField] || ctx.query[this.passwordField];
 
         let { user, info } = await this.verify(username, password, ctx as IContext);
 
