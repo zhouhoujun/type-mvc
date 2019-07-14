@@ -139,9 +139,11 @@ export class ControllerRoute extends MvcRoute {
 
 
     protected catchHttpError(ctx: IContext, err: HttpError) {
-        ctx.status = err.status;
-        ctx.message =  err.message || err.toString();
-        // ctx.throw(err.status || 500, err.message || err.toString());
+        if (isNumber(err.status)) {
+            ctx.status = err.status;
+            ctx.message = err.message || err.toString();
+            // ctx.throw(err.status || 500, err.message || err.toString());
+        }
         throw err;
     }
 
