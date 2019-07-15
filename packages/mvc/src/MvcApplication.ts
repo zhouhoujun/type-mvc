@@ -26,6 +26,7 @@ import { ServerLogsModule } from '@tsdi/platform-server-logs';
 import * as Koa from 'koa';
 import { MvcApp } from './MvcApp';
 import { ExtendBaseTypeMap } from './router';
+import { BeforeMidddlewareStartupService, AfterMidddlewareStartupService } from './services';
 const mount = require('koa-mount');
 
 
@@ -99,10 +100,10 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
             this.container.bindProvider(DefaultMvcMiddlewaresToken, DefaultMvcMiddlewares)
         }
 
+        let middlewares = this.container.get(MvcMiddlewares);
         let metadata = ctx.annoation as MvcModuleMetadata;
         let mvcMiddles = metadata.middlewares || this.container.get(DefaultMvcMiddlewaresToken);
         if (isArray(mvcMiddles)) {
-            let middlewares = this.container.get(MvcMiddlewares);
             mvcMiddles.forEach(middle => {
                 if (isClass(middle)) {
                     middlewares.use(middle);
@@ -134,9 +135,14 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
             });
         }
 
+        await Promise.all(this.container.getServices(BeforeMidddlewareStartupService)
+            .map(s => s.startup(ctx, middlewares)));
 
         this.container.get(MvcMiddlewares)
             .setup(ctx);
+
+        await Promise.all(this.container.getServices(AfterMidddlewareStartupService)
+            .map(s => s.startup(ctx, middlewares)));
 
         if (config.subSites && config.subSites.length) {
             await Promise.all(config.subSites.map(async site => {

@@ -7,6 +7,7 @@ export * from './metadata';
 export * from './middlewares';
 export * from './results';
 export * from './router';
+export * from './services';
 
 
 export * from './BaseController';
