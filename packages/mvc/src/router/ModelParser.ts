@@ -1,10 +1,35 @@
 import {
     Type, PropertyMetadata, isUndefined,
-    Inject, isClass, ObjectMap, isBaseType, isArray, lang, Abstract
+    Inject, isClass, ObjectMap, isBaseType, isArray, lang, Abstract, isClassType, SymbolType, ProviderMap, Singleton
 } from '@tsdi/ioc';
 import { IModelParser } from './IModelParser';
 import { ContainerToken, IContainer } from '@tsdi/core';
 import { BaseTypeParserToken } from '@tsdi/boot';
+
+
+@Singleton
+export class ExtendBaseTypeMap {
+    protected maps: Map<SymbolType<any>, (...params: any[]) => any>;
+    constructor() {
+        this.maps = new Map();
+    }
+
+    has(type: SymbolType): boolean {
+        return this.maps.has(type);
+    }
+
+    register<T>(type: SymbolType<T>, factory: (...params: any[]) => T) {
+        this.maps.set(type, factory);
+    }
+
+    resolve<T>(type: SymbolType<T>, ...params: any[]): T {
+        if (this.maps.has(type)) {
+            return this.maps.get(type)(...params);
+        }
+        return null;
+    }
+}
+
 
 /**
  * modle parser.
@@ -15,8 +40,13 @@ import { BaseTypeParserToken } from '@tsdi/boot';
 @Abstract()
 export abstract class ModelParser implements IModelParser {
 
-    constructor(@Inject(ContainerToken) private container: IContainer) {
+    @Inject(ContainerToken)
+    protected container: IContainer;
+
+    constructor() {
     }
+
+
 
     parseModel(type: Type, objMap: any): any {
         if (isBaseType(type)) {
@@ -29,10 +59,15 @@ export abstract class ModelParser implements IModelParser {
             let propmetas = meta[n];
             if (propmetas.length) {
                 if (!isUndefined(objMap[n])) {
-                    let propmeta = propmetas.find(p => !!p.type);
+                    let propmeta = propmetas.find(p => p && (!!p.type));
+                    if (!propmeta) {
+                        continue;
+                    }
                     let reqval = objMap[n];
                     let parmVal;
-                    if (isBaseType(lang.getClass(propmeta.type))) {
+                    if (this.isExtendBaseType(propmeta.type)) {
+                        parmVal = this.resolveExtendType(propmeta.type, reqval);
+                    } else if (isBaseType(lang.getClass(propmeta.type))) {
                         let parser = this.container.get(BaseTypeParserToken)
                         parmVal = parser.parse(propmeta.type, reqval);
                     } else if (lang.isExtendsClass(propmeta.type, Array)) {
@@ -49,6 +84,22 @@ export abstract class ModelParser implements IModelParser {
             }
         }
         return result;
+    }
+
+    private typeMap: ExtendBaseTypeMap;
+    getTypeMap(): ExtendBaseTypeMap {
+        if (!this.typeMap) {
+            this.typeMap = this.container.get(ExtendBaseTypeMap);
+        }
+        return this.typeMap;
+    }
+
+    protected isExtendBaseType(type: SymbolType): boolean {
+        return this.getTypeMap().has(type);
+    }
+
+    protected resolveExtendType(type: SymbolType, ...values: any[]): any {
+        return this.getTypeMap().resolve(type, ...values);
     }
 
     protected abstract getPropertyMeta(type: Type): ObjectMap<PropertyMetadata[]>;

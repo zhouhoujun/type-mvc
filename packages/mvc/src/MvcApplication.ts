@@ -12,7 +12,7 @@ import { DefaultConfigureToken, DIModuleInjectorScope, BootApplication, checkBoo
 import { IConfiguration } from './IConfiguration';
 import { MvcServer } from './MvcServer';
 import { ConfigureRegister, Handle } from '@tsdi/boot';
-import { DebugLogAspect, LogConfigureToken, LogModule } from '@tsdi/logs';
+import { DebugLogAspect, LogConfigureToken, LogModule, ConfigureLoggerManger } from '@tsdi/logs';
 import { Singleton, isArray, isClass, isFunction, lang } from '@tsdi/ioc';
 import { DefaultMvcMiddlewares, DefaultMvcMiddlewaresToken } from './DefaultMvcMiddlewares';
 import { MvcModuleMetadata } from './metadata';
@@ -25,6 +25,7 @@ import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
 import { ServerLogsModule } from '@tsdi/platform-server-logs';
 import * as Koa from 'koa';
 import { MvcApp } from './MvcApp';
+import { ExtendBaseTypeMap } from './router';
 const mount = require('koa-mount');
 
 
@@ -88,6 +89,12 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
             config.logConfig = null;
         }
 
+        let logConfig = config.logConfig;
+        if (logConfig) {
+            this.container.bindProvider(LogConfigureToken, logConfig);
+            ctx.logManager = this.container.resolve(ConfigureLoggerManger);
+        }
+
         if (!this.container.has(DefaultMvcMiddlewaresToken)) {
             this.container.bindProvider(DefaultMvcMiddlewaresToken, DefaultMvcMiddlewares)
         }
@@ -127,9 +134,6 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
             });
         }
 
-        if (config.logConfig) {
-            this.container.registerSingleton(LogConfigureToken, config.logConfig);
-        }
 
         this.container.get(MvcMiddlewares)
             .setup(ctx);
@@ -173,6 +177,7 @@ class MvcCoreModule {
             .register(MvcServer)
             .register(MvcConfigureRegister);
 
+        container.register(ExtendBaseTypeMap);
         container.use(aop, services, middlewares, routers);
 
         container.bindProvider(DefaultConfigureToken, <IConfiguration>{
