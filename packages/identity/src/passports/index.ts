@@ -5,6 +5,7 @@ export * from './results';
 export * from './Strategy';
 export * from './SessionStrategy';
 export * from './LocalStrategy';
+export * from './JwtStrategy';
 export * from './ContextExtends';
 export * from './Authenticator';
 export * from './PassportBuildService';
