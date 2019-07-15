@@ -91,30 +91,6 @@ export class JwtStrategy extends Strategy implements AfterInit {
 }
 
 
-
-
-function auth_header(target, varArgs) {
-    if (target == null) { // TypeError if undefined or null
-        throw new TypeError('Cannot convert undefined or null to object');
-    }
-
-    var to = Object(target);
-
-    for (var index = 1; index < arguments.length; index++) {
-        var nextSource = arguments[index];
-
-        if (nextSource != null) { // Skip over if undefined or null
-            for (var nextKey in nextSource) {
-                // Avoid bugs when hasOwnProperty is shadowed
-                if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-                    to[nextKey] = nextSource[nextKey];
-                }
-            }
-        }
-    }
-    return to;
-}
-
 const matcExp = /(\S+)\s+(\S+)/;
 function parseAuthHeader(hdrValue) {
     if (typeof hdrValue !== 'string') {
@@ -131,7 +107,7 @@ const AUTH_HEADER = 'authorization',
     LEGACY_AUTH_SCHEME = 'JWT',
     BEARER_AUTH_SCHEME = 'bearer';
 
-export namespace JwtHeanders {
+export namespace JwtRequest {
 
 
     export function fromHeader(headerName: string) {
@@ -216,11 +192,11 @@ export namespace JwtHeanders {
      * This extractor exists only to provide an easy transition from the v1.*.* API to the v2.0.0
      * API.
      *
-     * This extractor first checks the auth header, if it doesn't find a token there then it checks the 
+     * This extractor first checks the auth header, if it doesn't find a token there then it checks the
      * specified body field and finally the url query parameters.
-     * 
+     *
      * @param options
-     *          authScheme: Expected scheme when JWT can be found in HTTP Authorize header. Default is JWT. 
+     *          authScheme: Expected scheme when JWT can be found in HTTP Authorize header. Default is JWT.
      *          tokenBodyField: Field in request body containing token. Default is auth_token.
      *          tokenQueryParameterName: Query parameter name containing the token. Default is auth_token.
      */
@@ -246,5 +222,4 @@ export namespace JwtHeanders {
             return token;
         };
     }
-
 }
