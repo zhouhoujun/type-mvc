@@ -1,6 +1,6 @@
 import { MvcMiddleware, Middleware, MiddlewareTypes, IContext, MvcContext, MiddlewareFunc, ContextToken } from '@mvx/mvc';
 const session = require('koa-session');
-import  * as Koa from 'koa';
+import * as Koa from 'koa';
 import { stores, Session } from 'koa-session';
 import { Abstract, Inject } from '@tsdi/ioc';
 
@@ -34,16 +34,18 @@ export abstract class SessionStorage implements stores {
 export class SessionMiddleware extends MvcMiddleware {
 
     private middleware: MiddlewareFunc;
+    private hasInit = false;
     getMiddleware(context: MvcContext, koa: any) {
-        if (!this.middleware) {
+        if (!this.hasInit && !this.middleware) {
             let sessCfg = context.configuration.session;
+            this.hasInit = true;
             if (sessCfg) {
                 sessCfg = Object.assign({
                     key: 'typemvc:sess', /** (string) cookie key (default is koa:sess) */
                     /** (number || 'session') maxAge in ms (default is 1 days) */
                     /** 'session' will result in a cookie that expires when session/browser is closed */
                     /** Warning: If a session cookie is stolen, this cookie will never expire */
-                    maxAge: 86400000,
+                    maxAge: 36000000,
                     overwrite: true, /** (boolean) can overwrite or not (default true) */
                     httpOnly: true, /** (boolean) httpOnly or not (default true) */
                     signed: true, /** (boolean) signed or not (default true) */
@@ -57,14 +59,17 @@ export class SessionMiddleware extends MvcMiddleware {
                 }
 
                 this.middleware = session(sessCfg, koa);
-            } else {
-                this.middleware = session(koa);
             }
         }
         return this.middleware;
     }
 
     execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        return this.getMiddleware(ctx.mvcContext, ctx.app)(ctx, next);
+        let middleware = this.getMiddleware(ctx.mvcContext, ctx.app);
+        if (middleware) {
+            return middleware(ctx, next);
+        } else {
+            return next();
+        }
     }
 }
