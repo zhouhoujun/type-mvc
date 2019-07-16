@@ -1,6 +1,6 @@
 import {
-    Type, PropertyMetadata, isUndefined,
-    Inject, isClass, ObjectMap, isBaseType, isArray, lang, Abstract, isClassType, SymbolType, ProviderMap, Singleton
+    Type, PropertyMetadata, isUndefined, Inject, isClass, ObjectMap,
+    isBaseType, isArray, lang, Abstract, SymbolType, Singleton
 } from '@tsdi/ioc';
 import { IModelParser } from './IModelParser';
 import { ContainerToken, IContainer } from '@tsdi/core';
