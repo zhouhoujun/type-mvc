@@ -1,17 +1,56 @@
 import { MvcMiddleware } from '../middlewares';
 import { InjectToken } from '@tsdi/ioc';
 import { IContext } from '../IContext';
+import { RouteChecker } from '../services';
 
 export const RouteUrlArgToken = new InjectToken<string>('route_url');
 
+
 export abstract class MvcRoute extends MvcMiddleware {
 
-    url: string;
+    protected metaUrl: string;
+    private _url: string;
+    get url(): string {
+        if (!this._url) {
+            this._url = this.vaildify(this.metaUrl, true);
+        }
+        return this._url;
+    }
+
+    set url(val: string) {
+        this._url = val
+    }
+
     constructor(url: string) {
         super();
         if (url) {
-            this.url = this.vaildify(url, true);
+            this.metaUrl = url;
         }
+    }
+
+    private checker: RouteChecker;
+    getChecker() {
+        if (!this.checker) {
+            this.checker = this.container.get(RouteChecker);
+        }
+        return this.checker;
+    }
+
+    protected getReqRoute(ctx: IContext): string {
+        return this.getChecker().getReqRoute(ctx);
+    }
+
+
+    protected vaildify(routePath: string, foreNull = false): string {
+        return this.getChecker().vaildify(routePath, foreNull);
+    }
+
+
+    protected math(ctx: IContext): boolean {
+        if (ctx.status && ctx.status !== 404) {
+            return false;
+        }
+        return this.getChecker().isActiveRoute(ctx, this.url);
     }
 
     protected getRouterNext(ctx: IContext): () => Promise<void> {
@@ -27,36 +66,4 @@ export abstract class MvcRoute extends MvcMiddleware {
     }
 
     abstract navigate(ctx: IContext, next: () => Promise<void>): Promise<void>;
-
-    protected getReqRoute(ctx: IContext): string {
-        let reqUrl = this.vaildify(ctx.url, true);
-        if (ctx.mvcContext.configuration.routePrefix) {
-            return reqUrl.replace(ctx.mvcContext.configuration.routePrefix, '');
-        }
-        return reqUrl;
-    }
-
-    protected math(ctx: IContext): boolean {
-        if (ctx.status && ctx.status !== 404) {
-            return false;
-        }
-        let routeUrl = this.getReqRoute(ctx);
-        if (this.url === '') {
-            return true;
-        }
-        return routeUrl.startsWith(this.url);
-    }
-
-    protected vaildify(routePath: string, foreNull = false): string {
-        if (foreNull && routePath === '/') {
-            routePath = '';
-        }
-        if (/\/\s*$/.test(routePath)) {
-            routePath = routePath.substring(0, routePath.lastIndexOf('/'));
-        }
-        if (/\?\S*$/.test(routePath)) {
-            routePath = routePath.substring(0, routePath.lastIndexOf('?'));
-        }
-        return routePath;
-    }
 }

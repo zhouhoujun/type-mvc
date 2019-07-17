@@ -30,8 +30,13 @@ export class Router extends CompositeMiddleware {
         }
     }
 
+
+    getChecker() {
+        return this.container.get(RouteChecker);
+    }
+
     isRouteUrl(route: string) {
-        return this.container.get(RouteChecker).isRoute(route);
+        return this.getChecker().isRoute(route);
     }
 
     routes(route: string, handle: HandleType<IContext>): this {

@@ -5,3 +5,4 @@ export * from './stores';
 export * from './vaildates';
 export * from './IdentityModule';
 export * from './services';
+export * from './registers/ControllerAuthRegisterAction';

@@ -59,6 +59,8 @@ export class SessionMiddleware extends MvcMiddleware {
                 }
 
                 this.middleware = session(sessCfg, koa);
+            } else {
+                this.middleware = session(koa);
             }
         }
         return this.middleware;
@@ -66,10 +68,6 @@ export class SessionMiddleware extends MvcMiddleware {
 
     execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
         let middleware = this.getMiddleware(ctx.mvcContext, ctx.app);
-        if (middleware) {
-            return middleware(ctx, next);
-        } else {
-            return next();
-        }
+        return middleware(ctx, next);
     }
 }
