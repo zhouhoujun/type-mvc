@@ -49,6 +49,20 @@ export class JwtStrategy extends Strategy implements AfterInit {
         if (!this.name) {
             this.name = 'jwt';
         }
+
+        if (this.secretOrKey) {
+            if (this.secretOrKeyProvider) {
+                throw new TypeError('JwtStrategy has been given both a secretOrKey and a secretOrKeyProvider');
+            }
+            this.secretOrKeyProvider = async (request, rawJwtToken) => {
+                return this.secretOrKey;
+            };
+        }
+
+        if (!this.secretOrKeyProvider) {
+            throw new TypeError('JwtStrategy requires a secret or key');
+        }
+
         if (!this.verify) {
             throw new TypeError('JwtStrategy requires a verify');
         }

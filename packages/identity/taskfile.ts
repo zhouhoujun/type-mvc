@@ -24,7 +24,7 @@ import { AfterInit } from '@tsdi/components';
         ]
     }
 })
-export class TypeormAdapterBuilder implements AfterInit {
+export class IdentityBuilder implements AfterInit {
     onAfterInit(): void | Promise<void> {
         console.log('typeorm adapter build has inited...')
     }

@@ -14,7 +14,6 @@ import { IAuthenticator, AuthenticatorToken } from './IAuthenticator';
  * `Authenticator` constructor.
  *
  */
-
 @Singleton(AuthenticatorToken)
 export class Authenticator implements IAuthenticator {
     private strategies: Map<string, Strategy>;
