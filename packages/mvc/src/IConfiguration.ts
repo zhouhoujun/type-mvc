@@ -253,6 +253,11 @@ export interface IConfiguration extends RunnableConfigure {
  * @interface CorsOptions
  */
 export interface CorsOptions {
+    /**
+     * origin.
+     *
+     * @memberof CorsOptions
+     */
     origin?: string | ((ctx: IContext) => string | Promise<string>);
     /**
      * enable Access-Control-Allow-Credentials

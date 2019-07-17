@@ -187,18 +187,16 @@ export class Authenticator implements IAuthenticator {
      * the desired operations.
      * Examples:
      *
-     *     passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' })(ctx);
+     *     return passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' });
      *
      *     passport.authenticate('local', function(err, user) {
      *       if (!user) { return ctx.redirect('/login'); }
      *       ctx.end('Authenticated!');
-     *     })(ctx);
-     *
-     *     passport.authenticate('basic', { session: false })(ctx);
-     *
-     *     app.get('/auth/twitter', passport.authenticate('twitter'), function(ctx) {
-     *       // request will be redirected to Twitter
      *     });
+     *
+     *     passport.authenticate('basic', { session: false });
+     *
+     *
      */
     public authenticate(strategyNames: string | string[],
         callback?: (this: void, err: Error, user?, info?, status?) => void): Middleware;
@@ -230,10 +228,6 @@ export class Authenticator implements IAuthenticator {
         }
 
         return async (ctx: Context, next) => {
-            // if (http.IncomingMessage.prototype.logIn
-            //     && http.IncomingMessage.prototype.logIn !== IncomingMessageExt.logIn) {
-            //     require('../framework/connect').__monkeypatchNode();
-            // }
 
             // accumulator for failures from each strategy in the chain
             const failures = ctx.failures = [];
