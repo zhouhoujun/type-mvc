@@ -1,6 +1,5 @@
 import { MvcMiddleware, Middleware, MiddlewareTypes, IContext, MvcContext, MiddlewareFunc, ContextToken } from '@mvx/mvc';
 const session = require('koa-session');
-import * as Koa from 'koa';
 import { stores, Session } from 'koa-session';
 import { Abstract, Inject } from '@tsdi/ioc';
 

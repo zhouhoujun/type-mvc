@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import { ValidationResult } from './ValidationResult';
-import { AuthenticateOption } from '../AuthenticateOption';
+import { AuthenticateOption } from '../IAuthenticator';
 
 /**
  * Authenticate `user`, with optional `info`.
@@ -23,9 +23,27 @@ export class SuccessResult extends ValidationResult {
     }
 
     async execute(ctx: Context, next: () => Promise<void>, callback?: Function): Promise<void> {
+
         let user = this.user;
-        let info = this.info;
+        let info = this.info || <any>{};
+        // ctx.session.passport.user = user;
+        if (callback) {
+            return callback(null, user, info);
+        }
+        let msg;
         let options = this.options;
+        if (options.successFlash) {
+            var flash = options.successFlash;
+            if (typeof flash === 'string') {
+                flash = { type: 'success', message: flash };
+            }
+            flash.type = flash.type || 'success';
+            var type = flash.type || info.type || 'success';
+            msg = flash.message || info.message || info;
+            if (typeof msg === 'string') {
+                ctx.session.flash = { type: type, message: msg };
+            }
+        }
 
         if (options.successMessage) {
             if (!(info.type in ctx.session.message)) {
@@ -35,16 +53,12 @@ export class SuccessResult extends ValidationResult {
         }
         if (options.assignProperty) {
             ctx.state[options.assignProperty] = user;
-            return next();
+            return await next();
         }
 
         await ctx.login(user);
         if (options.authInfo !== false) {
             ctx.state.authInfo = await ctx.passport.transformAuthInfo(info, ctx);
-        }
-
-        if (callback) {
-            return callback(null, user, info);
         }
 
         if (options.successReturnToOrRedirect) {

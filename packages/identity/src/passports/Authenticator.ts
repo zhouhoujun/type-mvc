@@ -3,11 +3,11 @@ import { Middleware, Context } from 'koa';
 import * as http from 'http';
 import { contextExtends } from './ContextExtends';
 import { FailResult } from './results';
-import { AuthenticateOption } from './AuthenticateOption';
 import { Strategy } from './Strategy';
 import { SessionStrategy } from './SessionStrategy';
 import { AuthenticationError } from '../errors';
-import { IAuthenticator, AuthenticatorToken } from './IAuthenticator';
+import { IAuthenticator, AuthenticatorToken, AuthenticateOption } from './IAuthenticator';
+import { IStrategy } from './IStrategy';
 
 
 /**
@@ -38,6 +38,16 @@ export class Authenticator implements IAuthenticator {
         this.use(new SessionStrategy());
     }
 
+    /**
+     * get strategy.
+     *
+     * @param {string} name
+     * @returns {IStrategy}
+     * @memberof IAuthenticator
+     */
+    get(name: string): IStrategy {
+        return this.strategies.get(name);
+    }
     /**
      * Utilize the given `strategy` with optional `name`, overridding the strategy's
      * default name.

@@ -1,8 +1,29 @@
 import { Middleware, Context } from 'koa';
-import { AuthenticateOption } from './AuthenticateOption';
 import { IStrategy } from './IStrategy';
 import { InjectToken } from '@tsdi/ioc';
 import { MvcContext } from '@mvx/mvc';
+
+
+
+/**
+ * authenticate option.
+ *
+ * @export
+ * @interface AuthenticateOption
+ */
+export interface AuthenticateOption {
+    session?: boolean;
+    successRedirect?: string;
+    successReturnToOrRedirect?: string;
+    failureRedirect?: string;
+    assignProperty?: any;
+    failureFlash?: string | { type: string, message: string };
+    failureMessage?: string | boolean;
+    failWithError?: boolean;
+    successFlash?: string | { type: string, message: string };
+    successMessage?: string | boolean;
+    authInfo?: boolean;
+}
 
 
 export interface VaildFailure {
@@ -53,6 +74,15 @@ export interface IAuthenticator {
      * @memberof IAuthenticator
      */
     readonly rolesProperty: string;
+
+    /**
+     * get strategy.
+     *
+     * @param {string} name
+     * @returns {IStrategy}
+     * @memberof IAuthenticator
+     */
+    get(name: string): IStrategy;
     /**
      * Utilize the given `strategy` with optional `name`, overridding the strategy's
      * default name.

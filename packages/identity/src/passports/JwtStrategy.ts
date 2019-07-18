@@ -4,7 +4,8 @@ import { ValidationResult, FailResult, SuccessResult } from './results';
 import { Component, Input, AfterInit } from '@tsdi/components';
 import { IStrategyOption, IContext } from '@mvx/mvc';
 import * as url from 'url';
-const jwt = require('jsonwebtoken');
+import * as jwt from 'jsonwebtoken';
+import { PromiseUtil } from '@tsdi/ioc';
 
 
 export type JwtVerify = (payload: any, ctx?: IContext) => Promise<{ user, info }>;
@@ -17,14 +18,14 @@ export type JwtVerify = (payload: any, ctx?: IContext) => Promise<{ user, info }
  * @extends {IStrategyOption}
  */
 export interface JwtStrategyOption extends IStrategyOption {
-    secretOrKey?: string | Buffer[];
-    secretOrKeyProvider?: (request: Request, rawJwtToken) => Promise<any>;
+    secretOrKey?: string | Buffer;
+    secretOrKeyProvider?: (request: Request, rawJwtToken) => Promise<string | Buffer>;
     jwtFromRequest: (request: Request) => any;
     verify: JwtVerify;
     // If defined issuer will be verified against this value
     issuer: string;
 
-    audience: any;
+    audience: string | string[];
     algorithms: string[];
     ignoreExpiration?: boolean;
     passReqToCallback?
@@ -38,11 +39,11 @@ export class JwtStrategy extends Strategy implements AfterInit {
 
     @Input() protected verify: JwtVerify;
     @Input() issuer: string;
-    @Input() audience: any;
+    @Input() audience: string | string[];
     @Input() algorithms: string[];
     @Input() ignoreExpiration?: boolean;
-    @Input() secretOrKey: string | Buffer[];
-    @Input() secretOrKeyProvider: (request: Request, rawJwtToken) => Promise<any>;
+    @Input() secretOrKey: string | Buffer;
+    @Input() secretOrKeyProvider: (request: Request, rawJwtToken) => Promise<string | Buffer>;
     @Input() jwtFromRequest: (request: Request) => any;
 
     async onAfterInit(): Promise<void> {
@@ -76,9 +77,9 @@ export class JwtStrategy extends Strategy implements AfterInit {
         if (!token) {
             return new FailResult('No auth token', 401);
         }
-        let secretOrKey = await this.secretOrKeyProvider(ctx.request, token)
+        let secretOrKey = this.secretOrKey = await this.secretOrKeyProvider(ctx.request, token)
 
-        let payload = await new Promise((j, r) => {
+        let payload = await new Promise((r, j) => {
             jwt.verify(token, secretOrKey, {
                 audience: this.audience,
                 issuer: this.issuer,
@@ -100,6 +101,24 @@ export class JwtStrategy extends Strategy implements AfterInit {
             return new FailResult(info, 401);
         }
         return new SuccessResult(options, user, info);
+    }
+
+    sign(payload: string | object | Buffer, secretOrKey?: jwt.Secret, options?: jwt.SignOptions): Promise<string> {
+        let defer = PromiseUtil.defer<string>();
+        jwt.sign(payload, secretOrKey || this.secretOrKey, {
+            audience: this.audience,
+            issuer: this.issuer,
+            // algorithm: 'HS256',
+            ...(options || {})
+            // ignoreExpiration: this.ignoreExpiration
+        }, (err, decoded) => {
+            if (err) {
+                defer.reject(err);
+            } else {
+                defer.resolve(decoded);
+            }
+        });
+        return defer.promise;
     }
 
 }
@@ -132,7 +151,7 @@ export namespace JwtRequest {
             }
             return token;
         };
-    };
+    }
 
 
 
@@ -144,7 +163,7 @@ export namespace JwtRequest {
             }
             return token;
         };
-    };
+    }
 
 
 
@@ -157,7 +176,7 @@ export namespace JwtRequest {
             }
             return token;
         };
-    };
+    }
 
 
 
@@ -174,13 +193,13 @@ export namespace JwtRequest {
             }
             return token;
         };
-    };
+    }
 
 
 
     export function fromAuthHeaderAsBearerToken() {
         return fromAuthHeaderWithScheme(BEARER_AUTH_SCHEME);
-    };
+    }
 
 
     export function fromExtractors(extractors) {
@@ -197,7 +216,7 @@ export namespace JwtRequest {
             }
             return token;
         }
-    };
+    }
 
 
     /**

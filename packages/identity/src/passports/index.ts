@@ -1,4 +1,3 @@
-export * from './AuthenticateOption';
 export * from './IAuthenticator';
 export * from './IStrategy';
 export * from './results';

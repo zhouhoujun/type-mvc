@@ -35,11 +35,7 @@ export class AuthMiddleware extends CompositeMiddleware {
             await this.setup(ctx.mvcContext);
             this.hasInit = true;
         }
-
-        if (this.reuqireAuth(ctx)) {
-            console.log('run auth....')
-            await super.execute(ctx);
-        }
+        await super.execute(ctx);
         await next();
     }
 
@@ -64,6 +60,11 @@ export class AuthMiddleware extends CompositeMiddleware {
         }
         await Promise.all(services.map(s => s.build(this.passport, context.configuration)));
         this.use(this.passport.initialize());
+        this.use(async (ctx, next) => {
+            if (this.reuqireAuth(ctx)) {
+                return await next();
+            }
+        });
         this.use(this.passport.session());
     }
 }
