@@ -36,20 +36,17 @@ export class ControllerRoute extends MvcRoute {
     }
 
     async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
+        await this.invoke(ctx);
+        return await next();
+    }
+
+    async options(ctx: IContext, next: () => Promise<void>): Promise<void> {
         try {
-            await this.invokeOption(ctx, async () => {
-                if (ctx.method !== 'OPTIONS') {
-                    await this.invoke(ctx);
-                    return await next();
-                } else {
-                    throw new ForbiddenError();
-                }
-            });
+            return await this.invokeOption(ctx, next);
         } catch (err) {
             this.catchHttpError(ctx, err);
         }
     }
-
 
 
     async invokeOption(ctx: IContext, next: () => Promise<void>): Promise<void> {

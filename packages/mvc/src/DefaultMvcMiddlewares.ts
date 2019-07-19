@@ -3,7 +3,7 @@ import * as json from 'koa-json';
 import { toAbsolutePath } from '@tsdi/platform-server';
 import { MvcMiddlewareType, MiddlewareTypes, bindMiddlewareName } from './middlewares';
 import { InjectToken } from '@tsdi/ioc';
-import { RouterMiddleware } from './router';
+import { RouterMiddleware, CorsMiddleware } from './router';
 const logger = require('koa-logger')
 const serve = require('koa-static');
 const views = require('koa-views');
@@ -21,6 +21,7 @@ export const DefaultMvcMiddlewaresToken = new InjectToken<MvcMiddlewareType[]>('
 export const DefaultMvcMiddlewares: MvcMiddlewareType[] = [
     () => bindMiddlewareName(helmet(), MiddlewareTypes.Helmet),
     () => bindMiddlewareName(logger(), MiddlewareTypes.Logger),
+    CorsMiddleware,
     () => bindMiddlewareName(bodyParser(), MiddlewareTypes.BodyParser),
     () => bindMiddlewareName(json(), MiddlewareTypes.Json),
     (config, ctx) => {
@@ -37,6 +38,5 @@ export const DefaultMvcMiddlewares: MvcMiddlewareType[] = [
         console.log('view path:', viewPath, config.viewsOptions);
         return bindMiddlewareName(views(viewPath, config.viewsOptions), MiddlewareTypes.View);
     },
-    // CorsMiddleware,
     RouterMiddleware
 ];

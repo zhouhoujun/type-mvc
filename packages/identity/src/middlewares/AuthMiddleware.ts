@@ -1,7 +1,8 @@
-import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext, RouteChecker } from '@mvx/mvc';
+import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext, RouteChecker, PassportConfigure } from '@mvx/mvc';
 import { Inject } from '@tsdi/ioc';
 import { Authenticator, PassportBuildService, ConfigurePassportBuildService } from '../passports';
 import { AuthRoutesToken } from '../registers/ControllerAuthRegisterAction';
+import { AuthFlowService } from './AuthFlowService';
 
 /**
  * authentication middleware.
@@ -62,9 +63,21 @@ export class AuthMiddleware extends CompositeMiddleware {
         this.use(this.passport.initialize());
         this.use(async (ctx, next) => {
             if (this.reuqireAuth(ctx)) {
+                let container = ctx.getRaiseContainer();
+                let flow = container.getService(AuthFlowService);
+                if (flow) {
+                    await flow.auth(ctx, next);
+                } else {
+                    if (context.configuration.passports.default) {
+                        let flowOption = context.configuration.passports.default;
+                        await this.passport.authenticate(flowOption.strategy, flowOption.options)(ctx, next);
+                    } else {
+                        await this.passport.session()(ctx, next);
+                    }
+                }
+            } else {
                 return await next();
             }
         });
-        this.use(this.passport.session());
     }
 }

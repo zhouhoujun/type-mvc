@@ -5,4 +5,4 @@ export * from './ControllerRoute';
 export * from './IModelParser';
 export * from './ModelParser';
 export * from './RouterMiddleware';
-// export * from './CorsMiddleware';
+export * from './CorsMiddleware';

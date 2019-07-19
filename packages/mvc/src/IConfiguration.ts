@@ -51,6 +51,11 @@ export interface ITransformAuthInfo {
 
 export type TransformAuthInfoOption = Type<ITransformAuthInfo> | ((info, ctx: IContext) => Promise<any>);
 
+export interface IAuthFlowOption {
+    strategy: string;
+    options: any;
+}
+
 /**
  * strategy option.
  *
@@ -58,12 +63,13 @@ export type TransformAuthInfoOption = Type<ITransformAuthInfo> | ((info, ctx: IC
  * @interface IStrategyOption
  */
 export interface IStrategyOption extends ObjectMap {
-    strategy: string | Type;
+    strategy: string;
     name?: string;
     verify?: Function
 }
 
 export interface PassportConfigure {
+    default?: IAuthFlowOption;
     strategies: IStrategyOption[];
     serializers?: SerializeUserOption[];
     deserializers?: DeserializeUserOption[];

@@ -88,6 +88,7 @@ export interface MiddlewareClass<T extends IMiddleware> extends Type<T>, Middlew
 export enum MiddlewareTypes {
     Helmet = 'helmet',
     BodyParser = 'bodyParser',
+    Cors = 'Cors',
     Csrf = 'Csrf',
     Json = 'json',
     Logger = 'logger',

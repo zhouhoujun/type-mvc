@@ -23,13 +23,16 @@ export class Router extends CompositeMiddleware {
                 this.resetFuncs();
                 this.sorted = true;
             }
-            ctx.__routerNext = next;
-            return super.execute(ctx, next);
+            if (ctx._corsCheck) {
+                ctx.__corsNext = next;
+            } else {
+                ctx.__routeNext = next;
+            }
+            return super.execute(ctx);
         } else {
             return next();
         }
     }
-
 
     getChecker() {
         return this.container.get(RouteChecker);

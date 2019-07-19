@@ -120,7 +120,8 @@ export class LocalStrategyTest {
     @Test('loacl has stup.')
     test1() {
         let auth = this.ctx.getRaiseContainer().resolve(Authenticator);
-        expect(auth['strategies'].has('local')).toBeTruthy();
+        console.log(auth['strategies'])
+        expect(auth.get('local')).toBeTruthy();
     }
 
 

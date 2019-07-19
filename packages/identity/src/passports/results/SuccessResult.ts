@@ -26,7 +26,6 @@ export class SuccessResult extends ValidationResult {
 
         let user = this.user;
         let info = this.info || <any>{};
-        // ctx.session.passport.user = user;
         if (callback) {
             return callback(null, user, info);
         }
@@ -53,7 +52,6 @@ export class SuccessResult extends ValidationResult {
         }
         if (options.assignProperty) {
             ctx.state[options.assignProperty] = user;
-            return await next();
         }
 
         await ctx.login(user);
@@ -72,6 +70,5 @@ export class SuccessResult extends ValidationResult {
         if (options.successRedirect) {
             return ctx.redirect(options.successRedirect);
         }
-        return await next();
     }
 }
