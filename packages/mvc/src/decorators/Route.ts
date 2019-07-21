@@ -1,9 +1,10 @@
 import {
     createMethodDecorator, IMethodDecorator, MetadataExtends,
-    isClassMetadata, MetadataAdapter, isString, isNumber
+    isClassMetadata, MetadataAdapter, isString, isNumber, isArray
 } from '@tsdi/ioc';
 import { RequestMethod } from '../RequestMethod';
 import { RouteMetadata } from '../metadata';
+import { MiddlewareType } from '../middlewares';
 
 
 /**
@@ -22,6 +23,16 @@ export interface IRouteMethodDecorator<T extends RouteMetadata> extends IMethodD
      * @param {RequestMethod} [method] set request method.
      */
     (route: string, contentType?: string, method?: RequestMethod): MethodDecorator;
+
+    /**
+     * route decorator. define the controller method as an route.
+     *
+     * @param {string} route route sub path.
+     * @param {MiddlewareType[]} middlewares the middlewares for the route.
+     * @param {string} [contentType] set request contentType.
+     * @param {RequestMethod} [method] set request method.
+     */
+    (route: string, middlewares: MiddlewareType[], contentType?: string, method?: RequestMethod): MethodDecorator;
 }
 
 /**
@@ -49,9 +60,24 @@ export function createRouteDecorator<T extends RouteMetadata>(
             });
 
             args.next<RouteMetadata>({
-                match: (arg) => isString(arg),
+                match: (arg) => isString(arg) || isArray(arg),
                 setMetadata: (metadata, arg) => {
-                    metadata.contentType = arg;
+                    if (isArray(arg)) {
+                        metadata.middlewares = arg;
+                    } else {
+                        metadata.contentType = arg;
+                    }
+                }
+            });
+
+            args.next<RouteMetadata>({
+                match: (arg) => isString(arg) || isNumber(arg),
+                setMetadata: (metadata, arg) => {
+                    if (isNumber) {
+                        metadata.method = arg;
+                    } else {
+                        metadata.contentType = arg;
+                    }
                 }
             });
 

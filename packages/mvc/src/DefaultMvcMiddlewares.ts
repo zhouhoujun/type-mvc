@@ -21,7 +21,6 @@ export const DefaultMvcMiddlewaresToken = new InjectToken<MvcMiddlewareType[]>('
 export const DefaultMvcMiddlewares: MvcMiddlewareType[] = [
     () => bindMiddlewareName(helmet(), MiddlewareTypes.Helmet),
     () => bindMiddlewareName(logger(), MiddlewareTypes.Logger),
-    CorsMiddleware,
     () => bindMiddlewareName(bodyParser(), MiddlewareTypes.BodyParser),
     () => bindMiddlewareName(json(), MiddlewareTypes.Json),
     (config, ctx) => {
@@ -38,5 +37,6 @@ export const DefaultMvcMiddlewares: MvcMiddlewareType[] = [
         console.log('view path:', viewPath, config.viewsOptions);
         return bindMiddlewareName(views(viewPath, config.viewsOptions), MiddlewareTypes.View);
     },
+    CorsMiddleware,
     RouterMiddleware
 ];

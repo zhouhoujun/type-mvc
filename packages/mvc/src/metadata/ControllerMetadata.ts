@@ -1,4 +1,5 @@
 import { ClassMetadata } from '@tsdi/ioc';
+import { MiddlewareType } from '../middlewares';
 
 
 /**
@@ -16,4 +17,12 @@ export interface ControllerMetadata extends ClassMetadata {
      * @memberof ControllerMetadata
      */
     routePrefix?: string;
+
+    /**
+     * the middlewares for the route.
+     *
+     * @type {MiddlewareType[]}
+     * @memberof ControllerMetadata
+     */
+    middlewares?: MiddlewareType[];
 }

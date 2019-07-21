@@ -1,5 +1,6 @@
 import { MethodMetadata } from '@tsdi/ioc';
 import { RequestMethod } from '../RequestMethod';
+import { MiddlewareType } from '../middlewares';
 
 /**
  * route metadata.
@@ -31,4 +32,12 @@ export interface RouteMetadata extends MethodMetadata {
      * @memberof RouteMetadata
      */
     method?: RequestMethod;
+
+    /**
+     * middlewares
+     *
+     * @type {MiddlewareType[]}
+     * @memberof RouteMetadata
+     */
+    middlewares?: MiddlewareType[]
 }

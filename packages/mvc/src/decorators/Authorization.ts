@@ -1,12 +1,20 @@
 import {
     TypeMetadata, IClassMethodDecorator, createClassMethodDecorator,
-    ClassMethodDecorator, isClassMetadata, isString
+    ClassMethodDecorator, isClassMetadata, isString, isArray
 } from '@tsdi/ioc';
+import { MiddlewareType } from '../middlewares';
 
 /**
  * authorization metadata.
  */
 export interface AuthorizationMetadata extends TypeMetadata {
+    /**
+     * middleware to auth.
+     *
+     * @type {MiddlewareType[]}
+     * @memberof AuthorizationMetadata
+     */
+    middlewares?: MiddlewareType[];
     /**
      * role
      *
@@ -35,6 +43,16 @@ export interface IAuthorizationDecorator<T extends AuthorizationMetadata> extend
      * @param {string} [role] auth role.
      */
     (role?: string): ClassMethodDecorator;
+
+    /**
+     * Authorization decorator, define class or method need auth check.
+     *
+     * @Authorization
+     *
+     * @param {MvcMiddlewareType[]} middlewares the middlewares for the route.
+     * @param {string} [role] auth role.
+     */
+    (middlewares: MiddlewareType[], role?: string): ClassMethodDecorator;
 }
 
 
@@ -47,6 +65,16 @@ export const Authorization: IAuthorizationDecorator<AuthorizationMetadata> = cre
     adapter => {
         adapter.next<AuthorizationMetadata>({
             isMetadata: (arg) => isClassMetadata(arg, 'role'),
+            match: (arg) => isString(arg) || isArray(arg),
+            setMetadata: (metadata, arg) => {
+                if (isArray(arg)) {
+                    metadata.middlewares = arg;
+                } else {
+                    metadata.role = arg;
+                }
+            }
+        });
+        adapter.next<AuthorizationMetadata>({
             match: (arg) => isString(arg),
             setMetadata: (metadata, arg) => {
                 metadata.role = arg;

@@ -14,7 +14,7 @@ import { Cors, Route } from '../decorators';
 import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
 import { ModelParser } from './ModelParser';
 import { DefaultModelParserToken } from './IModelParser';
-import { MvcMiddleware, MvcMiddlewares } from '../middlewares';
+import { MvcMiddleware, MvcMiddlewares, MiddlewareType } from '../middlewares';
 
 declare let Buffer: any;
 
@@ -26,18 +26,37 @@ export function isBuffer(target: any): boolean {
     }
 }
 
-export const RouteControllerArgToekn = new InjectToken<Type>('route_controller_args');
+export const RouteControllerArgToken = new InjectToken<Type>('route_controller_args');
+
+export const RouteControllerMiddlewaresToken = new InjectToken<any[]>('route_controller_middlewares');
 
 @Injectable
 export class ControllerRoute extends MvcRoute {
 
-    constructor(@Inject(RouteUrlArgToken) url: string, @Inject(RouteControllerArgToekn) private controller: Type) {
+    constructor(
+        @Inject(RouteUrlArgToken) url: string,
+        @Inject(RouteControllerArgToken) private controller: Type,
+        @Inject(RouteControllerMiddlewaresToken) private middlewares: MiddlewareType[]
+    ) {
         super(url);
     }
 
     async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        await this.invoke(ctx);
-        return await next();
+        let meta = this.getRouteMetaData(ctx, parseRequestMethod(ctx.method));
+        let middlewares = this.getRouteMiddleware(ctx, meta);
+        if (middlewares.length) {
+            await this.execFuncs(ctx, middlewares.map(m => this.parseAction(m)), async () => {
+                await this.invoke(ctx, meta);
+                return await next();
+            });
+        } else {
+            await this.invoke(ctx, meta);
+            return await next();
+        }
+    }
+
+    protected getRouteMiddleware(ctx: IContext, meta: RouteMetadata) {
+        return [...(this.middlewares || []), ...(meta.middlewares || [])];
     }
 
     async options(ctx: IContext, next: () => Promise<void>): Promise<void> {
@@ -176,8 +195,7 @@ export class ControllerRoute extends MvcRoute {
         }
         return null;
     }
-    async invoke(ctx: IContext) {
-        let meta = this.getRouteMetaData(ctx, parseRequestMethod(ctx.method));
+    async invoke(ctx: IContext, meta: RouteMetadata) {
         let container = this.container;
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);

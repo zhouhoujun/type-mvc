@@ -1,5 +1,6 @@
-import { createClassDecorator, ITypeDecorator, isString, Registration, ArgsIterator } from '@tsdi/ioc';
+import { createClassDecorator, ITypeDecorator, isString, Registration, ArgsIterator, isArray } from '@tsdi/ioc';
 import { ControllerMetadata } from '../metadata';
+import { MiddlewareType } from '../middlewares';
 
 /**
  * Controller decorator, define the class as mvc controller.
@@ -22,6 +23,16 @@ export interface IControllerDecorator<T extends ControllerMetadata> extends ITyp
     /**
      * Controller decorator. define the class as mvc controller.
      * @Controller
+     *
+     * @param {string} routePrefix route prefix of this controller.
+     * @param {MiddlewareType[]} middlewares the middlewares for the route.
+     * @param {(Registration | symbol | string)} provide define this controller provider for provide.
+     * @param {string} [alias] define this controller provider with alias for provide.
+     */
+    (routePrefix: string, middlewares: MiddlewareType[], provide?: Registration | symbol | string, alias?: string): ClassDecorator;
+    /**
+     * Controller decorator. define the class as mvc controller.
+     * @Controller
      */
     (target: Function): void;
 }
@@ -36,6 +47,12 @@ export const Controller: IControllerDecorator<ControllerMetadata> =
             match: (arg) => isString(arg),
             setMetadata: (metadata, arg) => {
                 metadata.routePrefix = arg;
+            }
+        });
+        args.next<ControllerMetadata>({
+            match: (arg) => isArray(arg),
+            setMetadata: (metadata, arg) => {
+                metadata.middlewares = arg;
             }
         });
     }) as IControllerDecorator<ControllerMetadata>;

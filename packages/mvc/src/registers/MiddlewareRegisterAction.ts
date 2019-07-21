@@ -8,13 +8,12 @@ export class MiddlewareRegisterAction extends IocDesignAction {
         let metas = getOwnTypeMetadata<MiddlewareMetadata>(ctx.currDecoractor, ctx.targetType);
         let meta = metas.find(meta => !!meta.before || !!meta.after) || lang.first(metas);
 
-        let mType = ctx.targetType as MiddlewareClass<IMiddleware>;
-
-        mType.middleName = meta ? meta.name : lang.getClassName(mType)
-
-        this.container.resolve(MiddlewareRegister)
-            .set(mType, meta)
-
+        if (meta.scope === 'global') {
+            let mType = ctx.targetType as MiddlewareClass<IMiddleware>;
+            mType.middleName = meta ? meta.name : lang.getClassName(mType)
+            this.container.resolve(MiddlewareRegister)
+                .set(mType, meta)
+        }
         next();
     }
 }

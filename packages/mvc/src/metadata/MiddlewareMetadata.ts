@@ -18,6 +18,14 @@ export interface MiddlewareMetadata extends ClassMetadata {
     name?: string;
 
     /**
+     * middleware used scope.
+     *
+     * @type {('global' | 'route')}
+     * @memberof MiddlewareMetadata
+     */
+    scope?: 'global' | 'route';
+
+    /**
      * the middleware reg in.
      *
      * @type {Type<CompositeMiddleware>}
