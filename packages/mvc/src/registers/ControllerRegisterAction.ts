@@ -18,7 +18,7 @@ export class ControllerRegisterAction extends IocDesignAction {
                 prefix = '/' + prefix;
             }
             let middlewares = ctlmeta.middlewares;
-            router.routes(prefix, this.container.get(ControllerRoute,
+            router.routes(this.container.get(ControllerRoute,
                 { provide: RouteUrlArgToken, useValue: prefix },
                 { provide: RouteControllerArgToken, useValue: ctx.targetType },
                 { provide: RouteControllerMiddlewaresToken, useValue: middlewares }))

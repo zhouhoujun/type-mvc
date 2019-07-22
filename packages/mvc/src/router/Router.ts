@@ -1,21 +1,19 @@
-import { HandleType } from '@tsdi/boot';
 import { CompositeMiddleware } from '../middlewares';
 import { Singleton } from '@tsdi/ioc';
-import { RouteUrlArgToken } from './Route';
-import { CustomRoute, CustomHandleArgToken } from './CustomRoute';
 import { RouteChecker } from '../services';
 import { IContext } from '../IContext';
+import { MvcRoute } from './Route';
 
 @Singleton
 export class Router extends CompositeMiddleware {
 
     sorted = false;
 
-    execute(ctx: IContext, next?: () => Promise<void>): Promise<void> {
+    async execute(ctx: IContext, next?: () => Promise<void>): Promise<void> {
         if ((!ctx.status || ctx.status === 404) && this.isRouteUrl(ctx.url)) {
             if (!this.sorted) {
                 this.handles = this.handles.sort((a, b) => {
-                    if (a instanceof CustomRoute && b instanceof CustomRoute) {
+                    if (a instanceof MvcRoute && b instanceof MvcRoute) {
                         return (b.url || '').length - (a.url || '').length;
                     }
                     return -1;
@@ -25,9 +23,9 @@ export class Router extends CompositeMiddleware {
             }
 
             ctx.__routeNext = next;
-            return super.execute(ctx);
+            return await super.execute(ctx);
         } else {
-            return next();
+            return await next();
         }
     }
 
@@ -39,10 +37,8 @@ export class Router extends CompositeMiddleware {
         return this.getChecker().isRoute(route);
     }
 
-    routes(route: string, handle: HandleType<IContext>): this {
-        this.use(this.container.resolve(CustomRoute,
-            { provide: RouteUrlArgToken, useValue: route },
-            { provide: CustomHandleArgToken, useValue: handle }));
+    routes(route: MvcRoute): this {
+        this.use(route);
         this.sorted = false;
 
         return this;

@@ -1,11 +1,11 @@
 import { MvcMiddleware } from '../middlewares';
-import { InjectToken } from '@tsdi/ioc';
+import { InjectToken, Abstract } from '@tsdi/ioc';
 import { IContext } from '../IContext';
 import { RouteChecker } from '../services';
 
 export const RouteUrlArgToken = new InjectToken<string>('route_url');
 
-
+@Abstract()
 export abstract class MvcRoute extends MvcMiddleware {
 
     protected metaUrl: string;
@@ -46,7 +46,7 @@ export abstract class MvcRoute extends MvcMiddleware {
     }
 
 
-    protected math(ctx: IContext): boolean {
+    protected match(ctx: IContext): boolean {
         if (ctx.status && ctx.status !== 404) {
             return false;
         }
@@ -59,7 +59,7 @@ export abstract class MvcRoute extends MvcMiddleware {
 
 
     execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        if (this.math(ctx)) {
+        if (this.match(ctx)) {
             if (!ctx._corsCheck && ctx.method !== 'OPTIONS') {
                 return this.navigate(ctx, this.getRouteNext(ctx));
             } else {
