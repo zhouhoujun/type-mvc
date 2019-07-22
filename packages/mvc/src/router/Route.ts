@@ -57,16 +57,13 @@ export abstract class MvcRoute extends MvcMiddleware {
         return ctx.__routeNext;
     }
 
-    protected getCorsNext(ctx: IContext): () => Promise<void> {
-        return ctx.__corsNext;
-    }
 
     execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
         if (this.math(ctx)) {
             if (!ctx._corsCheck && ctx.method !== 'OPTIONS') {
                 return this.navigate(ctx, this.getRouteNext(ctx));
             } else {
-                return this.options(ctx, this.getCorsNext(ctx))
+                return this.options(ctx, this.getRouteNext(ctx))
             }
         } else {
             return next();
