@@ -23,7 +23,7 @@ export class Router extends CompositeMiddleware {
             }
 
             ctx.__routeNext = next;
-            return await super.execute(ctx, next);
+            return await super.execute(ctx);
         } else {
             return await next();
         }
