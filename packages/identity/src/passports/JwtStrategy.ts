@@ -153,8 +153,6 @@ export namespace JwtRequest {
         };
     }
 
-
-
     export function fromBodyField(fieldName) {
         return function (request) {
             var token = null;
@@ -164,8 +162,6 @@ export namespace JwtRequest {
             return token;
         };
     }
-
-
 
     export function fromUrlQueryParameter(paramName) {
         return function (request) {
@@ -177,8 +173,6 @@ export namespace JwtRequest {
             return token;
         };
     }
-
-
 
     export function fromAuthHeaderWithScheme(authScheme) {
         var authSchemeLower = authScheme.toLowerCase();
@@ -195,12 +189,9 @@ export namespace JwtRequest {
         };
     }
 
-
-
     export function fromAuthHeaderAsBearerToken() {
         return fromAuthHeaderWithScheme(BEARER_AUTH_SCHEME);
     }
-
 
     export function fromExtractors(extractors) {
         if (!Array.isArray(extractors)) {
