@@ -6,6 +6,7 @@ import { ComponentsModule, ElementModule } from '@tsdi/components';
 import { IocExt, ContainerToken, IContainer } from '@tsdi/core';
 import { Inject, DesignDecoratorRegisterer, DecoratorScopes } from '@tsdi/ioc';
 import { ControllerAuthRegisterAction, AuthRoutesToken } from './registers/ControllerAuthRegisterAction';
+import { IdentityStartupService } from './IdentityStartupService';
 
 
 @IocExt('setup')
@@ -33,6 +34,7 @@ class IdentitySetupModule {
 @MvcModule({
     imports: [
         IdentitySetupModule,
+        IdentityStartupService,
         ComponentsModule,
         ElementModule,
         passports,
@@ -42,7 +44,8 @@ class IdentitySetupModule {
     exports: [
         passports,
         vaildates,
-        middlewares
+        middlewares,
+        IdentityStartupService
     ]
 })
 export class IdentityModule {

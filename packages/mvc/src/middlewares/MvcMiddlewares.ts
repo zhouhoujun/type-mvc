@@ -21,12 +21,13 @@ export class MvcMiddlewares extends CompositeMiddleware {
      * @memberof MvcMiddlewares
      */
     setup(mvcContext: MvcContext) {
-        mvcContext.getKoa().use((ctx: IContext, next) => {
+        mvcContext.getKoa().use(async (ctx: IContext, next) => {
             ctx.mvcContext = mvcContext;
             mvcContext.app = ctx.app as any;
             mvcContext.getRaiseContainer().bindProvider(ContextToken, ctx);
             ctx.getRaiseContainer = () => mvcContext.getRaiseContainer();
-            return this.execute(ctx, next);
+            await this.execute(ctx);
+            return await next();
         });
     }
 }

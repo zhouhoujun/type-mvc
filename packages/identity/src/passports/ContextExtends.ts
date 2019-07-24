@@ -1,5 +1,5 @@
 import { BaseContext, Context } from 'koa';
-
+import './IAuthenticator';
 
 /**
  * Intiate a login session for `user`.
@@ -42,11 +42,8 @@ function logout(this: Context): void {
         return;
     }
     const property = this.passport.userProperty;
-    this.state[property] = null;
-    // if (this._passport && this._passport.session) {
-    //     delete this._passport.session.user;
-    // }
-    this.session.passport.user = undefined;
+    delete this.state[property];
+    delete this.session.passport.user;
 }
 
 /**

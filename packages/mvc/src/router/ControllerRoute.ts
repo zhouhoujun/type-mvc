@@ -45,13 +45,20 @@ export class ControllerRoute extends MvcRoute {
         let meta = this.getRouteMetaData(ctx, parseRequestMethod(ctx.method));
         let middlewares = this.getRouteMiddleware(ctx, meta);
         if (middlewares.length) {
-            await this.execFuncs(ctx, middlewares.map(m => this.parseAction(m)), async () => {
-                await this.invoke(ctx, meta);
-                return await next();
+            await this.execFuncs(ctx, middlewares.map(m => this.parseAction(m)), () => {
+                return this.navigating(ctx, meta, next);
             });
         } else {
+            await this.navigating(ctx, meta, next);
+        }
+    }
+
+    async navigating(ctx: IContext, meta: RouteMetadata, next: () => Promise<void>) {
+        try {
             await this.invoke(ctx, meta);
-            return await next();
+            ctx.status = 200;
+        } catch (err) {
+            this.catchHttpError(ctx, err);
         }
     }
 

@@ -1,6 +1,6 @@
-import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext, RouteChecker, PassportConfigure } from '@mvx/mvc';
+import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext, RouteChecker, ContextToken } from '@mvx/mvc';
 import { Inject } from '@tsdi/ioc';
-import { Authenticator, PassportBuildService, ConfigurePassportBuildService } from '../passports';
+import { Authenticator } from '../passports';
 import { AuthRoutesToken } from '../registers/ControllerAuthRegisterAction';
 import { AuthFlowService } from './AuthFlowService';
 
@@ -13,7 +13,7 @@ import { AuthFlowService } from './AuthFlowService';
  */
 @Middleware({
     name: 'auth',
-    after: MiddlewareTypes.BodyParser
+    before: MiddlewareTypes.View
 })
 export class AuthMiddleware extends CompositeMiddleware {
 
@@ -37,7 +37,9 @@ export class AuthMiddleware extends CompositeMiddleware {
             this.hasInit = true;
         }
         await super.execute(ctx);
-        await next();
+        ctx.passport = this.passport;
+        ctx.getRaiseContainer().bindProvider(ContextToken, ctx);
+        return await next();
     }
 
     reuqireAuth(ctx: IContext): boolean {
@@ -52,31 +54,23 @@ export class AuthMiddleware extends CompositeMiddleware {
     }
 
     protected async setup(context: MvcContext) {
-        let services = context.getRaiseContainer().getServices(PassportBuildService);
-        // config build first.
-        let cfs = services.find(s => s instanceof ConfigurePassportBuildService);
-        if (cfs && services.indexOf(cfs) > 0) {
-            services.splice(services.indexOf(cfs), 1);
-            services.unshift(cfs);
-        }
-        await Promise.all(services.map(s => s.build(this.passport, context.configuration)));
         this.use(this.passport.initialize());
         this.use(async (ctx, next) => {
             if (this.reuqireAuth(ctx)) {
-                let container = ctx.getRaiseContainer();
-                let flow = container.getService(AuthFlowService);
-                if (flow) {
-                    await flow.auth(ctx, next);
-                } else {
-                    if (context.configuration.passports.default) {
-                        let flowOption = context.configuration.passports.default;
-                        await this.passport.authenticate(flowOption.strategy, flowOption.options)(ctx, next);
-                    } else {
-                        await this.passport.session()(ctx, next);
-                    }
-                }
+                await next();
+            }
+        })
+        this.use(this.passport.session());
+        this.use(async (ctx, next) => {
+            let container = ctx.getRaiseContainer();
+            let flow = container.getService(AuthFlowService);
+            if (flow) {
+                await flow.auth(ctx, next);
             } else {
-                return await next();
+                if (context.configuration.passports.default) {
+                    let flowOption = context.configuration.passports.default;
+                    await this.passport.authenticate(flowOption.strategy, flowOption.options)(ctx, next);
+                }
             }
         });
     }
