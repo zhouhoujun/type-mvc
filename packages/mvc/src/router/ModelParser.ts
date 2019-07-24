@@ -1,6 +1,6 @@
 import {
     Type, PropertyMetadata, isUndefined, Inject, isClass, ObjectMap,
-    isBaseType, isArray, lang, Abstract, SymbolType, Singleton
+    isBaseType, isArray, lang, Abstract, SymbolType, Singleton, isNullOrUndefined
 } from '@tsdi/ioc';
 import { IModelParser } from './IModelParser';
 import { ContainerToken, IContainer } from '@tsdi/core';
@@ -49,8 +49,8 @@ export abstract class ModelParser implements IModelParser {
 
 
     parseModel(type: Type, objMap: any): any {
+        let parser = this.container.get(BaseTypeParserToken);
         if (isBaseType(type)) {
-            let parser = this.container.get(BaseTypeParserToken)
             return parser.parse(type, objMap);
         }
         let meta = this.getPropertyMeta(type);
@@ -64,11 +64,13 @@ export abstract class ModelParser implements IModelParser {
                         continue;
                     }
                     let reqval = objMap[n];
+                    if (isNullOrUndefined(reqval)) {
+                        continue;
+                    }
                     let parmVal;
                     if (this.isExtendBaseType(propmeta.type)) {
                         parmVal = this.resolveExtendType(propmeta.type, reqval);
                     } else if (isBaseType(lang.getClass(propmeta.type))) {
-                        let parser = this.container.get(BaseTypeParserToken)
                         parmVal = parser.parse(propmeta.type, reqval);
                     } else if (lang.isExtendsClass(propmeta.type, Array)) {
                         if (isArray(reqval)) {

@@ -2,7 +2,7 @@ import {
     lang, Injectable, Type, getMethodMetadata, isFunction, isBaseType,
     isUndefined, ParamProviders, Provider, isClass, IParameter, isObject,
     isArray, isPromise, getTypeMetadata,
-    isString, RuntimeLifeScope, Inject, InjectToken, getClassDecorators, isNumber
+    isString, RuntimeLifeScope, Inject, InjectToken, getClassDecorators, isNumber, isNullOrUndefined
 } from '@tsdi/ioc';
 import { MvcRoute, RouteUrlArgToken } from './Route';
 import { IContext } from '../IContext';
@@ -257,7 +257,7 @@ export class ControllerRoute extends MvcRoute {
                 });
             }
             let body = ctx.request.body || {};
-
+            let parser = this.container.get(BaseTypeParserToken);
             let providers: ParamProviders[] = await Promise.all(params.map(async (param, idx) => {
                 let ptype = param.type;
                 let val = null;
@@ -267,7 +267,6 @@ export class ControllerRoute extends MvcRoute {
                         if (isUndefined(paramVal)) {
                             paramVal = ctx.request.query[param.name];
                         }
-                        let parser = this.container.get(BaseTypeParserToken);
                         val = parser.parse(ptype, paramVal);
                     } else if (isClass(ptype)) {
                         let mdparser = this.container.getService({ token: ModelParser, target: [ptype, ...getClassDecorators(ptype)], defaultToken: DefaultModelParserToken });
