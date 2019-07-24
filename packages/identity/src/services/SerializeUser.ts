@@ -1,6 +1,6 @@
-import { ISerializeUser } from '@mvx/mvc';
 import { Abstract } from '@tsdi/ioc';
 import { Context } from 'koa';
+import { ISerializeUser } from '../passports';
 
 @Abstract()
 export abstract class SerializeUser implements ISerializeUser {

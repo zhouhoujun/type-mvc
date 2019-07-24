@@ -1,6 +1,5 @@
-import { Authenticator } from './Authenticator';
 import { Abstract, Inject, Injectable, isClass, isFunction } from '@tsdi/ioc';
-import { IConfiguration, IStrategyOption, IContext } from '@mvx/mvc';
+import { IConfiguration, IContext } from '@mvx/mvc';
 import { IStrategy } from './IStrategy';
 import { ComponentBuilder, Component, ComponentSelectorHandle } from '@tsdi/components';
 import { Strategy } from './Strategy';
@@ -8,6 +7,7 @@ import { IContainer, ContainerToken } from '@tsdi/core';
 import { SerializeUser, DeserializeUser, TransformAuthInfo } from '../services';
 import { StrategySelectorHandle } from './StrategySelectorHandle';
 import { StartupDecoratorRegisterer, StartupScopes, HandleRegisterer } from '@tsdi/boot';
+import { IStrategyOption, IAuthenticator } from './IAuthenticator';
 
 /**
  * PassportBuildService
@@ -22,7 +22,7 @@ export abstract class PassportBuildService {
     @Inject()
     private builder: ComponentBuilder;
 
-    abstract build(passport: Authenticator, configuration: IConfiguration): Promise<void>;
+    abstract build(passport: IAuthenticator, configuration: IConfiguration): Promise<void>;
 
     async createStrategy(option: IStrategyOption): Promise<IStrategy> {
         return await this.builder.resolveTemplate({ template: option }) as IStrategy;
@@ -43,7 +43,7 @@ export class ConfigurePassportBuildService extends PassportBuildService {
     @Inject(ContainerToken)
     private container: IContainer;
 
-    async build(passport: Authenticator, configuration: IConfiguration): Promise<void> {
+    async build(passport: IAuthenticator, configuration: IConfiguration): Promise<void> {
         let register = this.container.resolve(StartupDecoratorRegisterer).getRegisterer(StartupScopes.TranslateTemplate);
         if (!register.has(StrategySelectorHandle)) {
             this.container.get(HandleRegisterer).register(this.container, StrategySelectorHandle);

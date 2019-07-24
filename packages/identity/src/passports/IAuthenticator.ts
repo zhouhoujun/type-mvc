@@ -1,9 +1,53 @@
 import { Middleware, Context } from 'koa';
 import { IStrategy } from './IStrategy';
-import { InjectToken } from '@tsdi/ioc';
-import { MvcContext } from '@mvx/mvc';
+import { InjectToken, ObjectMap, Type } from '@tsdi/ioc';
+import { MvcContext, IContext, MvcConfiguration } from '@mvx/mvc';
 
 
+
+export interface IDeserializeUser {
+    deserializeUser(obj: any, ctx?: IContext): Promise<any>;
+}
+
+export type DeserializeUserOption = Type<IDeserializeUser> | ((obj: any, ctx?: IContext) => Promise<any>)
+
+export interface ISerializeUser {
+    serializeUser(user: any, ctx: IContext): Promise<any>;
+}
+
+export type SerializeUserOption = Type<ISerializeUser> | ((user: any, ctx: IContext) => Promise<any>);
+
+export interface ITransformAuthInfo {
+    authInfo(info, ctx: IContext): Promise<any>;
+}
+
+export type TransformAuthInfoOption = Type<ITransformAuthInfo> | ((info, ctx: IContext) => Promise<any>);
+
+export interface IAuthFlowOption {
+    strategy: string;
+    options: any;
+}
+
+/**
+ * strategy option.
+ *
+ * @export
+ * @interface IStrategyOption
+ */
+export interface IStrategyOption extends ObjectMap {
+    strategy: string;
+    name?: string;
+    verify?: Function
+}
+
+export interface PassportConfigure {
+    default?: IAuthFlowOption;
+    initialize?: { userProperty?: string, rolesProperty?: string }
+    strategies: IStrategyOption[];
+    serializers?: SerializeUserOption[];
+    deserializers?: DeserializeUserOption[];
+    authInfos?: TransformAuthInfoOption[];
+}
 
 /**
  * authenticate option.
@@ -29,6 +73,18 @@ export interface AuthenticateOption {
 export interface VaildFailure {
     challenge: string | any;
     status: number;
+}
+
+
+declare module '@mvx/mvc' {
+    interface IConfiguration extends MvcConfiguration {
+        /**
+         * passports config.
+         *
+         * @memberof IConfiguration
+         */
+        passports?: PassportConfigure;
+    }
 }
 
 
@@ -156,7 +212,7 @@ export interface IAuthenticator {
      *     });
      *
      */
-    initialize(userProperty?: string): Middleware;
+    initialize(options?: { userProperty?: string, rolesProperty?: string }): Middleware;
     /**
      * Authenticates requests.
      *

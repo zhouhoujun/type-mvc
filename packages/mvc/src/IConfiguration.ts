@@ -33,49 +33,6 @@ export interface IConnectionOptions extends ObjectMap {
     entities?: Type[];
 }
 
-export interface IDeserializeUser {
-    deserializeUser(obj: any, ctx?: IContext): Promise<any>;
-}
-
-export type DeserializeUserOption = Type<IDeserializeUser> | ((obj: any, ctx?: IContext) => Promise<any>)
-
-export interface ISerializeUser {
-    serializeUser(user: any, ctx: IContext): Promise<any>;
-}
-
-export type SerializeUserOption = Type<ISerializeUser> | ((user: any, ctx: IContext) => Promise<any>);
-
-export interface ITransformAuthInfo {
-    authInfo(info, ctx: IContext): Promise<any>;
-}
-
-export type TransformAuthInfoOption = Type<ITransformAuthInfo> | ((info, ctx: IContext) => Promise<any>);
-
-export interface IAuthFlowOption {
-    strategy: string;
-    options: any;
-}
-
-/**
- * strategy option.
- *
- * @export
- * @interface IStrategyOption
- */
-export interface IStrategyOption extends ObjectMap {
-    strategy: string;
-    name?: string;
-    verify?: Function
-}
-
-export interface PassportConfigure {
-    default?: IAuthFlowOption;
-    strategies: IStrategyOption[];
-    serializers?: SerializeUserOption[];
-    deserializers?: DeserializeUserOption[];
-    authInfos?: TransformAuthInfoOption[];
-}
-
 /**
  * configuration token.
  */
@@ -113,7 +70,7 @@ export interface SubSite {
  * @interface IConfiguration
  * @extends {ObjectMap}
  */
-export interface IConfiguration extends RunnableConfigure {
+export interface MvcConfiguration extends RunnableConfigure {
     /**
      * cookies keys
      *
@@ -199,12 +156,6 @@ export interface IConfiguration extends RunnableConfigure {
      */
     controllers?: string | string[];
     /**
-     * passports config.
-     *
-     * @memberof IConfiguration
-     */
-    passports?: PassportConfigure;
-    /**
      * aspect service path. default: './aop'
      *
      * @type {(string | string[])}
@@ -251,6 +202,19 @@ export interface IConfiguration extends RunnableConfigure {
      */
     logConfig?: LogConfigure | Type<LogConfigure>;
 }
+
+/**
+ * Configuration
+ *
+ * @export
+ * @interface IConfiguration
+ * @extends {MvcConfiguration}
+ */
+export interface IConfiguration extends MvcConfiguration  {
+
+}
+
+
 
 /**
  * cors options

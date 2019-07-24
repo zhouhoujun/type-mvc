@@ -139,9 +139,9 @@ export class Authenticator implements IAuthenticator {
      *     });
      *
      */
-    public initialize(userProperty?: string, rolesProperty?: string): Middleware {
-        this._userProperty = userProperty || 'user';
-        this._rolesProperty = rolesProperty || 'roles';
+    public initialize(options: { userProperty?: string, rolesProperty?: string } = {}): Middleware {
+        this._userProperty = options.userProperty || 'user';
+        this._rolesProperty = options.rolesProperty || 'roles';
 
         return async (ctx: Context, next) => {
             ctx.passport = this;

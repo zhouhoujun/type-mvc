@@ -1,6 +1,6 @@
-import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext, RouteChecker, ContextToken } from '@mvx/mvc';
+import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext, RouteChecker, ContextToken, IConfiguration } from '@mvx/mvc';
 import { Inject } from '@tsdi/ioc';
-import { Authenticator } from '../passports';
+import { AuthenticatorToken, IAuthenticator } from '../passports';
 import { AuthRoutesToken } from '../registers/ControllerAuthRegisterAction';
 import { AuthFlowService } from './AuthFlowService';
 
@@ -19,8 +19,8 @@ export class AuthMiddleware extends CompositeMiddleware {
 
     private hasInit = false;
 
-    @Inject()
-    passport: Authenticator;
+    @Inject(AuthenticatorToken)
+    passport: IAuthenticator;
 
     private checker: RouteChecker;
     getChecker() {
@@ -54,7 +54,8 @@ export class AuthMiddleware extends CompositeMiddleware {
     }
 
     protected async setup(context: MvcContext) {
-        this.use(this.passport.initialize());
+        let configuration = context.configuration as IConfiguration;
+        this.use(this.passport.initialize(configuration.passports.initialize || {}));
         this.use(async (ctx, next) => {
             if (this.reuqireAuth(ctx)) {
                 await next();
@@ -67,8 +68,8 @@ export class AuthMiddleware extends CompositeMiddleware {
             if (flow) {
                 await flow.auth(ctx, next);
             } else {
-                if (context.configuration.passports.default) {
-                    let flowOption = context.configuration.passports.default;
+                if (configuration.passports.default) {
+                    let flowOption = configuration.passports.default;
                     await this.passport.authenticate(flowOption.strategy, flowOption.options)(ctx, next);
                 }
             }

@@ -1,6 +1,6 @@
-import { ITransformAuthInfo } from '@mvx/mvc';
 import { Abstract } from '@tsdi/ioc';
 import { Context } from 'koa';
+import { ITransformAuthInfo } from '../passports';
 
 @Abstract()
 export abstract class TransformAuthInfo implements ITransformAuthInfo {
