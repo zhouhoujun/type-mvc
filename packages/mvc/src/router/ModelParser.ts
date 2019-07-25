@@ -50,6 +50,9 @@ export abstract class ModelParser implements IModelParser {
 
     parseModel(type: Type, objMap: any): any {
         let parser = this.container.get(BaseTypeParserToken);
+        if (isArray(objMap)) {
+            return objMap.map(o => this.parseModel(type, o));
+        }
         if (isBaseType(type)) {
             return parser.parse(type, objMap);
         }
@@ -70,14 +73,14 @@ export abstract class ModelParser implements IModelParser {
                     let parmVal;
                     if (this.isExtendBaseType(propmeta.type)) {
                         parmVal = this.resolveExtendType(propmeta.type, reqval);
-                    } else if (isBaseType(lang.getClass(propmeta.type))) {
-                        parmVal = parser.parse(propmeta.type, reqval);
                     } else if (lang.isExtendsClass(propmeta.type, Array)) {
                         if (isArray(reqval)) {
                             parmVal = reqval.map(v => this.parseModel(lang.getClass(v), v));
                         } else {
                             parmVal = [];
                         }
+                    } else if (isBaseType(lang.getClass(propmeta.type))) {
+                        parmVal = parser.parse(propmeta.type, reqval);
                     } else if (isClass(propmeta.type)) {
                         parmVal = this.parseModel(propmeta.type, reqval);
                     }

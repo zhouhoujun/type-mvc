@@ -43,6 +43,9 @@ export class ControllerRoute extends MvcRoute {
 
     async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
         let meta = this.getRouteMetaData(ctx, parseRequestMethod(ctx.method));
+        if (!meta) {
+            return await next();
+        }
         let middlewares = this.getRouteMiddleware(ctx, meta);
         if (middlewares.length) {
             await this.execFuncs(ctx, middlewares.map(m => this.parseAction(m)), () => {
@@ -259,8 +262,8 @@ export class ControllerRoute extends MvcRoute {
             let body = ctx.request.body || {};
             let parser = this.container.get(BaseTypeParserToken);
             let providers: ParamProviders[] = await Promise.all(params.map(async (param, idx) => {
-                let ptype = param.type;
-                let val = null;
+                let ptype = param.provider ? this.container.getTokenProvider(param.provider) : param.type;
+                let val;
                 if (isFunction(ptype)) {
                     if (isBaseType(ptype)) {
                         let paramVal = restParams[param.name];
@@ -268,14 +271,25 @@ export class ControllerRoute extends MvcRoute {
                             paramVal = ctx.request.query[param.name];
                         }
                         val = parser.parse(ptype, paramVal);
-                    } else if (isClass(ptype)) {
-                        let mdparser = this.container.getService({ token: ModelParser, target: [ptype, ...getClassDecorators(ptype)], defaultToken: DefaultModelParserToken });
-                        if (mdparser) {
-                            val = mdparser.parseModel(ptype, body);
-                        } else {
-                            val = await this.container.get(BuilderService).resolve(ptype, { template: body })
+                    }
+                    if (isNullOrUndefined(val) && lang.hasField(body)) {
+                        if (isArray(ptype) && isArray(body)) {
+                            val = body;
+                        } else if (isBaseType(ptype)) {
+                            val = parser.parse(ptype, body[param.name]);
+                        } else if (isClass(ptype)) {
+                            let mdparser = this.container.getService({ token: ModelParser, target: [ptype, ...getClassDecorators(ptype)], defaultToken: DefaultModelParserToken });
+                            if (mdparser) {
+                                val = mdparser.parseModel(ptype, body);
+                            } else {
+                                val = await this.container.get(BuilderService).resolve(ptype, { template: body })
+                            }
                         }
                     }
+                }
+
+                if (isNullOrUndefined(val)) {
+                    return null;
                 }
                 return Provider.createParam(param.name || ptype, val, idx);
             }))
