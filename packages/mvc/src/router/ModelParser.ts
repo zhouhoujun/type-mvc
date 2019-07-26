@@ -49,40 +49,36 @@ export abstract class ModelParser implements IModelParser {
 
 
     parseModel(type: Type, objMap: any): any {
-        let parser = this.container.get(BaseTypeParserToken);
         if (isArray(objMap)) {
             return objMap.map(o => this.parseModel(type, o));
         }
+
+        let parser = this.container.get(BaseTypeParserToken);
         if (isBaseType(type)) {
             return parser.parse(type, objMap);
         }
         let meta = this.getPropertyMeta(type);
-        let result = this.container.get(type);
+        let result = this.container.resolve({token: type, regify: true });
         for (let n in meta) {
             let propmetas = meta[n];
             if (propmetas.length) {
                 if (!isUndefined(objMap[n])) {
-                    let propmeta = propmetas.find(p => p && (!!p.type));
+                    let propmeta = propmetas.find(p => p && !!(p.provider || p.type));
                     if (!propmeta) {
                         continue;
                     }
+                    let ptype = propmeta.provider ? this.container.getTokenProvider(propmeta.provider) : propmeta.type;
                     let reqval = objMap[n];
                     if (isNullOrUndefined(reqval)) {
                         continue;
                     }
                     let parmVal;
-                    if (this.isExtendBaseType(propmeta.type)) {
-                        parmVal = this.resolveExtendType(propmeta.type, reqval);
-                    } else if (lang.isExtendsClass(propmeta.type, Array)) {
-                        if (isArray(reqval)) {
-                            parmVal = reqval.map(v => this.parseModel(lang.getClass(v), v));
-                        } else {
-                            parmVal = [];
-                        }
-                    } else if (isBaseType(lang.getClass(propmeta.type))) {
-                        parmVal = parser.parse(propmeta.type, reqval);
-                    } else if (isClass(propmeta.type)) {
-                        parmVal = this.parseModel(propmeta.type, reqval);
+                    if (this.isExtendBaseType(ptype)) {
+                        parmVal = this.resolveExtendType(ptype, reqval);
+                    } else if (isBaseType(lang.getClass(ptype))) {
+                        parmVal = parser.parse(ptype, reqval);
+                    } else if (isClass(ptype)) {
+                        parmVal = this.parseModel(ptype, reqval);
                     }
                     result[n] = parmVal;
                 }
