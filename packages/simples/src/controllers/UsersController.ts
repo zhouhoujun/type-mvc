@@ -1,4 +1,4 @@
-import { Controller, Get, Post, IContext, ContextToken,  RequestMethod, Cors, Authorization } from '@mvx/mvc';
+import { Controller, Get, Post, IContext, ContextToken, RequestMethod, Cors, Authorization } from '@mvx/mvc';
 import { Inject } from '@tsdi/ioc';
 import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
@@ -49,8 +49,8 @@ export class UserController {
 
     // match request query param name.
     @Get('/query')
-    query(key: string, role: string, age?: number){
-        return { key: key, age: age, role: role}
+    query(key: string, role: string, age?: number) {
+        return { key: key, age: age, role: role }
     }
 
     @Get('/test/:id')

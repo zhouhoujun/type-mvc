@@ -1,5 +1,5 @@
 import { ModelParser, DefaultModelParserToken } from '@mvx/mvc';
-import { Singleton, Type, ObjectMap, PropertyMetadata, Autorun, SymbolType } from '@tsdi/ioc';
+import { Singleton, Type, ObjectMap, PropertyMetadata, Autorun, SymbolType, Token, isFunction } from '@tsdi/ioc';
 import { getMetadataArgsStorage } from 'typeorm';
 import { ColumnMetadataArgs } from 'typeorm/metadata-args/ColumnMetadataArgs';
 import { ObjectID } from 'mongodb';
@@ -26,7 +26,17 @@ export class TypeOrmModelParser extends ModelParser {
                     propertyKey: col.propertyName,
                     type: this.getModeType(col)
                 });
-            })
+            });
+        getMetadataArgsStorage().relations.filter(col => col.target === type)
+            .forEach(col => {
+                metas[col.propertyName] = metas[col.propertyName] || [];
+                let relaModel = isFunction(col.type) ? col.type() as Token : undefined;
+                metas[col.propertyName].push(<PropertyMetadata>{
+                    propertyKey: col.propertyName,
+                    provider: relaModel,
+                    type: (col.relationType === 'one-to-many' || col.relationType === 'many-to-many') ? Array : relaModel
+                });
+            });
         return metas;
     }
 
