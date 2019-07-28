@@ -1,6 +1,6 @@
 import {
     Type, PropertyMetadata, isUndefined, Inject, isClass, ObjectMap,
-    isBaseType, isArray, lang, Abstract, SymbolType, Singleton, isNullOrUndefined
+    isBaseType, isArray, Abstract, SymbolType, Singleton, isNullOrUndefined, isFunction
 } from '@tsdi/ioc';
 import { IModelParser } from './IModelParser';
 import { ContainerToken, IContainer } from '@tsdi/core';
@@ -69,13 +69,13 @@ export abstract class ModelParser implements IModelParser {
                     }
                     let ptype = propmeta.provider ? this.container.getTokenProvider(propmeta.provider) : propmeta.type;
                     let reqval = objMap[n];
-                    if (isNullOrUndefined(reqval)) {
+                    if (!isFunction(ptype) || isNullOrUndefined(reqval)) {
                         continue;
                     }
                     let parmVal;
                     if (this.isExtendBaseType(ptype)) {
                         parmVal = this.resolveExtendType(ptype, reqval);
-                    } else if (isBaseType(lang.getClass(ptype))) {
+                    } else if (isBaseType(ptype)) {
                         parmVal = parser.parse(ptype, reqval);
                     } else if (isClass(ptype)) {
                         parmVal = this.parseModel(ptype, reqval);
