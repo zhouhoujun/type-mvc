@@ -1,6 +1,6 @@
 {
   "name": "mvx-src",
-  "version": "3.0.0-beta.30",
+  "version": "3.0.0-beta.31",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "scripts": {
     "build": "tsdi build"

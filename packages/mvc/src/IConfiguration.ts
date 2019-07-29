@@ -31,6 +31,7 @@ export interface IConnectionOptions extends ObjectMap {
     password?: string;
     database: string;
     entities?: Type[];
+    initDb?(connect: any): Promise<void>;
 }
 
 /**
