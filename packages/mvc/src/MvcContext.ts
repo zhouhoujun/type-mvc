@@ -45,14 +45,6 @@ export const MvcContextToken = new InjectToken<MvcContext>('MVC_Context');
 @Injectable()
 @Refs('@MvcModule', BootContext)
 export class MvcContext extends BootContext {
-
-    /**
-     * logManager
-     *
-     * @type {ILoggerManager}
-     * @memberof MvcContext
-     */
-    logManager: ILoggerManager;
     /**
      * runable.
      *

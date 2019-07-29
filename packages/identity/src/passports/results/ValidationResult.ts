@@ -1,4 +1,5 @@
 import { Context } from 'koa';
+import '../IAuthenticator';
 
 /**
  * auth action

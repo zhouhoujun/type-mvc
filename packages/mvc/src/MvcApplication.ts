@@ -79,9 +79,6 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
 
     async register(config: IConfiguration, ctx: MvcContext): Promise<void> {
 
-        let orgConfig = config;
-        config = ctx.configuration = Object.assign({}, config, ctx.annoation);
-
         ctx.getKoa().keys = config.keys;
 
         if (config.debug) {
@@ -91,9 +88,8 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
         }
 
         let logConfig = config.logConfig;
-        if (logConfig) {
+        if (logConfig && !this.container.has(LogConfigureToken)) {
             this.container.bindProvider(LogConfigureToken, logConfig);
-            ctx.logManager = this.container.resolve(ConfigureLoggerManger);
         }
 
         if (!this.container.has(DefaultMvcMiddlewaresToken)) {
@@ -153,11 +149,11 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
                             autorun: false,
                             module: site.app,
                             regFor: RegFor.child,
-                            configures: [lang.omit(orgConfig, 'subsites')]
+                            configures: [lang.omit(config, 'subsites')]
                         });
                     koa = subCtx.getKoa() as any;
                 } else if (isFunction(site.app)) {
-                    koa = await site.app(orgConfig);
+                    koa = await site.app(config);
                 } else {
                     koa = site.app;
                 }

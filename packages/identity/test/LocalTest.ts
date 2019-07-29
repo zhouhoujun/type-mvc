@@ -65,7 +65,7 @@ export class TestController {
 
 }
 
-@MvcModule({
+@MvcModule(<IConfiguration>{
     imports: [
         IdentityModule,
         TestController
