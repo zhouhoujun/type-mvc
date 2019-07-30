@@ -3,6 +3,7 @@ import { Singleton, Type, ObjectMap, PropertyMetadata, Autorun, SymbolType, Toke
 import { getMetadataArgsStorage } from 'typeorm';
 import { ColumnMetadataArgs } from 'typeorm/metadata-args/ColumnMetadataArgs';
 import { ObjectID } from 'mongodb';
+import { isString } from 'util';
 
 @Singleton(DefaultModelParserToken)
 @Autorun('setup')
@@ -27,6 +28,7 @@ export class TypeOrmModelParser extends ModelParser {
                     type: this.getModeType(col)
                 });
             });
+
         getMetadataArgsStorage().relations.filter(col => col.target === type)
             .forEach(col => {
                 metas[col.propertyName] = metas[col.propertyName] || [];
@@ -43,6 +45,21 @@ export class TypeOrmModelParser extends ModelParser {
     protected getModeType(col: ColumnMetadataArgs) {
         let type: SymbolType = col.options.type;
         if (type) {
+            if (isString(type)) {
+                if (type === 'uuid') {
+                    return String;
+                } else if (/(int|float|double|dec)/.test(type)) {
+                    return Number;
+                } else if (/bool/.test(type)) {
+                    return Boolean;
+                } else if (/(var|string|text)/.test(type)) {
+                    return String;
+                } else if (/time/.test(type)) {
+                    return Date;
+                } else {
+                    return Object;
+                }
+            }
             return type;
         }
         switch (col.mode) {
