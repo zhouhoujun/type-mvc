@@ -111,7 +111,7 @@ import { IContainer, Injectable } from '@tsdi/core';
 
 
 @Middleware({
-    name: 'auth',
+    name: 'log-test',
     after: MiddlewareTypes.BodyParser
 })
 export class Logger implements IMiddleware {

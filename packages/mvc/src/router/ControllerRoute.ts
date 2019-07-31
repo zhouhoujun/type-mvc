@@ -62,7 +62,6 @@ export class ControllerRoute extends MvcRoute {
         } catch (err) {
             this.catchHttpError(ctx, err);
         }
-        // return await next();
     }
 
     protected getRouteMiddleware(ctx: IContext, meta: RouteMetadata) {

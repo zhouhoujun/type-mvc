@@ -114,7 +114,6 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
                 }
             });
         }
-        this.container.invoke(MiddlewareRegister, tag => tag.setup);
 
         // load extends midllewares.
         if (config.loadMiddlewares) {
@@ -123,6 +122,9 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
                 files: config.loadMiddlewares
             });
         }
+
+        this.container.invoke(MiddlewareRegister, tag => tag.setup);
+
 
         if (!ctx.httpServer) {
             if (config.httpsOptions) {

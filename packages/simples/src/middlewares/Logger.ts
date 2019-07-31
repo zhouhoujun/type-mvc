@@ -1,7 +1,7 @@
-import { Middleware, IMiddleware, IContext, MvcMiddleware, ForbiddenError } from '@mvx/mvc';
+import { Middleware, IMiddleware, IContext, MvcMiddleware, ForbiddenError, MiddlewareTypes } from '@mvx/mvc';
 
 
-@Middleware({ name: 'logger-test' })
+@Middleware({ name: 'logger-test', after: MiddlewareTypes.Helmet })
 export class Logger extends MvcMiddleware {
 
     async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
