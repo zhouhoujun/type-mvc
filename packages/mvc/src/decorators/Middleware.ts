@@ -30,6 +30,9 @@ export const Middleware: IMiddlewareDecorator<MiddlewareMetadata> = createClassD
     null,
     (metadata) => {
         metadata.singleton = true;
+        if (metadata.name) {
+            metadata.provide = metadata.name;
+        }
         if (!metadata.scope) {
             metadata.scope = 'global';
         }

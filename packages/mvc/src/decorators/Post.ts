@@ -2,6 +2,7 @@ import { RequestMethod } from '../RequestMethod';
 import { createRouteDecorator } from './Route';
 import { PostMetadata } from '../metadata';
 import { IMethodDecorator } from '@tsdi/ioc';
+import { MiddlewareType } from '../middlewares';
 
 
 /**
@@ -23,6 +24,16 @@ export interface IPostDecorator<T extends PostMetadata> extends IMethodDecorator
      * @param {string} [contentType] set request contentType.
      */
     (route: string, contentType?: string): MethodDecorator;
+    /**
+     * Post decorator. define the route method as Post.
+     *
+     * @Post
+     *
+     * @param {string} route route sub path.
+     * @param {MiddlewareType[]} middlewares the middlewares for the route.
+     * @param {string} [contentType] set request contentType.
+     */
+    (route: string, middlewares: MiddlewareType[], contentType?: string): MethodDecorator;
 }
 
 /**

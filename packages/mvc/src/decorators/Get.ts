@@ -2,6 +2,7 @@ import { createRouteDecorator } from './Route';
 import { RequestMethod } from '../RequestMethod';
 import { GetMetadata } from '../metadata';
 import { IMethodDecorator } from '@tsdi/ioc';
+import { MiddlewareType } from '../middlewares';
 
 
 
@@ -24,6 +25,17 @@ export interface IGetDecorator<T extends GetMetadata> extends IMethodDecorator<T
      * @param {string} [contentType] set request contentType.
      */
     (route: string, contentType?: string): MethodDecorator;
+
+    /**
+     * Get decorator. define the route method as get.
+     *
+     * @Get
+     *
+     * @param {string} route route sub path.
+     * @param {MiddlewareType[]} middlewares the middlewares for the route.
+     * @param {string} [contentType] set request contentType.
+     */
+    (route: string, middlewares: MiddlewareType[], contentType?: string): MethodDecorator;
 }
 
 

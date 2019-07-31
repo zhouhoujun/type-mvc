@@ -2,6 +2,7 @@ import { RequestMethod } from '../RequestMethod';
 import { createRouteDecorator } from './Route';
 import { PatchMetadata } from '../metadata';
 import { IMethodDecorator } from '@tsdi/ioc';
+import { MiddlewareType } from '../middlewares';
 
 
 
@@ -24,6 +25,17 @@ export interface IPatchDecorator<T extends PatchMetadata> extends IMethodDecorat
      * @param {string} [contentType] set request contentType.
      */
     (route: string, contentType?: string): MethodDecorator;
+
+    /**
+     * Patch decorator. define the route method as Patch.
+     *
+     * @Patch
+     *
+     * @param {string} route route sub path.
+     * @param {MiddlewareType[]} middlewares the middlewares for the route.
+     * @param {string} [contentType] set request contentType.
+     */
+    (route: string, middlewares: MiddlewareType[], contentType?: string): MethodDecorator;
 }
 
 /**

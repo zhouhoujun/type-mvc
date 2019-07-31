@@ -2,6 +2,7 @@ import { RequestMethod } from '../RequestMethod';
 import { createRouteDecorator } from './Route';
 import { PutMetadata } from '../metadata';
 import { IMethodDecorator } from '@tsdi/ioc';
+import { MiddlewareType } from '../middlewares';
 
 
 /**
@@ -23,6 +24,17 @@ export interface IPutDecorator<T extends PutMetadata> extends IMethodDecorator<T
      * @param {string} [contentType] set request contentType.
      */
     (route: string, contentType?: string): MethodDecorator;
+
+    /**
+     * Put decorator. define the route method as Put.
+     *
+     * @Put
+     *
+     * @param {string} route route sub path.
+     * @param {MiddlewareType[]} middlewares the middlewares for the route.
+     * @param {string} [contentType] set request contentType.
+     */
+    (route: string, middlewares: MiddlewareType[], contentType?: string): MethodDecorator;
 }
 
 /**

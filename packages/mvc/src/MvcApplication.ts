@@ -96,6 +96,7 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
             this.container.bindProvider(DefaultMvcMiddlewaresToken, DefaultMvcMiddlewares)
         }
 
+        // setup global middlewares
         let middlewares = this.container.get(MvcMiddlewares);
         let metadata = ctx.annoation as MvcModuleMetadata;
         let mvcMiddles = metadata.middlewares || this.container.get(DefaultMvcMiddlewaresToken);
@@ -113,8 +114,15 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
                 }
             });
         }
-
         this.container.invoke(MiddlewareRegister, tag => tag.setup);
+
+        // load extends midllewares.
+        if (config.loadMiddlewares) {
+            await this.container.load({
+                basePath: ctx.getRootPath(),
+                files: config.loadMiddlewares
+            });
+        }
 
         if (!ctx.httpServer) {
             if (config.httpsOptions) {
@@ -124,10 +132,10 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
             }
         }
 
-        if (config.controllers) {
+        if (config.loadControllers) {
             await this.container.load({
                 basePath: ctx.getRootPath(),
-                files: config.controllers
+                files: config.loadControllers
             });
         }
 
@@ -187,8 +195,8 @@ class MvcCoreModule {
             port: 3000,
             routePrefix: '',
             setting: {},
-            middlewares: ['./middlewares/**/*{.js,.ts}', '!./**/*.d.ts'],
-            controllers: ['./controllers/**/*{.js,.ts}', '!./**/*.d.ts'],
+            loadMiddlewares: ['./middlewares/**/*{.js,.ts}', '!./**/*.d.ts'],
+            loadControllers: ['./controllers/**/*{.js,.ts}', '!./**/*.d.ts'],
             aop: ['./aop/**/*{.js,.ts}', '!./**/*.d.ts'],
             views: './views',
             viewsOptions: {

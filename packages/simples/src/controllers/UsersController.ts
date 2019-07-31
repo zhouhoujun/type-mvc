@@ -22,7 +22,7 @@ export class UserController {
 
     @Authorization()
     // @Cors([RequestMethod.Post])
-    @Post('/add')
+    @Post('/add', ['your-auth-middleware', 'rightCheck'])
     async addUser(user: User, @Inject(ContextToken) ctx: IContext) {
         console.log('user:', user);
         console.log('request body', ctx.request.body);
@@ -64,7 +64,7 @@ export class UserController {
         }
     }
 
-    @Post('/posttest/:id')
+    @Post('/posttest/:id', ['rightAuth'])
     postTest(id: number) {
         return {
             id: id
