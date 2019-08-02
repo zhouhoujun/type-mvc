@@ -12,7 +12,7 @@ import { DefaultConfigureToken, DIModuleInjectorScope, BootApplication, checkBoo
 import { IConfiguration } from './IConfiguration';
 import { MvcServer } from './MvcServer';
 import { ConfigureRegister, Handle } from '@tsdi/boot';
-import { DebugLogAspect, LogConfigureToken, LogModule, ConfigureLoggerManger } from '@tsdi/logs';
+import { DebugLogAspect, LogConfigureToken, LogModule } from '@tsdi/logs';
 import { Singleton, isArray, isClass, isFunction, lang } from '@tsdi/ioc';
 import { DefaultMvcMiddlewares, DefaultMvcMiddlewaresToken } from './DefaultMvcMiddlewares';
 import { MvcModuleMetadata } from './metadata';
