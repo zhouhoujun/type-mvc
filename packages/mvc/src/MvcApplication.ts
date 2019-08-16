@@ -12,7 +12,7 @@ import { DefaultConfigureToken, DIModuleInjectorScope, BootApplication, checkBoo
 import { IConfiguration } from './IConfiguration';
 import { MvcServer } from './MvcServer';
 import { ConfigureRegister, Handle } from '@tsdi/boot';
-import { DebugLogAspect, LogConfigureToken, LogModule, ConfigureLoggerManger } from '@tsdi/logs';
+import { DebugLogAspect, LogConfigureToken, LogModule } from '@tsdi/logs';
 import { Singleton, isArray, isClass, isFunction, lang } from '@tsdi/ioc';
 import { DefaultMvcMiddlewares, DefaultMvcMiddlewaresToken } from './DefaultMvcMiddlewares';
 import { MvcModuleMetadata } from './metadata';
@@ -96,6 +96,7 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
             this.container.bindProvider(DefaultMvcMiddlewaresToken, DefaultMvcMiddlewares)
         }
 
+        // setup global middlewares
         let middlewares = this.container.get(MvcMiddlewares);
         let metadata = ctx.annoation as MvcModuleMetadata;
         let mvcMiddles = metadata.middlewares || this.container.get(DefaultMvcMiddlewaresToken);
@@ -114,7 +115,16 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
             });
         }
 
+        // load extends midllewares.
+        if (config.loadMiddlewares) {
+            await this.container.load({
+                basePath: ctx.getRootPath(),
+                files: config.loadMiddlewares
+            });
+        }
+
         this.container.invoke(MiddlewareRegister, tag => tag.setup);
+
 
         if (!ctx.httpServer) {
             if (config.httpsOptions) {
@@ -124,10 +134,10 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
             }
         }
 
-        if (config.controllers) {
+        if (config.loadControllers) {
             await this.container.load({
                 basePath: ctx.getRootPath(),
-                files: config.controllers
+                files: config.loadControllers
             });
         }
 
@@ -187,8 +197,8 @@ class MvcCoreModule {
             port: 3000,
             routePrefix: '',
             setting: {},
-            middlewares: ['./middlewares/**/*{.js,.ts}', '!./**/*.d.ts'],
-            controllers: ['./controllers/**/*{.js,.ts}', '!./**/*.d.ts'],
+            loadMiddlewares: ['./middlewares/**/*{.js,.ts}', '!./**/*.d.ts'],
+            loadControllers: ['./controllers/**/*{.js,.ts}', '!./**/*.d.ts'],
             aop: ['./aop/**/*{.js,.ts}', '!./**/*.d.ts'],
             views: './views',
             viewsOptions: {

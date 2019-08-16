@@ -4,7 +4,7 @@ import { ModelModule } from '@mvx/model';
 
 @MvcModule({
     imports: [
-        ModelModule
+        ModelModule,
         // DebugLogAspect
     ],
     bootstrap: MvcServer

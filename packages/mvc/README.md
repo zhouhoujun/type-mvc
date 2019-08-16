@@ -98,6 +98,59 @@ class MvcApi {
 ```
 
 
+
+### Define Middlewares
+
+default setting load middlewares in your project folder
+`/middlewares`
+
+```ts
+
+import { Middleware, IMiddleware, IContext, MvcMiddleware, ForbiddenError } from '@mvx/mvc';
+import { IContainer, Injectable } from '@tsdi/core';
+
+
+@Middleware({
+    name: 'log-test',
+    after: MiddlewareTypes.BodyParser
+})
+export class Logger implements IMiddleware {
+
+    constructor() {
+
+    }
+
+    async execute (ctx, next) {
+        let start = Date.now();
+        await next();
+        const ms = Date.now() - start;
+        console.log(`mylog: ${ctx.method} ${ctx.url} - ${ms}ms`);
+        let end = new Date();
+    }
+
+}
+
+
+@Middleware({ name: 'rightCheck', scope: 'route' })
+export class RoleRightCheck extends MvcMiddleware {
+
+    async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
+        // let user = ctx.session.user;
+        // todo check user right;
+        console.log('check user right.......');
+        let hasRight = true;
+        if (hasRight) {
+            await next();
+        } else {
+            throw new ForbiddenError();
+        }
+    }
+}
+
+
+```
+
+
 ### Auth use `@Authorization` pointcut
 
 * aop pointcut to to dynamic check the controller with `@Authorization` decorator, use your custom auth validation. eg.
@@ -125,6 +178,8 @@ default setting load controllers in your project folder
  * Model can auto create in action, it auto load value from request body.
  * Restfull params or Query String params can auto set to Controller action(Controller method) via the name of param matched. 
  * Cors by `@Cors` decorator in class or method.
+ * Your can set some special middlewares for route via decorator: `@Controller`, `@Put`, `@Post`, `@Get`, `@Delete`, `@Patch`, `@Head`, `@Route`.
+
 
 define as:
 
@@ -135,11 +190,11 @@ import { Mywork } from '../bi/Mywork';
 import { User } from '../models';
 
 @Cors
+// @Authorization()
 @Controller('/users')
-@Authorization
 export class UserController {
 
-    // @Inject(symbols.IContext)
+    // @Inject(ContextToken)
     // context: IContext;
     constructor(private work: Mywork) {
 
@@ -151,21 +206,13 @@ export class UserController {
         return this.work.workA();
     }
 
+    @Authorization()
     // @Cors([RequestMethod.Post])
-    // also can define as below
-    // @Cors(['Post','Get'])
-    // @Cors('POST,GET')
-    @Post('/add')
+    @Post('/add', ['your-auth-middleware', 'rightCheck'])
     async addUser(user: User, @Inject(ContextToken) ctx: IContext) {
         console.log('user:', user);
         console.log('request body', ctx.request.body);
         return this.work.save(user);
-    }
-
-    @Authorization('admin')  //pointcut for check role admin 
-    @Delete('/:userId')
-    async delUser(userId: string){
-        // to do...
     }
 
     @Get('/sub')
@@ -173,6 +220,8 @@ export class UserController {
         return this.work.workB();
     }
 
+    @Cors
+    // @Authorization()
     @Get('/:name')
     getPerson(name: string) {
         return this.work.find(name);
@@ -186,8 +235,8 @@ export class UserController {
 
     // match request query param name.
     @Get('/query')
-    query(key: string, role: string, age?: number){
-        return { key: key, age: age, role: role}
+    query(key: string, role: string, age?: number) {
+        return { key: key, age: age, role: role }
     }
 
     @Get('/test/:id')
@@ -201,7 +250,7 @@ export class UserController {
         }
     }
 
-    @Post('/posttest/:id')
+    @Post('/posttest/:id', ['rightAuth'])
     postTest(id: number) {
         return {
             id: id
@@ -209,6 +258,7 @@ export class UserController {
     }
 
 }
+
 
 
 @Controller('/')
@@ -303,6 +353,7 @@ MvcApplication.run(MvcApp);
 
 * default use config file `./config.ts` or `./config.js`.
 ```ts
+
 /**
  * Configuration.
  *
@@ -312,7 +363,14 @@ MvcApplication.run(MvcApp);
  * @interface IConfiguration
  * @extends {ObjectMap}
  */
-export interface IConfiguration extends RunnableConfigure {
+export interface MvcConfiguration extends RunnableConfigure {
+    /**
+     * cookies keys
+     *
+     * @type {(Keygrip | string[])}
+     * @memberof IConfiguration
+     */
+    keys?: Keygrip | string[];
     /**
      * https server options.
      *
@@ -337,10 +395,10 @@ export interface IConfiguration extends RunnableConfigure {
     /**
      * session config.
      *
-     * @type {ISessionConfig}
+     * @type {SessionConfig}
      * @memberof IConfiguration
      */
-    session?: ISessionConfig;
+    session?: SessionConfig;
     /**
      * contents path of files, static files. default in 'public'
      *
@@ -356,6 +414,13 @@ export interface IConfiguration extends RunnableConfigure {
      */
     routePrefix?: string;
     /**
+     * sub sites.
+     *
+     * @type {SubSite[]}
+     * @memberof IConfiguration
+     */
+    subSites?: SubSite[];
+    /**
      * custom config key value setting.
      *
      * @type {ObjectMap}
@@ -369,7 +434,6 @@ export interface IConfiguration extends RunnableConfigure {
      * @memberof Configuration
      */
     connections?: IConnectionOptions;
-
     /**
      * global cors default options.
      *
@@ -378,12 +442,19 @@ export interface IConfiguration extends RunnableConfigure {
      */
     corsOptions?: CorsOptions;
     /**
-     * controllers match. default `./controllers/\*\*\/*{.js,.ts}` in your project..
+     * auto load middlewares match. default `[./middlewares\/**\/*{.js,.ts}, , '!./\**\/*.d.ts']` in your project..
      *
      * @type {(string | string[])}
      * @memberOf Configuration
      */
-    controllers?: string | string[];
+    loadMiddlewares?: string | string[];
+    /**
+     * auto load controllers match. default `[./controllers\/**\/*{.js,.ts}, , '!./\**\/*.d.ts']` in your project..
+     *
+     * @type {(string | string[])}
+     * @memberOf Configuration
+     */
+    loadControllers?: string | string[];
     /**
      * aspect service path. default: './aop'
      *
@@ -430,6 +501,17 @@ export interface IConfiguration extends RunnableConfigure {
      * @memberof IConfiguration
      */
     logConfig?: LogConfigure | Type<LogConfigure>;
+}
+
+/**
+ * Configuration
+ *
+ * @export
+ * @interface IConfiguration
+ * @extends {MvcConfiguration}
+ */
+export interface IConfiguration extends MvcConfiguration  {
+
 }
 
 ```
@@ -491,39 +573,6 @@ export class DebugLog {
     }
 }
 
-
-```
-
-
-### Define Middlewares
-
-default setting load middlewares in your project folder
-`/middlewares`
-
-```ts
-import { Middleware, IMiddleware, Application, Configuration } from '@mvx/mvc';
-import { IContainer, Injectable } from '@tsdi/core';
-
-
-@Middleware({
-    name: 'auth',
-    after: MiddlewareTypes.BodyParser
-})
-export class Logger implements IMiddleware {
-
-    constructor() {
-
-    }
-
-    async execute (ctx, next) {
-        let start = Date.now();
-        await next();
-        const ms = Date.now() - start;
-        console.log(`mylog: ${ctx.method} ${ctx.url} - ${ms}ms`);
-        let end = new Date();
-    }
-
-}
 
 ```
 

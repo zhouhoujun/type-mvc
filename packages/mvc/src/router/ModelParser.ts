@@ -1,10 +1,21 @@
 import {
     Type, PropertyMetadata, isUndefined, Inject, isClass, ObjectMap,
-    isBaseType, isArray, Abstract, SymbolType, Singleton, isNullOrUndefined, isFunction
+    isBaseType, isArray, Abstract, SymbolType, Singleton, isNullOrUndefined, isFunction, Token
 } from '@tsdi/ioc';
 import { IModelParser } from './IModelParser';
 import { ContainerToken, IContainer } from '@tsdi/core';
 import { BaseTypeParserToken } from '@tsdi/boot';
+
+/**
+ * db property metadata.
+ *
+ * @export
+ * @interface DBPropertyMetadata
+ * @extends {PropertyMetadata}
+ */
+export interface DBPropertyMetadata extends PropertyMetadata {
+    dbtype?: string;
+}
 
 
 @Singleton
@@ -58,7 +69,7 @@ export abstract class ModelParser implements IModelParser {
             return parser.parse(type, objMap);
         }
         let meta = this.getPropertyMeta(type);
-        let result = this.container.resolve({token: type, regify: true });
+        let result = this.container.resolve({ token: type, regify: true });
         for (let n in meta) {
             let propmetas = meta[n];
             if (propmetas.length) {
@@ -73,8 +84,8 @@ export abstract class ModelParser implements IModelParser {
                         continue;
                     }
                     let parmVal;
-                    if (this.isExtendBaseType(ptype)) {
-                        parmVal = this.resolveExtendType(ptype, reqval);
+                    if (this.isExtendBaseType(ptype, propmeta)) {
+                        parmVal = this.resolveExtendType(ptype, reqval, propmeta);
                     } else if (isBaseType(ptype)) {
                         parmVal = parser.parse(ptype, reqval);
                     } else if (isClass(ptype)) {
@@ -95,14 +106,14 @@ export abstract class ModelParser implements IModelParser {
         return this.typeMap;
     }
 
-    protected isExtendBaseType(type: SymbolType): boolean {
+    protected isExtendBaseType(type: SymbolType, propmeta?: DBPropertyMetadata): boolean {
         return this.getTypeMap().has(type);
     }
 
-    protected resolveExtendType(type: SymbolType, ...values: any[]): any {
-        return this.getTypeMap().resolve(type, ...values);
+    protected resolveExtendType(type: SymbolType, value: any, propmeta?: DBPropertyMetadata): any {
+        return this.getTypeMap().resolve(type, value);
     }
 
-    protected abstract getPropertyMeta(type: Type): ObjectMap<PropertyMetadata[]>;
+    protected abstract getPropertyMeta(type: Type): ObjectMap<DBPropertyMetadata[]>;
 
 }

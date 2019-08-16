@@ -1,8 +1,12 @@
 import 'reflect-metadata';
 import { createConnection, Connection, getConnection, ConnectionOptions, Repository } from 'typeorm';
-import { Singleton, Inject, Type, isString } from '@tsdi/ioc';
+import { Singleton, Inject, Type, isString, Abstract } from '@tsdi/ioc';
 import { MvcContext, MvcContextToken, IConnectionOptions } from '@mvx/mvc';
 
+@Abstract()
+export abstract class OrmInitService {
+    abstract init(connect: Connection): Promise<void>;
+}
 
 @Singleton
 export class TypeOrmHelper {
@@ -22,7 +26,15 @@ export class TypeOrmHelper {
         if (!this.hasInit) {
             this.hasInit = true;
             try {
-                return await createConnection(options);
+                let connect = await createConnection(options as ConnectionOptions);
+                if (options.initDb) {
+                    await options.initDb(connect);
+                }
+                let initService = this.ctx.starupServices.getService(OrmInitService);
+                if (initService instanceof OrmInitService) {
+                    await initService.init(connect);
+                }
+                return connect;
             } catch (err) {
                 console.error(err);
             }
@@ -30,7 +42,7 @@ export class TypeOrmHelper {
         return await getConnection(options.name);
     }
 
-    private options: ConnectionOptions;
+    private options: IConnectionOptions;
     async getOptions() {
         if (!this.options) {
             let config = this.ctx.configuration;
@@ -51,7 +63,7 @@ export class TypeOrmHelper {
                 }
                 options.entities = entities;
             }
-            this.options = options as ConnectionOptions;
+            this.options = options as IConnectionOptions;
         }
         return this.options;
     }

@@ -48,7 +48,7 @@ export class ControllerRoute extends MvcRoute {
         }
         let middlewares = this.getRouteMiddleware(ctx, meta);
         if (middlewares.length) {
-            await this.execFuncs(ctx, middlewares.map(m => this.parseAction(m)), () => {
+            await this.execFuncs(ctx, middlewares.map(m => this.parseAction(m)).filter(f => !!f), () => {
                 return this.navigating(ctx, meta, next);
             });
         } else {
@@ -59,7 +59,6 @@ export class ControllerRoute extends MvcRoute {
     async navigating(ctx: IContext, meta: RouteMetadata, next: () => Promise<void>) {
         try {
             await this.invoke(ctx, meta);
-            ctx.status = 200;
         } catch (err) {
             this.catchHttpError(ctx, err);
         }
@@ -233,11 +232,13 @@ export class ControllerRoute extends MvcRoute {
                 } else {
                     ctx.body = result;
                 }
+                ctx.status = 200;
             } else if (isObject(result)) {
                 if (result instanceof ResultValue) {
                     await result.sendValue(ctx, container);
                 } else {
                     ctx.body = result;
+                    ctx.status = 200;
                 }
             } else {
                 ctx.body = result;

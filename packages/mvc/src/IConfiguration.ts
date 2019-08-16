@@ -31,6 +31,7 @@ export interface IConnectionOptions extends ObjectMap {
     password?: string;
     database: string;
     entities?: Type[];
+    initDb?(connect: any): Promise<void>;
 }
 
 /**
@@ -149,12 +150,19 @@ export interface MvcConfiguration extends RunnableConfigure {
      */
     corsOptions?: CorsOptions;
     /**
-     * controllers match. default `./controllers/\*\*\/*{.js,.ts}` in your project..
+     * auto load middlewares match. default `[./middlewares\/**\/*{.js,.ts}, , '!./\**\/*.d.ts']` in your project..
      *
      * @type {(string | string[])}
      * @memberOf Configuration
      */
-    controllers?: string | string[];
+    loadMiddlewares?: string | string[];
+    /**
+     * auto load controllers match. default `[./controllers\/**\/*{.js,.ts}, , '!./\**\/*.d.ts']` in your project..
+     *
+     * @type {(string | string[])}
+     * @memberOf Configuration
+     */
+    loadControllers?: string | string[];
     /**
      * aspect service path. default: './aop'
      *

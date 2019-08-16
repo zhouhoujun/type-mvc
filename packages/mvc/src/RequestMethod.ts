@@ -35,7 +35,9 @@ export enum RequestMethod {
     Patch
 }
 
-
+/**
+ * request methods.
+ */
 export type RequestMethods =  'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS' | 'HEAD' | 'PATCH';
 
 export type RequestMethodType = RequestMethods | RequestMethod;

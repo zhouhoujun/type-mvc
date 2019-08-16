@@ -14,7 +14,6 @@ export class RedirectResult extends ResultValue {
         super('text/html');
     }
     async sendValue(ctx: IContext, container: IContainer) {
-        // ctx.type = this.contentType;
         return ctx.redirect(this.url, this.alt);
     }
 }

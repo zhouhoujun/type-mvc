@@ -1,7 +1,7 @@
 import { IConfiguration } from './IConfiguration';
 import { Inject, Injectable, Refs } from '@tsdi/ioc';
 import { Router } from './router';
-import { Service, ServiceInit, Runnable, Startup } from '@tsdi/boot';
+import { Service, ServiceInit, Startup } from '@tsdi/boot';
 import * as Koa from 'koa';
 import { MvcContext } from './MvcContext';
 import * as https from 'https';
