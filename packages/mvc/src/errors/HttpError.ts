@@ -1,4 +1,3 @@
-
 /**
  * http error
  *
@@ -7,7 +6,6 @@
  * @extends {Error}
  */
 export class HttpError extends Error {
-
     constructor(public status: number, message?: string) {
         super();
         this.message = message;

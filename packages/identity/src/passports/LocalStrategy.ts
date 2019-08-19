@@ -6,7 +6,9 @@ import { IContext } from '@mvx/mvc';
 import { IStrategyOption } from './IAuthenticator';
 
 
-
+/**
+ * local verify.
+ */
 export type LocalVerify = (username: string, password: string, ctx: IContext) => Promise<{ user, info }>;
 
 /**
