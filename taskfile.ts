@@ -95,18 +95,27 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
                             }]
                     }]
                 },
-                <EachTeamplate>{
-                    activity: Activities.each,
-                    each: (ctx: NodeActivityContext) => ctx.platform.getFolders('packages').filter(f => !/(cli|orm|identity-server|simples)$/.test(f)),
-                    body: {
-                        activity: Activities.execute,
-                        action: async (ctx) => {
-                            let activitys = Object.values(require(path.join(ctx.body, 'taskfile.ts'))).filter(b => isAcitvityClass(b)) as Type<Activity<any>>[];
-                            // await ctx.getExector().runActivity(ctx, activitys);
-                            await Workflow.sequence(...activitys);
-                        }
+                {
+                    activity: 'shell',
+                    parallel: true,
+                    shell: (ctx: NodeActivityContext) => {
+                        let pks = ctx.platform.getFolders('packages').filter(f => !/(cli|orm|identity-server|simples)$/.test(f))
+                        return pks.map(p => `cd ${p} && tsdi build`);
                     }
                 }
+                // <EachTeamplate>{
+                //     activity: Activities.each,
+                //     each: (ctx: NodeActivityContext) => ctx.platform.getFolders('packages').filter(f => !/(cli|orm|identity-server|simples)$/.test(f)),
+                //     parallel: true,
+                //     body: {
+                //         activity: Activities.execute,
+                //         action: async (ctx) => {
+                //             let activitys = Object.values(require(path.join(ctx.body, 'taskfile.ts'))).filter(b => isAcitvityClass(b)) as Type<Activity<any>>[];
+                //             // await ctx.getExector().execActivity(ctx, activitys);
+                //             await Workflow.sequence(...activitys);
+                //         }
+                //     }
+                // }
             ]
         },
         {

@@ -66,6 +66,7 @@ export class TestController {
 }
 
 @MvcModule(<IConfiguration>{
+    port: 3010,
     imports: [
         IdentityModule,
         TestController
@@ -110,7 +111,7 @@ export class LocalStrategyTest {
         // axios.defaults.withCredentials = true;
         this.ctx = await MvcApplication.run(SimpleApp);
         try {
-            await axios.get('http://localhost:3000/api/test1')
+            await axios.get('http://localhost:3010/api/test1')
         } catch (err) {
             // console.log(err);
         }

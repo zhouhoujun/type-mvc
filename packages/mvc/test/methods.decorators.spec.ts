@@ -60,6 +60,7 @@ export class TestController {
 }
 
 @MvcModule({
+    port: 3012,
     imports: [
         TestController
     ]
@@ -81,7 +82,7 @@ export class ControllerTest {
     @Test('application has boot.')
     test1(@Inject(ExpectToken) expect: Expect) {
         expect(this.ctx instanceof MvcContext).toBeTruthy();
-        expect(this.ctx.configuration.port).toEqual(3000);
+        expect(this.ctx.configuration.port).toEqual(3012);
     }
 
 
