@@ -4,7 +4,12 @@ import { InjectToken, ObjectMap, Type } from '@tsdi/ioc';
 import { MvcContext, IContext, MvcConfiguration } from '@mvx/mvc';
 
 
-
+/**
+ * deserialize user interface.
+ *
+ * @export
+ * @interface IDeserializeUser
+ */
 export interface IDeserializeUser {
     deserializeUser(obj: any, ctx?: IContext): Promise<any>;
 }

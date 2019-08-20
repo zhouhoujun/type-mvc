@@ -12,6 +12,7 @@ import { AuthenticationError } from '../errors';
  * @extends {AuthenticationError}
  */
 export class OAuth2Error extends AuthenticationError {
+    // tslint:disable-next-line:variable-name
     constructor(status: number, message: string, error_description?: string) {
         super(status, message, error_description);
     }
