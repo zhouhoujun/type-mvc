@@ -9,19 +9,21 @@ export interface IMinLengthDecorator<T extends MinLengthMetadata> extends IPrope
 
 export const MinLength: IMinLengthDecorator<MinLengthMetadata> = createFieldDecorator<MinLengthMetadata>(
     'MinLength',
-    args => {
-        args.next<MinLengthMetadata>({
-            match: (arg) => isNumber(arg),
-            setMetadata: (metadata, arg) => {
-                metadata.minLength = arg;
+    [
+        (ctx, next) => {
+            let arg = ctx.currArg;
+            if (isNumber(arg)) {
+                ctx.metadata.minLength = arg;
+                ctx.next(next);
             }
-        });
-        args.next<MinLengthMetadata>({
-            match: (arg) => isString(arg),
-            setMetadata: (metadata, arg) => {
-                metadata.errorMsg = arg;
+        },
+        (ctx, next) => {
+            let arg = ctx.currArg;
+            if (isString(arg)) {
+                ctx.metadata.errorMsg = arg;
+                ctx.next(next);
             }
-        });
-    }
+        }
+    ]
 ) as IMinLengthDecorator<MinLengthMetadata>;
 

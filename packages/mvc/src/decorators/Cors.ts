@@ -1,6 +1,6 @@
 import {
     isArray, isNumber, isString, isUndefined, IClassMethodDecorator,
-    createClassMethodDecorator, ClassMethodDecorator, ArgsIteratorAction, MetadataExtends
+    createClassMethodDecorator, ClassMethodDecorator, MetadataExtends, ArgsIteratorAction
 } from '@tsdi/ioc';
 import { CorsMetadata } from '../metadata';
 import { RequestMethodType } from '../RequestMethod';
@@ -44,24 +44,24 @@ export interface ICorsDecorator<T extends CorsMetadata> extends IClassMethodDeco
 export function createCorsDecorator<T extends CorsMetadata>(name: string,
     actions?: ArgsIteratorAction<T>[],
     metadataExtends?: MetadataExtends<T>): ICorsDecorator<T> {
-    return createClassMethodDecorator<CorsMetadata>(name,
+    return createClassMethodDecorator<T>(name,
         [
             ...(actions || []),
             (ctx, next) => {
                 let arg = ctx.currArg;
                 if (isString(arg)) {
-                    ctx.metatdata.allowMethods = arg;
+                    ctx.metadata.allowMethods = arg;
                     ctx.next(next);
-                } else {
+                } else if (isArray(arg)) {
                     let allowMethods = arg as any[];
-                    ctx.metatdata.allowMethods = allowMethods.filter(m => !isUndefined(m) && m !== null);
+                    ctx.metadata.allowMethods = allowMethods.filter(m => !isUndefined(m) && m !== null);
                     ctx.next(next);
                 }
             },
             (ctx, next) => {
                 let arg = ctx.currArg;
                 if (isNumber(arg)) {
-                    ctx.metatdata.maxAge = arg;
+                    ctx.metadata.maxAge = arg;
                     ctx.next(next);
                 }
             },
@@ -69,7 +69,7 @@ export function createCorsDecorator<T extends CorsMetadata>(name: string,
                 let arg = ctx.currArg;
                 if (isArray(arg)) {
                     let allowHeaders = arg as string[];
-                    ctx.metatdata.allowHeaders = allowHeaders.filter(h => !!h);
+                    ctx.metadata.allowHeaders = allowHeaders.filter(h => !!h);
                     ctx.next(next);
                 }
             }

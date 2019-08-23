@@ -1,6 +1,6 @@
 import {
     TypeMetadata, IClassMethodDecorator, createClassMethodDecorator,
-    ClassMethodDecorator, isClassMetadata, isString, isArray
+    ClassMethodDecorator, isString, isArray
 } from '@tsdi/ioc';
 import { MiddlewareType } from '../middlewares';
 

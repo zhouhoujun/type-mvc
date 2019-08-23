@@ -1,6 +1,6 @@
 import {
     createMethodDecorator, IMethodDecorator, MetadataExtends,
-    isClassMetadata, ArgsIteratorAction, isString, isNumber, isArray
+    ArgsIteratorAction, isString, isNumber, isArray
 } from '@tsdi/ioc';
 import { RequestMethod } from '../RequestMethod';
 import { RouteMetadata } from '../metadata';

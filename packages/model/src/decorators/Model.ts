@@ -1,6 +1,5 @@
 import {
-    isString, TypeMetadata, IClassMethodDecorator, MetadataAdapter,
-    MetadataExtends, createClassDecorator, IClassDecorator
+    isString, TypeMetadata, IClassMethodDecorator, MetadataExtends, createClassDecorator, IClassDecorator, ArgsIteratorAction
 } from '@tsdi/ioc';
 import { ModelMetadata } from '../metadata';
 
@@ -22,26 +21,25 @@ export interface IModelDecorator<T extends ModelMetadata> extends IClassDecorato
  * @export
  * @template T
  * @param {string} [modelType]
- * @param {MetadataAdapter} [adapter]
+ * @param {ArgsIteratorAction<T>[]} [actions]
  * @param {MetadataExtends<T>} [metaExtends]
  * @returns {IFiledDecorator<T>}
  */
 export function createModelDecorator<T extends ModelMetadata>(
     modelType?: string,
-    adapter?: MetadataAdapter,
+    actions?: ArgsIteratorAction<T>[],
     metaExtends?: MetadataExtends<T>): IModelDecorator<T> {
     return createClassDecorator<ModelMetadata>('Model',
-        args => {
-            if (adapter) {
-                adapter(args);
-            }
-            args.next<ModelMetadata>({
-                match: (arg) => isString(arg),
-                setMetadata: (metadata, arg) => {
-                    metadata.table = arg;
+        [
+            ...(actions || []),
+            (ctx, next) => {
+                let arg = ctx.currArg;
+                if (isString(arg)) {
+                    ctx.metadata.table = arg;
+                    ctx.next(next);
                 }
-            });
-        },
+            },
+        ],
         metadata => {
             if (metaExtends) {
                 metaExtends(metadata as T);

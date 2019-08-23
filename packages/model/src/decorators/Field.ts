@@ -1,5 +1,5 @@
 
-import { IPropertyDecorator, PropertyMetadata, createPropDecorator, MetadataExtends, MetadataAdapter, isString, isNumber, isUndefined, isBoolean } from '@tsdi/ioc';
+import { IPropertyDecorator, createPropDecorator, MetadataExtends, isString, isUndefined, isBoolean, ArgsIteratorAction } from '@tsdi/ioc';
 import { FieldMetadata } from '../metadata';
 
 
@@ -21,47 +21,49 @@ export interface IFiledDecorator<T extends FieldMetadata> extends IPropertyDecor
  * @export
  * @template T
  * @param {string} [decoratorName]
- * @param {MetadataAdapter} [adapter]
+ * @param {MetadataAdapter} [actions]
  * @param {MetadataExtends<T>} [metaExtends]
  * @returns {IFiledDecorator<T>}
  */
 export function createFieldDecorator<T extends FieldMetadata>(
     decoratorName?: string,
-    adapter?: MetadataAdapter,
+    actions?: ArgsIteratorAction<T>[],
     metaExtends?: MetadataExtends<T>): IFiledDecorator<T> {
     return createPropDecorator<FieldMetadata>('Field',
-        args => {
-            if (adapter) {
-                adapter(args);
+        [
+            ...(actions || []),
+            (ctx, next) => {
+                let arg = ctx.currArg;
+                if (isString(arg)) {
+                    ctx.metadata.dbtype = arg;
+                    ctx.next(next);
+                }
+            },
+
+            (ctx, next) => {
+                let arg = ctx.currArg;
+                if (isString(arg)) {
+                    ctx.metadata.dbfield = arg;
+                    ctx.next(next);
+                }
+            },
+
+            (ctx, next) => {
+                let arg = ctx.currArg;
+                if (isUndefined(arg)) {
+                    ctx.metadata.defaultValue = arg;
+                    ctx.next(next);
+                }
+            },
+
+            (ctx, next) => {
+                let arg = ctx.currArg;
+                if (isBoolean(arg)) {
+                    ctx.metadata.required = arg;
+                    ctx.next(next);
+                }
             }
-            args.next<FieldMetadata>({
-                match: (arg) => isString(arg),
-                setMetadata: (metadata, arg) => {
-                    metadata.dbtype = arg;
-                }
-            });
-
-            args.next<FieldMetadata>({
-                match: (arg) => isString(arg),
-                setMetadata: (metadata, arg) => {
-                    metadata.dbfield = arg;
-                }
-            });
-
-            args.next<FieldMetadata>({
-                match: (arg) => isUndefined(arg),
-                setMetadata: (metadata, arg) => {
-                    metadata.defaultValue = arg;
-                }
-            });
-
-            args.next<FieldMetadata>({
-                match: args => isBoolean(args),
-                setMetadata: (metadata, arg) => {
-                    metadata.required = arg;
-                }
-            });
-        },
+        ],
         metadata => {
             if (!metadata.dbfield) {
                 metadata.dbfield = metadata.propertyKey.toString();

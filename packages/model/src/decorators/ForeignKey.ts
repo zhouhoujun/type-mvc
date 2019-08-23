@@ -9,19 +9,20 @@ export interface IForeignKeyDecorator<T extends ForeignKeyMetadata> extends IPro
 
 export const ForeignKey: IForeignKeyDecorator<ForeignKeyMetadata> = createFieldDecorator<ForeignKeyMetadata>(
     'ForeignKey',
-    args => {
-        args.next<ForeignKeyMetadata>({
-            match: (arg) => isString(arg),
-            setMetadata: (metadata, arg) => {
-                metadata.foreignKey = arg;
+    [
+        (ctx, next) => {
+            let arg = ctx.currArg;
+            if (isString(arg)) {
+                ctx.metadata.foreignKey = arg;
+                ctx.next(next);
             }
-        });
-        args.next<ForeignKeyMetadata>({
-            match: (arg) => isClass(arg),
-            setMetadata: (metadata, arg) => {
-                metadata.refType = arg;
+        },
+        (ctx, next) => {
+            let arg = ctx.currArg;
+            if (isClass(arg)) {
+                ctx.metadata.refType = arg;
+                ctx.next(next);
             }
-        });
-    }
-) as IForeignKeyDecorator<ForeignKeyMetadata>;
+        }
+    ]) as IForeignKeyDecorator<ForeignKeyMetadata>;
 

@@ -9,19 +9,20 @@ export interface IMaxLengthDecorator<T extends MaxLengthMetadata> extends IPrope
 
 export const MaxLength: IMaxLengthDecorator<MaxLengthMetadata> = createFieldDecorator<MaxLengthMetadata>(
     'MaxLength',
-    args => {
-        args.next<MaxLengthMetadata>({
-            match: (arg) => isNumber(arg),
-            setMetadata: (metadata, arg) => {
-                metadata.maxLength = arg;
+    [
+        (ctx, next) => {
+            let arg = ctx.currArg;
+            if (isNumber(arg)) {
+                ctx.metadata.maxLength = arg;
+                ctx.next(next);
             }
-        });
-        args.next<MaxLengthMetadata>({
-            match: (arg) => isString(arg),
-            setMetadata: (metadata, arg) => {
-                metadata.errorMsg = arg;
+        },
+        (ctx, next) => {
+            let arg = ctx.currArg;
+            if (isString(arg)) {
+                ctx.metadata.errorMsg = arg;
+                ctx.next(next);
             }
-        });
-    }
-) as IMaxLengthDecorator<MaxLengthMetadata>;
+        }
+    ]) as IMaxLengthDecorator<MaxLengthMetadata>;
 
