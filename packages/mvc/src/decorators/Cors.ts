@@ -1,9 +1,9 @@
 import {
     isArray, isNumber, isString, isUndefined, IClassMethodDecorator,
-    createClassMethodDecorator, ClassMethodDecorator, MetadataAdapter, MetadataExtends
+    createClassMethodDecorator, ClassMethodDecorator, ArgsIteratorAction, MetadataExtends
 } from '@tsdi/ioc';
 import { CorsMetadata } from '../metadata';
-import { RequestMethod, RequestMethods, RequestMethodType } from '../RequestMethod';
+import { RequestMethodType } from '../RequestMethod';
 
 /**
  * Cors Decorator, define controller class or controller method support cors request.
@@ -38,42 +38,42 @@ export interface ICorsDecorator<T extends CorsMetadata> extends IClassMethodDeco
  * Cors Decorator, define controller class or controller method support cors.
  * @Cors
  * @param name
- * @param adapter
+ * @param actions
  * @param metadataExtends
  */
 export function createCorsDecorator<T extends CorsMetadata>(name: string,
-    adapter?: MetadataAdapter,
+    actions?: ArgsIteratorAction<T>[],
     metadataExtends?: MetadataExtends<T>): ICorsDecorator<T> {
     return createClassMethodDecorator<CorsMetadata>(name,
-        args => {
-            if (adapter) {
-                adapter(args);
-            }
-            args.next<CorsMetadata>({
-                match: (arg) => isArray(arg) || isString(arg),
-                setMetadata: (metatdata, arg) => {
-                    if (isString(arg)) {
-                        metatdata.allowMethods = arg;
-                    } else {
-                        let allowMethods = arg as any[];
-                        metatdata.allowMethods = allowMethods.filter(m => !isUndefined(m) && m !== null);
-                    }
+        [
+            ...(actions || []),
+            (ctx, next) => {
+                let arg = ctx.currArg;
+                if (isString(arg)) {
+                    ctx.metatdata.allowMethods = arg;
+                    ctx.next(next);
+                } else {
+                    let allowMethods = arg as any[];
+                    ctx.metatdata.allowMethods = allowMethods.filter(m => !isUndefined(m) && m !== null);
+                    ctx.next(next);
                 }
-            });
-            args.next<CorsMetadata>({
-                match: (arg) => isNumber(arg),
-                setMetadata: (metatdata, arg) => {
-                    metatdata.maxAge = arg;
+            },
+            (ctx, next) => {
+                let arg = ctx.currArg;
+                if (isNumber(arg)) {
+                    ctx.metatdata.maxAge = arg;
+                    ctx.next(next);
                 }
-            });
-            args.next<CorsMetadata>({
-                match: (arg) => isArray(arg),
-                setMetadata: (metatdata, arg) => {
+            },
+            (ctx, next) => {
+                let arg = ctx.currArg;
+                if (isArray(arg)) {
                     let allowHeaders = arg as string[];
-                    metatdata.allowHeaders = allowHeaders.filter(h => !!h);
+                    ctx.metatdata.allowHeaders = allowHeaders.filter(h => !!h);
+                    ctx.next(next);
                 }
-            });
-        }, metadataExtends) as ICorsDecorator<T>
+            }
+        ], metadataExtends) as ICorsDecorator<T>
 
 }
 

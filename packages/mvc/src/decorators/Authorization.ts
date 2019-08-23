@@ -62,22 +62,21 @@ export interface IAuthorizationDecorator<T extends AuthorizationMetadata> extend
  * @Authorization
  */
 export const Authorization: IAuthorizationDecorator<AuthorizationMetadata> = createClassMethodDecorator<AuthorizationMetadata>('Authorization',
-    adapter => {
-        adapter.next<AuthorizationMetadata>({
-            isMetadata: (arg) => isClassMetadata(arg, 'role'),
-            match: (arg) => isString(arg) || isArray(arg),
-            setMetadata: (metadata, arg) => {
-                if (isArray(arg)) {
-                    metadata.middlewares = arg;
-                } else {
-                    metadata.role = arg;
-                }
+    [
+        (ctx, next) => {
+            let arg = ctx.currArg;
+            if (isArray(arg)) {
+                ctx.metadata.middlewares = arg;
+                ctx.next(next);
+            } else {
+                ctx.metadata.role = arg;
+                ctx.next(next);
             }
-        });
-        adapter.next<AuthorizationMetadata>({
-            match: (arg) => isString(arg),
-            setMetadata: (metadata, arg) => {
-                metadata.role = arg;
+        },
+        (ctx, next) => {
+            let arg = ctx.currArg;
+            if (isString(arg)) {
+                ctx.metadata.role = arg;
             }
-        });
-    }) as IAuthorizationDecorator<AuthorizationMetadata>;
+        }
+    ]) as IAuthorizationDecorator<AuthorizationMetadata>;

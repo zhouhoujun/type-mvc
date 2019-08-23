@@ -42,18 +42,22 @@ export interface IControllerDecorator<T extends ControllerMetadata> extends ITyp
  * @Controller
  */
 export const Controller: IControllerDecorator<ControllerMetadata> =
-    createClassDecorator<ControllerMetadata>('Controller', (args: ArgsIterator) => {
-        args.next<ControllerMetadata>({
-            match: (arg) => isString(arg),
-            setMetadata: (metadata, arg) => {
-                metadata.routePrefix = arg;
+    createClassDecorator<ControllerMetadata>('Controller', [
+        (ctx, next) => {
+            let arg = ctx.currArg;
+            if (isString(arg)) {
+                ctx.metadata.routePrefix = arg;
+                ctx.next(next);
             }
-        });
-        args.next<ControllerMetadata>({
-            match: (arg) => isArray(arg),
-            setMetadata: (metadata, arg) => {
-                metadata.middlewares = arg;
+        },
+        (ctx, next) => {
+            let arg = ctx.currArg;
+            if (isArray(arg)) {
+                ctx.metadata.middlewares = arg;
+                ctx.next(next);
+            } else {
+                ctx.next(next, false);
             }
-        });
-    }) as IControllerDecorator<ControllerMetadata>;
+        }
+    ]) as IControllerDecorator<ControllerMetadata>;
 

@@ -1,6 +1,6 @@
 import {
     createMethodDecorator, IMethodDecorator, MetadataExtends,
-    isClassMetadata, MetadataAdapter, isString, isNumber, isArray
+    isClassMetadata, ArgsIteratorAction, isString, isNumber, isArray
 } from '@tsdi/ioc';
 import { RequestMethod } from '../RequestMethod';
 import { RouteMetadata } from '../metadata';
@@ -45,49 +45,48 @@ export interface IRouteMethodDecorator<T extends RouteMetadata> extends IMethodD
  */
 export function createRouteDecorator<T extends RouteMetadata>(
     method?: RequestMethod,
-    adapter?: MetadataAdapter, metaExtends?: MetadataExtends<T>): IRouteMethodDecorator<T> {
+    actions?: ArgsIteratorAction<T>[],
+    metaExtends?: MetadataExtends<T>): IRouteMethodDecorator<T> {
     return createMethodDecorator<RouteMetadata>('Route',
-        args => {
-            if (adapter) {
-                adapter(args);
+        [
+            ...(actions || []),
+            (ctx, next) => {
+                let arg = ctx.currArg;
+                if (isString(arg)) {
+                    ctx.metadata.route = arg;
+                    ctx.next(next);
+                }
+            },
+
+            (ctx, next) => {
+                let arg = ctx.currArg;
+                if (isArray(arg)) {
+                    ctx.metadata.middlewares = arg;
+                    ctx.next(next);
+                } else if (isString(arg)) {
+                    ctx.metadata.contentType = arg;
+                    ctx.next(next);
+                }
+            },
+
+            (ctx, next) => {
+                let arg = ctx.currArg;
+                if (isNumber(arg)) {
+                    ctx.metadata.method = arg;
+                    ctx.next(next);
+                } else {
+                    ctx.metadata.contentType = arg;
+                    ctx.next(next);
+                }
+            },
+
+            (ctx, next) => {
+                let arg = ctx.currArg;
+                if (isNumber(arg)) {
+                    ctx.metadata.method = arg;
+                }
             }
-            args.next<RouteMetadata>({
-                isMetadata: (arg) => isClassMetadata(arg, 'route', 'method'),
-                match: (arg) => isString(arg),
-                setMetadata: (metadata, arg) => {
-                    metadata.route = arg;
-                }
-            });
-
-            args.next<RouteMetadata>({
-                match: (arg) => isString(arg) || isArray(arg),
-                setMetadata: (metadata, arg) => {
-                    if (isArray(arg)) {
-                        metadata.middlewares = arg;
-                    } else {
-                        metadata.contentType = arg;
-                    }
-                }
-            });
-
-            args.next<RouteMetadata>({
-                match: (arg) => isString(arg) || isNumber(arg),
-                setMetadata: (metadata, arg) => {
-                    if (isNumber) {
-                        metadata.method = arg;
-                    } else {
-                        metadata.contentType = arg;
-                    }
-                }
-            });
-
-            args.next<RouteMetadata>({
-                match: (arg) => isNumber(arg),
-                setMetadata: (metadata, arg) => {
-                    metadata.method = arg;
-                }
-            });
-        },
+        ],
         metadata => {
             if (metaExtends) {
                 metaExtends(metadata as T);
