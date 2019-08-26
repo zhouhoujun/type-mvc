@@ -59,5 +59,5 @@ export const Controller: IControllerDecorator<ControllerMetadata> =
                 ctx.next(next, false);
             }
         }
-    ]) as IControllerDecorator<ControllerMetadata>;
+    ], true) as IControllerDecorator<ControllerMetadata>;
 
