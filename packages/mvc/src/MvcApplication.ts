@@ -201,6 +201,10 @@ class MvcCoreModule {
             loadControllers: ['./controllers/**/*{.js,.ts}', '!./**/*.d.ts'],
             aop: ['./aop/**/*{.js,.ts}', '!./**/*.d.ts'],
             views: './views',
+            corsOptions: {
+                allowMethods: 'GET,HEAD,PUT,POST,DELETE,OPTIONS',
+                maxAge: 60 * 60 * 1000
+            },
             viewsOptions: {
                 extension: 'ejs',
                 map: { html: 'nunjucks' }

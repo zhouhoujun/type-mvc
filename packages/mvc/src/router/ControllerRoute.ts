@@ -146,7 +146,7 @@ export class ControllerRoute extends MvcRoute {
             let allowsM: string = isArray(options.allowMethods) ?
                 options.allowMethods.map(m => methodToString(m)).filter(m => !!m).join(',')
                 : options.allowMethods;
-            allowsM = allowsM || 'GET,HEAD,PUT,POST,DELETE,PATCH';
+
             if (allowsM) {
                 ctx.set('Access-Control-Allow-Methods', allowsM);
             }
