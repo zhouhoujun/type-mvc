@@ -202,7 +202,7 @@ class MvcCoreModule {
             aop: ['./aop/**/*{.js,.ts}', '!./**/*.d.ts'],
             views: './views',
             corsOptions: {
-                allowMethods: 'GET,HEAD,PUT,POST,DELETE,OPTIONS',
+                allowMethods: 'GET,PUT,POST,DELETE,OPTIONS',
                 maxAge: 60 * 60 * 1000
             },
             viewsOptions: {
