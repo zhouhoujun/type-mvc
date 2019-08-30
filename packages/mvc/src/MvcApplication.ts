@@ -1,7 +1,11 @@
 
 import { IocExt, ContainerToken, IContainer } from '@tsdi/core';
 import { Controller, Authorization, Middleware, MvcModule } from './decorators';
-import { Inject, DecoratorScopes, RuntimeDecoratorRegisterer, DesignDecoratorRegisterer, BindProviderAction, BindMethodProviderAction, IocSetCacheAction, Type, LoadType, DecoratorProvider, InjectReference, ProviderTypes } from '@tsdi/ioc';
+import {
+    Inject, DecoratorScopes, RuntimeDecoratorRegisterer, DesignDecoratorRegisterer,
+    BindProviderAction, BindMethodProviderAction, IocSetCacheAction, Type, LoadType,
+    DecoratorProvider, InjectReference, ProviderTypes
+} from '@tsdi/ioc';
 import { MvcContext, MvcOptions, MvcContextToken } from './MvcContext';
 import { ControllerRegisterAction, MiddlewareRegisterAction } from './registers';
 import * as middlewares from './middlewares';
