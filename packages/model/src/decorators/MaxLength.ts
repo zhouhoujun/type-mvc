@@ -7,6 +7,9 @@ export interface IMaxLengthDecorator<T extends MaxLengthMetadata> extends IPrope
     (MaxLength?: number, errorMessage?: string, dbtype?: string, dbfield?: string): PropertyDecorator;
 }
 
+/**
+ * MaxLength decorator.
+ */
 export const MaxLength: IMaxLengthDecorator<MaxLengthMetadata> = createFieldDecorator<MaxLengthMetadata>(
     'MaxLength',
     [

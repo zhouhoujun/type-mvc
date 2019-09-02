@@ -7,6 +7,9 @@ export interface IMinLengthDecorator<T extends MinLengthMetadata> extends IPrope
     (MinLength?: number, errorMessage?: string, dbtype?: string, dbfield?: string): PropertyDecorator;
 }
 
+/**
+ * MinLength decorator.
+ */
 export const MinLength: IMinLengthDecorator<MinLengthMetadata> = createFieldDecorator<MinLengthMetadata>(
     'MinLength',
     [

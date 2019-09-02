@@ -7,6 +7,9 @@ export interface IForeignKeyDecorator<T extends ForeignKeyMetadata> extends IPro
     (foreignKey?: string, refType?: Type, foreignOrder?: number, dbtype?: string, dbfield?: string): PropertyDecorator;
 }
 
+/**
+ * ForeignKey decorator.
+ */
 export const ForeignKey: IForeignKeyDecorator<ForeignKeyMetadata> = createFieldDecorator<ForeignKeyMetadata>(
     'ForeignKey',
     [

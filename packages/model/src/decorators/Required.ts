@@ -7,6 +7,9 @@ export interface IRequiredDecorator<T extends FieldMetadata> extends IPropertyDe
     (dbtype?: string, dbfield?: string): PropertyDecorator;
 }
 
+/**
+ * Required decorator.
+ */
 export const Required: IRequiredDecorator<FieldMetadata> = createFieldDecorator<FieldMetadata>(
     'Required',
     null,

@@ -1,5 +1,5 @@
 import { Strategy } from './Strategy';
-import { Context, Request, Response } from 'koa';
+import { Context, Request } from 'koa';
 import { ValidationResult, FailResult, SuccessResult } from './results';
 import { Component, Input, AfterInit } from '@tsdi/components';
 import { IContext } from '@mvx/mvc';
@@ -32,7 +32,9 @@ export interface JwtStrategyOption extends IStrategyOption {
     passReqToCallback?
 }
 
-
+/**
+ * Jwt authenticate strategy
+ */
 @Component({
     selector: 'jwt'
 })

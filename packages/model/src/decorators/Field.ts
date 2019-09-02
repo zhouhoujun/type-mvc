@@ -76,5 +76,8 @@ export function createFieldDecorator<T extends FieldMetadata>(
         }) as IFiledDecorator<T>;
 }
 
+/**
+ *  Filed decorator.
+ */
 export const Field: IFiledDecorator<FieldMetadata> = createFieldDecorator<FieldMetadata>();
 

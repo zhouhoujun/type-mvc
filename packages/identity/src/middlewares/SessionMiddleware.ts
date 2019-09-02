@@ -3,6 +3,9 @@ const session = require('koa-session');
 import { stores, Session } from 'koa-session';
 import { Abstract, Inject } from '@tsdi/ioc';
 
+/**
+ * Session storage.
+ */
 @Abstract()
 export abstract class SessionStorage implements stores {
     @Inject(ContextToken)

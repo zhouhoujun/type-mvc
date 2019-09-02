@@ -25,6 +25,14 @@ export interface LocalStrategyOption extends IStrategyOption {
 }
 
 
+/**
+ * Local authenticate strategy
+ *
+ * @export
+ * @class LocalStrategy
+ * @extends {Strategy}
+ * @implements {AfterInit}
+ */
 @Component({
     selector: 'local'
 })

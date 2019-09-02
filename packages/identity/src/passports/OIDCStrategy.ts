@@ -55,7 +55,14 @@ export interface OIDCOption extends IStrategyOption, OIDCConfigure {
     authorizationParams: (options) => any;
 }
 
-
+/**
+ * OIDC authenticate strategy
+ *
+ * @export
+ * @class OIDCStrategy
+ * @extends {Strategy}
+ * @implements {AfterInit}
+ */
 @Component({
     selector: 'oidc'
 })

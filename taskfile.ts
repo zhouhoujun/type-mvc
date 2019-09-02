@@ -99,7 +99,7 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
                     activity: 'shell',
                     parallel: true,
                     shell: (ctx: NodeActivityContext) => {
-                        let pks = ctx.platform.getFolders('packages').filter(f => !/(cli|orm|identity-server|simples)$/.test(f))
+                        let pks = ctx.platform.getFolders('packages').filter(f => !/(cli|orm|identity-server|simples|package)$/.test(f))
                         return pks.map(p => `cd ${p} && tsdi build`);
                     }
                 }
