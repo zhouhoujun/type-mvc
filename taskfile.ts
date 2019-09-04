@@ -82,7 +82,6 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
                     },
                     {
                         activity: 'asset',
-                        name: 'version-setting',
                         src: 'package.json',
                         dist: '.',
                         pipes: [
