@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { createConnection, Connection, getConnection, ConnectionOptions, Repository } from 'typeorm';
+import { createConnection, Connection, getConnection, ConnectionOptions, Repository, ObjectType } from 'typeorm';
 import { Singleton, Inject, Type, isString, Abstract } from '@tsdi/ioc';
 import { MvcContext, MvcContextToken, IConnectionOptions } from '@mvx/mvc';
 
@@ -18,7 +18,7 @@ export class TypeOrmHelper {
 
     async getRepository<T>(type: Type<T>): Promise<Repository<T>> {
         let conn = await this.getConnection();
-        return conn.getRepository(type);
+        return conn.getRepository<T>(type);
     }
 
     async getConnection(): Promise<Connection> {
