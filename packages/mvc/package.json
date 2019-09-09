@@ -43,7 +43,7 @@
     "koa-static": "^5.0.0",
     "koa-views": "^6.2.0",
     "nunjucks": "^3.2.0",
-    "@tsdi/cli": "^5.2.5", 
+    "@tsdi/cli": "^5.2.5",
     "@tsdi/aop": "^5.2.5",
     "@tsdi/boot": "^5.2.5",
     "@tsdi/core": "^5.2.5",
@@ -60,6 +60,5 @@
     "zone.js": "^0.9.1"
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme",
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
