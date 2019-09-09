@@ -1,6 +1,6 @@
 {
   "name": "@mvx/orm",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -32,7 +32,7 @@
     "ejs": "^2.5.7",
     "globby": "^7.1.1",
     "reflect-metadata": "^0.1.12",
-    "tslib": "^1.9.2"
+    "tslib": "^1.10.0"
   },
   "devDependencies": {
     "@taskfr/cli": "^1.0.2",
@@ -55,14 +55,11 @@
     "minimatch": "^3.0.4",
     "rxjs": "^5.5.11",
     "through2": "^2.0.3",
-    "ts-node": "^6.0.3",
+    "ts-node": "^8.3.0",
     "tslint": "^5.0.0",
     "tslint-stylish": "^2.1.0",
-    "typescript": "^2.9.2",
+    "typescript": "^3.5.3",
     "uuid": "^3.3.2",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-paths": "^2.1.0",
-    "vinyl-source-stream": "^1.1.0",
     "zone.js": "^0.8.5"
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme"

@@ -1,6 +1,6 @@
 {
   "name": "@mvx/cli",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "tsioc cli.",
   "typings": "./lib/cli.d.ts",
   "main": "./lib/cli.js",
@@ -39,13 +39,13 @@
   "homepage": "https://github.com/zhouhoujun/tsioc/blob/master/packages/cli#readme",
   "dependencies": {
     "reflect-metadata": "^0.1.12",
-    "tslib": "^1.9.3",
+    "tslib": "^1.10.0",
     "shelljs": "^0.8.3",
     "chalk": "^2.4.2",
     "chokidar": "^2.0.4",
     "commander": "^2.18.0",
     "resolve": "^1.9.0",
-    "ts-node": "^7.0.0",
+    "ts-node": "^8.3.0",
     "tsconfig-paths": "^3.7.0"
   },
   "directories": {

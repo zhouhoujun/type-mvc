@@ -1,6 +1,6 @@
 {
   "name": "@mvx/simples",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -28,14 +28,14 @@
     "url": "git+https://github.com/zhouhoujun/type-mvc.git"
   },
   "dependencies": {
-    "@tsdi/aop": "^5.2.4",
-    "@tsdi/core": "^5.2.4",
-    "@tsdi/logs": "^5.2.4",
-    "@tsdi/boot": "^5.2.4",
-    "@tsdi/platform-server": "^5.2.4",
-    "@mvx/mvc": "^3.0.4",
-    "@mvx/koa": "^3.0.4",
-    "@mvx/router": "^3.0.4",
+    "@tsdi/aop": "^5.2.5",
+    "@tsdi/core": "^5.2.5",
+    "@tsdi/logs": "^5.2.5",
+    "@tsdi/boot": "^5.2.5",
+    "@tsdi/platform-server": "^5.2.5",
+    "@mvx/mvc": "^3.0.5",
+    "@mvx/koa": "^3.0.5",
+    "@mvx/router": "^3.0.5",
     "@types/koa": "^2.0.44",
     "ejs": "^2.5.7",
     "globby": "^7.1.1",
@@ -50,7 +50,7 @@
     "koa-views": "^6.1.4",
     "nunjucks": "^3.1.2",
     "reflect-metadata": "^0.1.12",
-    "tslib": "^1.9.2"
+    "tslib": "^1.10.0"
   },
   "devDependencies": {
     "@taskfr/cli": "^2.1.3",
@@ -73,10 +73,10 @@
     "minimatch": "^3.0.4",
     "rxjs": "^5.5.11",
     "through2": "^2.0.3",
-    "ts-node": "^6.0.3",
+    "ts-node": "^8.3.0",
     "tslint": "^5.0.0",
     "tslint-stylish": "^2.1.0",
-    "typescript": "^2.9.2",
+    "typescript": "^3.5.3",
     "uuid": "^3.3.2",
     "vinyl-buffer": "^1.0.0",
     "vinyl-paths": "^2.1.0",
