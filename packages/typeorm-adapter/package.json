@@ -9,15 +9,23 @@
     "build": "tsdi build"
   },
   "keywords": [
+    "typeorm",
+    "adapter",
     "mvc",
+    "boot",
+    "frameworks",
+    "Application",
     "AOP",
-    "ioc",
-    "frameworker",
-    "koa",
+    "aop",
     "tsdi",
+    "@tsdi",
     "tsioc",
-    "server",
-    "ts-ioc"
+    "ioc",
+    "IoC",
+    "type",
+    "container",
+    "dependency",
+    "injection"
   ],
   "author": "houjun",
   "license": "MIT",
