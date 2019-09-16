@@ -1,6 +1,6 @@
-import { Get, Post, Put, Delete, Patch, Head, Options, Controller, Authorization, MvcApplication, MvcApp, MvcModule, MvcServer, IContext, Cors, RequestMethod, ContextToken, MvcContext } from '../src';
+import { Get, Post, Put, Delete, Controller, Authorization, MvcApplication, MvcModule, MvcServer, IContext, Cors, RequestMethod, ContextToken, MvcContext } from '../src';
 import { AutoWired, Inject, Injectable } from '@tsdi/ioc';
-import { Suite, Before, Test, Assert, ExpectToken, Expect, After } from '@tsdi/unit';
+import { Suite, Before, Test, ExpectToken, Expect, After } from '@tsdi/unit';
 import expect = require('expect');
 import axios from 'axios';
 import { stringify } from 'querystring';

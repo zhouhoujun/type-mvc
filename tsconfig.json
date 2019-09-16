@@ -3,6 +3,13 @@
     "compilerOptions": {
         "importHelpers": true,
         "baseUrl": ".",
+        "sourceMap": true,
+        "declaration": true,
+        "module": "commonjs",
+        "target": "es5",
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
         "paths": {
             "@mvx/model": [
                 "packages/model/src"
@@ -19,37 +26,15 @@
             "@mvx/identity-server": [
                 "packages/identity-server/src"
             ],
-            "@mvx/oauth": [
-                "packages/oauth/src"
-            ],
             "@mvx/orm": [
                 "packages/orm/src"
             ]
         },
-        "module": "commonjs",
-        "target": "es5",
         "lib": [
             "dom",
             "es2015",
             "es2017"
-        ],
-        "declaration": true,
-        "allowSyntheticDefaultImports": true,
-        "removeComments": false,
-        "noLib": false,
-        "jsx": "preserve",
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "sourceMap": true,
-        "pretty": true,
-        "allowUnreachableCode": false,
-        "allowUnusedLabels": false,
-        "noImplicitAny": false,
-        "noImplicitReturns": true,
-        "noImplicitUseStrict": false,
-        "noFallthroughCasesInSwitch": true,
-        "moduleResolution": "node",
-        "suppressImplicitAnyIndexErrors": true
+        ]
     },
     "exclude": [
         "test",
