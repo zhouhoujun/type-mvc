@@ -1,6 +1,6 @@
 {
   "name": "mvx-src",
-  "version": "3.0.9",
+  "version": "3.0.10",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "scripts": {
     "build": "tsdi build"
@@ -25,21 +25,21 @@
     "url": "git+https://github.com/zhouhoujun/type-mvc.git"
   },
   "devDependencies": {
-    "@tsdi/activities": "^5.2.10",
-    "@tsdi/annotations": "^5.2.10",
-    "@tsdi/aop": "^5.2.10",
-    "@tsdi/boot": "^5.2.10",
-    "@tsdi/components": "^5.2.10",
-    "@tsdi/core": "^5.2.10",
-    "@tsdi/ioc": "^5.2.10",
-    "@tsdi/logs": "^5.2.10",
-    "@tsdi/pack": "^5.2.10",
-    "@tsdi/platform-server": "^5.2.10",
-    "@tsdi/platform-server-activities": "^5.2.10",
-    "@tsdi/platform-server-boot": "^5.2.10",
-    "@tsdi/platform-server-logs": "^5.2.10",
-    "@tsdi/unit": "^5.2.10",
-    "@tsdi/unit-console": "^5.2.10",
+    "@tsdi/activities": "^5.2.12",
+    "@tsdi/annotations": "^5.2.12",
+    "@tsdi/aop": "^5.2.12",
+    "@tsdi/boot": "^5.2.12",
+    "@tsdi/components": "^5.2.12",
+    "@tsdi/core": "^5.2.12",
+    "@tsdi/ioc": "^5.2.12",
+    "@tsdi/logs": "^5.2.12",
+    "@tsdi/pack": "^5.2.12",
+    "@tsdi/platform-server": "^5.2.12",
+    "@tsdi/platform-server-activities": "^5.2.12",
+    "@tsdi/platform-server-boot": "^5.2.12",
+    "@tsdi/platform-server-logs": "^5.2.12",
+    "@tsdi/unit": "^5.2.12",
+    "@tsdi/unit-console": "^5.2.12",
     "@types/chai": "^4.1.3",
     "@types/expect": "^1.20.4",
     "@types/gulp-mocha": "0.0.32",
@@ -82,6 +82,5 @@
     "zone.js": "^0.9.1"
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme",
-  "dependencies": {
-  }
+  "dependencies": {}
 }
