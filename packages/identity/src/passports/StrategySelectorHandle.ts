@@ -1,8 +1,8 @@
-import { ComponentSelectorHandle } from '@tsdi/components';
+import { ComponentSelectorHandle, RefSelector } from '@tsdi/components';
 import { isMetadataObject } from '@tsdi/ioc';
 
 export class StrategySelectorHandle extends ComponentSelectorHandle {
-    protected getSelector(template: any): any {
+    protected getSelector(template: any, refSelector: RefSelector): any {
         return isMetadataObject(template) ? template.strategy : null;
     }
 }

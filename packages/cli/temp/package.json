@@ -1,0 +1,40 @@
+{
+  "name": "project-name",
+  "version": "0.0.0",
+  "description": "mvc application",
+  "scripts": {
+    "build": "tsdi build"
+  },
+  "keywords": [
+    "mvc",
+    "application",
+    "framework"
+  ],
+  "dependencies": {
+    "@tsdi/activities": "^5.2.15",
+    "@tsdi/annotations": "^5.2.15",
+    "@tsdi/aop": "^5.2.15",
+    "@tsdi/boot": "^5.2.15",
+    "@tsdi/components": "^5.2.15",
+    "@tsdi/core": "^5.2.15",
+    "@tsdi/ioc": "^5.2.15",
+    "@tsdi/logs": "^5.2.15",
+    "@tsdi/pack": "^5.2.15",
+    "@tsdi/platform-server": "^5.2.15",
+    "@tsdi/platform-server-boot": "^5.2.15",
+    "@tsdi/platform-server-logs": "^5.2.15",
+    "@mvx/identity": "^3.0.10",
+    "@mvx/mvc": "^3.0.10",
+    "@mvx/typeorm-adapter": "^3.0.10"
+  },
+  "devDependencies": {
+    "@koa/cors": "^3.0.0",
+    "@tsdi/platform-server-activities": "^5.2.15",
+    "@tsdi/unit": "^5.2.15",
+    "@tsdi/unit-console": "^5.2.15",
+    "@types/socket.io": "^2.1.2",
+    "jsonwebtoken": "^8.5.1",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0"
+  }
+}
