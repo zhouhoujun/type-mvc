@@ -8,13 +8,14 @@ import { MvcRoute, RouteUrlArgToken } from './Route';
 import { IContext } from '../IContext';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
 import { RouteMetadata, CorsMetadata } from '../metadata';
-import { HttpError, ForbiddenError } from '../errors';
+import { HttpError } from '../errors';
 import { ResultValue } from '../results';
 import { Cors, Route } from '../decorators';
 import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
 import { ModelParser } from './ModelParser';
 import { DefaultModelParserToken } from './IModelParser';
 import { MvcMiddleware, MvcMiddlewares, MiddlewareType } from '../middlewares';
+import { AuthorizationService } from '../services';
 
 declare let Buffer: any;
 
@@ -48,12 +49,9 @@ export class ControllerRoute extends MvcRoute {
         }
         let middlewares = this.getRouteMiddleware(ctx, meta);
         if (middlewares.length) {
-            await this.execFuncs(ctx, middlewares.map(m => this.parseAction(m)).filter(f => !!f), () => {
-                return this.navigating(ctx, meta, next);
-            });
-        } else {
-            await this.navigating(ctx, meta, next);
+            await this.execFuncs(ctx, middlewares.map(m => this.parseAction(m)).filter(f => !!f))
         }
+        await this.navigating(ctx, meta, next);
     }
 
     async navigating(ctx: IContext, meta: RouteMetadata, next: () => Promise<void>) {
@@ -65,7 +63,17 @@ export class ControllerRoute extends MvcRoute {
     }
 
     protected getRouteMiddleware(ctx: IContext, meta: RouteMetadata) {
-        return [...(this.middlewares || []), ...(meta.middlewares || [])];
+        let auths = this.container.getServices(AuthorizationService);
+        let middlewares = this.middlewares || [];
+        if (auths) {
+            middlewares = auths.map(auth => auth.getAuthMiddlewares(ctx, this.controller)).reduce((p, c) => p.concat(c), [])
+                .concat(middlewares)
+                .concat(auths.map(a => a.getAuthMiddlewares(ctx, this.controller, meta.propertyKey)).reduce((p, c) => p.concat(c), []));
+        }
+        if (meta.middlewares) {
+            middlewares = middlewares.concat(meta.middlewares);
+        }
+        return middlewares;
     }
 
     async options(ctx: IContext, next: () => Promise<void>): Promise<void> {

@@ -1,6 +1,6 @@
 {
   "name": "@mvx/orm",
-  "version": "3.0.10",
+  "version": "3.0.12",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",

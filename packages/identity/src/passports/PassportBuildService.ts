@@ -25,7 +25,6 @@ export abstract class PassportBuildService {
     abstract build(passport: IAuthenticator, configuration: IConfiguration): Promise<void>;
 
     async createStrategy(option: IStrategyOption): Promise<IStrategy> {
-        console.log(option);
         return await this.builder.resolveTemplate({ template: option }) as IStrategy;
     }
 }
@@ -56,7 +55,6 @@ export class ConfigurePassportBuildService extends PassportBuildService {
                 await Promise.all(strategies.map(async p => {
                     let strategy = await this.createStrategy(p);
                     if (strategy instanceof Strategy) {
-                        console.log(strategy);
                         passport.use(strategy);
                     }
                 }));

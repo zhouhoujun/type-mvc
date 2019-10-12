@@ -29,7 +29,7 @@ export interface ITransformAuthInfo {
 export type TransformAuthInfoOption = Type<ITransformAuthInfo> | ((info, ctx: IContext) => Promise<any>);
 
 export interface IAuthFlowOption {
-    strategy: string;
+    strategy: string | string[];
     options: any;
 }
 

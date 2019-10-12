@@ -1,6 +1,6 @@
 {
   "name": "project-name",
-  "version": "0.0.0",
+  "version": "3.0.12",
   "description": "mvc application",
   "scripts": {
     "build": "tsdi build"
@@ -11,21 +11,21 @@
     "framework"
   ],
   "dependencies": {
-    "@tsdi/activities": "^5.2.15",
-    "@tsdi/annotations": "^5.2.15",
-    "@tsdi/aop": "^5.2.15",
-    "@tsdi/boot": "^5.2.15",
-    "@tsdi/components": "^5.2.15",
-    "@tsdi/core": "^5.2.15",
-    "@tsdi/ioc": "^5.2.15",
-    "@tsdi/logs": "^5.2.15",
-    "@tsdi/pack": "^5.2.15",
-    "@tsdi/platform-server": "^5.2.15",
-    "@tsdi/platform-server-boot": "^5.2.15",
-    "@tsdi/platform-server-logs": "^5.2.15",
-    "@mvx/identity": "^3.0.10",
-    "@mvx/mvc": "^3.0.10",
-    "@mvx/typeorm-adapter": "^3.0.10"
+    "@tsdi/activities": "=5.2.16",
+    "@tsdi/annotations": "=5.2.16",
+    "@tsdi/aop": "=5.2.16",
+    "@tsdi/boot": "=5.2.16",
+    "@tsdi/components": "=5.2.16",
+    "@tsdi/core": "=5.2.16",
+    "@tsdi/ioc": "=5.2.16",
+    "@tsdi/logs": "=5.2.16",
+    "@tsdi/pack": "=5.2.16",
+    "@tsdi/platform-server": "=5.2.16",
+    "@tsdi/platform-server-boot": "=5.2.16",
+    "@tsdi/platform-server-logs": "=5.2.16",
+    "@mvx/identity": "=3.0.12",
+    "@mvx/mvc": "=3.0.12",
+    "@mvx/typeorm-adapter": "=3.0.12"
   },
   "devDependencies": {
     "@koa/cors": "^3.0.0",

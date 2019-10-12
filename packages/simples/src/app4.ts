@@ -13,7 +13,7 @@ const oauthProviderId = 'markus'
         IdentityModule
     ],
     subSites: [
-        { app: IdentityServiceModule, routePrefix: '/api' }
+        // { app: IdentityServiceModule, routePrefix: '/api' }
     ]
     // middlewares: DefaultMvcMiddlewares,
     // debug: true
