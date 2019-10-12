@@ -68,7 +68,7 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
                                     });
                                     Object.keys(json.peerDependencies || {}).forEach(key => {
                                         if (/^@tsdi/.test(key)) {
-                                            chgs.set('peerDependencies.' + key, '^=' + iocVersion);
+                                            chgs.set('peerDependencies.' + key, '=' + iocVersion);
                                         }
                                     });
                                     Object.keys(json.dependencies || {}).forEach(key => {

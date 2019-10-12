@@ -1,6 +1,6 @@
 {
   "name": "project-name",
-  "version": "3.0.12",
+  "version": "3.0.13",
   "description": "mvc application",
   "scripts": {
     "build": "tsdi build"
@@ -23,9 +23,9 @@
     "@tsdi/platform-server": "=5.2.16",
     "@tsdi/platform-server-boot": "=5.2.16",
     "@tsdi/platform-server-logs": "=5.2.16",
-    "@mvx/identity": "=3.0.12",
-    "@mvx/mvc": "=3.0.12",
-    "@mvx/typeorm-adapter": "=3.0.12"
+    "@mvx/identity": "=3.0.13",
+    "@mvx/mvc": "=3.0.13",
+    "@mvx/typeorm-adapter": "=3.0.13"
   },
   "devDependencies": {
     "@koa/cors": "^3.0.0",

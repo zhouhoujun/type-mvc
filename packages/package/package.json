@@ -1,6 +1,6 @@
 {
   "name": "@mvx/package",
-  "version": "3.0.12",
+  "version": "3.0.13",
   "description": "@mvx/package web project development framework.  base on mvc framework on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",

@@ -1,6 +1,6 @@
 {
   "name": "@mvx/cli",
-  "version": "3.0.12",
+  "version": "3.0.13",
   "description": "tsioc cli.",
   "typings": "./lib/cli.d.ts",
   "main": "./lib/cli.js",
