@@ -1,12 +1,12 @@
+import { isString, Defer } from '@tsdi/ioc';
+import { IContainer } from '@tsdi/core';
 import { ResultValue } from './ResultValue';
 import { Stream } from 'stream';
 import { IContext } from '../IContext';
 import { ConfigurationToken } from '../IConfiguration';
-import { isString, Defer } from '@tsdi/ioc';
 import { existsSync, readFile } from 'fs';
 import { join } from 'path';
 import { BadRequestError } from '../errors';
-import { IContainer } from '@tsdi/core';
 
 
 /**

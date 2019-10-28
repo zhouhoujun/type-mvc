@@ -1,7 +1,7 @@
-import { Middleware, Context } from 'koa';
-import { IStrategy } from './IStrategy';
 import { InjectToken, ObjectMap, Type } from '@tsdi/ioc';
 import { MvcContext, IContext, MvcConfiguration } from '@mvx/mvc';
+import { Middleware, Context } from 'koa';
+import { IStrategy } from './IStrategy';
 
 
 /**

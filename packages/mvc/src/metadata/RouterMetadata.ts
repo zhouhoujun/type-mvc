@@ -1,6 +1,5 @@
 import { ClassMetadata } from '@tsdi/ioc';
 
-
 /**
  * controller metadata
  *

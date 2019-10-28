@@ -3,11 +3,11 @@ import { Middleware, Context } from 'koa';
 import * as http from 'http';
 import { contextExtends } from './ContextExtends';
 import { FailResult } from './results';
+import { IStrategy } from './IStrategy';
 import { Strategy } from './Strategy';
 import { SessionStrategy } from './SessionStrategy';
 import { AuthenticationError } from '../errors';
 import { IAuthenticator, AuthenticatorToken, AuthenticateOption } from './IAuthenticator';
-import { IStrategy } from './IStrategy';
 
 
 /**

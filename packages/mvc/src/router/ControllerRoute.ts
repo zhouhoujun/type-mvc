@@ -1,9 +1,10 @@
 import {
     lang, Injectable, Type, getMethodMetadata, isFunction, isBaseType,
     isUndefined, ParamProviders, Provider, isClass, IParameter, isObject,
-    isArray, isPromise, getTypeMetadata,
-    isString, RuntimeLifeScope, Inject, InjectToken, getClassDecorators, isNumber, isNullOrUndefined
+    isArray, isPromise, getTypeMetadata, isString, Inject,
+    InjectToken, isNumber, isNullOrUndefined
 } from '@tsdi/ioc';
+import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
 import { MvcRoute, RouteUrlArgToken } from './Route';
 import { IContext } from '../IContext';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
@@ -11,9 +12,8 @@ import { RouteMetadata, CorsMetadata } from '../metadata';
 import { HttpError } from '../errors';
 import { ResultValue } from '../results';
 import { Cors, Route } from '../decorators';
-import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
-import { ModelParser } from './ModelParser';
 import { DefaultModelParserToken } from './IModelParser';
+import { ModelParser } from './ModelParser';
 import { MvcMiddleware, MvcMiddlewares, MiddlewareType } from '../middlewares';
 import { AuthorizationService } from '../services';
 
@@ -216,10 +216,8 @@ export class ControllerRoute extends MvcRoute {
         let container = this.container;
         if (meta && meta.propertyKey) {
             let ctrl = container.get(this.controller);
-            let lifeScope = container.getActionRegisterer().get(RuntimeLifeScope);
-
-            let params = lifeScope.getMethodParameters(this.container, this.controller, ctrl, meta.propertyKey);
-            let providers = await this.createProvider(ctx, ctrl, meta, params);
+            let reflects = ctx.mvcContext.reflects;
+            let providers = await this.createProvider(ctx, ctrl, meta, reflects.getParameters(this.controller, ctrl, meta.propertyKey));
             let result: any = await container.invoke(ctrl, meta.propertyKey, ...providers);
             if (isPromise(result)) {
                 result = await result;
@@ -287,7 +285,7 @@ export class ControllerRoute extends MvcRoute {
                         } else if (isBaseType(ptype)) {
                             val = parser.parse(ptype, body[param.name]);
                         } else if (isClass(ptype)) {
-                            let mdparser = this.container.getService({ token: ModelParser, target: [ptype, ...getClassDecorators(ptype)], defaultToken: DefaultModelParserToken });
+                            let mdparser = this.container.getService({ token: ModelParser, target: [ptype, ...ctx.mvcContext.reflects.getDecorators(ptype)], defaultToken: DefaultModelParserToken });
                             if (mdparser) {
                                 val = mdparser.parseModel(ptype, body);
                             } else {

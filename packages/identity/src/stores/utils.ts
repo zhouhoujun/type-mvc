@@ -39,7 +39,7 @@ export namespace OIDCUtils {
      *
      *     var a = { foo: 'bar' }
      *       , b = { bar: 'baz' };
-     *     
+     *
      *     utils.merge(a, b);
      *     // => { foo: 'bar', bar: 'baz' }
      *
@@ -77,5 +77,4 @@ export namespace OIDCUtils {
             .toString('base64')
             .slice(0, len);
     }
-
 }

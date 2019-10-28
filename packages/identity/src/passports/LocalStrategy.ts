@@ -1,9 +1,9 @@
-import { Strategy } from './Strategy';
-import { Context } from 'koa';
-import { ValidationResult, FailResult, SuccessResult } from './results';
 import { Component, Input, AfterInit } from '@tsdi/components';
 import { IContext } from '@mvx/mvc';
+import { Strategy } from './Strategy';
 import { IStrategyOption } from './IAuthenticator';
+import { Context } from 'koa';
+import { ValidationResult, FailResult, SuccessResult } from './results';
 
 
 /**

@@ -1,12 +1,12 @@
-import { Strategy } from './Strategy';
-import { Context, Request } from 'koa';
-import { ValidationResult, FailResult, SuccessResult } from './results';
+import { PromiseUtil } from '@tsdi/ioc';
 import { Component, Input, AfterInit } from '@tsdi/components';
 import { IContext } from '@mvx/mvc';
+import { Strategy } from './Strategy';
+import { IStrategyOption } from './IAuthenticator';
+import { Context, Request } from 'koa';
+import { ValidationResult, FailResult, SuccessResult } from './results';
 import * as url from 'url';
 import * as jwt from 'jsonwebtoken';
-import { PromiseUtil } from '@tsdi/ioc';
-import { IStrategyOption } from './IAuthenticator';
 
 
 export type JwtVerify = (payload: any, ctx?: IContext) => Promise<{ user, info }>;

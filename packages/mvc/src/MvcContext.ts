@@ -1,10 +1,10 @@
-import { BootContext, BootOption, ProcessRunRootToken, Service } from '@tsdi/boot';
 import { Injectable, Refs, InjectToken } from '@tsdi/ioc';
+import { BootContext, BootOption, ProcessRunRootToken, Service } from '@tsdi/boot';
+import { runMainPath } from '@tsdi/platform-server';
 import { IConfiguration } from './IConfiguration';
 import * as Koa from 'koa';
 import * as http from 'http';
 import * as https from 'https';
-import { runMainPath } from '@tsdi/platform-server';
 
 /**
  * mvc boot option

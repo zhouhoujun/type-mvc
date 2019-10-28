@@ -1,8 +1,8 @@
 const bodyParser = require('koa-bodyparser');
 import * as json from 'koa-json';
+import { InjectToken } from '@tsdi/ioc';
 import { toAbsolutePath } from '@tsdi/platform-server';
 import { MvcMiddlewareType, MiddlewareTypes, bindMiddlewareName } from './middlewares';
-import { InjectToken } from '@tsdi/ioc';
 import { RouterMiddleware, CorsMiddleware } from './router';
 const logger = require('koa-logger')
 const serve = require('koa-static');

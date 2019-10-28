@@ -1,5 +1,5 @@
-import { AuthorizationService, IContext, MiddlewareType, Authorization, IConfiguration } from '@mvx/mvc';
 import { Type, Singleton, hasMethodMetadata, hasOwnClassMetadata, Inject } from '@tsdi/ioc';
+import { AuthorizationService, IContext, MiddlewareType, Authorization, IConfiguration } from '@mvx/mvc';
 import { AuthenticatorToken, IAuthenticator } from '../passports';
 
 @Singleton()

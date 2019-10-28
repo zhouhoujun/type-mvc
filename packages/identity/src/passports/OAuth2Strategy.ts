@@ -1,12 +1,12 @@
+import { Input, Component, AfterInit } from '@tsdi/components';
 import { InternalOAuthError, AuthenticationError } from '../errors';
 import { OAuth2Error, OAuth2 } from './oauth2';
 import { Strategy } from './Strategy';
+import { IStrategyOption } from './IAuthenticator';
 import { StateStore, SessionStore } from '../stores';
-import { Input, Component, AfterInit } from '@tsdi/components';
 import { parse, resolve, format } from 'url';
 import { Context } from 'koa';
 import { FailResult, SuccessResult, RedirectResult } from './results';
-import { IStrategyOption } from './IAuthenticator';
 
 
 export type VerifyFunction = (accessToken: string, refreshToken: string, params, profile: object)

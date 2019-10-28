@@ -25,21 +25,21 @@
     "url": "git+https://github.com/zhouhoujun/type-mvc.git"
   },
   "devDependencies": {
-    "@tsdi/activities": "=5.2.16",
-    "@tsdi/annotations": "=5.2.16",
-    "@tsdi/aop": "=5.2.16",
-    "@tsdi/boot": "=5.2.16",
-    "@tsdi/components": "=5.2.16",
-    "@tsdi/core": "=5.2.16",
-    "@tsdi/ioc": "=5.2.16",
-    "@tsdi/logs": "=5.2.16",
-    "@tsdi/pack": "=5.2.16",
-    "@tsdi/platform-server": "=5.2.16",
-    "@tsdi/platform-server-activities": "=5.2.16",
-    "@tsdi/platform-server-boot": "=5.2.16",
-    "@tsdi/platform-server-logs": "=5.2.16",
-    "@tsdi/unit": "=5.2.16",
-    "@tsdi/unit-console": "=5.2.16",
+    "@tsdi/activities": "=5.3.0-beta1",
+    "@tsdi/annotations": "=5.3.0-beta1",
+    "@tsdi/aop": "=5.3.0-beta1",
+    "@tsdi/boot": "=5.3.0-beta1",
+    "@tsdi/components": "=5.3.0-beta1",
+    "@tsdi/core": "=5.3.0-beta1",
+    "@tsdi/ioc": "=5.3.0-beta1",
+    "@tsdi/logs": "=5.3.0-beta1",
+    "@tsdi/pack": "=5.3.0-beta1",
+    "@tsdi/platform-server": "=5.3.0-beta1",
+    "@tsdi/platform-server-activities": "=5.3.0-beta1",
+    "@tsdi/platform-server-boot": "=5.3.0-beta1",
+    "@tsdi/platform-server-logs": "=5.3.0-beta1",
+    "@tsdi/unit": "=5.3.0-beta1",
+    "@tsdi/unit-console": "=5.3.0-beta1",
     "@types/chai": "^4.1.3",
     "@types/expect": "^1.20.4",
     "@types/gulp-mocha": "0.0.32",
@@ -82,5 +82,7 @@
     "zone.js": "^0.9.1"
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme",
-  "dependencies": {}
+  "dependencies": {
+    "rollup-plugin-uglify": "^6.0.3"
+  }
 }

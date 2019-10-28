@@ -1,7 +1,7 @@
 import { Singleton } from '@tsdi/ioc';
 import { CompositeMiddleware } from './MvcMiddleware';
-import { MvcContext } from '../MvcContext';
 import { IContext, ContextToken } from '../IContext';
+import { MvcContext } from '../MvcContext';
 
 
 /**

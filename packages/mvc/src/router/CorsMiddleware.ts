@@ -1,6 +1,6 @@
+import { Singleton } from '@tsdi/ioc';
 import { MvcMiddleware, IMiddleware, MiddlewareTypes } from '../middlewares';
 import { Router } from './Router';
-import { Singleton } from '@tsdi/ioc';
 import { IContext } from '../IContext';
 
 

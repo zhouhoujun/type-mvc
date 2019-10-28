@@ -1,6 +1,6 @@
 import { Token, PromiseUtil, Type, isFunction, isString } from '@tsdi/ioc';
-import { IContext } from '../IContext';
 import { HandleType, IHandle } from '@tsdi/boot';
+import { IContext } from '../IContext';
 import { IConfiguration } from '../IConfiguration';
 import { MvcContext } from '../MvcContext';
 

@@ -1,14 +1,14 @@
-import { Context } from 'koa';
-import { OIDCError, InternalOAuthError, NoOpenIDError } from '../errors';
 import { isArray, isFunction, Inject, Singleton, PromiseUtil, ContainerFactory, ContainerFactoryToken } from '@tsdi/ioc';
+import { AfterInit, Input, Component, TemplateOptionToken } from '@tsdi/components';
+import { Strategy } from './Strategy';
+import { IStrategyOption } from './IAuthenticator';
+import { Context } from 'koa';
+import { stringify } from 'querystring';
+import { OIDCError, InternalOAuthError, NoOpenIDError } from '../errors';
 import { SessionStore, StateStore, OIDCUtils } from '../stores';
 import { parse, resolve, format } from 'url';
 import { OAuth2, OAuth2Error } from './oauth2';
-import { AfterInit, Input, Component, TemplateOptionToken } from '@tsdi/components';
 import { RedirectResult, FailResult, ValidationResult, SuccessResult } from './results';
-import { stringify } from 'querystring';
-import { Strategy } from './Strategy';
-import { IStrategyOption } from './IAuthenticator';
 const webfinger = require('webfinger').webfinger;
 const request = require('request');
 

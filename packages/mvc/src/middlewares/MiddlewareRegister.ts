@@ -1,7 +1,7 @@
 import { Singleton, Type, isString, Inject } from '@tsdi/ioc';
+import { IContainer, ContainerToken } from '@tsdi/core';
 import { IMiddleware, isMiddlewareFunc } from './IMiddleware';
 import { MiddlewareMetadata } from '../metadata';
-import { IContainer, ContainerToken } from '@tsdi/core';
 import { CompositeMiddleware } from './MvcMiddleware';
 import { MvcMiddlewares } from './MvcMiddlewares';
 

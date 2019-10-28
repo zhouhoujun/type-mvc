@@ -1,5 +1,5 @@
-import { createDIModuleDecorator } from '@tsdi/boot';
 import { ITypeDecorator, isClass, isFunction } from '@tsdi/ioc';
+import { createDIModuleDecorator } from '@tsdi/boot';
 import { MvcModuleMetadata } from '../metadata';
 
 /**

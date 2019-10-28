@@ -1,10 +1,10 @@
+import { Inject, DesignDecoratorRegisterer, DecoratorScopes, ActionRegisterer } from '@tsdi/ioc';
+import { IocExt, ContainerToken, IContainer } from '@tsdi/core';
+import { ComponentsModule, ElementModule } from '@tsdi/components';
+import { MvcModule, Controller } from '@mvx/mvc';
 import * as vaildates from './vaildates';
 import * as middlewares from './middlewares';
 import * as passports from './passports';
-import { MvcModule, Controller } from '@mvx/mvc';
-import { ComponentsModule, ElementModule } from '@tsdi/components';
-import { IocExt, ContainerToken, IContainer } from '@tsdi/core';
-import { Inject, DesignDecoratorRegisterer, DecoratorScopes } from '@tsdi/ioc';
 import { ControllerAuthRegisterAction, AuthRoutesToken } from './registers/ControllerAuthRegisterAction';
 import { IdentityStartupService } from './IdentityStartupService';
 
@@ -20,10 +20,10 @@ class IdentitySetupModule {
 
         container.bindProvider(AuthRoutesToken, new Set());
 
-        container.getActionRegisterer()
+        container.getInstance(ActionRegisterer)
             .register(container, ControllerAuthRegisterAction);
 
-        let dreger = container.get(DesignDecoratorRegisterer);
+        let dreger = container.getInstance(DesignDecoratorRegisterer);
         dreger.register(Controller, DecoratorScopes.Class, ControllerAuthRegisterAction);
 
     }

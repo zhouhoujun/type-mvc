@@ -2,9 +2,10 @@ import {
     Type, PropertyMetadata, isUndefined, Inject, isClass, ObjectMap,
     isBaseType, isArray, Abstract, SymbolType, Singleton, isNullOrUndefined, isFunction, Token
 } from '@tsdi/ioc';
-import { IModelParser } from './IModelParser';
 import { ContainerToken, IContainer } from '@tsdi/core';
 import { BaseTypeParserToken } from '@tsdi/boot';
+import { IModelParser } from './IModelParser';
+
 
 /**
  * db property metadata.

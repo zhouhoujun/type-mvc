@@ -1,7 +1,6 @@
-import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext, RouteChecker, ContextToken, IConfiguration, MvcMiddleware } from '@mvx/mvc';
 import { Inject } from '@tsdi/ioc';
+import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext, RouteChecker, ContextToken, IConfiguration } from '@mvx/mvc';
 import { AuthenticatorToken, IAuthenticator } from '../passports';
-import { AuthRoutesToken } from '../registers/ControllerAuthRegisterAction';
 import '../passports/IAuthenticator';
 
 /**

@@ -1,6 +1,6 @@
-import { MvcMiddleware } from '../middlewares';
 import { InjectToken, Abstract } from '@tsdi/ioc';
 import { IContext } from '../IContext';
+import { MvcMiddleware } from '../middlewares';
 import { RouteChecker } from '../services';
 
 export const RouteUrlArgToken = new InjectToken<string>('route_url');

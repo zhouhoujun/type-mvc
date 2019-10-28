@@ -1,5 +1,5 @@
-import { CompositeMiddleware } from '../middlewares';
 import { Singleton } from '@tsdi/ioc';
+import { CompositeMiddleware } from '../middlewares';
 import { RouteChecker } from '../services';
 import { IContext } from '../IContext';
 import { MvcRoute } from './Route';

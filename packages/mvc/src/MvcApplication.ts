@@ -1,32 +1,32 @@
-
-import { IocExt, ContainerToken, IContainer } from '@tsdi/core';
-import { Controller, Authorization, Middleware, MvcModule } from './decorators';
 import {
     Inject, DecoratorScopes, RuntimeDecoratorRegisterer, DesignDecoratorRegisterer,
     BindProviderAction, BindMethodProviderAction, IocSetCacheAction, Type, LoadType,
-    DecoratorProvider, InjectReference, ProviderTypes
+    DecoratorProvider, InjectReference, ProviderTypes, Singleton, isArray,
+    isClass, isFunction, lang, ActionRegisterer, IocAutorunAction
 } from '@tsdi/ioc';
+import { IocExt, ContainerToken, IContainer } from '@tsdi/core';
+import { AopModule } from '@tsdi/aop';
+import { DebugLogAspect, LogConfigureToken, LogModule } from '@tsdi/logs';
+import {
+    DefaultConfigureToken, DIModuleInjectorScope, BootApplication, checkBootArgs, BootContext,
+    Startup, RegFor, ConfigureRegister, Handle, AnnoationDesignAction
+} from '@tsdi/boot';
+import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
+import { ServerLogsModule } from '@tsdi/platform-server-logs';
+import { Controller, Authorization, Middleware, MvcModule } from './decorators';
 import { MvcContext, MvcOptions, MvcContextToken } from './MvcContext';
 import { ControllerRegisterAction, MiddlewareRegisterAction } from './registers';
 import * as middlewares from './middlewares';
 import * as routers from './router';
 import * as services from './services';
 import * as aop from './aop';
-import { DefaultConfigureToken, DIModuleInjectorScope, BootApplication, checkBootArgs, BootContext, Startup } from '@tsdi/boot';
 import { IConfiguration } from './IConfiguration';
 import { MvcServer } from './MvcServer';
-import { ConfigureRegister, Handle } from '@tsdi/boot';
-import { DebugLogAspect, LogConfigureToken, LogModule } from '@tsdi/logs';
-import { Singleton, isArray, isClass, isFunction, lang } from '@tsdi/ioc';
 import { DefaultMvcMiddlewares, DefaultMvcMiddlewaresToken } from './DefaultMvcMiddlewares';
 import { MvcModuleMetadata } from './metadata';
 import { MvcMiddlewares, MiddlewareRegister } from './middlewares';
 import * as http from 'http';
 import * as https from 'https';
-import { RegFor } from '@tsdi/boot';
-import { AopModule } from '@tsdi/aop';
-import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
-import { ServerLogsModule } from '@tsdi/platform-server-logs';
 import * as Koa from 'koa';
 import { MvcApp } from './MvcApp';
 import { ExtendBaseTypeMap } from './router';
@@ -219,26 +219,24 @@ class MvcCoreModule {
             contents: ['./public']
         });
 
-        container.getActionRegisterer()
+        container.getInstance(ActionRegisterer)
             .register(container, ControllerRegisterAction)
             .register(container, MiddlewareRegisterAction);
 
-        let dreger = container.get(DesignDecoratorRegisterer);
+        let dreger = container.getInstance(DesignDecoratorRegisterer);
         dreger.register(Controller, DecoratorScopes.Class, BindProviderAction, ControllerRegisterAction)
             .register(Authorization, DecoratorScopes.Class, BindProviderAction)
             .register(Middleware, DecoratorScopes.Class, BindProviderAction, MiddlewareRegisterAction)
-            .register(MvcModule, DecoratorScopes.Class, BindProviderAction);
+            .register(MvcModule, DecoratorScopes.Class, BindProviderAction, AnnoationDesignAction, IocAutorunAction);
 
-        let runtimeRgr = container.get(RuntimeDecoratorRegisterer);
+        let runtimeRgr = container.getInstance(RuntimeDecoratorRegisterer);
         runtimeRgr.register(Authorization, DecoratorScopes.Method, BindMethodProviderAction)
             .register(MvcModule, DecoratorScopes.Class, IocSetCacheAction);
 
-
-        container.get(DesignDecoratorRegisterer).getRegisterer(DecoratorScopes.Injector)
+        dreger.getRegisterer(DecoratorScopes.Injector)
             .register(MvcModule, DIModuleInjectorScope);
 
-
-        container.get(DecoratorProvider)
+        container.getInstance(DecoratorProvider)
             .bindProviders(MvcModule,
                 {
                     provide: BootContext,
