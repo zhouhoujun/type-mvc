@@ -39,6 +39,7 @@ export class MvcServer extends Service<Koa, MvcContext> implements ServiceInit {
 
     async onInit() {
         this.config = this.context.configuration;
+        console.log(this.config);
         this.port = this.config.port || parseInt(process.env.PORT || '0');
         this.hostname = this.config.hostname;
         this.uri = `${this.context.httpServer instanceof https.Server ? 'https' : 'http'}://${this.hostname || '127.0.0.1'}:${this.port}`;
