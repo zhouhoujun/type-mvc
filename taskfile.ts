@@ -55,25 +55,25 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
                                     let version = ctx.platform.getEnvArgs().setvs;
                                     chgs.set('version', version);
                                     let iocVersion: string = ctx.platform.getPackage().devDependencies['@tsdi/ioc'];
-                                    iocVersion = iocVersion.replace(/^(\^|=)/ig, '');
+                                    iocVersion = iocVersion.replace(/^(\^|=|~)/ig, '');
                                     Object.keys(json.peerDependencies || {}).forEach(key => {
                                         if (/^@mvx/.test(key)) {
-                                            chgs.set('peerDependencies.' + key, '=' + version);
+                                            chgs.set('peerDependencies.' + key, '~' + version);
                                         }
                                     });
                                     Object.keys(json.dependencies || {}).forEach(key => {
                                         if (/^@mvx/.test(key)) {
-                                            chgs.set('dependencies.' + key, '=' + version);
+                                            chgs.set('dependencies.' + key, '~' + version);
                                         }
                                     });
                                     Object.keys(json.peerDependencies || {}).forEach(key => {
                                         if (/^@tsdi/.test(key)) {
-                                            chgs.set('peerDependencies.' + key, '=' + iocVersion);
+                                            chgs.set('peerDependencies.' + key, '~' + iocVersion);
                                         }
                                     });
                                     Object.keys(json.dependencies || {}).forEach(key => {
                                         if (/^@tsdi/.test(key)) {
-                                            chgs.set('dependencies.' + key, '=' + iocVersion);
+                                            chgs.set('dependencies.' + key, '~' + iocVersion);
                                         }
                                     });
                                     return chgs;
