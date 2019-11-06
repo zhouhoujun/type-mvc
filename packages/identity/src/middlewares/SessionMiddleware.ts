@@ -1,5 +1,5 @@
-import { Abstract, Inject } from '@tsdi/ioc';
-import { MvcMiddleware, Middleware, MiddlewareTypes, IContext, MvcContext, MiddlewareFunc, ContextToken } from '@mvx/mvc';
+import { Abstract } from '@tsdi/ioc';
+import { MvcMiddleware, Middleware, MiddlewareTypes, IContext, MvcContext, MiddlewareFunc } from '@mvx/mvc';
 const session = require('koa-session');
 import { stores, Session } from 'koa-session';
 
@@ -8,8 +8,6 @@ import { stores, Session } from 'koa-session';
  */
 @Abstract()
 export abstract class SessionStorage implements stores {
-    @Inject(ContextToken)
-    protected context: IContext;
 
     constructor() {
 

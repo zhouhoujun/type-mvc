@@ -1,19 +1,16 @@
 import { Inject, isFunction } from '@tsdi/ioc';
 import { IContainer, ContainerToken } from '@tsdi/core';
 import { Aspect, Joinpoint, Before } from '@tsdi/aop';
-import { AuthorizationMetadata, ContextToken, ForbiddenError, AuthorizationPointcut } from '@mvx/mvc';
+import { AuthorizationMetadata, ContextToken, ForbiddenError, AuthorizationPointcut, IContext } from '@mvx/mvc';
 
-@Aspect({
-    singleton: true
-})
+@Aspect()
 export class RoleVaildate {
 
     @Inject(ContainerToken)
     private container: IContainer;
 
     @Before(AuthorizationPointcut, 'authAnnotation')
-    vaildate(authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
-        let ctx = this.container.resolve(ContextToken);
+    vaildate(@Inject(ContextToken) ctx: IContext, authAnnotation: AuthorizationMetadata[], joinPoint: Joinpoint) {
         if (isFunction(ctx.hasRole) && authAnnotation && authAnnotation.length) {
             if (!ctx.hasRole(...authAnnotation.map(a => a.role).filter(a => a))) {
                 throw new ForbiddenError();

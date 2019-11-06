@@ -6,7 +6,7 @@ import {
 } from '@tsdi/ioc';
 import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
 import { MvcRoute, RouteUrlArgToken } from './Route';
-import { IContext } from '../IContext';
+import { IContext, ContextToken } from '../IContext';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
 import { RouteMetadata, CorsMetadata } from '../metadata';
 import { HttpError } from '../errors';
@@ -215,7 +215,7 @@ export class ControllerRoute extends MvcRoute {
     async invoke(ctx: IContext, meta: RouteMetadata) {
         let container = this.container;
         if (meta && meta.propertyKey) {
-            let ctrl = container.get(this.controller);
+            let ctrl = container.get(this.controller, { provide: ContextToken, useValue: ctx });
             let reflects = ctx.mvcContext.reflects;
             let providers = await this.createProvider(ctx, ctrl, meta, reflects.getParameters(this.controller, ctrl, meta.propertyKey));
             let result: any = await container.invoke(ctrl, meta.propertyKey, ...providers);
@@ -254,6 +254,7 @@ export class ControllerRoute extends MvcRoute {
     }
 
     protected async createProvider(ctx: IContext, ctrl: any, meta: RouteMetadata, params: IParameter[]): Promise<ParamProviders[]> {
+        let providers: ParamProviders[] = [{ provide: ContextToken, useValue: ctx }];
         if (params && params.length) {
             let restParams: any = {};
             if (this.isRestUri(meta.route)) {
@@ -268,7 +269,7 @@ export class ControllerRoute extends MvcRoute {
             }
             let body = ctx.request.body || {};
             let parser = this.container.get(BaseTypeParserToken);
-            let providers: ParamProviders[] = await Promise.all(params.map(async (param, idx) => {
+            let ppds: ParamProviders[] = await Promise.all(params.map(async (param, idx) => {
                 let ptype = param.provider ? this.container.getTokenProvider(param.provider) : param.type;
                 let val;
                 if (isFunction(ptype)) {
@@ -300,10 +301,10 @@ export class ControllerRoute extends MvcRoute {
                 }
                 return Provider.createParam(param.name || ptype, val, idx);
             }))
-            return providers.filter(p => p !== null);
+            providers = providers.concat(ppds.filter(p => p !== null));
         }
 
-        return [];
+        return providers;
     }
 
     protected isRestUri(uri: string) {

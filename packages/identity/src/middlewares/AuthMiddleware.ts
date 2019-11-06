@@ -1,5 +1,5 @@
 import { Inject } from '@tsdi/ioc';
-import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext, RouteChecker, ContextToken, IConfiguration } from '@mvx/mvc';
+import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext, RouteChecker, IConfiguration } from '@mvx/mvc';
 import { AuthenticatorToken, IAuthenticator } from '../passports';
 import '../passports/IAuthenticator';
 
@@ -37,7 +37,6 @@ export class AuthMiddleware extends CompositeMiddleware {
         }
         await super.execute(ctx);
         ctx.passport = this.passport;
-        ctx.getRaiseContainer().bindProvider(ContextToken, ctx);
         return await next();
     }
 
