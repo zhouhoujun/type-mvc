@@ -25,7 +25,7 @@ npm install -g '@mvx/cli'
 ```
 ### run mvc appliction
 ```
-mvx run
+mvx run src/app.ts
 
 //or
 tsdi run src/app.ts

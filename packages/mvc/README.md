@@ -22,8 +22,9 @@ npm install @mvx/mvc
 ### create start app
 
 1. install cli
+
 ```shell
-npm install @mvx/cli
+npm install -g @mvx/cli
 ```
 2. create new mvc application.
 
