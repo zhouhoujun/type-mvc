@@ -1,9 +1,6 @@
-# packaged @tsdi/cli
-`@tsdi/cli` is project build pack tools cli, base on AOP, Ioc container, via @tsdi. file stream pipes activities.
+# packaged @mvx/cli
+`@mvx/cli` is mvc cli, base on AOP, Ioc container, via @tsdi. file stream pipes activities.
 
-This repo is for distribution on `npm`. The source for this module is in the
-[main repo](https://github.com/zhouhoujun/tsioc/blob/master/packages/cli#readme).
-Please file issues and pull requests against that repo.
 
 
 ## Install
@@ -13,40 +10,36 @@ install cli
 
 ### cli in global
 ```shell
-npm install -g '@tsdi/cli'
+npm install -g '@mvx/cli'
 ```
 
 ```
-  pk --help  //show help
-  pk -V  //show version of cli.
+  mvx --help  //show help
+  mvx -V  //show version of cli.
 ```
 
-### init project
+### create mvc project
 ```
-//init project with tsioc, dev: save in devDependencies or dependencies.
-pk init [--browser] [--version tsioc_version] [--dev]
+  mvx new projectname
 
-//init project with bootstrap, dev: save in devDependencies or dependencies.
-pk init boot [--browser] [--version tsioc_version] [--dev] 
+```
+### run mvc appliction
+```
+mvx run
 
-//init project with workflow, dev: save in devDependencies or dependencies.
-pk init activity [--browser] [--version tsioc_version] [--dev]
-
-//init project with build pack, dev: save in devDependencies or dependencies.
-pk init pack [--browser] [--version tsioc_version] [--dev]
-
+//or
+tsdi run src/app.ts
 ```
 
 ### build pack
 ```
-pk run [--activity] [taskfile.ts] [--your_env_arg=val]...
-pk build [taskfile config]  [--your_env_arg=val]...
+mvx build [--deploy]
 ```
 
 ### Unit test
 
 ```shell
-pk test [test/**/*.(ts|js)]
+mvx test [test/**/*.(ts|js)]
 ```
 
 
