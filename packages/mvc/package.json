@@ -1,6 +1,6 @@
 {
   "name": "@mvx/mvc",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "description": "@mvx/mvc is mvc framework on server, base on koa, @tsdi frameworks",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -52,21 +52,22 @@
     "koa-static": "^5.0.0",
     "koa-views": "^6.2.0",
     "nunjucks": "^3.2.0",
-    "@tsdi/cli": "~5.3.5",
-    "@tsdi/aop": "~5.3.5",
-    "@tsdi/boot": "~5.3.5",
-    "@tsdi/core": "~5.3.5",
-    "@tsdi/ioc": "~5.3.5",
-    "@tsdi/logs": "~5.3.5",
-    "@tsdi/platform-server": "~5.3.5",
-    "@tsdi/platform-server-boot": "~5.3.5",
-    "@tsdi/platform-server-logs": "~5.3.5",
+    "@tsdi/aop": "~5.3.6",
+    "@tsdi/boot": "~5.3.6",
+    "@tsdi/core": "~5.3.6",
+    "@tsdi/ioc": "~5.3.6",
+    "@tsdi/logs": "~5.3.6",
+    "@tsdi/platform-server": "~5.3.6",
+    "@tsdi/platform-server-boot": "~5.3.6",
+    "@tsdi/platform-server-logs": "~5.3.6",
+    "tslib": "^1.10.0",
+    "zone.js": "^0.9.1"
+  },
+  "peerDependencies": {
     "bluebird": "^3.5.5",
     "ts-node": "^8.4.1",
     "tsconfig-paths": "^3.9.0",
-    "tslib": "^1.10.0",
-    "typescript": "^3.5.3",
-    "zone.js": "^0.9.1"
+    "typescript": "^3.5.3"
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme",
   "devDependencies": {}

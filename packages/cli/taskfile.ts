@@ -20,6 +20,11 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
             activity: 'asset',
             src: ['package.json', '*.md'],
             dist: '../../dist/cli'
+        },
+        <AssetActivityOption>{
+            activity: 'asset',
+            src: 'temp/**',
+            dist: '../../dist/cli/temp'
         }
     ]
 })

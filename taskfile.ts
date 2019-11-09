@@ -21,7 +21,7 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
             body: <ShellActivityOption>{
                 activity: 'shell',
                 shell: (ctx: NodeActivityContext) => {
-                    let packages = ctx.platform.getFolders('packages').filter(f => !/(cli|orm|simples)$/.test(f));
+                    let packages = ctx.platform.getFolders('packages').filter(f => !/(orm|simples)$/.test(f));
                     let version = ctx.platform.getEnvArgs().unp;
                     let cmds = [];
                     packages.forEach(fd => {
@@ -98,7 +98,7 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
                     activity: 'shell',
                     parallel: true,
                     shell: (ctx: NodeActivityContext) => {
-                        let pks = ctx.platform.getFolders('packages').filter(f => !/(cli|orm|identity-server|simples|package)$/.test(f))
+                        let pks = ctx.platform.getFolders('packages').filter(f => !/(orm|identity-server|simples|package)$/.test(f))
                         return pks.map(p => `cd ${p} && tsdi build`);
                     }
                 }

@@ -34,6 +34,6 @@ import { AfterInit } from '@tsdi/components';
 })
 export class ServerBuilder implements AfterInit {
     onAfterInit(): void | Promise<void> {
-        console.log('server build has inited...')
+        console.log('app build has inited...')
     }
 }

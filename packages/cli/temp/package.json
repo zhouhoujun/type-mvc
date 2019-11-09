@@ -1,6 +1,6 @@
 {
   "name": "project-name",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "description": "mvc application",
   "scripts": {
     "build": "tsdi build"
@@ -11,30 +11,36 @@
     "framework"
   ],
   "dependencies": {
-    "@tsdi/activities": "~5.3.5",
-    "@tsdi/annotations": "~5.3.5",
-    "@tsdi/aop": "~5.3.5",
-    "@tsdi/boot": "~5.3.5",
-    "@tsdi/components": "~5.3.5",
-    "@tsdi/core": "~5.3.5",
-    "@tsdi/ioc": "~5.3.5",
-    "@tsdi/logs": "~5.3.5",
-    "@tsdi/pack": "~5.3.5",
-    "@tsdi/platform-server": "~5.3.5",
-    "@tsdi/platform-server-boot": "~5.3.5",
-    "@tsdi/platform-server-logs": "~5.3.5",
-    "@mvx/identity": "~3.1.5",
-    "@mvx/mvc": "~3.1.5",
-    "@mvx/typeorm-adapter": "~3.1.5"
+    "@tsdi/activities": "~5.3.6",
+    "@tsdi/annotations": "~5.3.6",
+    "@tsdi/aop": "~5.3.6",
+    "@tsdi/boot": "~5.3.6",
+    "@tsdi/components": "~5.3.6",
+    "@tsdi/core": "~5.3.6",
+    "@tsdi/ioc": "~5.3.6",
+    "@tsdi/logs": "~5.3.6",
+    "@tsdi/pack": "~5.3.6",
+    "@tsdi/platform-server": "~5.3.6",
+    "@tsdi/platform-server-boot": "~5.3.6",
+    "@tsdi/platform-server-logs": "~5.3.6",
+    "@mvx/identity": "~3.1.6",
+    "@mvx/mvc": "~3.1.6",
+    "@mvx/typeorm-adapter": "~3.1.6",
+    "mongodb": "^3.3.2",
+    "pg": "^7.12.0",
+    "pm2": "^3.2.4",
+    "tslib": "^1.10.0",
+    "@types/socket.io": "^2.1.2",
+    "socket.io": "^2.2.0"
   },
   "devDependencies": {
-    "@koa/cors": "^3.0.0",
     "@tsdi/platform-server-activities": "^5.2.15",
     "@tsdi/unit": "^5.2.15",
     "@tsdi/unit-console": "^5.2.15",
-    "@types/socket.io": "^2.1.2",
-    "jsonwebtoken": "^8.5.1",
-    "socket.io": "^2.2.0",
-    "socket.io-client": "^2.2.0"
+    "socket.io-client": "^2.2.0",
+    "bluebird": "^3.5.5",
+    "ts-node": "^8.4.1",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^3.5.3"
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@mvx/cli",
-  "version": "3.1.5",
-  "description": "tsioc cli.",
+  "version": "3.1.6",
+  "description": "mvc cli.",
   "typings": "./lib/cli.d.ts",
   "main": "./lib/cli.js",
   "bin": {
@@ -30,13 +30,13 @@
   "author": "houjun",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/zhouhoujun/tsioc/issues"
+    "url": "https://github.com/zhouhoujun/type-mvc/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/zhouhoujun/tsioc.git"
+    "url": "https://github.com/zhouhoujun/type-mvc.git"
   },
-  "homepage": "https://github.com/zhouhoujun/tsioc/blob/master/packages/cli#readme",
+  "homepage": "https://github.com/zhouhoujun/type-mvc#readme",
   "dependencies": {
     "reflect-metadata": "^0.1.12",
     "tslib": "^1.10.0",
