@@ -19,10 +19,23 @@ export interface IRouteMethodDecorator<T extends RouteMetadata> extends IMethodD
      * route decorator. define the controller method as an route.
      *
      * @param {string} route route sub path.
+     */
+    (route: string): MethodDecorator;
+    /**
+     * route decorator. define the controller method as an route.
+     *
+     * @param {string} route route sub path.
+     * @param {RequestMethod} [method] set request method.
+     */
+    (route: string, method: RequestMethod): MethodDecorator;
+    /**
+     * route decorator. define the controller method as an route.
+     *
+     * @param {string} route route sub path.
      * @param {string} [contentType] set request contentType.
      * @param {RequestMethod} [method] set request method.
      */
-    (route: string, contentType?: string, method?: RequestMethod): MethodDecorator;
+    (route: string, contentType: string, method?: RequestMethod): MethodDecorator;
 
     /**
      * route decorator. define the controller method as an route.
@@ -66,6 +79,8 @@ export function createRouteDecorator<T extends RouteMetadata>(
                 } else if (isString(arg)) {
                     ctx.metadata.contentType = arg;
                     ctx.next(next);
+                } else if (isNumber(arg)) {
+                    ctx.metadata.method = arg;
                 }
             },
 
@@ -73,7 +88,6 @@ export function createRouteDecorator<T extends RouteMetadata>(
                 let arg = ctx.currArg;
                 if (isNumber(arg)) {
                     ctx.metadata.method = arg;
-                    ctx.next(next);
                 } else {
                     ctx.metadata.contentType = arg;
                     ctx.next(next);
@@ -91,7 +105,11 @@ export function createRouteDecorator<T extends RouteMetadata>(
             if (metaExtends) {
                 metaExtends(metadata as T);
             }
-            metadata.method = method || RequestMethod.Get;
+            if (method) {
+                metadata.method = method
+            } else if (!metadata.method) {
+                metadata.method = RequestMethod.Get;
+            }
             return metadata;
         }) as IRouteMethodDecorator<T>;
 }

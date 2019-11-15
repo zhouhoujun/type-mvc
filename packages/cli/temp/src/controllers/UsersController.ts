@@ -15,14 +15,21 @@ export class UserController {
     constructor(private service: UserService) {
     }
 
-    @Post('/')
-    async add(user: User) {
-        let r = await this.service.save(user);
-        return ResponseResult.success(r);
-    }
+    // @Post('/')
+    // async add(user: User) {
+    //     let r = await this.service.save(user);
+    //     return ResponseResult.success(r);
+    // }
+
+    // @Put('/')
+    // async middfy(user: User) {
+    //     let r = await this.service.save(user);
+    //     return ResponseResult.success(r);
+    // }
 
     @Put('/')
-    async middfy(user: User) {
+    @Post('/')
+    async save(user: User) {
         let r = await this.service.save(user);
         return ResponseResult.success(r);
     }

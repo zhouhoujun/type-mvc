@@ -8,7 +8,7 @@ export enum RequestMethod {
     /**
      * Get method.
      */
-    Get,
+    Get = 1,
     /**
      * Post method.
      */

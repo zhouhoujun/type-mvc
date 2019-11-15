@@ -135,7 +135,11 @@ program
         if (options.activity) {
             runActivity(vaildifyFile(fileName), options)
         } else {
-            fileName = vaildifyFile(fileName || 'src/app.ts');
+            if (!fileName) {
+                fileName = 'src/app.ts';
+                process.argv.push(fileName);
+            }
+            fileName = vaildifyFile(fileName);
             requireCwd(resolve.sync(fileName, { basedir: processRoot, package: cwdPackageConf }));
         }
     });

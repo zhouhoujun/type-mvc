@@ -1,6 +1,6 @@
-import { MethodMetadata } from '@tsdi/ioc';
+import { RouteMetadata } from './RouteMetadata';
 
 
-export interface GetMetadata extends MethodMetadata {
+export interface GetMetadata extends RouteMetadata {
     route?: string;
 }
