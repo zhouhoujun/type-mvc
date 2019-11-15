@@ -59,15 +59,18 @@ function runActivity(fileName, options) {
     }
 }
 
-function vaildifyFile(fileName): string {
-    fileName = normalize(fileName);
+function vaildifyFile(fileName, defaultFile = 'taskfile'): string {
     if (!fileName) {
-        if (fs.existsSync(path.join(processRoot, 'taskfile.ts'))) {
-            fileName = 'taskfile.ts';
-        } else if (fs.existsSync(path.join(processRoot, 'taskfile.js'))) {
-            fileName = 'taskfile.js';
-        }
+        defaultFile = defaultFile.trim().replace(/(\.ts|\.js)$/, '');
+        ['.ts', '.js'].some(ext => {
+            if (fs.existsSync(path.join(processRoot, defaultFile +  ext))) {
+                fileName = defaultFile + ext;
+                return true;
+            }
+        });
+        fileName && process.argv.push(fileName);
     }
+    fileName = normalize(fileName);
     if (!fs.existsSync(path.join(processRoot, fileName))) {
         console.log(chalk.red(`'${path.join(processRoot, fileName)}' not exsists`));
         process.exit(1);
@@ -135,11 +138,7 @@ program
         if (options.activity) {
             runActivity(vaildifyFile(fileName), options)
         } else {
-            if (!fileName) {
-                fileName = 'src/app.ts';
-                process.argv.push(fileName);
-            }
-            fileName = vaildifyFile(fileName);
+            fileName = vaildifyFile(fileName, 'src/app.ts');
             requireCwd(resolve.sync(fileName, { basedir: processRoot, package: cwdPackageConf }));
         }
     });
