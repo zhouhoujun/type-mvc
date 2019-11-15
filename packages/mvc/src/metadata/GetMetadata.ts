@@ -1,6 +1,6 @@
-import { RouteMetadata } from './RouteMetadata';
+import { IRouteMetadata } from './RouteMetadata';
 
 
-export interface GetMetadata extends RouteMetadata {
+export interface GetMetadata extends IRouteMetadata {
     route?: string;
 }

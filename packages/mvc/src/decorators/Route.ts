@@ -106,7 +106,7 @@ export function createRouteDecorator<T extends RouteMetadata>(
                 metaExtends(metadata as T);
             }
             if (method) {
-                metadata.method = method
+                metadata.method = method;
             } else if (!metadata.method) {
                 metadata.method = RequestMethod.Get;
             }

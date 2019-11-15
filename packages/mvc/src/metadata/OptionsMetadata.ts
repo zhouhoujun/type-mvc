@@ -1,5 +1,5 @@
-import { MethodMetadata } from '@tsdi/ioc';
+import { IRouteMetadata } from './RouteMetadata';
 
-export interface OptionsMetadata extends MethodMetadata {
+export interface OptionsMetadata extends IRouteMetadata {
     route?: string;
 }
