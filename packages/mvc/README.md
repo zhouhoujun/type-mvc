@@ -53,12 +53,16 @@ tsdi run src/app.ts
 
 ```shell
 mvx build [--deploy]
+#or
+tsdi build
 ```
 
 ### Unit test
 
 ```shell
 mvx test [test/**/*.(ts|js)]
+#or
+tsdi test
 ```
 
 ## Documentation
