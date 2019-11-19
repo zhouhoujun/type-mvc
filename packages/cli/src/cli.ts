@@ -92,6 +92,7 @@ function copyDir(src: string | string[], dist: string, options?: { force?: boole
 }
 
 program
+    .version(packageConf.version)
     .command('test [files]')
     .description('run activity file.')
     .option('--config [string]', 'config file path.')
