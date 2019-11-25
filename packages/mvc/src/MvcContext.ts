@@ -50,7 +50,7 @@ export const MvcContextToken = new InjectToken<MvcContext>('MVC_Context');
  */
 @Injectable()
 @Refs('@MvcModule', BootContext)
-export class MvcContext extends BootContext {
+export class MvcContext extends BootContext<MvcOptions> {
     /**
      * runable.
      *
