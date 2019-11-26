@@ -1,6 +1,6 @@
 {
   "name": "@mvx/model",
-  "version": "3.1.10",
+  "version": "3.1.11",
   "description": "@mvx/model is model for mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -38,14 +38,14 @@
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.12",
-    "@tsdi/annotations": "~5.3.8",
-    "@tsdi/ioc": "~5.3.8",
-    "@tsdi/aop": "~5.3.8",
-    "@tsdi/boot": "~5.3.8",
-    "@tsdi/cli": "~5.3.8",
-    "@tsdi/core": "~5.3.8",
-    "@tsdi/logs": "~5.3.8",
-    "@mvx/mvc": "~3.1.10",
+    "@tsdi/annotations": "~5.3.9",
+    "@tsdi/ioc": "~5.3.9",
+    "@tsdi/aop": "~5.3.9",
+    "@tsdi/boot": "~5.3.9",
+    "@tsdi/cli": "~5.3.9",
+    "@tsdi/core": "~5.3.9",
+    "@tsdi/logs": "~5.3.9",
+    "@mvx/mvc": "~3.1.11",
     "tslib": "^1.10.0"
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme"
