@@ -4,7 +4,7 @@ import { InjectToken } from '@tsdi/ioc';
 import { toAbsolutePath } from '@tsdi/platform-server';
 import { MvcMiddlewareType, MiddlewareTypes, bindMiddlewareName } from './middlewares';
 import { RouterMiddleware, CorsMiddleware } from './router';
-const logger = require('koa-logger')
+const logger = require('koa-logger');
 const serve = require('koa-static');
 const views = require('koa-views');
 const helmet = require('koa-helmet');
