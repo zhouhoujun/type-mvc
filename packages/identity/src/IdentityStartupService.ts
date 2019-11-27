@@ -6,8 +6,8 @@ import { PassportBuildService, ConfigurePassportBuildService, AuthenticatorToken
 export class IdentityStartupService extends BeforeMidddlewareStartupService {
 
     async startup(ctx: MvcContext, middlewares?: MvcMiddlewares): Promise<void> {
-        let passport = ctx.getRaiseContainer().resolve(AuthenticatorToken);
-        let services = ctx.getRaiseContainer().getServices(PassportBuildService);
+        let passport = ctx.getContainer().resolve(AuthenticatorToken);
+        let services = ctx.getContainer().getServices(PassportBuildService);
         // config build first.
         let cfs = services.find(s => s instanceof ConfigurePassportBuildService);
         if (cfs && services.indexOf(cfs) > 0) {

@@ -55,7 +55,7 @@ export class TypeOrmHelper {
             if (!options.entities) {
                 let entities: Type[] = [];
                 if (config.models.some(m => isString(m))) {
-                    let models = await this.ctx.getRaiseContainer().getLoader().loadTypes({ files: config.models, basePath: this.ctx.getRootPath() });
+                    let models = await this.ctx.getContainer().getLoader().loadTypes({ files: config.models, basePath: this.ctx.getRootPath() });
                     models.forEach(ms => {
                         ms.forEach(mdl => {
                             if (mdl && entities.indexOf(mdl) < 0) {

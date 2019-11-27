@@ -80,7 +80,7 @@ export class MvcContext extends BootContext<MvcOptions> {
         if (this.baseURL) {
             return this.baseURL;
         }
-        return this.getRaiseContainer().get(ProcessRunRootToken) || runMainPath();
+        return this.getContainer().get(ProcessRunRootToken) || runMainPath();
     }
     /**
      * http server.

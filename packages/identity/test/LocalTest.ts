@@ -120,7 +120,7 @@ export class LocalStrategyTest {
 
     @Test('loacl has stup.')
     test1() {
-        let auth = this.ctx.getRaiseContainer().resolve(Authenticator);
+        let auth = this.ctx.getContainer().resolve(Authenticator);
         console.log(auth['strategies'])
         expect(auth.get('local')).toBeTruthy();
     }
@@ -128,7 +128,7 @@ export class LocalStrategyTest {
 
     @Test('resolve strategy.')
     async test2() {
-        let loacl = await this.ctx.getRaiseContainer().resolve(ComponentBuilder)
+        let loacl = await this.ctx.getContainer().resolve(ComponentBuilder)
             .resolveTemplate({
                 template: {
                     // element: 'local',

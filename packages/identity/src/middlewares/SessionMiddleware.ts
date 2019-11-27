@@ -52,7 +52,7 @@ export class SessionMiddleware extends MvcMiddleware {
                     rolling: false/** (boolean) Force a session identifier cookie to be set on every response. The expiration is reset to the original maxAge, resetting the expiration countdown. default is false **/
                 }, sessCfg);
                 if (!sessCfg.store) {
-                    let storage = context.getRaiseContainer().getService(SessionStorage);
+                    let storage = context.getContainer().getService(SessionStorage);
                     if (storage) {
                         sessCfg.store = storage;
                     }

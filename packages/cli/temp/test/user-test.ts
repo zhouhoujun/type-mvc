@@ -15,7 +15,7 @@ export class UserTest {
     @Before()
     async create() {
         this.ctx = await MvcApplication.run(TestModule);
-        this.container = this.ctx.getRaiseContainer();
+        this.container = this.ctx.getContainer();
     }
 
     @Test('can save user or not')

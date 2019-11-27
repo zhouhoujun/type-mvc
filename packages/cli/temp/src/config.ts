@@ -58,7 +58,7 @@ export default {
     //                     return { user: { id: payload.data }, info: false }
     //                 }
 
-    //                 let user = await ctx.getRaiseContainer().resolve({ token: UserService, regify: true })
+    //                 let user = await ctx.getContainer().resolve({ token: UserService, regify: true })
     //                     .verifyJWT(payload.data);
     //                 if (user) {
     //                     return { user, info: true };
@@ -75,7 +75,7 @@ export default {
     //     ],
     //     deserializers: [
     //         (obj: any, ctx: IContext) => {
-    //             return ctx.getRaiseContainer().resolve({ token: UserService, regify: true }).findById(obj.data);
+    //             return ctx.getContainer().resolve({ token: UserService, regify: true }).findById(obj.data);
     //         }
     //     ]
     // },

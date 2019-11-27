@@ -48,7 +48,7 @@ import { IdentityModule } from '@mvx/identity';
         ],
         deserializers: [
             async (obj, ctx) => {
-                let container =  ctx.getRaiseContainer();
+                let container =  ctx.getContainer();
                 // todo get dao service.
                 console.log('deserializers', obj);
                 return obj;
