@@ -1,6 +1,6 @@
 {
   "name": "@mvx/typeorm-adapter",
-  "version": "3.1.12",
+  "version": "3.1.13",
   "description": "@mvx/typeorm-adapter is typeorm adapter orm for mvc, type-mvc is base on koa. Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -48,7 +48,7 @@
     "@tsdi/ioc": "~5.3.9",
     "@tsdi/boot": "~5.3.9",
     "@tsdi/core": "~5.3.9",
-    "@mvx/mvc": "~3.1.12",
+    "@mvx/mvc": "~3.1.13",
     "tslib": "^1.10.0"
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme"
