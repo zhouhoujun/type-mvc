@@ -24,7 +24,6 @@ export class MvcMiddlewares extends CompositeMiddleware {
         mvcContext.getKoa().use(async (ctx: IContext, next) => {
             ctx.mvcContext = mvcContext;
             mvcContext.app = ctx.app as any;
-            ctx.getRaiseContainer = () => mvcContext.getRaiseContainer();
             await this.execute(ctx);
             return await next();
         });
