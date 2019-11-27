@@ -6,7 +6,6 @@ import { AutoWired, Inject, Injectable } from '@tsdi/ioc';
 import { Suite, Before, Test, Assert, ExpectToken, Expect, After } from '@tsdi/unit';
 import expect = require('expect');
 import axios from 'axios';
-import { stringify } from 'querystring';
 import { Authenticator, IdentityModule, LocalStrategy } from '../src';
 import { ComponentBuilder } from '@tsdi/components';
 
@@ -65,7 +64,7 @@ export class TestController {
 
 }
 
-@MvcModule(<IConfiguration>{
+@MvcModule({
     port: 3010,
     imports: [
         IdentityModule,

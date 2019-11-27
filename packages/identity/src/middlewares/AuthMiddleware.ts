@@ -41,7 +41,7 @@ export class AuthMiddleware extends CompositeMiddleware {
     }
 
     protected async setup(context: MvcContext) {
-        let configuration = context.configuration as IConfiguration;
+        let configuration: IConfiguration = context.configuration;
         this.use(this.passport.initialize(configuration.passports.initialize || {}));
         this.use(this.passport.session());
     }
@@ -57,7 +57,7 @@ export class AuthMiddleware extends CompositeMiddleware {
 //     passport: IAuthenticator;
 
 //     async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
-//         let configuration = ctx.mvcContext.configuration as IConfiguration;
+//         let configuration: IConfiguration = ctx.mvcContext.configuration;
 //         if (configuration.passports.default) {
 //             let flowOption = configuration.passports.default;
 //             await this.passport.authenticate(flowOption.strategy, flowOption.options)(ctx, next);

@@ -6,5 +6,6 @@ import { MvcContext } from '../MvcContext';
 
 export interface MvcModuleMetadata extends DIModuleMetadata, IConfiguration {
     contextType?: Type<MvcContext>;
-    middlewares?: MvcMiddlewareType[]
+    middlewares?: MvcMiddlewareType[];
+    passports?: any;
 }

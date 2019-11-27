@@ -2,7 +2,6 @@ import { isString, Defer } from '@tsdi/ioc';
 import { ResultValue } from './ResultValue';
 import { Stream } from 'stream';
 import { IContext } from '../IContext';
-import { ConfigurationToken } from '../IConfiguration';
 import { existsSync, readFile } from 'fs';
 import { join } from 'path';
 import { BadRequestError } from '../errors';
@@ -23,7 +22,7 @@ export class FileResult extends ResultValue {
         let defer = Defer.create<Buffer>();
         let file = this.file;
         let contentType = this.contentType;
-        let confige = ctx.mvcContext.getContainer().get(ConfigurationToken);
+        let confige = ctx.mvcContext.configuration;
         if (isString(file)) {
             let filepath = join(confige.baseURL, file);
             if (existsSync(filepath)) {

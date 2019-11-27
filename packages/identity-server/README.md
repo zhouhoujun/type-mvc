@@ -241,7 +241,7 @@ default setting load middlewares in your project folder
 `/middlewares`
 
 ```ts
-import { Middleware, IMiddleware, Application, Configuration } from '@mvx/mvc';
+import { Middleware, IMiddleware, Application } from '@mvx/mvc';
 import { IContainer, Injectable } from '@tsdi/core';
 
 

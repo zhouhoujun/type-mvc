@@ -1,5 +1,5 @@
 import { Injectable } from '@tsdi/ioc';
-import { BeforeMidddlewareStartupService, MvcMiddlewares, MvcContext, IConfiguration } from '@mvx/mvc';
+import { BeforeMidddlewareStartupService, MvcMiddlewares, MvcContext } from '@mvx/mvc';
 import { PassportBuildService, ConfigurePassportBuildService, AuthenticatorToken } from './passports';
 
 @Injectable
@@ -14,7 +14,7 @@ export class IdentityStartupService extends BeforeMidddlewareStartupService {
             services.splice(services.indexOf(cfs), 1);
             services.unshift(cfs);
         }
-        await Promise.all(services.map(s => s.build(passport, ctx.configuration as IConfiguration)));
+        await Promise.all(services.map(s => s.build(passport, ctx.configuration)));
     }
 
 }

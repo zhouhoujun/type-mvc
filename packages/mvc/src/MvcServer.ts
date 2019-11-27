@@ -27,10 +27,8 @@ export class MvcServer extends Service<Koa, MvcContext> implements ServiceInit {
     protected router: Router;
 
 
-    protected config: IConfiguration;
-
     getConfig(): IConfiguration {
-        return this.config;
+        return this.context.configuration;
     }
 
     getRouter(): Router {
@@ -38,9 +36,9 @@ export class MvcServer extends Service<Koa, MvcContext> implements ServiceInit {
     }
 
     async onInit() {
-        this.config = this.context.configuration;
-        this.port = this.config.port || parseInt(process.env.PORT || '0');
-        this.hostname = this.config.hostname;
+        let config = this.context.configuration;
+        this.port = config.port || parseInt(process.env.PORT || '0');
+        this.hostname = config.hostname;
         this.uri = `${this.context.httpServer instanceof https.Server ? 'https' : 'http'}://${this.hostname || '127.0.0.1'}:${this.port}`;
     }
 
