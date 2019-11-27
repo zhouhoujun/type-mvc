@@ -1,5 +1,4 @@
-import { IocDesignAction, DesignActionContext, getTypeMetadata } from '@tsdi/ioc';
-import { Controller } from '../decorators';
+import { IocDesignAction, DesignActionContext } from '@tsdi/ioc';
 import { ControllerMetadata } from '../metadata';
 import { Router, ControllerRoute, RouteUrlArgToken, RouteControllerArgToken, RouteControllerMiddlewaresToken } from '../router';
 
@@ -7,7 +6,7 @@ export class ControllerRegisterAction extends IocDesignAction {
 
     execute(ctx: DesignActionContext, next: () => void): void {
 
-        let ctrlmetadatas = getTypeMetadata<ControllerMetadata>(Controller, ctx.targetType);
+        let ctrlmetadatas = ctx.reflects.getMetadata<ControllerMetadata>(ctx.currDecoractor, ctx.targetType);
         let router = this.container.get(Router);
         ctrlmetadatas.forEach(ctlmeta => {
             if (!ctlmeta) {

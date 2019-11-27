@@ -1,6 +1,6 @@
 import {
     Type, PropertyMetadata, isUndefined, Inject, isClass, ObjectMap,
-    isBaseType, isArray, Abstract, SymbolType, Singleton, isNullOrUndefined, isFunction, Token
+    isBaseType, isArray, Abstract, SymbolType, Singleton, isNullOrUndefined, isFunction
 } from '@tsdi/ioc';
 import { ContainerToken, IContainer } from '@tsdi/core';
 import { BaseTypeParserToken } from '@tsdi/boot';
