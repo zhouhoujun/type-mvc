@@ -1,5 +1,4 @@
 import { isString, Defer } from '@tsdi/ioc';
-import { IContainer } from '@tsdi/core';
 import { ResultValue } from './ResultValue';
 import { Stream } from 'stream';
 import { IContext } from '../IContext';
