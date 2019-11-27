@@ -15,7 +15,7 @@ export class ViewResult extends ResultValue {
         super('text/html');
     }
 
-    async sendValue(ctx: IContext, container: IContainer) {
+    async sendValue(ctx: IContext) {
         if (!ctx.render) {
             return Promise.reject('view engin middleware no configed!');
         } else {

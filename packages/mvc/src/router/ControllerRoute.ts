@@ -241,7 +241,7 @@ export class ControllerRoute extends MvcRoute {
                 ctx.status = 200;
             } else if (isObject(result)) {
                 if (result instanceof ResultValue) {
-                    await result.sendValue(ctx, container);
+                    await result.sendValue(ctx);
                 } else {
                     ctx.body = result;
                     ctx.status = 200;

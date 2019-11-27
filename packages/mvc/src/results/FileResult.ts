@@ -20,11 +20,11 @@ export class FileResult extends ResultValue {
         super(contentType);
     }
 
-    async sendValue(ctx: IContext, container: IContainer) {
+    async sendValue(ctx: IContext) {
         let defer = Defer.create<Buffer>();
         let file = this.file;
         let contentType = this.contentType;
-        let confige = container.get(ConfigurationToken);
+        let confige = ctx.mvcContext.getContainer().get(ConfigurationToken);
         if (isString(file)) {
             let filepath = join(confige.baseURL, file);
             if (existsSync(filepath)) {

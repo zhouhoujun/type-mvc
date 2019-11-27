@@ -1,4 +1,3 @@
-import { IContainer } from '@tsdi/core';
 import { IContext } from '../IContext';
 
 /**
@@ -18,9 +17,9 @@ export abstract class ResultValue {
      *
      * @abstract
      * @param {IContext} ctx
-     * @param {IContainer} container
+
      * @returns {Promise<any>}
      * @memberof ResultValue
      */
-    abstract sendValue(ctx: IContext, container: IContainer): Promise<any>;
+    abstract sendValue(ctx: IContext): Promise<any>;
 }

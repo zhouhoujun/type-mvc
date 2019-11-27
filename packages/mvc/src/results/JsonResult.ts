@@ -14,7 +14,7 @@ export class JsonResult extends ResultValue {
     constructor(private data: object) {
         super('application/json');
     }
-    async sendValue(ctx: IContext, container: IContainer) {
+    async sendValue(ctx: IContext) {
         ctx.type = this.contentType;
         ctx.body = this.data || {};
     }
