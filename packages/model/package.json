@@ -1,6 +1,6 @@
 {
   "name": "@mvx/model",
-  "version": "3.1.13",
+  "version": "3.1.14",
   "description": "@mvx/model is model for mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -45,7 +45,7 @@
     "@tsdi/cli": "~5.3.9",
     "@tsdi/core": "~5.3.9",
     "@tsdi/logs": "~5.3.9",
-    "@mvx/mvc": "~3.1.13",
+    "@mvx/mvc": "~3.1.14",
     "tslib": "^1.10.0"
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme"
