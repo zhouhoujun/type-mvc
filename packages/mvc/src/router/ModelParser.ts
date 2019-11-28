@@ -1,6 +1,6 @@
 import {
     Type, PropertyMetadata, isUndefined, Inject, isClass, ObjectMap,
-    isBaseType, isArray, Abstract, SymbolType, Singleton, isNullOrUndefined, isFunction
+    isBaseType, isArray, Abstract, SymbolType, Singleton, isNullOrUndefined, isFunction, IocCoreService
 } from '@tsdi/ioc';
 import { ContainerToken, IContainer } from '@tsdi/core';
 import { BaseTypeParserToken } from '@tsdi/boot';
@@ -20,9 +20,10 @@ export interface DBPropertyMetadata extends PropertyMetadata {
 
 
 @Singleton
-export class ExtendBaseTypeMap {
+export class ExtendBaseTypeMap extends IocCoreService {
     protected maps: Map<SymbolType<any>, (...params: any[]) => any>;
     constructor() {
+        super();
         this.maps = new Map();
     }
 
@@ -50,15 +51,10 @@ export class ExtendBaseTypeMap {
  * @class ModelParser
  */
 @Abstract()
-export abstract class ModelParser implements IModelParser {
+export abstract class ModelParser extends IocCoreService implements IModelParser {
 
     @Inject(ContainerToken)
     protected container: IContainer;
-
-    constructor() {
-    }
-
-
 
     parseModel(type: Type, objMap: any): any {
         if (isArray(objMap)) {
