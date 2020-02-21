@@ -1,6 +1,9 @@
 import { Injectable, Inject } from '@tsdi/ioc';
 import { IContext, ContextToken } from './IContext';
-import { ViewResult, FileResult, RedirectResult, JsonResult } from './results';
+import { ViewResult } from './results/ViewResult';
+import { FileResult } from './results/FileResult';
+import { RedirectResult } from './results/RedirectResult';
+import { JsonResult } from './results/JsonResult';
 import { Stream } from 'stream';
 
 

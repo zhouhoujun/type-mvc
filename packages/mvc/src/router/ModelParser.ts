@@ -1,8 +1,8 @@
 import {
     Type, PropertyMetadata, isUndefined, Inject, isClass, ObjectMap,
-    isBaseType, isArray, Abstract, SymbolType, Singleton, isNullOrUndefined, isFunction, IocCoreService
+    isBaseType, isArray, Abstract, SymbolType, Singleton, isNullOrUndefined, isFunction, IocCoreService, INJECTOR
 } from '@tsdi/ioc';
-import { ContainerToken, IContainer } from '@tsdi/core';
+import { ContainerToken, IContainer, ICoreInjector } from '@tsdi/core';
 import { BaseTypeParserToken } from '@tsdi/boot';
 import { IModelParser } from './IModelParser';
 
@@ -53,20 +53,19 @@ export class ExtendBaseTypeMap extends IocCoreService {
 @Abstract()
 export abstract class ModelParser extends IocCoreService implements IModelParser {
 
-    @Inject(ContainerToken)
-    protected container: IContainer;
+    @Inject(INJECTOR) protected injector: ICoreInjector;
 
     parseModel(type: Type, objMap: any): any {
         if (isArray(objMap)) {
             return objMap.map(o => this.parseModel(type, o));
         }
 
-        let parser = this.container.get(BaseTypeParserToken);
+        let parser = this.injector.getInstance(BaseTypeParserToken);
         if (isBaseType(type)) {
             return parser.parse(type, objMap);
         }
         let meta = this.getPropertyMeta(type);
-        let result = this.container.resolve({ token: type, regify: true });
+        let result = this.injector.resolve({ token: type, regify: true });
         for (let n in meta) {
             let propmetas = meta[n];
             if (propmetas.length) {
@@ -75,7 +74,7 @@ export abstract class ModelParser extends IocCoreService implements IModelParser
                     if (!propmeta) {
                         continue;
                     }
-                    let ptype = propmeta.provider ? this.container.getTokenProvider(propmeta.provider) : propmeta.type;
+                    let ptype = propmeta.provider ? this.injector.getTokenProvider(propmeta.provider) : propmeta.type;
                     let reqval = objMap[n];
                     if (!isFunction(ptype) || isNullOrUndefined(reqval)) {
                         continue;
@@ -98,7 +97,7 @@ export abstract class ModelParser extends IocCoreService implements IModelParser
     private typeMap: ExtendBaseTypeMap;
     getTypeMap(): ExtendBaseTypeMap {
         if (!this.typeMap) {
-            this.typeMap = this.container.get(ExtendBaseTypeMap);
+            this.typeMap = this.injector.get(ExtendBaseTypeMap);
         }
         return this.typeMap;
     }

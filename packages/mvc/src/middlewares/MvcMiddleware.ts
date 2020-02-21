@@ -1,7 +1,8 @@
-import { isClass, Injectable, isString } from '@tsdi/ioc';
+import { isClass, Injectable, isString, Inject, INJECTOR, PromiseUtil, Action, isToken, isFunction } from '@tsdi/ioc';
 import { Handle, Handles, HandleType } from '@tsdi/boot';
 import { IContext } from '../IContext';
 import { IMiddleware } from './IMiddleware';
+import { ICoreInjector } from '@tsdi/core';
 
 
 /**
@@ -14,7 +15,7 @@ import { IMiddleware } from './IMiddleware';
  * @implements {IMiddleware}
  */
 export abstract class MvcMiddleware extends Handle<IContext> implements IMiddleware {
-
+    @Inject(INJECTOR) injector: ICoreInjector;
 }
 
 /**
@@ -26,6 +27,8 @@ export abstract class MvcMiddleware extends Handle<IContext> implements IMiddlew
  */
 @Injectable()
 export class CompositeMiddleware extends Handles<IContext> {
+
+    @Inject(INJECTOR) injector: ICoreInjector;
 
     find(filter: (item: HandleType<IContext>) => boolean) {
         return this.handles.find(item => filter(item));
@@ -39,12 +42,12 @@ export class CompositeMiddleware extends Handles<IContext> {
      * @returns {this}
      * @memberof LifeScope
      */
-    useBefore(handle: HandleType<IContext>, before?: string | HandleType<IContext> | boolean, setup?: boolean): this {
+    useBefore(handle: HandleType<IContext>, before?: HandleType<IContext>): this {
         if (isString(before)) {
             let beforehdl = this.find((h: any) => h.middleName === before);
-            super.useBefore(handle, beforehdl, setup);
+            super.useBefore(handle, beforehdl);
         } else {
-            super.useBefore(handle, before, setup)
+            super.useBefore(handle, before)
         }
         return this;
     }
@@ -56,20 +59,31 @@ export class CompositeMiddleware extends Handles<IContext> {
      * @returns {this}
      * @memberof LifeScope
      */
-    useAfter(handle: HandleType<IContext>, after?: string | HandleType<IContext> | boolean, setup?: boolean): this {
+    useAfter(handle: HandleType<IContext>, after?: HandleType<IContext>): this {
         if (isString(after)) {
             let afterhdl = this.find((h: any) => h.middleName === after);
-            super.useBefore(handle, afterhdl, setup);
+            super.useBefore(handle, afterhdl);
         } else {
-            super.useBefore(handle, after, setup)
+            super.useBefore(handle, after)
         }
         return this;
     }
 
-    protected registerHandle(handle: HandleType<IContext>, setup?: boolean): this {
-        if (isClass(handle)) {
-            this.container.register(handle);
+    protected registerHandle(HandleType: HandleType<IContext>): this {
+        if (isClass(HandleType)) {
+            this.injector.registerType(HandleType);
         }
         return this;
+    }
+
+    protected toHandle(handleType: HandleType<IContext>): PromiseUtil.ActionHandle<IContext> {
+        if (handleType instanceof Action) {
+            return handleType.toAction() as PromiseUtil.ActionHandle<IContext>;
+        } else if (isToken(handleType)) {
+            return this.injector.get<Action>(handleType)?.toAction?.() as PromiseUtil.ActionHandle<IContext>;
+        } else if (isFunction(handleType)) {
+            return handleType as PromiseUtil.ActionHandle<IContext>;
+        }
+        return null;
     }
 }

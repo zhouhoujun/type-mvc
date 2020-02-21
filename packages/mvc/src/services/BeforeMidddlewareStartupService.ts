@@ -1,5 +1,5 @@
 import { Abstract } from '@tsdi/ioc';
-import { MvcMiddlewares } from '../middlewares';
+import { MvcMiddlewares } from '../middlewares/MvcMiddlewares';
 import { MvcContext } from '../MvcContext';
 
 @Abstract()

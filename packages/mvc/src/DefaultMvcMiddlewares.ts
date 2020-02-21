@@ -1,9 +1,10 @@
 const bodyParser = require('koa-bodyparser');
 import * as json from 'koa-json';
-import { InjectToken } from '@tsdi/ioc';
+import { tokenId } from '@tsdi/ioc';
 import { toAbsolutePath } from '@tsdi/platform-server';
-import { MvcMiddlewareType, MiddlewareTypes, bindMiddlewareName } from './middlewares';
-import { RouterMiddleware, CorsMiddleware } from './router';
+import { MvcMiddlewareType, MiddlewareTypes, bindMiddlewareName } from './middlewares/IMiddleware';
+import { RouterMiddleware } from './router/RouterMiddleware';
+import { CorsMiddleware } from './router/CorsMiddleware';
 const logger = require('koa-logger');
 const serve = require('koa-static');
 const views = require('koa-views');
@@ -13,7 +14,7 @@ const compose = require('koa-compose');
 /**
  * default middlewares.
  */
-export const DefaultMvcMiddlewaresToken = new InjectToken<MvcMiddlewareType[]>('Default_Mvc_Middlewares');
+export const DefaultMvcMiddlewaresToken = tokenId<MvcMiddlewareType[]>('DEFAULT_MVC_MIDDLEWARES');
 
 /**
  * default middlewares.

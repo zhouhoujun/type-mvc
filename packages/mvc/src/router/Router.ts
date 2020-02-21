@@ -1,6 +1,6 @@
 import { Singleton } from '@tsdi/ioc';
-import { CompositeMiddleware } from '../middlewares';
-import { RouteChecker } from '../services';
+import { CompositeMiddleware } from '../middlewares/MvcMiddleware';
+import { RouteChecker } from '../services/RouteChecker';
 import { IContext } from '../IContext';
 import { MvcRoute } from './Route';
 
@@ -30,7 +30,7 @@ export class Router extends CompositeMiddleware {
     }
 
     getChecker() {
-        return this.container.get(RouteChecker);
+        return this.injector.get(RouteChecker);
     }
 
     isRouteUrl(route: string) {

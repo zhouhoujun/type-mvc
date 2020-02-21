@@ -2,20 +2,22 @@ import {
     lang, Injectable, Type, getMethodMetadata, isFunction, isBaseType,
     isUndefined, ParamProviders, Provider, isClass, IParameter, isObject,
     isArray, isPromise, getTypeMetadata, isString, Inject,
-    InjectToken, isNumber, isNullOrUndefined
+    InjectToken, isNumber, isNullOrUndefined, tokenId
 } from '@tsdi/ioc';
-import { BuilderService, BaseTypeParserToken } from '@tsdi/boot';
+import { BuilderService, BaseTypeParserToken, BuilderServiceToken } from '@tsdi/boot';
 import { MvcRoute, RouteUrlArgToken } from './Route';
 import { IContext, ContextToken } from '../IContext';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
 import { RouteMetadata, CorsMetadata } from '../metadata';
 import { HttpError } from '../errors';
-import { ResultValue } from '../results';
+import { ResultValue } from '../results/ResultValue';
 import { Cors, Route } from '../decorators';
 import { DefaultModelParserToken } from './IModelParser';
 import { ModelParser } from './ModelParser';
-import { MvcMiddleware, MvcMiddlewares, MiddlewareType } from '../middlewares';
-import { AuthorizationService } from '../services';
+import { MiddlewareType } from '../middlewares/IMiddleware';
+import { AuthorizationService } from '../services/AuthorizationService';
+import { MvcMiddleware } from '../middlewares/MvcMiddleware';
+import { MvcMiddlewares } from '../middlewares/MvcMiddlewares';
 
 declare let Buffer: any;
 
@@ -27,9 +29,12 @@ export function isBuffer(target: any): boolean {
     }
 }
 
-export const RouteControllerArgToken = new InjectToken<Type>('route_controller_args');
+export const RouteControllerArgToken = tokenId<Type>('ROUTE_CONTRL_ARGS');
 
-export const RouteControllerMiddlewaresToken = new InjectToken<any[]>('route_controller_middlewares');
+export const RouteControllerMiddlewaresToken = tokenId<any[]>('ROUTE_CONTRL_MIDDLEWARES');
+
+const restParms = /^\S*:/;
+const isRest = /\/:/;
 
 @Injectable
 export class ControllerRoute extends MvcRoute {
@@ -49,7 +54,7 @@ export class ControllerRoute extends MvcRoute {
         }
         let middlewares = this.getRouteMiddleware(ctx, meta);
         if (middlewares.length) {
-            await this.execFuncs(ctx, middlewares.map(m => this.parseAction(m)).filter(f => !!f))
+            await this.execFuncs(ctx, middlewares.map(m => this.toHandle(m)).filter(f => !!f))
         }
         await this.navigating(ctx, meta, next);
     }
@@ -63,7 +68,7 @@ export class ControllerRoute extends MvcRoute {
     }
 
     protected getRouteMiddleware(ctx: IContext, meta: RouteMetadata) {
-        let auths = this.container.getServices(AuthorizationService);
+        let auths = this.injector.getServices(AuthorizationService);
         let middlewares = this.middlewares || [];
         if (auths) {
             middlewares = auths.map(auth => auth.getAuthMiddlewares(ctx, this.controller)).reduce((p, c) => p.concat(c), [])
@@ -92,7 +97,7 @@ export class ControllerRoute extends MvcRoute {
             return await next();
         }
 
-        let config = ctx.mvcContext.configuration;
+        let config = ctx.mvcContext.getConfiguration();
         let options = config.corsOptions || {};
 
         let origin;
@@ -213,12 +218,12 @@ export class ControllerRoute extends MvcRoute {
         return null;
     }
     async invoke(ctx: IContext, meta: RouteMetadata) {
-        let container = this.container;
+        let injector = this.injector;
         if (meta && meta.propertyKey) {
-            let ctrl = container.get(this.controller, { provide: ContextToken, useValue: ctx });
+            let ctrl = injector.get(this.controller, { provide: ContextToken, useValue: ctx });
             let reflects = ctx.mvcContext.reflects;
             let providers = await this.createProvider(ctx, ctrl, meta, reflects.getParameters(this.controller, ctrl, meta.propertyKey));
-            let result: any = await container.invoke(ctrl, meta.propertyKey, ...providers);
+            let result: any = await injector.invoke(ctrl, meta.propertyKey, ...providers);
             if (isPromise(result)) {
                 result = await result;
             }
@@ -259,7 +264,7 @@ export class ControllerRoute extends MvcRoute {
             let restParams: any = {};
             if (this.isRestUri(meta.route)) {
                 let routes = meta.route.split('/').map(r => r.trim());
-                let restParamNames = routes.filter(d => /^\S*:/.test(d));
+                let restParamNames = routes.filter(d => restParms.test(d));
                 let baseURL = this.vaildify(this.url, true);
                 let routeUrls = this.vaildify(ctx.url.replace(baseURL, '')).split('/');
                 restParamNames.forEach(pname => {
@@ -268,9 +273,9 @@ export class ControllerRoute extends MvcRoute {
                 });
             }
             let body = ctx.request.body || {};
-            let parser = this.container.get(BaseTypeParserToken);
+            let parser = this.injector.get(BaseTypeParserToken);
             let ppds: ParamProviders[] = await Promise.all(params.map(async (param, idx) => {
-                let ptype = param.provider ? this.container.getTokenProvider(param.provider) : param.type;
+                let ptype = param.provider ? this.injector.getTokenProvider(param.provider) : param.type;
                 let val;
                 if (isFunction(ptype)) {
                     if (isBaseType(ptype)) {
@@ -286,11 +291,11 @@ export class ControllerRoute extends MvcRoute {
                         } else if (isBaseType(ptype)) {
                             val = parser.parse(ptype, body[param.name]);
                         } else if (isClass(ptype)) {
-                            let mdparser = this.container.getService({ token: ModelParser, target: [ptype, ...ctx.mvcContext.reflects.getDecorators(ptype)], defaultToken: DefaultModelParserToken });
+                            let mdparser = this.injector.getService({ token: ModelParser, target: [ptype, ...ctx.mvcContext.reflects.getDecorators(ptype)], default: DefaultModelParserToken });
                             if (mdparser) {
                                 val = mdparser.parseModel(ptype, body);
                             } else {
-                                val = await this.container.get(BuilderService).resolve(ptype, { template: body })
+                                val = await this.injector.getInstance(BuilderServiceToken).resolve({ type: ptype, template: body })
                             }
                         }
                     }
@@ -308,7 +313,7 @@ export class ControllerRoute extends MvcRoute {
     }
 
     protected isRestUri(uri: string) {
-        return /\/:/.test(uri || '');
+        return isRest.test(uri || '');
     }
 
 

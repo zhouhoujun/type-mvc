@@ -82,18 +82,18 @@ export class ControllerTest {
     @Test('application has boot.')
     test1(@Inject(ExpectToken) expect: Expect) {
         expect(this.ctx instanceof MvcContext).toBeTruthy();
-        expect(this.ctx.configuration.port).toEqual(3012);
+        expect(this.ctx.getConfiguration().port).toEqual(3012);
     }
 
 
     @Test('application has instance mvc service.')
     test2() {
-        expect(this.ctx.runnable instanceof MvcServer).toBeTruthy();
+        expect(this.ctx.getStartup() instanceof MvcServer).toBeTruthy();
     }
 
     @Test('application api get.')
     async test3() {
-        let mvcserver = this.ctx.runnable as MvcServer;
+        let mvcserver = this.ctx.getStartup() as MvcServer;
         expect(mvcserver instanceof MvcServer).toBeTruthy();
         let res = await axios.get(mvcserver.uri + '/api/test');
         expect(res.status).toEqual(200);
@@ -103,7 +103,7 @@ export class ControllerTest {
 
     @Test('application api post 200.')
     async test4() {
-        let mvcserver = this.ctx.runnable as MvcServer;
+        let mvcserver = this.ctx.getStartup() as MvcServer;
         expect(mvcserver instanceof MvcServer).toBeTruthy();
         let res = await axios.post(mvcserver.uri + '/api', stringify({ test: 'post test', firstName: 'Fred',
         lastName: 'Flintstone' }));
@@ -114,7 +114,7 @@ export class ControllerTest {
 
     @Test('application api post2 200.')
     async test5() {
-        let mvcserver = this.ctx.runnable as MvcServer;
+        let mvcserver = this.ctx.getStartup() as MvcServer;
         expect(mvcserver instanceof MvcServer).toBeTruthy();
         let res = await axios.post(mvcserver.uri + '/api/cors', stringify({ test: 'post test' }));
         expect(res.data).toBeDefined();
@@ -138,7 +138,7 @@ export class ControllerTest {
 
     @Test('application api cors post 200.')
     async test7() {
-        let mvcserver = this.ctx.runnable as MvcServer;
+        let mvcserver = this.ctx.getStartup() as MvcServer;
         expect(mvcserver instanceof MvcServer).toBeTruthy();
         // let res = await axios({
         //     method: 'POST',
@@ -166,7 +166,7 @@ export class ControllerTest {
 
     @After()
     destory() {
-        this.ctx.runnable.stop();
+        this.ctx.getStartup().stop();
     }
 
 }

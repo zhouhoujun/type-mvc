@@ -1,14 +1,10 @@
-import { DIModule, RegFor } from '@tsdi/boot';
+import { DIModule } from '@tsdi/boot';
 import { TypeOrmHelper } from './TypeOrmHelper';
 import { TypeOrmModelParser } from './TypeOrmModelParser';
 
 @DIModule({
-    regFor: RegFor.boot,
-    imports: [
-        TypeOrmHelper,
-        TypeOrmModelParser
-    ],
-    exports: [
+    regIn: 'root',
+    providers: [
         TypeOrmHelper,
         TypeOrmModelParser
     ]

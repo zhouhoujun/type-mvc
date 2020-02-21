@@ -1,6 +1,6 @@
 import { MethodMetadata } from '@tsdi/ioc';
 import { RequestMethod } from '../RequestMethod';
-import { MiddlewareType } from '../middlewares';
+import { MiddlewareType } from '../middlewares/IMiddleware';
 
 
 

@@ -1,5 +1,5 @@
 import { ClassMetadata, Type } from '@tsdi/ioc';
-import { CompositeMiddleware, MvcMiddleware } from '../middlewares';
+import { CompositeMiddleware, MvcMiddleware } from '../middlewares/MvcMiddleware';
 
 /**
  * middleware metadata.

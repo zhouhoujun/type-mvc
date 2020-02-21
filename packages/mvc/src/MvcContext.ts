@@ -1,10 +1,12 @@
 import { Injectable, Refs, InjectToken } from '@tsdi/ioc';
-import { BootContext, BootOption, ProcessRunRootToken, Service } from '@tsdi/boot';
+import { BootContext, BootOption, ProcessRunRootToken, ConfigureManager } from '@tsdi/boot';
 import { runMainPath } from '@tsdi/platform-server';
 import { IConfiguration } from './IConfiguration';
 import * as Koa from 'koa';
 import * as http from 'http';
 import * as https from 'https';
+import { MvcModuleMetadata } from './metadata/MvcModuleMetadata';
+import { IMvcServer } from './IMvcServer';
 
 /**
  * mvc boot option
@@ -51,20 +53,39 @@ export const MvcContextToken = new InjectToken<MvcContext>('MVC_Context');
 @Injectable()
 @Refs('@MvcModule', BootContext)
 export class MvcContext extends BootContext<MvcOptions> {
+
     /**
-     * runable.
+     * boot startup service instance.
      *
-     * @type {Service}
-     * @memberof MvcContext
+     * @type {IStartup}
+     * @memberof BootContext
      */
-    runnable: Service;
+    getStartup(): IMvcServer {
+        return super.getStartup() as IMvcServer;
+    }
+
+    getAnnoation<T extends MvcModuleMetadata>(): T {
+        return super.getAnnoation();
+    }
     /**
      * configuration, meger configure and annoation metadata.
      *
      * @type {IConfiguration}
      * @memberof MvcContext
      */
-    configuration: IConfiguration;
+    getConfiguration<T extends IConfiguration>(): T {
+        return super.getConfiguration();
+    }
+
+    /**
+     * get configure manager.
+     *
+     * @returns {ConfigureManager<T>}
+     * @memberof BootContext
+     */
+    getConfigureManager<T extends IConfiguration>(): ConfigureManager<T> {
+        return super.getConfigureManager();
+    }
 
     private koa: Koa;
     getKoa(): Koa {

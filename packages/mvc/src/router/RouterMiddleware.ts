@@ -1,5 +1,6 @@
 import { Singleton } from '@tsdi/ioc';
-import { MvcMiddleware, IMiddleware, MiddlewareTypes } from '../middlewares';
+import { IMiddleware, MiddlewareTypes } from '../middlewares/IMiddleware';
+import { MvcMiddleware } from '../middlewares/MvcMiddleware';
 import { Router } from './Router';
 import { IContext } from '../IContext';
 
@@ -11,6 +12,6 @@ export class RouterMiddleware extends MvcMiddleware implements IMiddleware {
 
     execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
         ctx._corsCheck = false;
-        return this.container.get(Router).execute(ctx, next);
+        return this.injector.get(Router).execute(ctx, next);
     }
 }

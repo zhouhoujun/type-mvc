@@ -22,7 +22,7 @@ export class FileResult extends ResultValue {
         let defer = Defer.create<Buffer>();
         let file = this.file;
         let contentType = this.contentType;
-        let confige = ctx.mvcContext.configuration;
+        let confige = ctx.mvcContext.getConfiguration();
         if (isString(file)) {
             let filepath = join(confige.baseURL, file);
             if (existsSync(filepath)) {

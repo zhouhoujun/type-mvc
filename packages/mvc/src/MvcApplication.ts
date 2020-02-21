@@ -1,36 +1,41 @@
 import {
-    Inject, DecoratorScopes, RuntimeDecoratorRegisterer, DesignDecoratorRegisterer,
+    IocExt, Inject, DecoratorScopes,
     BindProviderAction, BindMethodProviderAction, IocSetCacheAction, Type, LoadType,
     DecoratorProvider, InjectReference, ProviderTypes, Singleton, isArray,
-    isClass, isFunction, lang, ActionRegisterer, IocAutorunAction
+    isClass, isFunction, lang, IocAutorunAction, ActionInjector, DesignRegisterer, RuntimeRegisterer
 } from '@tsdi/ioc';
-import { IocExt, ContainerToken, IContainer } from '@tsdi/core';
+import { ContainerToken, IContainer } from '@tsdi/core';
 import { AopModule } from '@tsdi/aop';
 import { DebugLogAspect, LogConfigureToken, LogModule } from '@tsdi/logs';
 import {
-    DefaultConfigureToken, DIModuleInjectorScope, BootApplication, checkBootArgs, BootContext,
-    Startup, RegFor, ConfigureRegister, Handle, AnnoationDesignAction
+    DefaultConfigureToken, BootApplication, checkBootArgs, BootContext,
+    Startup, ConfigureRegister, Handle, registerModule
 } from '@tsdi/boot';
 import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
 import { ServerLogsModule } from '@tsdi/platform-server-logs';
 import { Controller, Authorization, Middleware, MvcModule } from './decorators';
 import { MvcContext, MvcOptions, MvcContextToken } from './MvcContext';
-import { ControllerRegisterAction, MiddlewareRegisterAction } from './registers';
-import * as middlewares from './middlewares';
-import * as routers from './router';
-import * as services from './services';
-import * as aop from './aop';
+import { ControllerRegisterAction } from './registers/ControllerRegisterAction';
+import { MiddlewareRegisterAction } from './registers/MiddlewareRegisterAction';
 import { IConfiguration } from './IConfiguration';
 import { MvcServer } from './MvcServer';
 import { DefaultMvcMiddlewares, DefaultMvcMiddlewaresToken } from './DefaultMvcMiddlewares';
-import { MvcModuleMetadata } from './metadata';
-import { MvcMiddlewares, MiddlewareRegister } from './middlewares';
 import * as http from 'http';
 import * as https from 'https';
 import * as Koa from 'koa';
 import { MvcApp } from './MvcApp';
-import { ExtendBaseTypeMap } from './router';
-import { BeforeMidddlewareStartupService, AfterMidddlewareStartupService } from './services';
+import { RouteChecker } from './services/RouteChecker';
+import { AuthorizationAspect } from './aop/AuthorizationAspect';
+import { CompositeMiddleware } from './middlewares/MvcMiddleware';
+import { ControllerRoute } from './router/ControllerRoute';
+import { CorsMiddleware } from './router/CorsMiddleware';
+import { Router } from './router/Router';
+import { MvcMiddlewares } from './middlewares/MvcMiddlewares';
+import { MiddlewareRegister } from './middlewares/MiddlewareRegister';
+import { ExtendBaseTypeMap } from './router/ModelParser';
+import { RouterMiddleware } from './router/RouterMiddleware';
+import { BeforeMidddlewareStartupService } from './services/BeforeMidddlewareStartupService';
+import { AfterMidddlewareStartupService } from './services/AfterMidddlewareStartupService';
 const mount = require('koa-mount');
 
 
@@ -67,7 +72,7 @@ export class MvcApplication extends BootApplication<MvcContext> {
 
     onContextInit(ctx: MvcContext) {
         super.onContextInit(ctx);
-        this.container.bindProvider(MvcContextToken, ctx);
+        this.getContainer().bindProvider(MvcContextToken, ctx);
     }
 }
 
@@ -84,26 +89,27 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
     async register(config: IConfiguration, ctx: MvcContext): Promise<void> {
 
         ctx.getKoa().keys = config.keys;
+        let injector = ctx.injector;
 
         if (config.debug) {
-            this.container.register(DebugLogAspect);
+            injector.register(DebugLogAspect);
             // disable custom log.
             config.logConfig = null;
         }
 
         let logConfig = config.logConfig;
-        if (logConfig && !this.container.has(LogConfigureToken)) {
-            this.container.bindProvider(LogConfigureToken, logConfig);
+        if (logConfig && !injector.has(LogConfigureToken)) {
+            injector.bindProvider(LogConfigureToken, logConfig);
         }
 
-        if (!this.container.has(DefaultMvcMiddlewaresToken)) {
-            this.container.bindProvider(DefaultMvcMiddlewaresToken, DefaultMvcMiddlewares)
+        if (!injector.has(DefaultMvcMiddlewaresToken)) {
+            injector.bindProvider(DefaultMvcMiddlewaresToken, DefaultMvcMiddlewares)
         }
 
         // setup global middlewares
-        let middlewares = this.container.get(MvcMiddlewares);
-        let metadata = ctx.annoation as MvcModuleMetadata;
-        let mvcMiddles = metadata.middlewares || this.container.get(DefaultMvcMiddlewaresToken);
+        let middlewares = injector.get(MvcMiddlewares);
+        let metadata = ctx.getAnnoation();
+        let mvcMiddles = metadata.middlewares || injector.get(DefaultMvcMiddlewaresToken);
         if (isArray(mvcMiddles)) {
             mvcMiddles.forEach(middle => {
                 if (isClass(middle)) {
@@ -121,13 +127,13 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
 
         // load extends midllewares.
         if (config.loadMiddlewares) {
-            await this.container.load({
+            await injector.load({
                 basePath: ctx.getRootPath(),
                 files: config.loadMiddlewares
             });
         }
 
-        this.container.invoke(MiddlewareRegister, tag => tag.setup);
+        injector.invoke(MiddlewareRegister, tag => tag.setup);
 
 
         if (!ctx.httpServer) {
@@ -139,19 +145,19 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
         }
 
         if (config.loadControllers) {
-            await this.container.load({
+            await injector.load({
                 basePath: ctx.getRootPath(),
                 files: config.loadControllers
             });
         }
 
-        await Promise.all(this.container.getServices(BeforeMidddlewareStartupService)
+        await Promise.all(injector.getServices(BeforeMidddlewareStartupService)
             .map(s => s.startup(ctx, middlewares)));
 
-        this.container.get(MvcMiddlewares)
+        injector.get(MvcMiddlewares)
             .setup(ctx);
 
-        await Promise.all(this.container.getServices(AfterMidddlewareStartupService)
+        await Promise.all(injector.getServices(AfterMidddlewareStartupService)
             .map(s => s.startup(ctx, middlewares)));
 
         if (config.subSites && config.subSites.length) {
@@ -162,7 +168,6 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
                         {
                             autorun: false,
                             module: site.app,
-                            regFor: RegFor.child,
                             configures: [lang.omit(config, 'subsites')]
                         });
                     koa = subCtx.getKoa() as any;
@@ -181,7 +186,7 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
 
 
 
-@IocExt('setup')
+@IocExt()
 class MvcCoreModule {
 
     constructor() {
@@ -189,12 +194,14 @@ class MvcCoreModule {
     }
 
     setup(@Inject(ContainerToken) container: IContainer) {
-        container.register(MvcContext)
-            .register(MvcServer)
-            .register(MvcConfigureRegister);
+        container.registerType(MvcContext)
+            .registerType(MvcServer)
+            .registerType(MvcConfigureRegister);
 
-        container.register(ExtendBaseTypeMap);
-        container.use(aop, services, middlewares, routers);
+        container.inject(ExtendBaseTypeMap, AuthorizationAspect, RouteChecker,
+            CompositeMiddleware, MvcMiddlewares, MiddlewareRegister, CorsMiddleware,
+            Router, ControllerRoute, RouterMiddleware);
+
 
         container.bindProvider(DefaultConfigureToken, <IConfiguration>{
             hostname: '',
@@ -219,24 +226,23 @@ class MvcCoreModule {
             contents: ['./public']
         });
 
-        container.getInstance(ActionRegisterer)
-            .register(container, ControllerRegisterAction)
-            .register(container, MiddlewareRegisterAction);
+        let actInjector = container.getInstance(ActionInjector);
 
-        let dreger = container.getInstance(DesignDecoratorRegisterer);
+        actInjector.register(ControllerRegisterAction)
+            .register(MiddlewareRegisterAction);
+
+        let dreger = actInjector.getInstance(DesignRegisterer);
         dreger.register(Controller, DecoratorScopes.Class, BindProviderAction, ControllerRegisterAction)
             .register(Authorization, DecoratorScopes.Class, BindProviderAction)
-            .register(Middleware, DecoratorScopes.Class, BindProviderAction, MiddlewareRegisterAction)
-            .register(MvcModule, DecoratorScopes.Class, BindProviderAction, AnnoationDesignAction, IocAutorunAction);
+            .register(Middleware, DecoratorScopes.Class, BindProviderAction, MiddlewareRegisterAction);
 
-        let runtimeRgr = container.getInstance(RuntimeDecoratorRegisterer);
+        registerModule(MvcModule, dreger);
+        let runtimeRgr = actInjector.getInstance(RuntimeRegisterer);
         runtimeRgr.register(Authorization, DecoratorScopes.Method, BindMethodProviderAction)
             .register(MvcModule, DecoratorScopes.Class, IocSetCacheAction);
 
-        dreger.getRegisterer(DecoratorScopes.Injector)
-            .register(MvcModule, DIModuleInjectorScope);
 
-        container.getInstance(DecoratorProvider)
+        actInjector.getInstance(DecoratorProvider)
             .bindProviders(MvcModule,
                 {
                     provide: BootContext,

@@ -1,6 +1,6 @@
 import { createClassDecorator, ITypeDecorator, isString, Registration, isArray } from '@tsdi/ioc';
 import { ControllerMetadata } from '../metadata';
-import { MiddlewareType } from '../middlewares';
+import { MiddlewareType } from '../middlewares/IMiddleware';
 
 /**
  * Controller decorator, define the class as mvc controller.
