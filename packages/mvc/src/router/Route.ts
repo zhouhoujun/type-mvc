@@ -1,9 +1,10 @@
-import { InjectToken, Abstract } from '@tsdi/ioc';
+import { Abstract, tokenId, PromiseUtil, Action, isToken, isFunction } from '@tsdi/ioc';
 import { IContext } from '../IContext';
-import { MvcMiddleware } from '../middlewares';
-import { RouteChecker } from '../services';
+import { MvcMiddleware } from '../middlewares/MvcMiddleware';
+import { RouteChecker } from '../services/RouteChecker';
+import { HandleType } from '@tsdi/boot';
 
-export const RouteUrlArgToken = new InjectToken<string>('route_url');
+export const RouteUrlArgToken = tokenId<string>('route_url');
 
 @Abstract()
 export abstract class MvcRoute extends MvcMiddleware {
@@ -31,7 +32,7 @@ export abstract class MvcRoute extends MvcMiddleware {
     private checker: RouteChecker;
     getChecker() {
         if (!this.checker) {
-            this.checker = this.container.get(RouteChecker);
+            this.checker = this.injector.get(RouteChecker);
         }
         return this.checker;
     }
@@ -73,4 +74,15 @@ export abstract class MvcRoute extends MvcMiddleware {
     abstract navigate(ctx: IContext, next: () => Promise<void>): Promise<void>;
 
     abstract options(ctx: IContext, next: () => Promise<void>): Promise<void>;
+
+    protected toHandle(handleType: HandleType<IContext>): PromiseUtil.ActionHandle<IContext> {
+        if (handleType instanceof Action) {
+            return handleType.toAction() as PromiseUtil.ActionHandle<IContext>;
+        } else if (isToken(handleType)) {
+            return this.injector.get<Action>(handleType)?.toAction?.() as PromiseUtil.ActionHandle<IContext>;
+        } else if (isFunction(handleType)) {
+            return handleType as PromiseUtil.ActionHandle<IContext>;
+        }
+        return null;
+    }
 }

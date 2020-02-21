@@ -2,7 +2,7 @@ import {
     TypeMetadata, IClassMethodDecorator, createClassMethodDecorator,
     ClassMethodDecorator, isString, isArray
 } from '@tsdi/ioc';
-import { MiddlewareType } from '../middlewares';
+import { MiddlewareType } from '../middlewares/IMiddleware';
 
 /**
  * authorization metadata.

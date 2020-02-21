@@ -2,7 +2,7 @@ import { IMethodDecorator } from '@tsdi/ioc';
 import { RequestMethod } from '../RequestMethod';
 import { createRouteDecorator } from './Route';
 import { HeadMetadata } from '../metadata';
-import { MiddlewareType } from '../middlewares';
+import { MiddlewareType } from '../middlewares/IMiddleware';
 
 
 /**

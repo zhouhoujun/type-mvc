@@ -1,6 +1,6 @@
 import { createClassDecorator, Type } from '@tsdi/ioc';
 import { MiddlewareMetadata } from '../metadata';
-import { IMiddleware } from '../middlewares';
+import { IMiddleware } from '../middlewares/IMiddleware';
 
 export type MiddlewareDecorator = <TFunction extends Type<IMiddleware>>(target: TFunction) => TFunction | void;
 

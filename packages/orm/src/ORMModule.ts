@@ -3,7 +3,7 @@ import { ModelModule } from '@mvx/model';
 
 @DIModule({
     imports: [
-        ModelModule,
+        ModelModule
     ],
     exports: [
         ModelModule

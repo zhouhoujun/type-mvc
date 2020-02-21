@@ -1,5 +1,5 @@
 import { Abstract, Type } from '@tsdi/ioc';
-import { MiddlewareType } from '../middlewares';
+import { MiddlewareType } from '../middlewares/IMiddleware';
 import { IContext } from '../IContext';
 
 @Abstract()

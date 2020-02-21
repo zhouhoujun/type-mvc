@@ -1,10 +1,14 @@
 import { IocCoreService, Singleton } from '@tsdi/ioc';
 import { IContext } from '../IContext';
 
+const urlReg = /\/((\w|%|\.))+\.\w+$/;
+const noParms = /\/\s*$/;
+const hasParms = /\?\S*$/;
+
 @Singleton
 export class RouteChecker extends IocCoreService {
 
-    private assertUrlRegExp = /\/((\w|%|\.))+\.\w+$/;
+    private assertUrlRegExp = urlReg;
 
     isRoute(ctxUrl: string): boolean {
         return !this.assertUrlRegExp.test(ctxUrl);
@@ -12,8 +16,9 @@ export class RouteChecker extends IocCoreService {
 
     getReqRoute(ctx: IContext): string {
         let reqUrl = this.vaildify(ctx.url, true);
-        if (ctx.mvcContext.configuration.routePrefix) {
-            return reqUrl.replace(ctx.mvcContext.configuration.routePrefix, '');
+        let config = ctx.mvcContext.getConfiguration();
+        if (config.routePrefix) {
+            return reqUrl.replace(config.routePrefix, '');
         }
         return reqUrl;
     }
@@ -23,10 +28,10 @@ export class RouteChecker extends IocCoreService {
         if (foreNull && routePath === '/') {
             routePath = '';
         }
-        if (/\/\s*$/.test(routePath)) {
+        if (noParms.test(routePath)) {
             routePath = routePath.substring(0, routePath.lastIndexOf('/'));
         }
-        if (/\?\S*$/.test(routePath)) {
+        if (hasParms.test(routePath)) {
             routePath = routePath.substring(0, routePath.lastIndexOf('?'));
         }
         return routePath;

@@ -1,6 +1,6 @@
 import { Type } from '@tsdi/ioc';
 import { DIModuleMetadata } from '@tsdi/boot';
-import { MvcMiddlewareType } from '../middlewares';
+import { MvcMiddlewareType } from '../middlewares/IMiddleware';
 import { IConfiguration } from '../IConfiguration';
 import { MvcContext } from '../MvcContext';
 

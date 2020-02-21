@@ -1,4 +1,4 @@
-import { Type, InjectToken } from '@tsdi/ioc';
+import { Type, tokenId } from '@tsdi/ioc';
 
 /**
  * model parser. parser model from request.
@@ -24,4 +24,4 @@ export interface IModelParser<T = any> {
 /**
  * default module parser token.
  */
-export const DefaultModelParserToken = new InjectToken<IModelParser>('DefaultModelParser')
+export const DefaultModelParserToken = tokenId<IModelParser>('DefaultModelParser')

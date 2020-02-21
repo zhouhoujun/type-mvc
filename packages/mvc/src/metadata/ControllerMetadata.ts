@@ -1,5 +1,5 @@
 import { ClassMetadata } from '@tsdi/ioc';
-import { MiddlewareType } from '../middlewares';
+import { MiddlewareType } from '../middlewares/IMiddleware';
 
 
 /**

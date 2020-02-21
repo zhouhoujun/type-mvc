@@ -4,7 +4,7 @@ import {
 } from '@tsdi/ioc';
 import { RequestMethod } from '../RequestMethod';
 import { RouteMetadata } from '../metadata';
-import { MiddlewareType } from '../middlewares';
+import { MiddlewareType } from '../middlewares/IMiddleware';
 
 
 /**

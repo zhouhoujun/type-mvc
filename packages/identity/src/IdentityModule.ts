@@ -1,5 +1,5 @@
-import { Inject, DesignDecoratorRegisterer, DecoratorScopes, ActionRegisterer } from '@tsdi/ioc';
-import { IocExt, ContainerToken, IContainer } from '@tsdi/core';
+import { IocExt, Inject, DecoratorScopes, ActionInjectorToken, DesignRegisterer } from '@tsdi/ioc';
+import { ContainerToken, IContainer } from '@tsdi/core';
 import { ComponentsModule, ElementModule } from '@tsdi/components';
 import { MvcModule, Controller } from '@mvx/mvc';
 import * as vaildates from './vaildates';
@@ -7,9 +7,10 @@ import * as middlewares from './middlewares';
 import * as passports from './passports';
 import { ControllerAuthRegisterAction, AuthRoutesToken } from './registers/ControllerAuthRegisterAction';
 import { IdentityStartupService } from './IdentityStartupService';
+import { DIModule } from '@tsdi/boot';
 
 
-@IocExt('setup')
+@IocExt()
 class IdentitySetupModule {
 
     constructor() {
@@ -17,13 +18,11 @@ class IdentitySetupModule {
     }
 
     setup(@Inject(ContainerToken) container: IContainer) {
-
         container.bindProvider(AuthRoutesToken, new Set());
+        let actjtr = container.getInstance(ActionInjectorToken);
+        actjtr.register(ControllerAuthRegisterAction);
 
-        container.getInstance(ActionRegisterer)
-            .register(container, ControllerAuthRegisterAction);
-
-        let dreger = container.getInstance(DesignDecoratorRegisterer);
+        let dreger = actjtr.getInstance(DesignRegisterer);
         dreger.register(Controller, DecoratorScopes.Class, ControllerAuthRegisterAction);
 
     }
@@ -31,21 +30,18 @@ class IdentitySetupModule {
 
 
 
-@MvcModule({
+@DIModule({
+    regIn: 'root',
     imports: [
         IdentitySetupModule,
-        IdentityStartupService,
         ComponentsModule,
-        ElementModule,
+        ElementModule
+    ],
+    providers: [
+        IdentityStartupService,
         passports,
         vaildates,
         middlewares
-    ],
-    exports: [
-        passports,
-        vaildates,
-        middlewares,
-        IdentityStartupService
     ]
 })
 export class IdentityModule {
