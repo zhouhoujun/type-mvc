@@ -220,7 +220,7 @@ export class ControllerRoute extends MvcRoute {
     async invoke(ctx: IContext, meta: RouteMetadata) {
         let injector = this.injector;
         if (meta && meta.propertyKey) {
-            let ctrl = injector.get(this.controller, { provide: ContextToken, useValue: ctx });
+            let ctrl = injector.getInstance(this.controller, { provide: ContextToken, useValue: ctx });
             let reflects = ctx.mvcContext.reflects;
             let providers = await this.createProvider(ctx, ctrl, meta, reflects.getParameters(this.controller, ctrl, meta.propertyKey));
             let result: any = await injector.invoke(ctrl, meta.propertyKey, ...providers);

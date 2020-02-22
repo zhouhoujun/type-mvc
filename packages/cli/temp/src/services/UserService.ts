@@ -1,6 +1,6 @@
 import { Inject, Singleton } from '@tsdi/ioc';
 import { TypeOrmHelper } from '@mvx/typeorm-adapter';
-import { User } from '../models';
+import { User } from '../models/User';
 
 @Singleton()
 export class UserService {

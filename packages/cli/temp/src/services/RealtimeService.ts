@@ -12,11 +12,6 @@ export class RealtimeService extends StartupService<MvcContext> {
     @Inject(RootMessageQueueToken)
     queue: MessageQueue<MessageContext>;
 
-    constructor() {
-        super();
-    }
-
-
     async configureService(ctx: MvcContext): Promise<void> {
         let logger = ctx.getLogManager().getLogger();
         logger.info('create socket server...');

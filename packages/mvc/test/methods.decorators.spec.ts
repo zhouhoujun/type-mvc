@@ -61,7 +61,7 @@ export class TestController {
 
 @MvcModule({
     port: 3012,
-    imports: [
+    controllers: [
         TestController
     ]
 })
@@ -93,7 +93,7 @@ export class ControllerTest {
 
     @Test('application api get.')
     async test3() {
-        let mvcserver = this.ctx.getStartup() as MvcServer;
+        let mvcserver = this.ctx.getStartup();
         expect(mvcserver instanceof MvcServer).toBeTruthy();
         let res = await axios.get(mvcserver.uri + '/api/test');
         expect(res.status).toEqual(200);
@@ -103,10 +103,12 @@ export class ControllerTest {
 
     @Test('application api post 200.')
     async test4() {
-        let mvcserver = this.ctx.getStartup() as MvcServer;
+        let mvcserver = this.ctx.getStartup();
         expect(mvcserver instanceof MvcServer).toBeTruthy();
-        let res = await axios.post(mvcserver.uri + '/api', stringify({ test: 'post test', firstName: 'Fred',
-        lastName: 'Flintstone' }));
+        let res = await axios.post(mvcserver.uri + '/api', stringify({
+            test: 'post test', firstName: 'Fred',
+            lastName: 'Flintstone'
+        }));
         expect(res.status).toEqual(200);
         expect(res.data).toBeDefined();
         expect(res.data.test).toEqual('post test')
@@ -114,7 +116,7 @@ export class ControllerTest {
 
     @Test('application api post2 200.')
     async test5() {
-        let mvcserver = this.ctx.getStartup() as MvcServer;
+        let mvcserver = this.ctx.getStartup();
         expect(mvcserver instanceof MvcServer).toBeTruthy();
         let res = await axios.post(mvcserver.uri + '/api/cors', stringify({ test: 'post test' }));
         expect(res.data).toBeDefined();
@@ -125,7 +127,7 @@ export class ControllerTest {
 
     // @Test('application api cors post 204.')
     // async test6() {
-    //     let mvcserver = this.ctx.runnable as MvcServer;
+    //     let mvcserver = this.ctx.runnable;
     //     expect(mvcserver instanceof MvcServer).toBeTruthy();
     //     let res = await axios.post(mvcserver.uri + '/api', { test: 'post test' }, {
     //         headers: {
@@ -138,7 +140,7 @@ export class ControllerTest {
 
     @Test('application api cors post 200.')
     async test7() {
-        let mvcserver = this.ctx.getStartup() as MvcServer;
+        let mvcserver = this.ctx.getStartup();
         expect(mvcserver instanceof MvcServer).toBeTruthy();
         // let res = await axios({
         //     method: 'POST',

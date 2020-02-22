@@ -6,7 +6,9 @@ import { RealtimeService } from './services';
 @MvcModule({
     imports: [
         // IdentityModule,
-        TypeOrmModule,
+        TypeOrmModule
+    ],
+    providers: [
         RealtimeService
     ]
 })

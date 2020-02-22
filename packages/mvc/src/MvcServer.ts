@@ -24,6 +24,21 @@ export class MvcServer extends Service<Koa> implements IMvcServer {
     port: number;
     hostname: string;
 
+    /**
+     * configure startup service.
+     *
+     * @param {IBootContext} [ctx]
+     * @returns {(Promise<void>)}
+     * @memberof IStartup
+     */
+    async configureService(ctx: MvcContext): Promise<void> {
+        this.context = ctx;
+        let config = ctx.getConfiguration();
+        this.port = config.port || parseInt(process.env.PORT || '0');
+        this.hostname = config.hostname;
+        this.uri = `${ctx.httpServer instanceof https.Server ? 'https' : 'http'}://${this.hostname || '127.0.0.1'}:${this.port}`;
+    }
+
     @Inject()
     protected router: Router;
 
@@ -47,10 +62,6 @@ export class MvcServer extends Service<Koa> implements IMvcServer {
     async start() {
         let ctx = this.getContext();
         let listener = ctx.listener;
-        let config = ctx.getConfiguration();
-        this.port = config.port || parseInt(process.env.PORT || '0');
-        this.hostname = config.hostname;
-        this.uri = `${ctx.httpServer instanceof https.Server ? 'https' : 'http'}://${this.hostname || '127.0.0.1'}:${this.port}`;
         let server = this.getHttpServer();
         if (this.hostname) {
             server.listen(this.port, this.hostname, listener);

@@ -2,14 +2,14 @@ import {
     IocExt, Inject, DecoratorScopes,
     BindProviderAction, BindMethodProviderAction, IocSetCacheAction, Type, LoadType,
     DecoratorProvider, InjectReference, ProviderTypes, Singleton, isArray,
-    isClass, isFunction, lang, IocAutorunAction, ActionInjector, DesignRegisterer, RuntimeRegisterer
+    isClass, isFunction, lang, ActionInjector, DesignRegisterer, RuntimeRegisterer, IProviders
 } from '@tsdi/ioc';
-import { ContainerToken, IContainer } from '@tsdi/core';
+import { ContainerToken, IContainer, ModuleProvider } from '@tsdi/core';
 import { AopModule } from '@tsdi/aop';
 import { DebugLogAspect, LogConfigureToken, LogModule } from '@tsdi/logs';
 import {
-    DefaultConfigureToken, BootApplication, checkBootArgs, BootContext,
-    Startup, ConfigureRegister, Handle, registerModule
+    DefaultConfigureToken, BootApplication, checkBootArgs, BootContext, ModuleInjector,
+    Startup, ConfigureRegister, Handle, registerModule, ModuleProvidersBuilderToken
 } from '@tsdi/boot';
 import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
 import { ServerLogsModule } from '@tsdi/platform-server-logs';
@@ -36,6 +36,7 @@ import { ExtendBaseTypeMap } from './router/ModelParser';
 import { RouterMiddleware } from './router/RouterMiddleware';
 import { BeforeMidddlewareStartupService } from './services/BeforeMidddlewareStartupService';
 import { AfterMidddlewareStartupService } from './services/AfterMidddlewareStartupService';
+import { MvcModuleMetadata } from './metadata';
 const mount = require('koa-mount');
 
 
@@ -244,6 +245,17 @@ class MvcCoreModule {
 
         actInjector.getInstance(DecoratorProvider)
             .bindProviders(MvcModule,
+                {
+                    provide: ModuleProvidersBuilderToken,
+                    useValue: {
+                        build(injector: ModuleInjector, annoation: MvcModuleMetadata, map: IProviders) {
+                            if (annoation.controllers && annoation.controllers.length) {
+                                let ctrls = injector.getInstance(ModuleProvider).use(injector, ...annoation.controllers);
+                                ctrls && ctrls.forEach(ctrll => map.set(ctrll, (...providers) => injector.getInstance(ctrll, ...providers)));
+                            }
+                        }
+                    }
+                },
                 {
                     provide: BootContext,
                     deps: [ContainerToken],
