@@ -11,7 +11,7 @@ export const MiddlewareRegisterAction = (ctx: DesignActionContext, next: () => v
     if (meta.scope === 'global') {
         let mType = ctx.type as MiddlewareClass<IMiddleware>;
         mType.middleName = meta ? meta.name : lang.getClassName(mType)
-        this.container.resolve(MiddlewareRegister)
+        ctx.injector.getInstance(MiddlewareRegister)
             .set(mType, meta)
     }
     next();

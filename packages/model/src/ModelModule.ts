@@ -1,13 +1,10 @@
-import { DIModule, RegFor } from '@tsdi/boot';
+import { DIModule } from '@tsdi/boot';
 import { DefaultModelParser } from './ModelParser';
 
 
 @DIModule({
-    regFor: RegFor.boot,
-    imports: [
-        DefaultModelParser
-    ],
-    exports: [
+    regIn: 'root',
+    providers: [
         DefaultModelParser
     ]
 })

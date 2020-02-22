@@ -37,7 +37,7 @@ export class SessionMiddleware extends MvcMiddleware {
     private hasInit = false;
     getMiddleware(context: MvcContext, koa: any) {
         if (!this.hasInit && !this.middleware) {
-            let sessCfg = context.configuration.session;
+            let sessCfg = context.getConfiguration().session;
             this.hasInit = true;
             if (sessCfg) {
                 sessCfg = Object.assign({

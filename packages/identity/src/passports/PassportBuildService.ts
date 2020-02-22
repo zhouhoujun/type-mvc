@@ -1,6 +1,6 @@
-import { Abstract, Inject, Injectable, isClass, isFunction } from '@tsdi/ioc';
-import { IContainer, ContainerToken } from '@tsdi/core';
-import { StartupDecoratorRegisterer, StartupScopes, HandleRegisterer } from '@tsdi/boot';
+import { Abstract, Inject, Injectable, isClass, isFunction, INJECTOR, ActionInjectorToken } from '@tsdi/ioc';
+import { ICoreInjector } from '@tsdi/core';
+import { StartupDecoratorRegisterer, StartupScopes } from '@tsdi/boot';
 import { ComponentBuilder, Component, ComponentSelectorHandle } from '@tsdi/components';
 import { IConfiguration, IContext } from '@mvx/mvc';
 import { IStrategy } from './IStrategy';
@@ -25,7 +25,8 @@ export abstract class PassportBuildService {
     abstract build(passport: IAuthenticator, configuration: IConfiguration): Promise<void>;
 
     async createStrategy(option: IStrategyOption): Promise<IStrategy> {
-        return await this.builder.resolveTemplate({ template: option }) as IStrategy;
+        let temRef = await this.builder.resolveTemplate({ template: option });
+        return temRef.rootNodes[0]  as IStrategy;
     }
 }
 
@@ -40,13 +41,13 @@ export abstract class PassportBuildService {
 @Injectable()
 export class ConfigurePassportBuildService extends PassportBuildService {
 
-    @Inject(ContainerToken)
-    private container: IContainer;
+    @Inject(INJECTOR)
+    private injector: ICoreInjector;
 
     async build(passport: IAuthenticator, configuration: IConfiguration): Promise<void> {
-        let register = this.container.resolve(StartupDecoratorRegisterer).getRegisterer(StartupScopes.TranslateTemplate);
+        let actInj = this.injector.getInstance(ActionInjectorToken);
+        let register = actInj.getInstance(StartupDecoratorRegisterer).getRegisterer(StartupScopes.TranslateTemplate);
         if (!register.has(StrategySelectorHandle)) {
-            this.container.get(HandleRegisterer).register(this.container, StrategySelectorHandle);
             register.registerBefore(Component, ComponentSelectorHandle, StrategySelectorHandle);
         }
         if (configuration.passports) {
@@ -63,16 +64,16 @@ export class ConfigurePassportBuildService extends PassportBuildService {
             if (serializers && serializers.length) {
                 serializers.forEach(ser => {
                     if (isClass(ser)) {
-                        if (!this.container.has(ser)) {
-                            this.container.register(ser);
+                        if (!this.injector.has(ser)) {
+                            this.injector.register(ser);
                         }
-                        passport.serializeUser((user, ctx) => this.container.resolve(ser).serializeUser(user, ctx as IContext));
+                        passport.serializeUser((user, ctx) => this.injector.resolve(ser).serializeUser(user, ctx as IContext));
                     } else if (isFunction(ser)) {
                         passport.serializeUser(ser);
                     }
                 });
             } else {
-                this.container.getServices(SerializeUser)
+                this.injector.getServices(SerializeUser)
                     .forEach(ser => {
                         passport.serializeUser((user, ctx) => ser.serializeUser(user, ctx as IContext))
                     });
@@ -81,16 +82,16 @@ export class ConfigurePassportBuildService extends PassportBuildService {
             if (deserializers && deserializers.length) {
                 deserializers.forEach(desr => {
                     if (isClass(desr)) {
-                        if (!this.container.has(desr)) {
-                            this.container.register(desr);
+                        if (!this.injector.has(desr)) {
+                            this.injector.register(desr);
                         }
-                        passport.deserializeUser((obj, ctx) => this.container.resolve(desr).deserializeUser(obj, ctx as IContext));
+                        passport.deserializeUser((obj, ctx) => this.injector.resolve(desr).deserializeUser(obj, ctx as IContext));
                     } else if (isFunction(desr)) {
                         passport.deserializeUser(desr);
                     }
                 });
             } else {
-                this.container.getServices(DeserializeUser)
+                this.injector.getServices(DeserializeUser)
                     .forEach(desr => {
                         passport.deserializeUser((obj, ctx) => desr.deserializeUser(obj, ctx as IContext))
                     });
@@ -99,16 +100,16 @@ export class ConfigurePassportBuildService extends PassportBuildService {
             if (authInfos && authInfos.length) {
                 authInfos.forEach(trans => {
                     if (isClass(trans)) {
-                        if (!this.container.has(trans)) {
-                            this.container.register(trans);
+                        if (!this.injector.has(trans)) {
+                            this.injector.register(trans);
                         }
-                        passport.transformAuthInfo((info, ctx) => this.container.resolve(trans).authInfo(info, ctx as IContext));
+                        passport.transformAuthInfo((info, ctx) => this.injector.resolve(trans).authInfo(info, ctx as IContext));
                     } else if (isFunction(trans)) {
                         passport.transformAuthInfo(trans);
                     }
                 });
             } else {
-                this.container.getServices(TransformAuthInfo)
+                this.injector.getServices(TransformAuthInfo)
                     .forEach(ser => {
                         passport.transformAuthInfo((info, ctx) => ser.authInfo(info, ctx))
                     });

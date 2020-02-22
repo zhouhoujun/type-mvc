@@ -1,4 +1,4 @@
-import { isArray, isFunction, Inject, Singleton, PromiseUtil, ContainerFactory, ContainerFactoryToken } from '@tsdi/ioc';
+import { isArray, isFunction, Inject, Singleton, PromiseUtil, INJECTOR } from '@tsdi/ioc';
 import { AfterInit, Input, Component, TemplateOptionToken } from '@tsdi/components';
 import { Strategy } from './Strategy';
 import { IStrategyOption } from './IAuthenticator';
@@ -9,6 +9,7 @@ import { SessionStore, StateStore, OIDCUtils } from '../stores';
 import { parse, resolve, format } from 'url';
 import { OAuth2, OAuth2Error } from './oauth2';
 import { RedirectResult, FailResult, ValidationResult, SuccessResult } from './results';
+import { ICoreInjector } from '@tsdi/core';
 const webfinger = require('webfinger').webfinger;
 const request = require('request');
 
@@ -100,8 +101,8 @@ export class OIDCStrategy extends Strategy implements AfterInit {
     @Inject(TemplateOptionToken)
     options: OIDCOption;
 
-    @Inject(ContainerFactoryToken)
-    containerFactory: ContainerFactory;
+
+    @Inject(INJECTOR) injector: ICoreInjector;
 
     async onAfterInit(): Promise<void> {
         if (!this.name) {
@@ -410,7 +411,7 @@ export class OIDCStrategy extends Strategy implements AfterInit {
     }
 
     protected async dynamicConfigure(identifier: string): Promise<OIDCConfigure> {
-        let issuer = await this.containerFactory().resolve(Resolver).resolve(identifier);
+        let issuer = await this.injector.getInstance(Resolver).resolve(identifier);
         let url = issuer + '/.well-known/openid-configuration';
         let defer = PromiseUtil.defer<OIDCConfigure>();
         request.get(url, async (err, res, body) => {

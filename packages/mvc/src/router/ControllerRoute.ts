@@ -68,7 +68,7 @@ export class ControllerRoute extends MvcRoute {
     }
 
     protected getRouteMiddleware(ctx: IContext, meta: RouteMetadata) {
-        let auths = this.injector.getServices(AuthorizationService);
+        let auths = ctx.getInjector().getServices(AuthorizationService);
         let middlewares = this.middlewares || [];
         if (auths) {
             middlewares = auths.map(auth => auth.getAuthMiddlewares(ctx, this.controller)).reduce((p, c) => p.concat(c), [])
@@ -218,7 +218,7 @@ export class ControllerRoute extends MvcRoute {
         return null;
     }
     async invoke(ctx: IContext, meta: RouteMetadata) {
-        let injector = this.injector;
+        let injector = ctx.mvcContext.injector;
         if (meta && meta.propertyKey) {
             let ctrl = injector.getInstance(this.controller, { provide: ContextToken, useValue: ctx });
             let reflects = ctx.mvcContext.reflects;
@@ -259,6 +259,7 @@ export class ControllerRoute extends MvcRoute {
     }
 
     protected async createProvider(ctx: IContext, ctrl: any, meta: RouteMetadata, params: IParameter[]): Promise<ParamProviders[]> {
+        let injector = ctx.getInjector();
         let providers: ParamProviders[] = [{ provide: ContextToken, useValue: ctx }];
         if (params && params.length) {
             let restParams: any = {};
@@ -273,9 +274,9 @@ export class ControllerRoute extends MvcRoute {
                 });
             }
             let body = ctx.request.body || {};
-            let parser = this.injector.get(BaseTypeParserToken);
+            let parser = injector.get(BaseTypeParserToken);
             let ppds: ParamProviders[] = await Promise.all(params.map(async (param, idx) => {
-                let ptype = param.provider ? this.injector.getTokenProvider(param.provider) : param.type;
+                let ptype = param.provider ? injector.getTokenProvider(param.provider) : param.type;
                 let val;
                 if (isFunction(ptype)) {
                     if (isBaseType(ptype)) {
@@ -291,11 +292,11 @@ export class ControllerRoute extends MvcRoute {
                         } else if (isBaseType(ptype)) {
                             val = parser.parse(ptype, body[param.name]);
                         } else if (isClass(ptype)) {
-                            let mdparser = this.injector.getService({ token: ModelParser, target: [ptype, ...ctx.mvcContext.reflects.getDecorators(ptype)], default: DefaultModelParserToken });
+                            let mdparser = injector.getService({ token: ModelParser, target: [ptype, ...ctx.mvcContext.reflects.getDecorators(ptype)], default: DefaultModelParserToken });
                             if (mdparser) {
                                 val = mdparser.parseModel(ptype, body);
                             } else {
-                                val = await this.injector.getInstance(BuilderServiceToken).resolve({ type: ptype, template: body })
+                                val = await injector.getInstance(BuilderServiceToken).resolve({ type: ptype, template: body })
                             }
                         }
                     }

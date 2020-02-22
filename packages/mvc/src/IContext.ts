@@ -3,6 +3,7 @@ import { IHandleContext } from '@tsdi/boot';
 import { MvcContext } from './MvcContext';
 import { Context } from 'koa';
 import 'koa-bodyparser';
+import { ICoreInjector } from '@tsdi/core';
 
 /**
  * mvc service middleware context.
@@ -25,6 +26,8 @@ export interface IContext extends Context, ObjectMap, IHandleContext {
      * @memberof IContext
      */
     mvcContext: MvcContext;
+
+    getInjector(): ICoreInjector;
 
     /**
      * route prefix.

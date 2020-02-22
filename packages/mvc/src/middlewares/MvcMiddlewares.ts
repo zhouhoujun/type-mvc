@@ -23,8 +23,8 @@ export class MvcMiddlewares extends CompositeMiddleware {
     setup(mvcContext: MvcContext) {
         mvcContext.getKoa().use(async (ctx: IContext, next) => {
             ctx.mvcContext = mvcContext;
-            if (!ctx.getContainer) {
-                ctx.getContainer = () => mvcContext.getContainer()
+            if (!ctx.getInjector) {
+                ctx.getInjector = () => mvcContext.injector
             }
             mvcContext.app = ctx.app as any;
             await this.execute(ctx);

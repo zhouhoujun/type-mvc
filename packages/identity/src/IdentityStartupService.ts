@@ -14,7 +14,7 @@ export class IdentityStartupService extends BeforeMidddlewareStartupService {
             services.splice(services.indexOf(cfs), 1);
             services.unshift(cfs);
         }
-        await Promise.all(services.map(s => s.build(passport, ctx.configuration)));
+        await Promise.all(services.map(s => s.build(passport, ctx.getConfiguration())));
     }
 
 }

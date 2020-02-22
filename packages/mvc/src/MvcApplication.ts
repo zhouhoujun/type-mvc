@@ -1,10 +1,10 @@
 import {
     IocExt, Inject, DecoratorScopes,
-    BindProviderAction, BindMethodProviderAction, IocSetCacheAction, Type, LoadType,
+    BindProviderAction, BindMethodProviderAction, IocSetCacheAction, Type,
     DecoratorProvider, InjectReference, ProviderTypes, Singleton, isArray,
     isClass, isFunction, lang, ActionInjector, DesignRegisterer, RuntimeRegisterer, IProviders
 } from '@tsdi/ioc';
-import { ContainerToken, IContainer, ModuleProvider } from '@tsdi/core';
+import { LoadType, ContainerToken, IContainer, ModuleProvider } from '@tsdi/core';
 import { AopModule } from '@tsdi/aop';
 import { DebugLogAspect, LogConfigureToken, LogModule } from '@tsdi/logs';
 import {
@@ -136,7 +136,6 @@ export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
 
         injector.invoke(MiddlewareRegister, tag => tag.setup);
 
-
         if (!ctx.httpServer) {
             if (config.httpsOptions) {
                 ctx.httpServer = https.createServer(config.httpsOptions, ctx.getKoa().callback());
@@ -196,8 +195,8 @@ class MvcCoreModule {
 
     setup(@Inject(ContainerToken) container: IContainer) {
         container.registerType(MvcContext)
-            .registerType(MvcServer)
-            .registerType(MvcConfigureRegister);
+            .registerType(MvcServer);
+            // .registerType(MvcConfigureRegister);
 
         container.inject(ExtendBaseTypeMap, AuthorizationAspect, RouteChecker,
             CompositeMiddleware, MvcMiddlewares, MiddlewareRegister, CorsMiddleware,
@@ -245,12 +244,13 @@ class MvcCoreModule {
 
         actInjector.getInstance(DecoratorProvider)
             .bindProviders(MvcModule,
+                MvcConfigureRegister,
                 {
                     provide: ModuleProvidersBuilderToken,
                     useValue: {
                         build(injector: ModuleInjector, annoation: MvcModuleMetadata, map: IProviders) {
                             if (annoation.controllers && annoation.controllers.length) {
-                                let ctrls = injector.getInstance(ModuleProvider).use(injector, ...annoation.controllers);
+                                let ctrls = injector.injectModule(...annoation.controllers);
                                 ctrls && ctrls.forEach(ctrll => map.set(ctrll, (...providers) => injector.getInstance(ctrll, ...providers)));
                             }
                         }

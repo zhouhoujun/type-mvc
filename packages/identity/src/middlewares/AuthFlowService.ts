@@ -11,7 +11,7 @@ export class AuthFlowService extends AuthorizationService {
     getAuthMiddlewares(ctx: IContext, controller: Type<any>, propertyKey: string): MiddlewareType[];
     getAuthMiddlewares(ctx: IContext, controller: Type<any>, propertyKey?: any) {
         let middlewares = [];
-        let configuration: IConfiguration = ctx.mvcContext.configuration;
+        let configuration: IConfiguration = ctx.mvcContext.getConfiguration();
         let flowOption = configuration.passports.default;
         if (!flowOption) {
             return middlewares;

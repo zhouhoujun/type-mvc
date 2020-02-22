@@ -35,7 +35,7 @@ export class TypeOrmHelper {
                 if (options.initDb) {
                     await options.initDb(connect);
                 }
-                let initService = this.ctx.starupServices.getService(OrmInitService);
+                let initService = this.ctx.getService(OrmInitService);
                 if (initService instanceof OrmInitService) {
                     await initService.init(connect);
                 }
@@ -50,12 +50,13 @@ export class TypeOrmHelper {
     private options: IConnectionOptions;
     async getOptions() {
         if (!this.options) {
-            let config = this.ctx.configuration;
+            let config = this.ctx.getConfiguration();
             let options = config.connections || {} as IConnectionOptions;
             if (!options.entities) {
                 let entities: Type[] = [];
+                let loader = this.ctx.getContainer().getLoader();
                 if (config.models.some(m => isString(m))) {
-                    let models = await this.ctx.getContainer().getLoader().loadTypes({ files: config.models, basePath: this.ctx.getRootPath() });
+                    let models = await loader.loadTypes({ files: <string[]>config.models, basePath: this.ctx.getRootPath() });
                     models.forEach(ms => {
                         ms.forEach(mdl => {
                             if (mdl && entities.indexOf(mdl) < 0) {

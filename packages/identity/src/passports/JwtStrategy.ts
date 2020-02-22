@@ -27,7 +27,7 @@ export interface JwtStrategyOption extends IStrategyOption {
     issuer: string;
 
     audience: string | string[];
-    algorithms: string[];
+    algorithms: jwt.Algorithm[];
     ignoreExpiration?: boolean;
     passReqToCallback?
 }
@@ -43,7 +43,7 @@ export class JwtStrategy extends Strategy implements AfterInit {
     @Input() protected verify: JwtVerify;
     @Input() issuer: string;
     @Input() audience: string | string[];
-    @Input() algorithms: string[];
+    @Input() algorithms: jwt.Algorithm[];
     @Input() ignoreExpiration?: boolean;
     @Input() secretOrKey: string | Buffer;
     @Input() secretOrKeyProvider: (request: Request, rawJwtToken) => Promise<string | Buffer>;

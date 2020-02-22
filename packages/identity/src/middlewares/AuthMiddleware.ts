@@ -24,7 +24,7 @@ export class AuthMiddleware extends CompositeMiddleware {
     private checker: RouteChecker;
     getChecker() {
         if (!this.checker) {
-            this.checker = this.container.get(RouteChecker);
+            this.checker = this.injector.get(RouteChecker);
         }
         return this.checker;
     }
@@ -41,7 +41,7 @@ export class AuthMiddleware extends CompositeMiddleware {
     }
 
     protected async setup(context: MvcContext) {
-        let configuration: IConfiguration = context.configuration;
+        let configuration: IConfiguration = context.getConfiguration();
         this.use(this.passport.initialize(configuration.passports.initialize || {}));
         this.use(this.passport.session());
     }

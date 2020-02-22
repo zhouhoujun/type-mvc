@@ -1,7 +1,7 @@
 import { IocExt, Inject, DecoratorScopes, ActionInjectorToken, DesignRegisterer } from '@tsdi/ioc';
 import { ContainerToken, IContainer } from '@tsdi/core';
 import { ComponentsModule, ElementModule } from '@tsdi/components';
-import { MvcModule, Controller } from '@mvx/mvc';
+import { Controller } from '@mvx/mvc';
 import * as vaildates from './vaildates';
 import * as middlewares from './middlewares';
 import * as passports from './passports';
@@ -39,9 +39,7 @@ class IdentitySetupModule {
     ],
     providers: [
         IdentityStartupService,
-        passports,
-        vaildates,
-        middlewares
+        [passports, vaildates, middlewares]
     ]
 })
 export class IdentityModule {

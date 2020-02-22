@@ -1,5 +1,5 @@
-import { Singleton, Type, isString, Inject } from '@tsdi/ioc';
-import { IContainer, ContainerToken } from '@tsdi/core';
+import { Singleton, Type, isString, Inject, INJECTOR } from '@tsdi/ioc';
+import { ICoreInjector } from '@tsdi/core';
 import { IMiddleware, isMiddlewareFunc } from './IMiddleware';
 import { MiddlewareMetadata } from '../metadata';
 import { CompositeMiddleware } from './MvcMiddleware';
@@ -28,18 +28,18 @@ export class MiddlewareRegister {
     /**
      * setup middleware.
      *
-     * @param {IContainer} container
+     * @param {ICoreInjector} injector
      * @memberof MiddlewareRegister
      */
-    setup(@Inject(ContainerToken) container: IContainer) {
+    setup(@Inject(INJECTOR) injector: ICoreInjector) {
         this.map.forEach((meta, middle) => {
-            let middlewares: CompositeMiddleware = container.resolve(MvcMiddlewares);
+            let middlewares: CompositeMiddleware = injector.getInstance(MvcMiddlewares);
             if (meta.regIn) {
                 let comp = meta.regIn;
-                if (!container.has(comp)) {
-                    container.register(comp);
+                if (!injector.has(comp)) {
+                    injector.register(comp);
                 }
-                middlewares = container.get(comp);
+                middlewares = injector.get(comp);
             }
             if (meta.before) {
                 middlewares.useBefore(middle, isString(meta.before) ?

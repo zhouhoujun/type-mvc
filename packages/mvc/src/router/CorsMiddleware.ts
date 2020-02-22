@@ -12,6 +12,6 @@ export class CorsMiddleware extends MvcMiddleware implements IMiddleware {
 
     execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
         ctx._corsCheck = true;
-        return this.injector.getInstance(Router).execute(ctx, next);
+        return ctx.getInjector().getInstance(Router).execute(ctx, next);
     }
 }

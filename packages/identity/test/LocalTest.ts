@@ -67,7 +67,9 @@ export class TestController {
 @MvcModule({
     port: 3010,
     imports: [
-        IdentityModule,
+        IdentityModule
+    ],
+    controllers: [
         TestController
     ],
     passports: {
@@ -138,7 +140,7 @@ export class LocalStrategyTest {
             });
 
         // console.log(loacl);
-        expect(loacl instanceof LocalStrategy).toBeTruthy();
+        expect(loacl.rootNodes[0] instanceof LocalStrategy).toBeTruthy();
 
     }
 
@@ -147,7 +149,7 @@ export class LocalStrategyTest {
 
     @After()
     destory() {
-        this.ctx.runnable.stop();
+        this.ctx.getStartup().stop();
     }
 
 }

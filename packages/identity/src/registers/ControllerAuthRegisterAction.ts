@@ -1,4 +1,4 @@
-import { IocDesignAction, DesignActionContext, hasOwnClassMetadata, getTypeMetadata, InjectToken, hasMethodMetadata } from '@tsdi/ioc';
+import { DesignActionContext, hasOwnClassMetadata, getTypeMetadata, InjectToken, hasMethodMetadata } from '@tsdi/ioc';
 import { Authorization, ControllerMetadata, Controller } from '@mvx/mvc';
 
 /**
@@ -6,23 +6,20 @@ import { Authorization, ControllerMetadata, Controller } from '@mvx/mvc';
  */
 export const AuthRoutesToken = new InjectToken<Set<string>>('identify_auth_routes');
 
-export class ControllerAuthRegisterAction extends IocDesignAction {
-
-    execute(ctx: DesignActionContext, next: () => void): void {
-        if (hasOwnClassMetadata(Authorization, ctx.targetType) || hasMethodMetadata(Authorization, ctx.targetType)) {
-            let ctrlmetadatas = getTypeMetadata<ControllerMetadata>(Controller, ctx.targetType);
-            let routers = this.container.get(AuthRoutesToken);
-            ctrlmetadatas.forEach(ctlmeta => {
-                if (!ctlmeta) {
-                    return;
-                }
-                let prefix = ctlmeta.routePrefix;
-                if (prefix && !/^\//.test(prefix)) {
-                    prefix = '/' + prefix;
-                }
-                routers.add(prefix);
-            });
-        }
-        next();
+export const ControllerAuthRegisterAction = (ctx: DesignActionContext, next: () => void) => {
+    if (hasOwnClassMetadata(Authorization, ctx.type) || hasMethodMetadata(Authorization, ctx.type)) {
+        let ctrlmetadatas = getTypeMetadata<ControllerMetadata>(Controller, ctx.type);
+        let routers = ctx.injector.get(AuthRoutesToken);
+        ctrlmetadatas.forEach(ctlmeta => {
+            if (!ctlmeta) {
+                return;
+            }
+            let prefix = ctlmeta.routePrefix;
+            if (prefix && !/^\//.test(prefix)) {
+                prefix = '/' + prefix;
+            }
+            routers.add(prefix);
+        });
     }
+    next();
 }
