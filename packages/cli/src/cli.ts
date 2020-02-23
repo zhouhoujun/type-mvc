@@ -94,7 +94,7 @@ function copyDir(src: string | string[], dist: string, options?: { force?: boole
 program
     .version(packageConf.version)
     .command('test [files]')
-    .description('run activity file.')
+    .description('run unit test.')
     .option('--config [string]', 'config file path.')
     .option('-b, --browser [bool]', 'test browser project or not.')
     .option('--debug [bool]', 'enable debug log or not')
@@ -129,7 +129,7 @@ program
 
 program
     .command('run [fileName]')
-    .description('run activity file.')
+    .description('run ts file.')
     .option('--activity [bool]', 'target file is activity.')
     .option('--config [string]', 'path to configuration file for activities build')
     .option('--debug [bool]', 'enable debug log or not')
