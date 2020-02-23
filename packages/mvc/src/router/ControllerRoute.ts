@@ -292,7 +292,7 @@ export class ControllerRoute extends MvcRoute {
                         } else if (isBaseType(ptype)) {
                             val = parser.parse(ptype, body[param.name]);
                         } else if (isClass(ptype)) {
-                            let mdparser = injector.getService({ token: ModelParser, target: [ptype, ...ctx.mvcContext.reflects.getDecorators(ptype)], default: DefaultModelParserToken });
+                            let mdparser = injector.getService({ token: ModelParser, target: [ptype, ...ctx.mvcContext.reflects.getDecorators(ptype)], defaultToken: DefaultModelParserToken });
                             if (mdparser) {
                                 val = mdparser.parseModel(ptype, body);
                             } else {

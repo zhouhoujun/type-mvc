@@ -1,4 +1,4 @@
-import { ObjectMap, InjectToken } from '@tsdi/ioc';
+import { ObjectMap, InjectToken, tokenId } from '@tsdi/ioc';
 import { IHandleContext } from '@tsdi/boot';
 import { MvcContext } from './MvcContext';
 import { Context } from 'koa';
@@ -8,7 +8,7 @@ import { ICoreInjector } from '@tsdi/core';
 /**
  * mvc service middleware context.
  */
-export const ContextToken = new InjectToken<IContext>('Mvc_Service_Context');
+export const ContextToken = tokenId<IContext>('MVC_SERVICE_CONTEXT');
 
 
 /**

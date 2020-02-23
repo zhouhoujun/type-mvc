@@ -24,10 +24,12 @@ export class TestController {
         return { id: id };
     }
 
+    @Inject(ContextToken) ctx: IContext;
+
     @Post('/')
-    postTest(@Inject(ContextToken) ctx: IContext) {
-        console.log(ctx.request.body);
-        return ctx.request.body;
+    postTest() {
+        console.log(this.ctx.request.body);
+        return this.ctx.request.body;
     }
 
     @Post('/cors')
