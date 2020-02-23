@@ -13,7 +13,7 @@ import { MvcMiddlewares } from './MvcMiddlewares';
  */
 @Singleton
 export class MiddlewareRegister {
-
+    static nonePointcut = true;
     map: Map<Type<IMiddleware>, MiddlewareMetadata>;
 
     constructor() {

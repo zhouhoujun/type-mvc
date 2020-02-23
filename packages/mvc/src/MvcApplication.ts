@@ -9,7 +9,7 @@ import { AopModule } from '@tsdi/aop';
 import { DebugLogAspect, LogConfigureToken, LogModule } from '@tsdi/logs';
 import {
     DefaultConfigureToken, BootApplication, checkBootArgs, BootContext, ModuleInjector,
-    Startup, ConfigureRegister, Handle, registerModule, ModuleProvidersBuilderToken
+    Startup, ConfigureRegister, Handle, registerModule, ModuleProvidersBuilderToken, ModuleProviders
 } from '@tsdi/boot';
 import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
 import { ServerLogsModule } from '@tsdi/platform-server-logs';
@@ -196,7 +196,7 @@ class MvcCoreModule {
     setup(@Inject(ContainerToken) container: IContainer) {
         container.registerType(MvcContext)
             .registerType(MvcServer);
-            // .registerType(MvcConfigureRegister);
+        // .registerType(MvcConfigureRegister);
 
         container.inject(ExtendBaseTypeMap, AuthorizationAspect, RouteChecker,
             CompositeMiddleware, MvcMiddlewares, MiddlewareRegister, CorsMiddleware,
@@ -248,10 +248,9 @@ class MvcCoreModule {
                 {
                     provide: ModuleProvidersBuilderToken,
                     useValue: {
-                        build(injector: ModuleInjector, annoation: MvcModuleMetadata, map: IProviders) {
+                        build(providers: ModuleProviders, annoation: MvcModuleMetadata) {
                             if (annoation.controllers && annoation.controllers.length) {
-                                let ctrls = injector.injectModule(...annoation.controllers);
-                                ctrls && ctrls.forEach(ctrll => map.set(ctrll, (...providers) => injector.getInstance(ctrll, ...providers)));
+                                providers.injectModule(...annoation.controllers);
                             }
                         }
                     }

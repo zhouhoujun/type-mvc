@@ -15,6 +15,7 @@ import { ICoreInjector } from '@tsdi/core';
  * @implements {IMiddleware}
  */
 export abstract class MvcMiddleware extends Handle<IContext> implements IMiddleware {
+    static nonePointcut = true;
     @Inject(INJECTOR) injector: ICoreInjector;
 }
 
@@ -27,7 +28,7 @@ export abstract class MvcMiddleware extends Handle<IContext> implements IMiddlew
  */
 @Injectable()
 export class CompositeMiddleware extends Handles<IContext> {
-
+    static nonePointcut = true;
     @Inject(INJECTOR) injector: ICoreInjector;
 
     find(filter: (item: HandleType<IContext>) => boolean) {
