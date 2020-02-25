@@ -41,7 +41,7 @@ export interface MvcOptions extends BootOption {
 /**
  * mvc context token.
  */
-export const MvcContextToken = new InjectToken<MvcContext>('MVC_Context');
+export const MvcContextToken = new InjectToken<MvcContext>('MVC_CONTEXT');
 
 /**
  * mvc application context.
@@ -64,7 +64,7 @@ export class MvcContext extends BootContext<MvcOptions> {
         return super.getStartup() as IMvcServer;
     }
 
-    getAnnoation<T extends MvcModuleMetadata>(): T {
+    getAnnoation(): MvcModuleMetadata {
         return super.getAnnoation();
     }
     /**
@@ -73,17 +73,17 @@ export class MvcContext extends BootContext<MvcOptions> {
      * @type {IConfiguration}
      * @memberof MvcContext
      */
-    getConfiguration<T extends IConfiguration>(): T {
+    getConfiguration(): IConfiguration {
         return super.getConfiguration();
     }
 
     /**
      * get configure manager.
      *
-     * @returns {ConfigureManager<T>}
+     * @returns {ConfigureManager<IConfiguration>}
      * @memberof BootContext
      */
-    getConfigureManager<T extends IConfiguration>(): ConfigureManager<T> {
+    getConfigureManager(): ConfigureManager<IConfiguration> {
         return super.getConfigureManager();
     }
 
