@@ -39,7 +39,7 @@
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme",
   "dependencies": {
     "reflect-metadata": "^0.1.12",
-    "tslib": "^1.10.0",
+    "tslib": "^1.11.0",
     "shelljs": "^0.8.3",
     "chalk": "^2.4.2",
     "chokidar": "^2.0.4",

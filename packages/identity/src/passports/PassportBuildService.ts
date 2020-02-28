@@ -19,14 +19,16 @@ import { SerializeUser, DeserializeUser, TransformAuthInfo } from '../services';
 @Abstract()
 export abstract class PassportBuildService {
 
+    @Inject(INJECTOR)
+    protected injector: ICoreInjector;
+
     @Inject()
     private builder: ComponentBuilder;
 
     abstract build(passport: IAuthenticator, configuration: IConfiguration): Promise<void>;
 
     async createStrategy(option: IStrategyOption): Promise<IStrategy> {
-        let temRef = await this.builder.resolveTemplate({ template: option });
-        return temRef.rootNodes[0]  as IStrategy;
+        return await this.builder.resolveTemplate({ template: option, injector: this.injector });
     }
 }
 
@@ -40,9 +42,6 @@ export abstract class PassportBuildService {
  */
 @Injectable()
 export class ConfigurePassportBuildService extends PassportBuildService {
-
-    @Inject(INJECTOR)
-    private injector: ICoreInjector;
 
     async build(passport: IAuthenticator, configuration: IConfiguration): Promise<void> {
         let actInj = this.injector.getInstance(ActionInjectorToken);

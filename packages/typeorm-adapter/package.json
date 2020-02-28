@@ -49,7 +49,7 @@
     "@tsdi/boot": "~6.0.0-beta3",
     "@tsdi/core": "~6.0.0-beta3",
     "@mvx/mvc": "~4.0.0-beta3",
-    "tslib": "^1.10.0"
+    "tslib": "^1.11.0"
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme"
 }

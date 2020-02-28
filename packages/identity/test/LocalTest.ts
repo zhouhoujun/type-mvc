@@ -140,7 +140,7 @@ export class LocalStrategyTest {
             });
 
         // console.log(loacl);
-        expect(loacl.rootNodes[0] instanceof LocalStrategy).toBeTruthy();
+        expect(loacl instanceof LocalStrategy).toBeTruthy();
 
     }
 
