@@ -2,14 +2,14 @@ import {
     IocExt, Inject, DecoratorScopes,
     BindProviderAction, BindMethodProviderAction, IocSetCacheAction, Type,
     DecoratorProvider, InjectReference, ProviderTypes, Singleton, isArray,
-    isClass, isFunction, lang, ActionInjector, DesignRegisterer, RuntimeRegisterer, IProviders
+    isClass, isFunction, lang, ActionInjector, DesignRegisterer, RuntimeRegisterer
 } from '@tsdi/ioc';
-import { LoadType, ContainerToken, IContainer, ModuleProvider } from '@tsdi/core';
+import { LoadType, ContainerToken, IContainer } from '@tsdi/core';
 import { AopModule } from '@tsdi/aop';
 import { DebugLogAspect, LogConfigureToken, LogModule } from '@tsdi/logs';
 import {
-    DefaultConfigureToken, BootApplication, checkBootArgs, BootContext, ModuleInjector,
-    Startup, ConfigureRegister, Handle, registerModule, ModuleProvidersBuilderToken, ModuleProviders
+    DefaultConfigureToken, BootApplication, checkBootArgs, BootContext, Startup, ConfigureRegister,
+    Handle, registerModule, ModuleProvidersBuilderToken, ModuleProviders, ORMCoreModule, StartupService, CTX_APP_STARTUPS
 } from '@tsdi/boot';
 import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
 import { ServerLogsModule } from '@tsdi/platform-server-logs';
@@ -32,7 +32,6 @@ import { CorsMiddleware } from './router/CorsMiddleware';
 import { Router } from './router/Router';
 import { MvcMiddlewares } from './middlewares/MvcMiddlewares';
 import { MiddlewareRegister } from './middlewares/MiddlewareRegister';
-import { ExtendBaseTypeMap } from './router/ModelParser';
 import { RouterMiddleware } from './router/RouterMiddleware';
 import { BeforeMidddlewareStartupService } from './services/BeforeMidddlewareStartupService';
 import { AfterMidddlewareStartupService } from './services/AfterMidddlewareStartupService';
@@ -51,7 +50,7 @@ export class MvcApplication extends BootApplication<MvcContext> {
 
     getBootDeps() {
         let deps = super.getBootDeps();
-        return [AopModule, LogModule, ServerBootstrapModule, ServerLogsModule, MvcCoreModule, ...deps];
+        return [AopModule, LogModule, ServerBootstrapModule, ORMCoreModule, ServerLogsModule, MvcCoreModule, ...deps];
     }
 
     /**
@@ -73,6 +72,9 @@ export class MvcApplication extends BootApplication<MvcContext> {
 
     onContextInit(ctx: MvcContext) {
         super.onContextInit(ctx);
+        let tokens = ctx.getStarupTokens() || [];
+        tokens.unshift(MvcStartupService);
+        ctx.setValue(CTX_APP_STARTUPS, tokens);
         this.getContainer().bindProvider(MvcContextToken, ctx);
     }
 }
@@ -85,9 +87,11 @@ export class MvcApplication extends BootApplication<MvcContext> {
  * @extends {ConfigureRegister}
  */
 @Singleton
-export class MvcConfigureRegister extends ConfigureRegister<MvcContext> {
+export class MvcStartupService extends StartupService<MvcContext> {
 
-    async register(config: IConfiguration, ctx: MvcContext): Promise<void> {
+    async configureService(ctx: MvcContext): Promise<void> {
+
+        const config = ctx.getConfiguration();
 
         ctx.getKoa().keys = config.keys;
         let injector = ctx.injector;
@@ -196,9 +200,8 @@ class MvcCoreModule {
     setup(@Inject(ContainerToken) container: IContainer) {
         container.registerType(MvcContext)
             .registerType(MvcServer);
-        // .registerType(MvcConfigureRegister);
 
-        container.inject(ExtendBaseTypeMap, AuthorizationAspect, RouteChecker,
+        container.inject(AuthorizationAspect, RouteChecker,
             CompositeMiddleware, MvcMiddlewares, MiddlewareRegister, CorsMiddleware,
             Router, ControllerRoute, RouterMiddleware);
 
@@ -244,7 +247,6 @@ class MvcCoreModule {
 
         actInjector.getInstance(DecoratorProvider)
             .bindProviders(MvcModule,
-                MvcConfigureRegister,
                 {
                     provide: ModuleProvidersBuilderToken,
                     useValue: {

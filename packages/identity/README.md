@@ -27,7 +27,7 @@ create application
 
 ```ts
 import { MvcApplication, DefaultMvcMiddlewares, MvcModule, MvcServer } from '@mvx/mvc';
-import { TypeOrmModule }  from '@mvx/typeorm-adapter';
+import { TypeOrmModule }  from '@tsdi/typeorm-adapter';
 import { IdentityModule } from '@mvx/identity';
 
 @MvcModule({
@@ -504,7 +504,7 @@ export interface IConfiguration extends MvcConfiguration  {
 ### Define Model
 
 * third ORM Model:  register yourself module parser extends `ModelParser`.
-* typeorm model use : [`@mvx/typeorm-adapter`](https://www.npmjs.com/package/@mvx/typeorm-adapter)
+* typeorm model use : [`@tsdi/typeorm-adapter`](https://www.npmjs.com/package/@tsdi/typeorm-adapter)
 
 
 ```ts

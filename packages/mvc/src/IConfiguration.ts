@@ -19,21 +19,6 @@ export interface IViewOptions {
     map?: ObjectMap;
 }
 
-export interface IConnectionOptions extends ObjectMap {
-    name?: string;
-    /**
-     * db type.
-     */
-    type: string;
-    host: string;
-    port: number;
-    username?: string;
-    password?: string;
-    database: string;
-    entities?: Type[];
-    initDb?(connect: any): Promise<void>;
-}
-
 /**
  * configuration token.
  */
@@ -135,13 +120,6 @@ export interface MvcConfiguration extends RunnableConfigure {
      * @memberOf Configuration
      */
     setting?: ObjectMap;
-    /**
-     * db config connections.
-     *
-     * @type {IConnectionOptions}
-     * @memberof Configuration
-     */
-    connections?: IConnectionOptions;
     /**
      * global cors default options.
      *

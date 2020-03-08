@@ -1,8 +1,8 @@
 import {
     Type, getPropertyMetadata, PropertyMetadata, ObjectMap, Injectable
 } from '@tsdi/ioc';
+import { DefaultModelParserToken, ModelParser } from '@tsdi/boot';
 import { Field } from './decorators';
-import { DefaultModelParserToken, ModelParser } from '@mvx/mvc';
 
 /**
  * modle parser.

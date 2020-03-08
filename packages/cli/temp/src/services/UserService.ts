@@ -1,5 +1,5 @@
 import { Inject, Singleton } from '@tsdi/ioc';
-import { TypeOrmHelper } from '@mvx/typeorm-adapter';
+import { TypeOrmHelper } from '@tsdi/typeorm-adapter';
 import { User } from '../models/User';
 
 @Singleton()

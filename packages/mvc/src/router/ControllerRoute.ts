@@ -2,9 +2,9 @@ import {
     lang, Injectable, Type, getMethodMetadata, isFunction, isBaseType,
     isUndefined, ParamProviders, Provider, isClass, IParameter, isObject,
     isArray, isPromise, getTypeMetadata, isString, Inject,
-    InjectToken, isNumber, isNullOrUndefined, tokenId
+    isNumber, isNullOrUndefined, tokenId
 } from '@tsdi/ioc';
-import { BuilderService, BaseTypeParserToken, BuilderServiceToken } from '@tsdi/boot';
+import { ModelParser, DefaultModelParserToken, BaseTypeParserToken, BuilderServiceToken } from '@tsdi/boot';
 import { MvcRoute, RouteUrlArgToken } from './Route';
 import { IContext, ContextToken } from '../IContext';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
@@ -12,8 +12,6 @@ import { RouteMetadata, CorsMetadata } from '../metadata';
 import { HttpError } from '../errors';
 import { ResultValue } from '../results/ResultValue';
 import { Cors, Route } from '../decorators';
-import { DefaultModelParserToken } from './IModelParser';
-import { ModelParser } from './ModelParser';
 import { MiddlewareType } from '../middlewares/IMiddleware';
 import { AuthorizationService } from '../services/AuthorizationService';
 import { MvcMiddleware } from '../middlewares/MvcMiddleware';

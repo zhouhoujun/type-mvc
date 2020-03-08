@@ -553,7 +553,7 @@ export interface IConfiguration extends MvcConfiguration  {
 ### Define Model
 
 * third ORM Model:  register yourself module parser extends `ModelParser`.
-* typeorm model use : [`@mvx/typeorm-adapter`](https://www.npmjs.com/package/@mvx/typeorm-adapter)
+* typeorm model use : [`@tsdi/typeorm-adapter`](https://www.npmjs.com/package/@tsdi/typeorm-adapter)
 
 
 ```ts

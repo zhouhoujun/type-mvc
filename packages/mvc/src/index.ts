@@ -19,8 +19,6 @@ export * from './results/ViewResult';
 export * from './router/Route';
 export * from './router/Router';
 export * from './router/ControllerRoute';
-export * from './router/IModelParser';
-export * from './router/ModelParser';
 export * from './router/RouterMiddleware';
 export * from './router/CorsMiddleware';
 

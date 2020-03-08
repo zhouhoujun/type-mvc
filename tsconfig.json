@@ -17,9 +17,6 @@
             "@mvx/mvc": [
                 "packages/mvc/src"
             ],
-            "@mvx/typeorm-adapter": [
-                "packages/typeorm-adapter/src"
-            ],
             "@mvx/identity": [
                 "packages/identity/src"
             ],

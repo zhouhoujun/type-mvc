@@ -1,5 +1,5 @@
 import { MvcApplication, MvcModule } from '@mvx/mvc';
-import { TypeOrmModule } from '@mvx/typeorm-adapter'
+import { TypeOrmModule } from '@tsdi/typeorm-adapter'
 // import { IdentityModule } from '@mvx/identity';
 import { RealtimeService } from './services';
 

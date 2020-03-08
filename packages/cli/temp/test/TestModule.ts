@@ -1,7 +1,7 @@
 import { User } from '../src/models';
 import { MvcModule } from '@mvx/mvc';
 import { RunnableConfigure } from '@tsdi/boot';
-import { TypeOrmModule } from '@mvx/typeorm-adapter';
+import { TypeOrmModule } from '@tsdi/typeorm-adapter';
 import { UserService } from '../src/services';
 
 
