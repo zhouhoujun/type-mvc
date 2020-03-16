@@ -419,13 +419,21 @@ export class RealtimeService extends StartupService<MvcContext> {
 
 }
 
+```
 
+```ts
+import { IdentityModule } from '@mvx/identity';
+import { TypeOrmModule }  from '@tsdi/typeorm-adapter'; 
 
 @MvcModule({
     // port: 8000,
     imports: [
+        // 认证模块
         IdentityModule,
-        TypeOrmModule,
+        // orm 模块 （基于typeorm）
+        TypeOrmModule
+    ],
+    providers:[
         RealtimeService
     ]
     // middlewares: DefaultMvcMiddlewares,

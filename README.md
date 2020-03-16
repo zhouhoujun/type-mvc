@@ -17,8 +17,8 @@ You can install this package either with `npm`
 
 npm install @mvx/mvc
 
-
 ```
+
 ## Install CLI
 
 ### cli in global
@@ -74,7 +74,7 @@ create application
 import { AuthorizationPointcut, MvcApplication, DefaultMvcMiddlewares, MvcModule, MvcServer } from '@mvx/mvc';
 import { ModelModule } from '@mvx/model';
 // for typeorm model import TypeOrmModule
-import { TypeOrmModule }  from '@mvx/typeorm-adapter';
+import { TypeOrmModule }  from '@tsdi/typeorm-adapter';
 
 
 // 1. use MvcApplication to boot application.
@@ -225,6 +225,7 @@ default setting load controllers in your project folder
  * Cors by `@Cors` decorator in class or method.
  * Your can set some special middlewares for route via decorator: `@Controller`, `@Put`, `@Post`, `@Get`, `@Delete`, `@Patch`, `@Head`, `@Route`.
 
+
 define as:
 
 ```ts
@@ -300,7 +301,6 @@ export class UserController {
             id: id
         }
     }
-
 }
 
 
@@ -327,6 +327,60 @@ export class HomeController extends BaseController {
     @Post('/goto/:pageName')
     gotoPage(pageName: string): ResultValue {
         return this.redirect( '/' + pageName);
+    }
+}
+
+// with typeorm
+@EntityRepository(Production)
+export class ProductionRepository extends Repository<Production> {
+
+  async findById(id: string) {
+    return await this.findOne(id);
+  }
+
+  async removeById(id: string) {
+    const pdtline = await this.findOne(id);
+    return await this.remove(pdtline);
+  }
+
+  async serarch(...args) {
+      // do sth..
+  }
+  ...
+}
+
+@Cors
+@Authorization()
+@Controller('/api/production')
+export class ProductionController {
+
+
+    @Inject()
+    rep: ProductionRepository;
+
+    @Post('/')
+    @Put('/')
+    async save(pdt: Production) {
+        const r = await this.rep.save(pdt);
+        return ResponseResult.success(r);
+    }
+
+    @Delete('/:id')
+    async removeById(id: string) {
+        const r = await this.rep.removeById(id);
+        return ResponseResult.success(r);
+    }
+
+    @Get('/:id')
+    async get(id: string) {
+        const pdtline = await this.rep.findById(id);
+        return ResponseResult.success(pdtline);
+    }
+
+    @Get('/')
+    async query(keywords?: string, skip?: number, take?: number) {
+        const r = await this.rep.search(keywords, skip, take);
+        return ResponseResult.success(r[0], r[1]);
     }
 }
 
@@ -365,13 +419,21 @@ export class RealtimeService extends StartupService<MvcContext> {
 
 }
 
+```
 
+```ts
+import { IdentityModule } from '@mvx/identity';
+import { TypeOrmModule }  from '@tsdi/typeorm-adapter'; 
 
 @MvcModule({
     // port: 8000,
     imports: [
+        // 认证模块
         IdentityModule,
-        TypeOrmModule,
+        // orm 模块 （基于typeorm）
+        TypeOrmModule
+    ],
+    providers:[
         RealtimeService
     ]
     // middlewares: DefaultMvcMiddlewares,
@@ -563,7 +625,7 @@ export interface IConfiguration extends MvcConfiguration  {
 ### Define Model
 
 * third ORM Model:  register yourself module parser extends `ModelParser`.
-* typeorm model use : [`@mvx/typeorm-adapter`](https://www.npmjs.com/package/@mvx/typeorm-adapter)
+* typeorm model use : [`@tsdi/typeorm-adapter`](https://www.npmjs.com/package/@tsdi/typeorm-adapter)
 
 
 ```ts
