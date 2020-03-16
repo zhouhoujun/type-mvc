@@ -355,8 +355,9 @@ export class ProductionRepository extends Repository<Production> {
 export class ProductionController {
 
 
-    @Inject()
-    rep: ProductionRepository;
+    @AutoWired() // or @Inject()
+    protected rep: ProductionRepository;
+
 
     @Post('/')
     @Put('/')
