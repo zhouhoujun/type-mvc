@@ -614,6 +614,25 @@ export class DebugLog {
 ## Simples
 
 [see simples](https://github.com/zhouhoujun/type-mvc/tree/master/packages/simples)
+
+
+## Documentation
+Documentation is available on the
+* [@mvx/cli document](https://github.com/zhouhoujun/type-mvc/tree/master/packages/cli).
+* [@mvx/mvc document](https://github.com/zhouhoujun/type-mvc/tree/master/packages/mvc).
+* [@mvx/identity document](https://github.com/zhouhoujun/type-mvc/tree/master/packages/identity).
+* [@tsdi/ioc document](https://github.com/zhouhoujun/tsioc/tree/master/packages/ioc).
+* [@tsdi/aop document](https://github.com/zhouhoujun/tsioc/tree/master/packages/aop).
+* [@tsdi/core document](https://github.com/zhouhoujun/tsioc/tree/master/packages/core).
+* [@tsdi/boot document](https://github.com/zhouhoujun/tsioc/tree/master/packages/boot).
+* [@tsdi/components document](https://github.com/zhouhoujun/tsioc/tree/master/packages/components).
+* [@tsdi/activities document](https://github.com/zhouhoujun/tsioc/tree/master/packages/activities).
+* [@tsdi/typeorm-adapter document](https://github.com/zhouhoujun/tsioc/tree/master/packages/typeorm-adapter).
+* [@tsdi/unit document](https://github.com/zhouhoujun/tsioc/tree/master/packages/unit).
+* [@tsdi/unit-console document](https://github.com/zhouhoujun/tsioc/tree/master/packages/unit-console).
+* [@tsdi/cli document](https://github.com/zhouhoujun/tsioc/tree/master/packages/cli).
+
+
 ## License
 
 MIT © [Houjun](https://github.com/zhouhoujun/)
