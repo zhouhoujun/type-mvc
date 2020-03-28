@@ -275,10 +275,9 @@ export class HomeController extends BaseController {
 ```
 
 
-### startup extension Service 
+### startup Service 
 
-imports class extends `StartupService`, will inovke your configure service code.
-
+imports class extends `StartupService`, will startup and configure services when application bootstarp.
 socket.io sample.
 
 ```ts
@@ -290,29 +289,56 @@ export class RealtimeService extends StartupService<MvcContext> {
     @Inject(RootMessageQueueToken)
     queue: MessageQueue<MessageContext>;
 
-    constructor() {
-        super();
-    }
-
 
     async configureService(ctx: MvcContext): Promise<void> {
-        let logger = ctx.logManager.getLogger();
+        // get configuration of mvc application.  to set your service by configuration.
+        const configure = ctx.getConfiguration();
+        // get logger of mvc application.
+        let logger = ctx.getLogManager().getLogger();
         logger.info('create socket server...');
         this.io = SockerServer(ctx.httpServer);
         this.io.on('connection', sock => {
             logger.info('socket client connected', sock.id);
+            // revice message from client. send to message queue bus.
+            sock.on('your-msg', (data)=> {
+                this.queue.send({
+                    event: 'your-msg',
+                    type: 'client',
+                    data: data,
+                    contexts: [{ provide: 'CLIENT', useValue: sock }]
+                })
+            })
+        });
+
+        // msg queue send mssage to client.
+        this.queue.done(ctx => {
+            if (ctx.hasValue(CLIENT_MSG) && ctx.hasValue(CLIENT_DATA)) {
+                if(ctx.hasValue(CLIENT)){
+                    ctx.getValue(CLIENT).emit(ctx.getValue(CLIENT_MSG), ctx.getValue(CLIENT_DATA));
+                } else {
+                    this.io.emit(ctx.getValue(CLIENT_MSG), ctx.getValue(CLIENT_DATA));
+                }
+            }
         });
     }
-
 }
 
+```
 
+
+```ts
+import { IdentityModule } from '@mvx/identity';
+import { TypeOrmModule }  from '@tsdi/typeorm-adapter'; 
 
 @MvcModule({
     // port: 8000,
     imports: [
+        // 认证模块
         IdentityModule,
-        TypeOrmModule,
+        // orm 模块 （基于typeorm）
+        TypeOrmModule
+    ],
+    providers:[
         RealtimeService
     ]
     // middlewares: DefaultMvcMiddlewares,
