@@ -1,10 +1,10 @@
-import { DesignActionContext, lang } from '@tsdi/ioc';
+import { DesignContext, lang } from '@tsdi/ioc';
 import { MiddlewareMetadata } from '../metadata';
 import { MiddlewareClass, IMiddleware } from '../middlewares/IMiddleware';
 import { MiddlewareRegister } from '../middlewares/MiddlewareRegister';
 
 
-export const MiddlewareRegisterAction = (ctx: DesignActionContext, next: () => void) => {
+export const MiddlewareRegisterAction = (ctx: DesignContext, next: () => void) => {
     let metas = ctx.reflects.getMetadata<MiddlewareMetadata>(ctx.currDecoractor, ctx.type);
     let meta = metas.find(meta => !!meta.before || !!meta.after) || lang.first(metas);
 

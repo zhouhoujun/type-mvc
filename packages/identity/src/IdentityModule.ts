@@ -1,4 +1,4 @@
-import { IocExt, Inject, DecoratorScopes, ActionInjectorToken, DesignRegisterer } from '@tsdi/ioc';
+import { IocExt, Inject, ActionInjectorToken, DesignRegisterer } from '@tsdi/ioc';
 import { ContainerToken, IContainer } from '@tsdi/core';
 import { ComponentsModule, ElementModule } from '@tsdi/components';
 import { Controller } from '@mvx/mvc';
@@ -23,7 +23,7 @@ class IdentitySetupModule {
         actjtr.register(ControllerAuthRegisterAction);
 
         let dreger = actjtr.getInstance(DesignRegisterer);
-        dreger.register(Controller, DecoratorScopes.Class, ControllerAuthRegisterAction);
+        dreger.register(Controller, 'Class', ControllerAuthRegisterAction);
 
     }
 }

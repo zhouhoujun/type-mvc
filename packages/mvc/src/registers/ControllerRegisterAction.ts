@@ -1,4 +1,4 @@
-import { DesignActionContext } from '@tsdi/ioc';
+import { DesignContext } from '@tsdi/ioc';
 import { ControllerMetadata } from '../metadata';
 import { Router } from '../router/Router';
 import { ControllerRoute, RouteControllerArgToken, RouteControllerMiddlewaresToken } from '../router/ControllerRoute';
@@ -6,7 +6,7 @@ import { RouteUrlArgToken } from '../router/Route';
 
 const prefixEnd = /^\//;
 
-export const ControllerRegisterAction = (ctx: DesignActionContext, next: () => void) => {
+export const ControllerRegisterAction = (ctx: DesignContext, next: () => void) => {
 
     let ctrlmetadatas = ctx.reflects.getMetadata<ControllerMetadata>(ctx.currDecoractor, ctx.type);
     let router = ctx.injector.getInstance(Router);

@@ -1,4 +1,4 @@
-import { Abstract, tokenId, PromiseUtil, Action, isToken, isFunction } from '@tsdi/ioc';
+import { Abstract, tokenId, Action, isToken, isFunction, AsyncHandler } from '@tsdi/ioc';
 import { IContext } from '../IContext';
 import { MvcMiddleware } from '../middlewares/MvcMiddleware';
 import { RouteChecker } from '../services/RouteChecker';
@@ -75,13 +75,13 @@ export abstract class MvcRoute extends MvcMiddleware {
 
     abstract options(ctx: IContext, next: () => Promise<void>): Promise<void>;
 
-    protected toHandle(handleType: HandleType<IContext>): PromiseUtil.ActionHandle<IContext> {
+    protected toHandle(handleType: HandleType<IContext>): AsyncHandler<IContext> {
         if (handleType instanceof Action) {
-            return handleType.toAction() as PromiseUtil.ActionHandle<IContext>;
+            return handleType.toAction() as AsyncHandler<IContext>;
         } else if (isToken(handleType)) {
-            return this.injector.get<Action>(handleType)?.toAction?.() as PromiseUtil.ActionHandle<IContext>;
+            return this.injector.get<Action>(handleType)?.toAction?.() as AsyncHandler<IContext>;
         } else if (isFunction(handleType)) {
-            return handleType as PromiseUtil.ActionHandle<IContext>;
+            return handleType as AsyncHandler<IContext>;
         }
         return null;
     }

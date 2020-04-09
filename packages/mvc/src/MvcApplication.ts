@@ -1,6 +1,5 @@
 import {
-    IocExt, Inject, DecoratorScopes,
-    BindProviderAction, BindMethodProviderAction, IocSetCacheAction, Type,
+    IocExt, Inject, TypeProviderAction, MthProviderAction, IocSetCacheAction, Type,
     DecoratorProvider, InjectReference, ProviderTypes, Singleton, isArray,
     isClass, isFunction, lang, ActionInjector, DesignRegisterer, RuntimeRegisterer
 } from '@tsdi/ioc';
@@ -235,14 +234,14 @@ class MvcCoreModule {
             .register(MiddlewareRegisterAction);
 
         let dreger = actInjector.getInstance(DesignRegisterer);
-        dreger.register(Controller, DecoratorScopes.Class, BindProviderAction, ControllerRegisterAction)
-            .register(Authorization, DecoratorScopes.Class, BindProviderAction)
-            .register(Middleware, DecoratorScopes.Class, BindProviderAction, MiddlewareRegisterAction);
+        dreger.register(Controller, 'Class', TypeProviderAction, ControllerRegisterAction)
+            .register(Authorization, 'Class', TypeProviderAction)
+            .register(Middleware, 'Class', TypeProviderAction, MiddlewareRegisterAction);
 
         registerModule(MvcModule, dreger);
         let runtimeRgr = actInjector.getInstance(RuntimeRegisterer);
-        runtimeRgr.register(Authorization, DecoratorScopes.Method, BindMethodProviderAction)
-            .register(MvcModule, DecoratorScopes.Class, IocSetCacheAction);
+        runtimeRgr.register(Authorization, 'Method',  MthProviderAction)
+            .register(MvcModule, 'Class', IocSetCacheAction);
 
 
         actInjector.getInstance(DecoratorProvider)

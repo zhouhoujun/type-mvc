@@ -1,4 +1,4 @@
-import { isClass, Injectable, isString, Inject, INJECTOR, PromiseUtil, Action, isToken, isFunction } from '@tsdi/ioc';
+import { isClass, Injectable, isString, Inject, INJECTOR, Action, isToken, isFunction, AsyncHandler } from '@tsdi/ioc';
 import { Handle, Handles, HandleType } from '@tsdi/boot';
 import { IContext } from '../IContext';
 import { IMiddleware } from './IMiddleware';
@@ -15,7 +15,7 @@ import { ICoreInjector } from '@tsdi/core';
  * @implements {IMiddleware}
  */
 export abstract class MvcMiddleware extends Handle<IContext> implements IMiddleware {
-    static nonePointcut = true;
+    static d0NPT = true;
     @Inject(INJECTOR) injector: ICoreInjector;
 }
 
@@ -28,7 +28,7 @@ export abstract class MvcMiddleware extends Handle<IContext> implements IMiddlew
  */
 @Injectable()
 export class CompositeMiddleware extends Handles<IContext> {
-    static nonePointcut = true;
+    static d0NPT = true;
     @Inject(INJECTOR) injector: ICoreInjector;
 
     find(filter: (item: HandleType<IContext>) => boolean) {
@@ -77,13 +77,13 @@ export class CompositeMiddleware extends Handles<IContext> {
         return this;
     }
 
-    protected toHandle(handleType: HandleType<IContext>): PromiseUtil.ActionHandle<IContext> {
+    protected toHandle(handleType: HandleType<IContext>): AsyncHandler<IContext> {
         if (handleType instanceof Action) {
-            return handleType.toAction() as PromiseUtil.ActionHandle<IContext>;
+            return handleType.toAction() as AsyncHandler<IContext>;
         } else if (isToken(handleType)) {
-            return this.injector.get<Action>(handleType)?.toAction?.() as PromiseUtil.ActionHandle<IContext>;
+            return this.injector.get<Action>(handleType)?.toAction?.() as AsyncHandler<IContext>;
         } else if (isFunction(handleType)) {
-            return handleType as PromiseUtil.ActionHandle<IContext>;
+            return handleType as AsyncHandler<IContext>;
         }
         return null;
     }

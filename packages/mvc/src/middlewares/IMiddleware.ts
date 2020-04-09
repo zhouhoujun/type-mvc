@@ -1,4 +1,4 @@
-import { Token, PromiseUtil, Type, isFunction, isString } from '@tsdi/ioc';
+import { Token, Type, isFunction, isString, AsyncHandler } from '@tsdi/ioc';
 import { HandleType, IHandle } from '@tsdi/boot';
 import { IContext } from '../IContext';
 import { IConfiguration } from '../IConfiguration';
@@ -13,7 +13,7 @@ import { MvcContext } from '../MvcContext';
  * @extends {Function}
  * @template T
  */
-export interface MiddlewareFunc extends PromiseUtil.ActionHandle<IContext> {
+export interface MiddlewareFunc extends AsyncHandler<IContext> {
     /**
      * middleware name.
      *
@@ -106,4 +106,4 @@ export type MiddlewareType = Token<IMiddleware> | HandleType<IContext> | Middlew
 /**
  * middleware factory.
  */
-export type MvcMiddlewareType = Type<IMiddleware> | IMiddleware | ((config?: IConfiguration, ctx?: MvcContext) => MiddlewareFunc | PromiseUtil.ActionHandle<IContext> | void);
+export type MvcMiddlewareType = Type<IMiddleware> | IMiddleware | ((config?: IConfiguration, ctx?: MvcContext) => MiddlewareFunc | AsyncHandler<IContext> | void);

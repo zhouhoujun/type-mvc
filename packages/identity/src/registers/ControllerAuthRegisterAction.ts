@@ -1,4 +1,4 @@
-import { DesignActionContext, hasOwnClassMetadata, getTypeMetadata, InjectToken, hasMethodMetadata } from '@tsdi/ioc';
+import { DesignContext, hasOwnClassMetadata, getTypeMetadata, InjectToken, hasMethodMetadata } from '@tsdi/ioc';
 import { Authorization, ControllerMetadata, Controller } from '@mvx/mvc';
 
 /**
@@ -6,7 +6,7 @@ import { Authorization, ControllerMetadata, Controller } from '@mvx/mvc';
  */
 export const AuthRoutesToken = new InjectToken<Set<string>>('identify_auth_routes');
 
-export const ControllerAuthRegisterAction = (ctx: DesignActionContext, next: () => void) => {
+export const ControllerAuthRegisterAction = (ctx: DesignContext, next: () => void) => {
     if (hasOwnClassMetadata(Authorization, ctx.type) || hasMethodMetadata(Authorization, ctx.type)) {
         let ctrlmetadatas = getTypeMetadata<ControllerMetadata>(Controller, ctx.type);
         let routers = ctx.injector.get(AuthRoutesToken);

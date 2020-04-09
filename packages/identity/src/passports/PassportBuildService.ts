@@ -1,6 +1,6 @@
 import { Abstract, Inject, Injectable, isClass, isFunction, INJECTOR, ActionInjectorToken } from '@tsdi/ioc';
 import { ICoreInjector } from '@tsdi/core';
-import { StartupDecoratorRegisterer, StartupScopes } from '@tsdi/boot';
+import { StartupDecoratorRegisterer } from '@tsdi/boot';
 import { ComponentBuilder, Component, ComponentSelectorHandle } from '@tsdi/components';
 import { IConfiguration, IContext } from '@mvx/mvc';
 import { IStrategy } from './IStrategy';
@@ -45,7 +45,7 @@ export class ConfigurePassportBuildService extends PassportBuildService {
 
     async build(passport: IAuthenticator, configuration: IConfiguration): Promise<void> {
         let actInj = this.injector.getInstance(ActionInjectorToken);
-        let register = actInj.getInstance(StartupDecoratorRegisterer).getRegisterer(StartupScopes.TranslateTemplate);
+        let register = actInj.getInstance(StartupDecoratorRegisterer).getRegisterer('TranslateTemplate');
         if (!register.has(StrategySelectorHandle)) {
             register.registerBefore(Component, ComponentSelectorHandle, StrategySelectorHandle);
         }
