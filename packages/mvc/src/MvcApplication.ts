@@ -223,6 +223,7 @@ class MvcCoreModule {
                 map: { html: 'nunjucks' }
             },
             models: ['./models/**/*{.js,.ts}', '!./**/*.d.ts'],
+            repositories: ['./repositories/**/*.(ts|js)', '!./**/*.d.ts'],
             debug: false,
             keys: ['typemvc'],
             contents: ['./public']

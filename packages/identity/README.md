@@ -532,6 +532,9 @@ export interface IConfiguration extends MvcConfiguration  {
 * third ORM Model:  register yourself module parser extends `ModelParser`.
 * typeorm model use : [`@tsdi/typeorm-adapter`](https://www.npmjs.com/package/@tsdi/typeorm-adapter)
 
+* default load module in `./models` folder, with exp `['.\/models\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']`
+* default load repositories in `./repositories` folder, with exp `['.\/repositories\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']`  
+
 
 ```ts
 import { Model, Field } from '@mvx/mvc';
