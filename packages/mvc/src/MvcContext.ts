@@ -1,4 +1,4 @@
-import { Injectable, Refs, InjectToken } from '@tsdi/ioc';
+import { Injectable, Refs, tokenId } from '@tsdi/ioc';
 import { BootContext, BootOption, ProcessRunRootToken, ConfigureManager } from '@tsdi/boot';
 import { runMainPath } from '@tsdi/platform-server';
 import { IConfiguration } from './IConfiguration';
@@ -41,7 +41,7 @@ export interface MvcOptions extends BootOption {
 /**
  * mvc context token.
  */
-export const MvcContextToken = new InjectToken<MvcContext>('MVC_CONTEXT');
+export const MvcContextToken = tokenId<MvcContext>('MVC_CONTEXT');
 
 /**
  * mvc application context.

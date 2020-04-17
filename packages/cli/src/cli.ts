@@ -2,7 +2,7 @@
 import { rm, cp, mkdir } from 'shelljs';
 import * as fs from 'fs';
 import * as path from 'path';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import * as program from 'commander';
 import { isString, isArray, isBoolean } from 'util';
 import { existsSync } from 'fs';
