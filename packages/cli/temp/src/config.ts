@@ -1,7 +1,8 @@
 import { IConfiguration, IContext } from '@mvx/mvc';
 import { LogConfigure } from '@tsdi/logs';
 import { Connection } from 'typeorm';
-import { User } from './models';
+import { User } from './models/User';
+import { UserRepository } from './repositories/UserRepository';
 // import { JwtRequest } from '@mvx/identity';
 // import { UserService } from './services';
 
@@ -19,7 +20,7 @@ export default {
     // debug: true,
     connections: {
         async initDb(connection: Connection) {
-            let userRep = connection.getRepository(User);
+            let userRep = connection.getCustomRepository(UserRepository);
             let c = await userRep.count();
             if (c < 1) {
                 let newUr = new User();
@@ -58,8 +59,7 @@ export default {
     //                     return { user: { id: payload.data }, info: false }
     //                 }
 
-    //                 let user = await ctx.getContainer().resolve({ token: UserService, regify: true })
-    //                     .verifyJWT(payload.data);
+    //                 let user = await ctx.getInjector().get(UserRepository).verifyJWT(payload.data);
     //                 if (user) {
     //                     return { user, info: true };
     //                 } else {
@@ -75,7 +75,7 @@ export default {
     //     ],
     //     deserializers: [
     //         (obj: any, ctx: IContext) => {
-    //             return ctx.getContainer().resolve({ token: UserService, regify: true }).findById(obj.data);
+    //             return ctx.getInjector().get(UserRepository).findById(obj.data);
     //         }
     //     ]
     // },

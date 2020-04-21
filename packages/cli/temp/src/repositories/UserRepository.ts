@@ -33,4 +33,17 @@ export class UserRepository extends Repository<User> {
             .take(take)
             .getManyAndCount();
     }
+
+    async verify(username: string, password: string) {
+        let user = await this.findOne({ where: { account: username } });
+        if (!user || user.password !== password) {
+            return { user: null, info: false };
+        }
+        return { user, info: true };
+    }
+
+    async verifyJWT(id: string) {
+        let user = await this.findOne(id);
+        return user;
+    }
 }
