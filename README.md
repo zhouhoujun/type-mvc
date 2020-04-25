@@ -434,6 +434,10 @@ export class RealtimeService extends StartupService<MvcContext> {
             }
         });
     }
+
+    protected destroying() {
+        this.io.close();
+    }
 }
 
 ```
