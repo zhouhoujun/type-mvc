@@ -149,7 +149,7 @@ export class LocalStrategyTest {
 
     @After()
     destory() {
-        this.ctx.getStartup().stop();
+        this.ctx.destroy();
     }
 
 }
