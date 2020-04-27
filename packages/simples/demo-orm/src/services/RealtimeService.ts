@@ -4,6 +4,7 @@ import { Inject, Singleton, tokenId } from '@tsdi/ioc';
 import { MvcContext } from '@mvx/mvc';
 import { MessageQueue, RootMessageQueueToken, MessageContext, StartupService } from '@tsdi/boot';
 import { ILogger } from '@tsdi/logs';
+import { UserRepository } from '../repositories/UserRepository';
 
 /**
  * send client message.
@@ -23,6 +24,9 @@ export class RealtimeService extends StartupService<MvcContext> {
 
     @Inject(RootMessageQueueToken)
     queue: MessageQueue<MessageContext>;
+
+    @Inject()
+    rep: UserRepository;
 
     private logger: ILogger;
 

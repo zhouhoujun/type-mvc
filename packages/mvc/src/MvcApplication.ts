@@ -5,7 +5,7 @@ import {
 } from '@tsdi/ioc';
 import { LoadType, ContainerToken, IContainer } from '@tsdi/core';
 import { AopModule } from '@tsdi/aop';
-import { DebugLogAspect, LogConfigureToken, LogModule } from '@tsdi/logs';
+import { DebugLogAspect, LogConfigureToken, LogModule, ILogger } from '@tsdi/logs';
 import {
     DefaultConfigureToken, BootApplication, checkBootArgs, BootContext, Startup, ConfigureRegister,
     Handle, registerModule, ModuleProvidersBuilderToken, ModuleProviders, ORMCoreModule, StartupService, CTX_APP_STARTUPS
@@ -85,12 +85,17 @@ export class MvcApplication extends BootApplication<MvcContext> {
  * @class MvcConfigureRegister
  * @extends {ConfigureRegister}
  */
-@Singleton
+@Singleton()
 export class MvcStartupService extends StartupService<MvcContext> {
-
+    private logger: ILogger;
+    private ctx: MvcContext;
+    private subs: MvcContext[];
     async configureService(ctx: MvcContext): Promise<void> {
-
+        this.ctx = ctx;
+        this.logger = ctx.getLogManager().getLogger();
+        this.logger.info('startup mvc controllers and middlewares');
         const config = ctx.getConfiguration();
+        this.subs = [];
 
         ctx.getKoa().keys = config.keys;
         let injector = ctx.injector;
@@ -166,6 +171,7 @@ export class MvcStartupService extends StartupService<MvcContext> {
         if (config.subSites && config.subSites.length) {
             await Promise.all(config.subSites.map(async site => {
                 let koa: Koa;
+                let subCtx: MvcContext;
                 if (isClass(site.app)) {
                     let subCtx = await MvcApplication.run(
                         {
@@ -173,6 +179,7 @@ export class MvcStartupService extends StartupService<MvcContext> {
                             module: site.app,
                             configures: [lang.omit(config, 'subsites')]
                         });
+                    this.subs.push(subCtx);
                     koa = subCtx.getKoa() as any;
                 } else if (isFunction(site.app)) {
                     koa = await site.app(config);
@@ -183,6 +190,16 @@ export class MvcStartupService extends StartupService<MvcContext> {
                     ctx.getKoa().use(mount(site.routePrefix, koa));
                 }
             }));
+        }
+    }
+
+    protected destroying() {
+        this.logger.info('remove controllers and middlewares.');
+        let koa = this.ctx.getKoa();
+        koa.removeAllListeners();
+        koa.middleware.length = 0;
+        if (this.subs.length) {
+            this.subs.forEach(s => s?.destroy());
         }
     }
 }
@@ -241,7 +258,7 @@ class MvcCoreModule {
 
         registerModule(MvcModule, dreger);
         let runtimeRgr = actInjector.getInstance(RuntimeRegisterer);
-        runtimeRgr.register(Authorization, 'Method',  MthProviderAction)
+        runtimeRgr.register(Authorization, 'Method', MthProviderAction)
             .register(MvcModule, 'Class', IocSetCacheAction);
 
 

@@ -77,7 +77,7 @@ export class MvcServer extends Service<Koa> implements IMvcServer {
     async stop() {
         let httpServer = this.getHttpServer();
         if (httpServer) {
-            this.logger.info('mvc service stopping');
+            this.logger.info('close mvc http(s) service');
             httpServer.removeAllListeners();
             httpServer.close();
         }
