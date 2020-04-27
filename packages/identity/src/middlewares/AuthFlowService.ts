@@ -1,4 +1,4 @@
-import { Type, Singleton, hasMethodMetadata, hasOwnClassMetadata, Inject } from '@tsdi/ioc';
+import { Type, Singleton, Inject } from '@tsdi/ioc';
 import { AuthorizationService, IContext, MiddlewareType, Authorization, IConfiguration } from '@mvx/mvc';
 import { AuthenticatorToken, IAuthenticator } from '../passports';
 
@@ -11,17 +11,19 @@ export class AuthFlowService extends AuthorizationService {
     getAuthMiddlewares(ctx: IContext, controller: Type<any>, propertyKey: string): MiddlewareType[];
     getAuthMiddlewares(ctx: IContext, controller: Type<any>, propertyKey?: any) {
         let middlewares = [];
-        let configuration: IConfiguration = ctx.mvcContext.getConfiguration();
+        let mvcCtx = ctx.mvcContext;
+        let configuration: IConfiguration = mvcCtx.getConfiguration();
         let flowOption = configuration.passports.default;
         if (!flowOption) {
             return middlewares;
         }
 
+        let refl = mvcCtx.reflects;
         if (propertyKey) {
-            if (hasMethodMetadata(Authorization, controller, propertyKey)) {
+            if (refl.hasMethodMetadata(Authorization, controller, propertyKey)) {
                 middlewares.push(this.passport.authenticate(flowOption.strategy, flowOption.options));
             }
-        } else if (hasOwnClassMetadata(Authorization, controller)) {
+        } else if (refl.hasMetadata(Authorization, controller)) {
             middlewares.push(this.passport.authenticate(flowOption.strategy, flowOption.options));
         }
 

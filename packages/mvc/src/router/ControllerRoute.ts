@@ -51,6 +51,7 @@ export class ControllerRoute extends MvcRoute {
             return await next();
         }
         let middlewares = this.getRouteMiddleware(ctx, meta);
+        console.log('middlewares:', middlewares);
         if (middlewares.length) {
             await this.execFuncs(ctx, middlewares.map(m => this.toHandle(m)).filter(f => !!f))
         }
@@ -67,6 +68,7 @@ export class ControllerRoute extends MvcRoute {
 
     protected getRouteMiddleware(ctx: IContext, meta: RouteMetadata) {
         let auths = ctx.getInjector().getServices(AuthorizationService);
+        console.log('auths:', auths);
         let middlewares = this.middlewares || [];
         if (auths) {
             middlewares = auths.map(auth => auth.getAuthMiddlewares(ctx, this.controller)).reduce((p, c) => p.concat(c), [])
@@ -178,9 +180,10 @@ export class ControllerRoute extends MvcRoute {
         if (isNumber(err.status)) {
             ctx.status = err.status;
             ctx.message = err.message || err.toString();
-            // ctx.throw(err.status || 500, err.message || err.toString());
+        } else {
+            ctx.status = 500;
+            ctx.message = err.stack;
         }
-        throw err;
     }
 
     protected getCorsMeta(ctx: IContext, reqMethod: string): CorsMetadata {
