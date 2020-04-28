@@ -10,7 +10,6 @@ export class AuthenticatedVaildate {
         if (!isFunction(ctx.isAuthenticated)) {
             return;
         }
-        console.log(ctx.URL.href, ctx.isAuthenticated())
         if (!ctx.isAuthenticated()) {
             throw new UnauthorizedError();
         }
