@@ -177,10 +177,10 @@ export class ControllerRoute extends MvcRoute {
     protected catchHttpError(ctx: IContext, err: HttpError) {
         if (isNumber(err.status)) {
             ctx.status = err.status;
-            ctx.message = err.message || err.toString();
+            ctx.message = err.message || err.toString() || '';
         } else {
             ctx.status = 500;
-            ctx.message = err.stack;
+            ctx.message = err.message || err.toString() || '';
         }
     }
 
