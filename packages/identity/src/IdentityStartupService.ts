@@ -1,13 +1,13 @@
-import { Injectable } from '@tsdi/ioc';
+import { Injectable, Singleton } from '@tsdi/ioc';
 import { BeforeMidddlewareStartupService, MvcMiddlewares, MvcContext } from '@mvx/mvc';
 import { PassportBuildService, ConfigurePassportBuildService, AuthenticatorToken } from './passports';
 
-@Injectable
+@Singleton
 export class IdentityStartupService extends BeforeMidddlewareStartupService {
 
     async startup(ctx: MvcContext, middlewares?: MvcMiddlewares): Promise<void> {
-        let passport = ctx.getContainer().resolve(AuthenticatorToken);
-        let services = ctx.getContainer().getServices(PassportBuildService);
+        let passport = ctx.injector.get(AuthenticatorToken);
+        let services = ctx.injector.getServices(PassportBuildService);
         // config build first.
         let cfs = services.find(s => s instanceof ConfigurePassportBuildService);
         if (cfs && services.indexOf(cfs) > 0) {

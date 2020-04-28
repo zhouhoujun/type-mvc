@@ -68,7 +68,7 @@ export class Test2Controller {
 
     @Authorization()
     @Get('/:id')
-    getTest(id: string) {
+    getEl(id: string) {
         return { id: id };
     }
 
@@ -84,6 +84,7 @@ export class Test2Controller {
         Test2Controller
     ],
     passports: {
+        default: { strategy: 'local' },
         strategies: [
             {
                 strategy: 'local',
@@ -91,7 +92,7 @@ export class Test2Controller {
                 passwordField: 'passwd',
                 verify: (username: string, password: string, ctx: IContext) => {
                     console.log('local-verify', username, password);
-                    return true
+                    return { user: {id: 'user', name: 'test' } };
                 }
             }
         ],
@@ -126,7 +127,7 @@ export class LocalStrategyTest {
 
     @Test()
     async canGetApi1() {
-        let val =  await axios.get('http://localhost:3010/api/test1')
+        let val = await axios.get('http://localhost:3010/api/test1')
         expect(val.data).toEqual({ id: 'test1' });
     }
 
