@@ -74,7 +74,7 @@ export class MvcApplication extends BootApplication<MvcContext> {
         let tokens = ctx.getStarupTokens() || [];
         tokens.unshift(MvcStartupService);
         ctx.setValue(CTX_APP_STARTUPS, tokens);
-        this.getContainer().bindProvider(MvcContextToken, ctx);
+        this.getContainer().setSingleton(MvcContextToken, ctx);
     }
 }
 
@@ -90,6 +90,7 @@ export class MvcStartupService extends StartupService<MvcContext> {
     private logger: ILogger;
     private ctx: MvcContext;
     private subs: MvcContext[];
+
     async configureService(ctx: MvcContext): Promise<void> {
         this.ctx = ctx;
         this.logger = ctx.getLogManager().getLogger();
