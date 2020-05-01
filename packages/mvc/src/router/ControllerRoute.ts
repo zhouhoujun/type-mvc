@@ -182,6 +182,9 @@ export class ControllerRoute extends MvcRoute {
             ctx.status = 500;
             ctx.message = err.message || err.toString() || '';
         }
+        if (ctx.status === 500) {
+            throw err;
+        }
     }
 
     protected getCorsMeta(ctx: IContext, reqMethod: string): CorsMetadata {
