@@ -174,11 +174,14 @@ export class ControllerRoute extends MvcRoute {
 
 
     protected catchHttpError(ctx: IContext, err: Error) {
-        ctx.mvcContext.getLogManager()?.getLogger()?.error(err);
-        ctx.status = err instanceof HttpError ? err.status ?? 500 : 500;
+        ctx.status = err instanceof HttpError ? err.status || 500 : 500;
         ctx.message = err.message || err.toString() || '';
+        const logger = ctx.mvcContext.getLogManager()?.getLogger();
         if (ctx.status === 500) {
+            logger?.error(err);
             throw err;
+        } else {
+            logger?.warn(err);
         }
     }
 
