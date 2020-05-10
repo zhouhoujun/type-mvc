@@ -21,6 +21,7 @@ import { MvcServer } from './MvcServer';
 import { DefaultMvcMiddlewares, DefaultMvcMiddlewaresToken } from './DefaultMvcMiddlewares';
 import * as http from 'http';
 import * as https from 'https';
+import * as http2 from 'http2';
 import * as Koa from 'koa';
 import { MvcApp } from './MvcApp';
 import { RouteChecker } from './services/RouteChecker';
@@ -142,8 +143,10 @@ export class MvcStartupService extends StartupService<MvcContext> {
         if (!ctx.httpServer) {
             if (config.httpsOptions) {
                 ctx.httpServer = https.createServer(config.httpsOptions, ctx.getKoa().callback());
-            } else {
+            } else if (config.httpVersion === '1.1') {
                 ctx.httpServer = http.createServer(ctx.getKoa().callback());
+            } else {
+                ctx.httpServer = http2.createServer(ctx.getKoa().callback());
             }
         }
 
@@ -241,7 +244,7 @@ class MvcCoreModule {
 
         registerModule(MvcModule, dreger);
         let runtimeRgr = actInjector.getInstance(RuntimeRegisterer);
-        runtimeRgr.register(Authorization, 'Method',  MthProviderAction)
+        runtimeRgr.register(Authorization, 'Method', MthProviderAction)
             .register(MvcModule, 'Class', IocSetCacheAction);
 
 
