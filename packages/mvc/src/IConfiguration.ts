@@ -65,12 +65,12 @@ export interface MvcConfiguration extends RunnableConfigure {
      */
     keys?: Keygrip | string[];
     /**
-     * http version, default 2.0
+     * http protocol, default 2.0
      *
      * @type {('1.1' | '2.0')}
      * @memberof MvcConfiguration
      */
-    httpVersion?: '1.1' | '2.0';
+    protocol?: 'http1' | 'http2';
     /**
      * https server options.
      *

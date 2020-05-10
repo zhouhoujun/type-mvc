@@ -147,12 +147,14 @@ export class MvcStartupService extends StartupService<MvcContext> {
         injector.invoke(MiddlewareRegister, tag => tag.setup);
 
         if (!ctx.httpServer) {
-            if (config.httpsOptions) {
-                ctx.httpServer = https.createServer(config.httpsOptions, ctx.getKoa().callback());
-            } else if (config.httpVersion === '1.1') {
-                ctx.httpServer = http.createServer(ctx.getKoa().callback());
+            if (config.protocol === 'http2') {
+                ctx.httpServer = config.httpsOptions ?
+                    http2.createSecureServer(config.httpsOptions, ctx.getKoa().callback())
+                    : http2.createServer(ctx.getKoa().callback());
             } else {
-                ctx.httpServer = http2.createServer(ctx.getKoa().callback());
+                ctx.httpServer = config.httpsOptions ?
+                    https.createServer(config.httpsOptions, ctx.getKoa().callback())
+                    : ctx.httpServer = http.createServer(ctx.getKoa().callback());
             }
         }
 
