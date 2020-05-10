@@ -60,7 +60,17 @@ export class TestController {
     get psersonal(): Car {
         return null;
     }
+}
 
+@Cors
+@Controller('/api2')
+export class Test2Controller {
+
+    @Authorization()
+    @Get('/:id')
+    getEl(id: string) {
+        return { id: id };
+    }
 
 }
 
@@ -70,9 +80,11 @@ export class TestController {
         IdentityModule
     ],
     controllers: [
-        TestController
+        TestController,
+        Test2Controller
     ],
     passports: {
+        default: { strategy: 'local' },
         strategies: [
             {
                 strategy: 'local',
@@ -80,7 +92,7 @@ export class TestController {
                 passwordField: 'passwd',
                 verify: (username: string, password: string, ctx: IContext) => {
                     console.log('local-verify', username, password);
-                    return true
+                    return { user: {id: 'user', name: 'test' } };
                 }
             }
         ],
@@ -111,17 +123,18 @@ export class LocalStrategyTest {
     async before() {
         // axios.defaults.withCredentials = true;
         this.ctx = await MvcApplication.run(SimpleApp);
-        try {
-            await axios.get('http://localhost:3010/api/test1')
-        } catch (err) {
-            // console.log(err);
-        }
+    }
+
+    @Test()
+    async canGetApi1() {
+        let val = await axios.get('http://localhost:3010/api/test1')
+        expect(val.data).toEqual({ id: 'test1' });
     }
 
 
     @Test('loacl has stup.')
     test1() {
-        let auth = this.ctx.getContainer().resolve(Authenticator);
+        let auth = this.ctx.injector.resolve(Authenticator);
         console.log(auth['strategies'])
         expect(auth.get('local')).toBeTruthy();
     }
@@ -129,7 +142,7 @@ export class LocalStrategyTest {
 
     @Test('resolve strategy.')
     async test2() {
-        let loacl = await this.ctx.getContainer().resolve(ComponentBuilder)
+        let loacl = await this.ctx.injector.resolve(ComponentBuilder)
             .resolveTemplate({
                 template: {
                     // element: 'local',
@@ -145,6 +158,13 @@ export class LocalStrategyTest {
     }
 
 
+    @Test()
+    async canGetApi2() {
+
+        let val = await axios.get('http://localhost:3010/api2/test2');
+        expect(val.data).toEqual({ id: 'test2' });
+
+    }
 
 
     @After()

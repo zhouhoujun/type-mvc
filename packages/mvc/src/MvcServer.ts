@@ -6,6 +6,7 @@ import { MvcContext } from './MvcContext';
 import { Router } from './router/Router';
 import * as https from 'https';
 import * as Koa from 'koa';
+import { ILogger } from '@tsdi/logs';
 
 
 /**
@@ -24,6 +25,7 @@ export class MvcServer extends Service<Koa> implements IMvcServer {
     port: number;
     hostname: string;
 
+    private logger: ILogger;
     /**
      * configure startup service.
      *
@@ -34,6 +36,7 @@ export class MvcServer extends Service<Koa> implements IMvcServer {
     async configureService(ctx: MvcContext): Promise<void> {
         this.context = ctx;
         let config = ctx.getConfiguration();
+        this.logger = ctx.getLogManager().getLogger();
         this.port = config.port || parseInt(process.env.PORT || '0');
         this.hostname = config.hostname;
         this.uri = `${ctx.httpServer instanceof https.Server ? 'https' : 'http'}://${this.hostname || '127.0.0.1'}:${this.port}`;
@@ -68,12 +71,13 @@ export class MvcServer extends Service<Koa> implements IMvcServer {
         } else {
             server.listen(this.port, listener);
         }
-        console.log('service start: ', this.uri);
+        this.logger.info('mvc service start: ', this.uri);
     }
 
     async stop() {
         let httpServer = this.getHttpServer();
         if (httpServer) {
+            this.logger.info('close mvc http(s) service');
             httpServer.removeAllListeners();
             httpServer.close();
         }

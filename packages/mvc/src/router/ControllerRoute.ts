@@ -1,8 +1,7 @@
 import {
     lang, Injectable, Type, getMethodMetadata, isFunction, isBaseType,
     isUndefined, ParamProviders, Provider, isClass, IParameter, isObject,
-    isArray, isPromise, getTypeMetadata, isString, Inject,
-    isNumber, isNullOrUndefined, tokenId
+    isArray, isPromise, getTypeMetadata, isString, Inject, isNullOrUndefined, tokenId
 } from '@tsdi/ioc';
 import { ModelParser, DefaultModelParserToken, BaseTypeParserToken, BuilderServiceToken } from '@tsdi/boot';
 import { MvcRoute, RouteUrlArgToken } from './Route';
@@ -174,13 +173,16 @@ export class ControllerRoute extends MvcRoute {
     }
 
 
-    protected catchHttpError(ctx: IContext, err: HttpError) {
-        if (isNumber(err.status)) {
-            ctx.status = err.status;
-            ctx.message = err.message || err.toString();
-            // ctx.throw(err.status || 500, err.message || err.toString());
+    protected catchHttpError(ctx: IContext, err: Error) {
+        ctx.status = err instanceof HttpError ? err.status || 500 : 500;
+        ctx.message = err.message || err.toString() || '';
+        const logger = ctx.mvcContext.getLogManager()?.getLogger();
+        if (ctx.status === 500) {
+            logger?.error(err);
+            throw err;
+        } else {
+            logger?.warn(err);
         }
-        throw err;
     }
 
     protected getCorsMeta(ctx: IContext, reqMethod: string): CorsMetadata {
@@ -221,7 +223,7 @@ export class ControllerRoute extends MvcRoute {
             let ctrl = injector.getInstance(this.controller, { provide: ContextToken, useValue: ctx });
             let reflects = ctx.mvcContext.reflects;
             let providers = await this.createProvider(ctx, ctrl, meta, reflects.getParameters(this.controller, ctrl, meta.propertyKey));
-            let result: any = await injector.invoke(ctrl, meta.propertyKey, ...providers);
+            let result = await injector.invoke(ctrl, meta.propertyKey, ...providers);
             if (isPromise(result)) {
                 result = await result;
             }

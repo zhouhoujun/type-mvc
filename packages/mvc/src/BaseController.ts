@@ -13,7 +13,7 @@ import { Stream } from 'stream';
  * @export
  * @class Controller
  */
-@Injectable
+@Injectable()
 export class BaseController {
 
 

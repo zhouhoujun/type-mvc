@@ -1,15 +1,32 @@
 {
-  "name": "project-name",
+  "name": "@mvx/simples",
   "version": "4.0.9",
-  "description": "mvc application",
+  "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
   "scripts": {
-    "build": "tsdi build"
+    "postinstall": "npm prune"
   },
   "keywords": [
     "mvc",
-    "application",
-    "framework"
+    "AOP",
+    "ioc",
+    "frameworker",
+    "koa",
+    "tsdi",
+    "tsioc",
+    "server",
+    "ts-ioc"
   ],
+  "author": "houjun",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zhouhoujun/type-mvc/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhouhoujun/type-mvc.git"
+  },
   "dependencies": {
     "@tsdi/activities": "~6.0.6",
     "@tsdi/annotations": "~6.0.6",
@@ -27,6 +44,7 @@
     "@mvx/identity": "~4.0.9",
     "@mvx/mvc": "~4.0.9",
     "typeorm": "~0.2.24",
+    "mongodb": "~3.5.4",
     "pg": "^7.12.0",
     "pm2": "^3.2.4",
     "tslib": "^1.11.0",
@@ -42,5 +60,6 @@
     "ts-node": "^8.4.1",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.5.3"
-  }
+  },
+  "homepage": "https://github.com/zhouhoujun/type-mvc#readme"
 }
