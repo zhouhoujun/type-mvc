@@ -3,11 +3,9 @@ import { BootContext, BootOption, ProcessRunRootToken, ConfigureManager } from '
 import { runMainPath } from '@tsdi/platform-server';
 import { IConfiguration } from './IConfiguration';
 import * as Koa from 'koa';
-import * as http from 'http';
-import * as http2 from 'http2';
-import * as https from 'https';
 import { MvcModuleMetadata } from './metadata/MvcModuleMetadata';
 import { IMvcServer } from './IMvcServer';
+import { Server } from 'net';
 
 /**
  * mvc boot option
@@ -34,7 +32,7 @@ export interface MvcOptions extends BootOption {
 
     koa?: Koa;
 
-    httpServer?: http.Server | https.Server;
+    httpServer?: Server;
 
     listener?: Function;
 }
@@ -107,10 +105,10 @@ export class MvcContext extends BootContext<MvcOptions> {
     /**
      * http server.
      *
-     * @type {(http.Server | https.Server)}
+     * @type {Server}
      * @memberof MvcContext
      */
-    httpServer: http.Server | http2.Http2Server| https.Server;
+    httpServer: Server;
 
     /**
      * cusmtom listener.

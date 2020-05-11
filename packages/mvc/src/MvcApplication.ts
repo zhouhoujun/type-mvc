@@ -21,7 +21,6 @@ import { MvcServer } from './MvcServer';
 import { DefaultMvcMiddlewares, DefaultMvcMiddlewaresToken } from './DefaultMvcMiddlewares';
 import * as http from 'http';
 import * as https from 'https';
-import * as http2 from 'http2';
 import * as Koa from 'koa';
 import { MvcApp } from './MvcApp';
 import { RouteChecker } from './services/RouteChecker';
@@ -36,6 +35,7 @@ import { RouterMiddleware } from './router/RouterMiddleware';
 import { BeforeMidddlewareStartupService } from './services/BeforeMidddlewareStartupService';
 import { AfterMidddlewareStartupService } from './services/AfterMidddlewareStartupService';
 import { MvcModuleMetadata } from './metadata';
+import { ServerFactoryToken } from './ServerFactory';
 const mount = require('koa-mount');
 
 
@@ -146,16 +146,18 @@ export class MvcStartupService extends StartupService<MvcContext> {
 
         injector.invoke(MiddlewareRegister, tag => tag.setup);
 
+        if (!injector.hasRegister(ServerFactoryToken)) {
+            injector.setValue(ServerFactoryToken, (ctx, config) => {
+                return config.httpsOptions ?
+                    (config.httpsOptions.secureProtocol ?
+                        https.createServer(config.httpsOptions, ctx.getKoa().callback())
+                        : http.createServer(config.httpsOptions, ctx.getKoa().callback()))
+                    : http.createServer(ctx.getKoa().callback());
+            });
+        }
+
         if (!ctx.httpServer) {
-            if (config.protocol === 'http2') {
-                ctx.httpServer = config.httpsOptions ?
-                    http2.createSecureServer(config.httpsOptions, ctx.getKoa().callback())
-                    : http2.createServer(ctx.getKoa().callback());
-            } else {
-                ctx.httpServer = config.httpsOptions ?
-                    https.createServer(config.httpsOptions, ctx.getKoa().callback())
-                    : ctx.httpServer = http.createServer(ctx.getKoa().callback());
-            }
+            ctx.httpServer = injector.get(ServerFactoryToken)(ctx, config);
         }
 
         if (config.loadControllers) {
