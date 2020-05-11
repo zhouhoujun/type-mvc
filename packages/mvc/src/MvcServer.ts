@@ -1,4 +1,4 @@
-import { Inject, Injectable, Refs, isDefined } from '@tsdi/ioc';
+import { Inject, Injectable, Refs } from '@tsdi/ioc';
 import { Service, Startup } from '@tsdi/boot';
 import { IConfiguration } from './IConfiguration';
 import { IMvcServer } from './IMvcServer';
@@ -40,11 +40,6 @@ export class MvcServer extends Service<Koa> implements IMvcServer {
         this.port = config.port || parseInt(process.env.PORT || '0');
         this.hostname = config.hostname;
         this.uri = `${ctx.httpServer instanceof https.Server ? 'https' : 'http'}://${this.hostname || '127.0.0.1'}:${this.port}`;
-        if (isDefined(process)) {
-            process.once('beforeExit', () => {
-                ctx.destroy();
-            })
-        }
     }
 
     @Inject()
