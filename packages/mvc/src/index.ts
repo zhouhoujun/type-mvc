@@ -30,6 +30,7 @@ export * from './services/AfterMidddlewareStartupService';
 
 export * from './BaseController';
 export * from './DefaultMvcMiddlewares';
+export * from './ServerFactory';
 export * from './IListener';
 export * from './RequestMethod';
 export * from './MvcApp';

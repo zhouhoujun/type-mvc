@@ -358,6 +358,7 @@ export class ProductionController {
     @AutoWired() // or @Inject()
     protected rep: ProductionRepository;
 
+
     @Post('/')
     @Put('/')
     async save(pdt: Production) {
@@ -442,7 +443,6 @@ export class RealtimeService extends StartupService<MvcContext> {
 
 ```
 
-
 ```ts
 import { IdentityModule } from '@mvx/identity';
 import { TypeOrmModule }  from '@tsdi/typeorm-adapter'; 
@@ -456,7 +456,18 @@ import { TypeOrmModule }  from '@tsdi/typeorm-adapter';
         TypeOrmModule
     ],
     providers:[
-        RealtimeService
+        RealtimeService,
+        // // provider custom http server factory.
+        // {
+        //     provide: ServerFactoryToken, 
+        //     useValue: (ctx, config) => {
+        //         return config.httpsOptions ?
+        //             (config.httpsOptions.secureProtocol ?
+        //                 https.createServer(config.httpsOptions, ctx.getKoa().callback())
+        //                 : http.createServer(config.httpsOptions, ctx.getKoa().callback()))
+        //             : http.createServer(ctx.getKoa().callback());
+        //     }
+        // }
     ]
     // middlewares: DefaultMvcMiddlewares,
     // debug: true
@@ -474,12 +485,74 @@ class MvcApp {
 
 MvcApplication.run(MvcApp);
 
+//
+
 ```
 
 
 ### configuration
 
 * default use config file `./config.ts` or `./config.js`.
+
+config demo
+
+```ts
+import { IConfiguration } from '@mvx/mvc';
+
+const port = 3000;
+const oauthProviderId = 'markus';
+
+export default {
+    port,
+    // custom providers in config.
+    providers:[
+        // provider custom http server factory.
+        {
+            provide: ServerFactoryToken, 
+            useValue: (ctx, config) => {
+                return config.httpsOptions ?
+                    (config.httpsOptions.secureProtocol ?
+                        https.createServer(config.httpsOptions, ctx.getKoa().callback())
+                        : http.createServer(config.httpsOptions, ctx.getKoa().callback()))
+                    : http.createServer(ctx.getKoa().callback());
+            }
+        }
+    ],
+    // debug: true
+    passports: {
+        serializers: [
+            (user, ctx) => {
+                console.log('serializers', user);
+                return user ? user.id : '';
+            }
+        ],
+        deserializers: [
+            async (obj, ctx) => {
+                let container =  ctx.getContainer();
+                // todo get dao service.
+                console.log('deserializers', obj);
+                return obj;
+            }
+        ],
+        strategies: [
+            {
+                strategy: 'oidc',
+                scope: '',
+                issuer: 'http://localhost:' + port,
+                clientID: 'markus01',
+                clientSecret: 'markus01',
+                authorizationURL: 'http://localhost:' + port + '/oidc/endpoint/' + oauthProviderId + '/authorize',
+                tokenURL: 'http://localhost:' + port + '/token',
+                callbackURL: 'http://localhost:3000/callback',
+                userInfoURL: 'http://localhost:' + port + '/me'
+            }
+        ]
+    }
+} as IConfiguration;
+
+```
+
+see interface.
 ```ts
 
 /**
@@ -616,11 +689,12 @@ export interface MvcConfiguration extends RunnableConfigure {
      * @memberOf Configuration
      */
     models?: string[] | Type[];
-
+    
     /**
      * repositories of orm. default `['.\/repositories\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']` 
      */
     repositories?: string[] | Type[];
+
     /**
      * in debug log. defult false.
      *
@@ -656,7 +730,6 @@ export interface IConfiguration extends MvcConfiguration  {
 
 * default load module in `./models` folder, with exp `['.\/models\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']`
 * default load repositories in `./repositories` folder, with exp `['.\/repositories\/**\/*{.js,.ts}', '!.\/**\/*.d.ts']`  
-
 
 ```ts
 import { Model, Field } from '@mvx/mvc';
@@ -712,9 +785,11 @@ export class DebugLog {
 
 ```
 
+
 ## Simples
 
 [see simples](https://github.com/zhouhoujun/type-mvc/tree/master/packages/simples)
+
 
 ## Documentation
 Documentation is available on the
@@ -726,12 +801,32 @@ Documentation is available on the
 * [@tsdi/core document](https://github.com/zhouhoujun/tsioc/tree/master/packages/core).
 * [@tsdi/boot document](https://github.com/zhouhoujun/tsioc/tree/master/packages/boot).
 * [@tsdi/components document](https://github.com/zhouhoujun/tsioc/tree/master/packages/components).
+* [@tsdi/compiler document](https://github.com/zhouhoujun/tsioc/tree/master/packages/compiler).
 * [@tsdi/activities document](https://github.com/zhouhoujun/tsioc/tree/master/packages/activities).
+* [@tsdi/pack document](https://github.com/zhouhoujun/tsioc/tree/master/packages/pack).
 * [@tsdi/typeorm-adapter document](https://github.com/zhouhoujun/tsioc/tree/master/packages/typeorm-adapter).
 * [@tsdi/unit document](https://github.com/zhouhoujun/tsioc/tree/master/packages/unit).
 * [@tsdi/unit-console document](https://github.com/zhouhoujun/tsioc/tree/master/packages/unit-console).
 * [@tsdi/cli document](https://github.com/zhouhoujun/tsioc/tree/master/packages/cli).
 
+
+### packages
+[@mvx/cli](https://www.npmjs.com/package/@mvx/cli)
+[@mvx/mvc](https://www.npmjs.com/package/@mvx/mvc)
+[@tsdi/identity](https://www.npmjs.com/package/@mvx/identity)
+
+[@tsdi/cli](https://www.npmjs.com/package/@tsdi/cli)
+[@tsdi/ioc](https://www.npmjs.com/package/@tsdi/ioc)
+[@tsdi/aop](https://www.npmjs.com/package/@tsdi/aop)
+[@tsdi/core](https://www.npmjs.com/package/@tsdi/core)
+[@tsdi/boot](https://www.npmjs.com/package/@tsdi/boot)
+[@tsdi/components](https://www.npmjs.com/package/@tsdi/components)
+[@tsdi/compiler](https://www.npmjs.com/package/@tsdi/compiler)
+[@tsdi/activities](https://www.npmjs.com/package/@tsdi/activities)
+[@tsdi/pack](https://www.npmjs.com/package/@tsdi/pack)
+[@tsdi/typeorm-adapter](https://www.npmjs.com/package/@tsdi/typeorm-adapter)
+[@tsdi/unit](https://www.npmjs.com/package/@tsdi/unit)
+[@tsdi/unit-console](https://www.npmjs.com/package/@tsdi/unit-console)
 
 ## License
 

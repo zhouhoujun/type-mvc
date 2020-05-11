@@ -35,6 +35,7 @@ import { RouterMiddleware } from './router/RouterMiddleware';
 import { BeforeMidddlewareStartupService } from './services/BeforeMidddlewareStartupService';
 import { AfterMidddlewareStartupService } from './services/AfterMidddlewareStartupService';
 import { MvcModuleMetadata } from './metadata';
+import { ServerFactoryToken } from './ServerFactory';
 const mount = require('koa-mount');
 
 
@@ -145,12 +146,18 @@ export class MvcStartupService extends StartupService<MvcContext> {
 
         injector.invoke(MiddlewareRegister, tag => tag.setup);
 
+        if (!injector.hasRegister(ServerFactoryToken)) {
+            injector.setValue(ServerFactoryToken, (ctx, config) => {
+                return config.httpsOptions ?
+                    (config.httpsOptions.secureProtocol ?
+                        https.createServer(config.httpsOptions, ctx.getKoa().callback())
+                        : http.createServer(config.httpsOptions, ctx.getKoa().callback()))
+                    : http.createServer(ctx.getKoa().callback());
+            });
+        }
+
         if (!ctx.httpServer) {
-            if (config.httpsOptions) {
-                ctx.httpServer = https.createServer(config.httpsOptions, ctx.getKoa().callback());
-            } else {
-                ctx.httpServer = http.createServer(ctx.getKoa().callback());
-            }
+            ctx.httpServer = injector.get(ServerFactoryToken)(ctx, config);
         }
 
         if (config.loadControllers) {

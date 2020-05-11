@@ -456,7 +456,18 @@ import { TypeOrmModule }  from '@tsdi/typeorm-adapter';
         TypeOrmModule
     ],
     providers:[
-        RealtimeService
+        RealtimeService,
+        // // provider custom http server factory.
+        // {
+        //     provide: ServerFactoryToken, 
+        //     useValue: (ctx, config) => {
+        //         return config.httpsOptions ?
+        //             (config.httpsOptions.secureProtocol ?
+        //                 https.createServer(config.httpsOptions, ctx.getKoa().callback())
+        //                 : http.createServer(config.httpsOptions, ctx.getKoa().callback()))
+        //             : http.createServer(ctx.getKoa().callback());
+        //     }
+        // }
     ]
     // middlewares: DefaultMvcMiddlewares,
     // debug: true
@@ -482,6 +493,66 @@ MvcApplication.run(MvcApp);
 ### configuration
 
 * default use config file `./config.ts` or `./config.js`.
+
+config demo
+
+```ts
+import { IConfiguration } from '@mvx/mvc';
+
+const port = 3000;
+const oauthProviderId = 'markus';
+
+export default {
+    port,
+    // custom providers in config.
+    providers:[
+        // provider custom http server factory.
+        {
+            provide: ServerFactoryToken, 
+            useValue: (ctx, config) => {
+                return config.httpsOptions ?
+                    (config.httpsOptions.secureProtocol ?
+                        https.createServer(config.httpsOptions, ctx.getKoa().callback())
+                        : http.createServer(config.httpsOptions, ctx.getKoa().callback()))
+                    : http.createServer(ctx.getKoa().callback());
+            }
+        }
+    ],
+    // debug: true
+    passports: {
+        serializers: [
+            (user, ctx) => {
+                console.log('serializers', user);
+                return user ? user.id : '';
+            }
+        ],
+        deserializers: [
+            async (obj, ctx) => {
+                let container =  ctx.getContainer();
+                // todo get dao service.
+                console.log('deserializers', obj);
+                return obj;
+            }
+        ],
+        strategies: [
+            {
+                strategy: 'oidc',
+                scope: '',
+                issuer: 'http://localhost:' + port,
+                clientID: 'markus01',
+                clientSecret: 'markus01',
+                authorizationURL: 'http://localhost:' + port + '/oidc/endpoint/' + oauthProviderId + '/authorize',
+                tokenURL: 'http://localhost:' + port + '/token',
+                callbackURL: 'http://localhost:3000/callback',
+                userInfoURL: 'http://localhost:' + port + '/me'
+            }
+        ]
+    }
+} as IConfiguration;
+
+```
+
+see interface.
 ```ts
 
 /**

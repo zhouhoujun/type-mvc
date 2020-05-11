@@ -47,6 +47,23 @@ export interface SubSite {
     app: Koa | Type | ((configuration: IConfiguration) => Promise<Koa>);
 }
 
+export type PotocolType = 'http/2' | 'http/1.1' | 'http/1.0 | spdy/3.1' | 'spdy/3' | 'spdy/2';
+
+
+export interface SpdyOption extends ServerOptions {
+    spdy: Required<{
+        /**
+         * http protocol
+         *
+         * @type {PotocolType[]}
+         * @memberof MvcConfiguration
+         */
+        protocols: PotocolType[];
+        plain?: boolean;
+    }>
+}
+
+
 /**
  * Configuration.
  *
@@ -67,10 +84,10 @@ export interface MvcConfiguration extends RunnableConfigure {
     /**
      * https server options.
      *
-     * @type {ServerOptions}
+     * @type {(ServerOptions | SpdyOption)}
      * @memberof IConfiguration
      */
-    httpsOptions?: ServerOptions;
+    httpsOptions?: ServerOptions | SpdyOption;
     /**
      * server hostname
      *
@@ -196,7 +213,7 @@ export interface MvcConfiguration extends RunnableConfigure {
  * @interface IConfiguration
  * @extends {MvcConfiguration}
  */
-export interface IConfiguration extends MvcConfiguration  {
+export interface IConfiguration extends MvcConfiguration {
 
 }
 
