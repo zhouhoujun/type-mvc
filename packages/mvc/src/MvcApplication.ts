@@ -1,14 +1,14 @@
 import {
     IocExt, Inject, TypeProviderAction, MthProviderAction, IocSetCacheAction, Type,
     DecoratorProvider, InjectReference, ProviderTypes, Singleton, isArray,
-    isClass, isFunction, lang, ActionInjector, DesignRegisterer, RuntimeRegisterer
+    isClass, isFunction, lang, ActionInjector, DesignRegisterer, RuntimeRegisterer, isDefined
 } from '@tsdi/ioc';
 import { LoadType, ContainerToken, IContainer } from '@tsdi/core';
 import { AopModule } from '@tsdi/aop';
 import { DebugLogAspect, LogConfigureToken, LogModule, ILogger } from '@tsdi/logs';
 import {
-    DefaultConfigureToken, BootApplication, checkBootArgs, BootContext, Startup, ConfigureRegister,
-    Handle, registerModule, ModuleProvidersBuilderToken, ModuleProviders, ORMCoreModule, StartupService, CTX_APP_STARTUPS
+    DefaultConfigureToken, BootApplication, checkBootArgs, BootContext, Startup, Handle, registerModule,
+    ModuleProvidersBuilderToken, ModuleProviders, ORMCoreModule, StartupService, CTX_APP_STARTUPS
 } from '@tsdi/boot';
 import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
 import { ServerLogsModule } from '@tsdi/platform-server-logs';
@@ -93,6 +93,11 @@ export class MvcStartupService extends StartupService<MvcContext> {
     private subs: MvcContext[];
 
     async configureService(ctx: MvcContext): Promise<void> {
+        if (isDefined(process)) {
+            process.once('beforeExit', () => {
+                ctx.destroy();
+            });
+        }
         this.ctx = ctx;
         this.logger = ctx.getLogManager().getLogger();
         this.logger.info('startup mvc controllers and middlewares');
