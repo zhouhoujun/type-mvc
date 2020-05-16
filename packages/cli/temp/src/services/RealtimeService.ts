@@ -28,7 +28,7 @@ export class RealtimeService extends StartupService<MvcContext> {
 
     async configureService(ctx: MvcContext): Promise<void> {
         const logger = this.logger = ctx.getLogManager().getLogger();
-        logger.info('create socket server...');
+        logger.info('startup socket server...');
         this.io = SockerServer(ctx.httpServer);
 
         this.io.on('connection', (sock: Socket) => {

@@ -93,6 +93,7 @@ export class MvcStartupService extends StartupService<MvcContext> {
     private subs: MvcContext[];
 
     async configureService(ctx: MvcContext): Promise<void> {
+        // befor process exit.
         if (isDefined(process)) {
             process.once('beforeExit', () => {
                 ctx.destroy();
