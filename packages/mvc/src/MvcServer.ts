@@ -7,6 +7,7 @@ import { Router } from './router/Router';
 import * as https from 'https';
 import * as Koa from 'koa';
 import { ILogger } from '@tsdi/logs';
+import { Server } from 'net';
 
 
 /**
@@ -58,7 +59,7 @@ export class MvcServer extends Service<Koa> implements IMvcServer {
         return this.router;
     }
 
-    getHttpServer() {
+    getHttpServer(): Server {
         return this.getContext().httpServer;
     }
 

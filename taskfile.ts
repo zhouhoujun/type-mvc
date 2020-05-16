@@ -3,6 +3,7 @@ import * as path from 'path';
 import { PackModule, NodeActivityContext, ShellActivityOption, JsonReplaceActivityOption } from '@tsdi/pack';
 import { Type, isString } from '@tsdi/ioc';
 import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
+import * as through from 'through2';
 
 // build with command `tsdi build --setvs=version --deploy`
 @Task({
@@ -101,6 +102,36 @@ import { ServerActivitiesModule } from '@tsdi/platform-server-activities';
                         let pks = ctx.platform.getFolders('packages').filter(f => !/(orm|identity-server|simples|package)$/.test(f))
                         return pks.map(p => `cd ${p} && tsdi build`);
                     }
+                },
+                {
+                    activity: 'asset',
+                    src: 'dist/**/*.d.ts',
+                    pipes: [
+                        () => through.obj(function (file, encoding, callback) {
+                            if (file.isNull()) {
+                                return callback(null, file);
+                            }
+
+                            if (file.isStream()) {
+                                return callback('doesn\'t support Streams');
+                            }
+
+                            let contents: string = file.contents.toString('utf8');
+                            let sets: string[] = [];
+                            contents = contents.replace(/set\s\w+\(.+\)\;/g, match => {
+                                sets.push(match.substring(4, match.indexOf('(')));
+                                return '';
+                            });
+                            contents = contents.replace(/get\s\w+\(\)\:\s/g, match => {
+                                let field = match.substring(4, match.length - 4);
+                                return `${sets.indexOf(field) >= 0 ? '' : 'readonly '}${field}:`;
+                            });
+
+                            file.contents = Buffer.from(contents);
+                            callback(null, file);
+                        })
+                    ],
+                    dist: 'dist'
                 }
                 // <EachTeamplate>{
                 //     activity: Activities.each,
