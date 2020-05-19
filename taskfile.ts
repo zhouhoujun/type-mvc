@@ -67,6 +67,12 @@ import * as through from 'through2';
                                             chgs.set('dependencies.' + key, '~' + version);
                                         }
                                     });
+                                    Object.keys(json.devDependencies || {}).forEach(key => {
+                                        if (/^@mvx/.test(key)) {
+                                            chgs.set('devDependencies.' + key, '~' + version);
+                                        }
+                                    });
+
                                     Object.keys(json.peerDependencies || {}).forEach(key => {
                                         if (/^@tsdi/.test(key)) {
                                             chgs.set('peerDependencies.' + key, '~' + iocVersion);
@@ -75,6 +81,11 @@ import * as through from 'through2';
                                     Object.keys(json.dependencies || {}).forEach(key => {
                                         if (/^@tsdi/.test(key)) {
                                             chgs.set('dependencies.' + key, '~' + iocVersion);
+                                        }
+                                    });
+                                    Object.keys(json.devDependencies || {}).forEach(key => {
+                                        if (/^@tsdi/.test(key)) {
+                                            chgs.set('devDependencies.' + key, '~' + iocVersion);
                                         }
                                     });
                                     return chgs;
