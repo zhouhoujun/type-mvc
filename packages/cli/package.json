@@ -38,8 +38,8 @@
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme",
   "dependencies": {
-    "reflect-metadata": "^0.1.12",
-    "tslib": "^1.11.0",
+    "reflect-metadata": "^0.1.13",
+    "tslib": "^1.13.0",
     "shelljs": "^0.8.3",
     "chalk": "^4.0.0",
     "chokidar": "^2.0.4",
