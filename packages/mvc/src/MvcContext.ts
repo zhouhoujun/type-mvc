@@ -116,5 +116,5 @@ export class MvcContext extends BootContext<MvcOptions> {
      * @type {Function}
      * @memberof MvcContext
      */
-    listener?: Function;
+    listener?: () => void;
 }
