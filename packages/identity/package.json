@@ -49,11 +49,11 @@
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",
-    "@tsdi/annotations": "~6.0.15",
-    "@tsdi/components": "~6.0.15",
-    "@tsdi/ioc": "~6.0.15",
-    "@tsdi/boot": "~6.0.15",
-    "@tsdi/core": "~6.0.15",
+    "@tsdi/annotations": "~6.0.17",
+    "@tsdi/components": "~6.0.17",
+    "@tsdi/ioc": "~6.0.17",
+    "@tsdi/boot": "~6.0.17",
+    "@tsdi/core": "~6.0.17",
     "@mvx/mvc": "~4.0.17",
     "tslib": "^1.13.0"
   },
