@@ -139,6 +139,7 @@ export class ControllerRoute extends MvcRoute {
         } else {
             let coremeta = this.getCorsMeta(ctx, ctx.get('Access-Control-Request-Method'));
             if (!coremeta) {
+                ctx.status = 403;
                 return await next();
             }
             options = Object.assign({}, options, coremeta);
