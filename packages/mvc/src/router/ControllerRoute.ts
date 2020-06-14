@@ -33,7 +33,7 @@ export const RouteControllerMiddlewaresToken = tokenId<any[]>('ROUTE_CONTRL_MIDD
 const restParms = /^\S*:/;
 const isRest = /\/:/;
 
-@Injectable
+@Injectable()
 export class ControllerRoute extends MvcRoute {
 
     constructor(

@@ -11,7 +11,7 @@ import { MvcMiddlewares } from './MvcMiddlewares';
  * @export
  * @class MiddlewareRegister
  */
-@Singleton
+@Singleton()
 export class MiddlewareRegister {
     static nonePointcut = true;
     map: Map<Type<IMiddleware>, MiddlewareMetadata>;

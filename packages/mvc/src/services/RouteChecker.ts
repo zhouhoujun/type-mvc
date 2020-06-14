@@ -5,7 +5,7 @@ const urlReg = /\/((\w|%|\.))+\.\w+$/;
 const noParms = /\/\s*$/;
 const hasParms = /\?\S*$/;
 
-@Singleton
+@Singleton()
 export class RouteChecker extends IocCoreService {
 
     private assertUrlRegExp = urlReg;

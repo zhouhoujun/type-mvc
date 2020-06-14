@@ -4,7 +4,7 @@ import { RouteChecker } from '../services/RouteChecker';
 import { IContext } from '../IContext';
 import { MvcRoute } from './Route';
 
-@Singleton
+@Singleton()
 export class Router extends CompositeMiddleware {
 
     sorted = false;

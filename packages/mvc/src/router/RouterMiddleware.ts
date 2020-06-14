@@ -5,7 +5,7 @@ import { Router } from './Router';
 import { IContext } from '../IContext';
 
 
-@Singleton
+@Singleton()
 export class RouterMiddleware extends MvcMiddleware implements IMiddleware {
 
     static middleName = MiddlewareTypes.Router;

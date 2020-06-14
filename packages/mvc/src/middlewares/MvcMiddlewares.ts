@@ -11,7 +11,7 @@ import { MvcContext } from '../MvcContext';
  * @class MvcMiddlewares
  * @extends {CompositeMiddleware}
  */
-@Singleton
+@Singleton()
 export class MvcMiddlewares extends CompositeMiddleware {
 
     /**
