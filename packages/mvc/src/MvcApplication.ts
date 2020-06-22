@@ -8,7 +8,7 @@ import { AopModule } from '@tsdi/aop';
 import { DebugLogAspect, LogConfigureToken, LogModule, ILogger } from '@tsdi/logs';
 import {
     DefaultConfigureToken, BootApplication, checkBootArgs, BootContext, Startup, Handle, registerModule,
-    ModuleProvidersBuilderToken, ModuleProviders, ORMCoreModule, StartupService, CTX_APP_STARTUPS
+    ModuleProvidersBuilderToken, ModuleProviders, ORMCoreModule, StartupService, Boot
 } from '@tsdi/boot';
 import { ServerBootstrapModule } from '@tsdi/platform-server-boot';
 import { ServerLogsModule } from '@tsdi/platform-server-logs';
@@ -50,7 +50,7 @@ export class MvcApplication extends BootApplication<MvcContext> {
 
     getBootDeps() {
         let deps = super.getBootDeps();
-        return [AopModule, LogModule, ServerBootstrapModule, ORMCoreModule, ServerLogsModule, MvcCoreModule, ...deps];
+        return [AopModule, LogModule, ServerBootstrapModule, ORMCoreModule, ServerLogsModule, MvcCoreModule, MvcStartupService, ...deps];
     }
 
     /**
@@ -72,9 +72,6 @@ export class MvcApplication extends BootApplication<MvcContext> {
 
     onContextInit(ctx: MvcContext) {
         super.onContextInit(ctx);
-        let tokens = ctx.getStarupTokens() || [];
-        tokens.unshift(MvcStartupService);
-        ctx.setValue(CTX_APP_STARTUPS, tokens);
         this.getContainer().setSingleton(MvcContextToken, ctx);
     }
 }
@@ -86,7 +83,9 @@ export class MvcApplication extends BootApplication<MvcContext> {
  * @class MvcConfigureRegister
  * @extends {ConfigureRegister}
  */
-@Singleton()
+@Boot({
+    before: 'all'
+})
 export class MvcStartupService extends StartupService<MvcContext> {
     private logger: ILogger;
     private ctx: MvcContext;
