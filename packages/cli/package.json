@@ -1,6 +1,6 @@
 {
   "name": "@mvx/cli",
-  "version": "4.0.17",
+  "version": "4.0.18",
   "description": "mvc cli.",
   "typings": "./lib/cli.d.ts",
   "main": "./lib/cli.js",
