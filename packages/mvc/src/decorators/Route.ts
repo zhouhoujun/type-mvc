@@ -5,6 +5,7 @@ import {
 import { RequestMethod } from '../RequestMethod';
 import { RouteMetadata } from '../metadata';
 import { MiddlewareType } from '../middlewares/IMiddleware';
+import { routeSart } from '../exps';
 
 
 /**
@@ -104,6 +105,9 @@ export function createRouteDecorator<T extends RouteMetadata>(
         metadata => {
             if (metaExtends) {
                 metaExtends(metadata as T);
+            }
+            if(!routeSart.test(metadata.route)){
+                metadata.route = '/' + metadata.route;
             }
             if (method) {
                 metadata.method = method;

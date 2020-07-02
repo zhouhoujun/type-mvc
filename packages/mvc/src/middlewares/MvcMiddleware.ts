@@ -1,9 +1,8 @@
 import { isClass, Injectable, isString, Inject, INJECTOR, Action, isToken, isFunction, AsyncHandler } from '@tsdi/ioc';
+import { ICoreInjector } from '@tsdi/core';
 import { Handle, Handles, HandleType } from '@tsdi/boot';
 import { IContext } from '../IContext';
 import { IMiddleware } from './IMiddleware';
-import { ICoreInjector } from '@tsdi/core';
-
 
 /**
  * middleware

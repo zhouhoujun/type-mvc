@@ -4,7 +4,6 @@ import { Router } from '../router/Router';
 import { ControllerRoute, RouteControllerArgToken, RouteControllerMiddlewaresToken } from '../router/ControllerRoute';
 import { RouteUrlArgToken } from '../router/Route';
 
-const prefixEnd = /^\//;
 
 export const ControllerRegisterAction = (ctx: DesignContext, next: () => void) => {
 
@@ -15,9 +14,6 @@ export const ControllerRegisterAction = (ctx: DesignContext, next: () => void) =
             return;
         }
         let prefix = ctlmeta.routePrefix;
-        if (prefix && !prefixEnd.test(prefix)) {
-            prefix = '/' + prefix;
-        }
         let middlewares = ctlmeta.middlewares;
         router.routes(ctx.injector.getInstance(ControllerRoute,
             { provide: RouteUrlArgToken, useValue: prefix },

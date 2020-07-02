@@ -1,6 +1,7 @@
 import { DesignContext, hasOwnClassMetadata, getTypeMetadata, InjectToken, hasMethodMetadata } from '@tsdi/ioc';
 import { Authorization, ControllerMetadata, Controller } from '@mvx/mvc';
 
+
 /**
  *  the routes need to auth.
  */
@@ -14,11 +15,7 @@ export const ControllerAuthRegisterAction = (ctx: DesignContext, next: () => voi
             if (!ctlmeta) {
                 return;
             }
-            let prefix = ctlmeta.routePrefix;
-            if (prefix && !/^\//.test(prefix)) {
-                prefix = '/' + prefix;
-            }
-            routers.add(prefix);
+            routers.add(ctlmeta.routePrefix);
         });
     }
     next();

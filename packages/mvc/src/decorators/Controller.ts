@@ -1,6 +1,7 @@
 import { createClassDecorator, ITypeDecorator, isString, Registration, isArray } from '@tsdi/ioc';
 import { ControllerMetadata } from '../metadata';
 import { MiddlewareType } from '../middlewares/IMiddleware';
+import { routeSart } from '../exps';
 
 /**
  * Controller decorator, define the class as mvc controller.
@@ -59,5 +60,9 @@ export const Controller: IControllerDecorator<ControllerMetadata> =
                 ctx.next(next, false);
             }
         }
-    ], true) as IControllerDecorator<ControllerMetadata>;
+    ], (meta) => {
+        if (!routeSart.test(meta.routePrefix)) {
+            meta.routePrefix = '/' + meta.routePrefix;
+        }
+    }, true) as IControllerDecorator<ControllerMetadata>;
 
