@@ -52,7 +52,7 @@ export class MvcServer extends Service<Koa> implements IMvcServer {
 
 
     getConfig(): IConfiguration {
-        return this.context.getConfiguration();
+        return this.context.getConfiguration() as IConfiguration;
     }
 
     getRouter(): Router {

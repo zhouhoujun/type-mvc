@@ -3,7 +3,7 @@ import { BootContext, BootOption, ProcessRunRootToken, ConfigureManager } from '
 import { runMainPath } from '@tsdi/platform-server';
 import { IConfiguration } from './IConfiguration';
 import * as Koa from 'koa';
-import { MvcModuleMetadata } from './metadata/MvcModuleMetadata';
+import { MvcModuleMetadata } from './metadata';
 import { IMvcServer } from './IMvcServer';
 import { Server } from 'net';
 
@@ -73,7 +73,7 @@ export class MvcContext extends BootContext<MvcOptions> {
      * @memberof MvcContext
      */
     getConfiguration(): IConfiguration {
-        return super.getConfiguration();
+        return super.getConfiguration() as IConfiguration;
     }
 
     /**
@@ -83,7 +83,7 @@ export class MvcContext extends BootContext<MvcOptions> {
      * @memberof BootContext
      */
     getConfigureManager(): ConfigureManager<IConfiguration> {
-        return super.getConfigureManager();
+        return super.getConfigureManager() as ConfigureManager<IConfiguration>;
     }
 
     private koa: Koa;
