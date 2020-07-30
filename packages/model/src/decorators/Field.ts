@@ -1,5 +1,5 @@
 
-import { IPropertyDecorator, createPropDecorator, MetadataExtends, isString, isUndefined, isBoolean, ArgsIteratorAction } from '@tsdi/ioc';
+import { createPropDecorator, MetadataExtends, isString, isUndefined, isBoolean, ArgsIteratorAction } from '@tsdi/ioc';
 import { FieldMetadata } from '../metadata';
 
 
@@ -10,8 +10,22 @@ import { FieldMetadata } from '../metadata';
  * @interface IFiledDecorator
  * @template T
  */
-export interface IFiledDecorator<T extends FieldMetadata> extends IPropertyDecorator<T> {
+export interface IFiledDecorator<T extends FieldMetadata> {
+
+    /**
+     * Filed decorator.
+     */
     (dbtype?: string, dbfield?: string, defaultValue?: any, required?: boolean): PropertyDecorator;
+
+    /**
+     * Filed decorator with metadata map.
+     * @param {T} [metadata] define matadata map to resolve value to the property.
+     */
+    (metadata?: T): PropertyDecorator;
+    /**
+     * Filed decorator.
+     */
+    (target: object, propertyKey: string | symbol, descriptor?: TypedPropertyDescriptor<any>): void;
 }
 
 

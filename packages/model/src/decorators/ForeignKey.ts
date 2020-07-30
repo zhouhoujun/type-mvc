@@ -1,10 +1,20 @@
 import { createFieldDecorator } from './Field';
 import { ForeignKeyMetadata } from '../metadata';
-import { IPropertyDecorator, isString, Type, isClass } from '@tsdi/ioc';
+import { isString, Type, isClass } from '@tsdi/ioc';
 
 
-export interface IForeignKeyDecorator<T extends ForeignKeyMetadata> extends IPropertyDecorator<T> {
+export interface IForeignKeyDecorator<T extends ForeignKeyMetadata> {
     (foreignKey?: string, refType?: Type, foreignOrder?: number, dbtype?: string, dbfield?: string): PropertyDecorator;
+    /**
+     * ForeignKey decorator with metadata map.
+     * @param {T} [metadata] define matadata map to resolve value to the property.
+     */
+    (metadata?: T): PropertyDecorator;
+    /**
+     * ForeignKey decorator.
+     */
+    (target: object, propertyKey: string | symbol, descriptor?: TypedPropertyDescriptor<any>): void;
+
 }
 
 /**

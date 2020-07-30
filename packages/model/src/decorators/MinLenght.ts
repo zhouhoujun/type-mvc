@@ -1,10 +1,22 @@
 import { createFieldDecorator } from './Field';
 import { MinLengthMetadata } from '../metadata';
-import { IPropertyDecorator, isNumber, isString } from '@tsdi/ioc';
+import { isNumber, isString } from '@tsdi/ioc';
 
 
-export interface IMinLengthDecorator<T extends MinLengthMetadata> extends IPropertyDecorator<T> {
+export interface IMinLengthDecorator<T extends MinLengthMetadata> {
+    /**
+     * MinLength decorator.
+     */
     (MinLength?: number, errorMessage?: string, dbtype?: string, dbfield?: string): PropertyDecorator;
+    /**
+    * MinLength decorator with metadata map.
+    * @param {T} [metadata] define matadata map to resolve value to the property.
+    */
+   (metadata?: T): PropertyDecorator;
+   /**
+    * MinLength decorator.
+    */
+   (target: object, propertyKey: string | symbol, descriptor?: TypedPropertyDescriptor<any>): void;
 }
 
 /**

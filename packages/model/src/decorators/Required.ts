@@ -1,10 +1,22 @@
 import { createFieldDecorator } from './Field';
 import { FieldMetadata } from '../metadata';
-import { IPropertyDecorator } from '@tsdi/ioc';
 
 
-export interface IRequiredDecorator<T extends FieldMetadata> extends IPropertyDecorator<T> {
+export interface IRequiredDecorator<T extends FieldMetadata> {
+    /**
+     * Required decorator
+     */
     (dbtype?: string, dbfield?: string): PropertyDecorator;
+
+    /**
+     * Required decorator with metadata map.
+     * @param {T} [metadata] define matadata map to resolve value to the property.
+     */
+    (metadata?: T): PropertyDecorator;
+    /**
+     * Required decorator.
+     */
+    (target: object, propertyKey: string | symbol, descriptor?: TypedPropertyDescriptor<any>): void;
 }
 
 /**

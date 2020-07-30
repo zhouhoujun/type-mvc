@@ -1,5 +1,5 @@
 import {
-    isString, TypeMetadata, IClassMethodDecorator, MetadataExtends, createClassDecorator, IClassDecorator, ArgsIteratorAction
+    isString, TypeMetadata, MetadataExtends, createClassDecorator, ArgsIteratorAction, Type
 } from '@tsdi/ioc';
 import { ModelMetadata } from '../metadata';
 
@@ -11,8 +11,19 @@ import { ModelMetadata } from '../metadata';
  * @interface IModelDecorator
  * @template T
  */
-export interface IModelDecorator<T extends ModelMetadata> extends IClassDecorator<T> {
+export interface IModelDecorator<T extends ModelMetadata> {
     (dbtable?: string): ClassDecorator;
+
+    /**
+     * model decorator setting with metadata map.
+     *
+     * @param {T} [metadata] metadata map.
+     */
+    (metadata?: T): ClassDecorator;
+    /**
+     * model with out metadata.
+     */
+    (target: Type): void;
 }
 
 /**
@@ -49,4 +60,4 @@ export function createModelDecorator<T extends ModelMetadata>(
         }) as IModelDecorator<T>;
 }
 
-export const Model: IClassMethodDecorator<TypeMetadata> = createModelDecorator<TypeMetadata>();
+export const Model: IModelDecorator<TypeMetadata> = createModelDecorator<TypeMetadata>();

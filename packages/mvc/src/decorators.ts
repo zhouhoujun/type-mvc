@@ -1,8 +1,8 @@
 import {
-    TypeMetadata, IClassMethodDecorator, createClassMethodDecorator,
+    TypeMetadata, createClassMethodDecorator,
     ClassMethodDecorator, isString, isArray, Registration, createClassDecorator,
-    ITypeDecorator, isNumber, ArgsIteratorAction, MetadataExtends, isUndefined,
-    IMethodDecorator, createMethodDecorator, Type, isClass, isFunction
+    isNumber, ArgsIteratorAction, MetadataExtends, isUndefined,
+    createMethodDecorator, Type, isClass, isFunction
 } from '@tsdi/ioc';
 import { createDIModuleDecorator } from '@tsdi/boot';
 import { routeSart } from './exps';
@@ -21,18 +21,17 @@ import {
  *
  * @export
  * @interface IMvcModuleDecorator
- * @extends {ITypeDecorator<T>}
  * @template T
  */
-export interface IMvcModuleDecorator<T extends MvcModuleMetadata> extends ITypeDecorator<T> {
+export interface IMvcModuleDecorator {
     /**
      * MvcModule decorator, use to define class as mvc Module.
      *
      * @MvcModule
      *
-     * @param {T} [metadata] bootstrap metadate config.
+     * @param {MvcModuleMetadata} [metadata] bootstrap metadate config.
      */
-    (metadata: T): ClassDecorator;
+    (metadata: MvcModuleMetadata): ClassDecorator;
 }
 
 /**
@@ -40,7 +39,7 @@ export interface IMvcModuleDecorator<T extends MvcModuleMetadata> extends ITypeD
  *
  * @MvcModule
  */
-export const MvcModule: IMvcModuleDecorator<MvcModuleMetadata> = createDIModuleDecorator<MvcModuleMetadata>('MvcModule', null, (metadata: MvcModuleMetadata) => {
+export const MvcModule: IMvcModuleDecorator = createDIModuleDecorator<MvcModuleMetadata>('MvcModule', null, (metadata: MvcModuleMetadata) => {
 
     // static main.
     if (isClass(metadata.type) && isFunction(metadata.type['main'])) {
@@ -49,7 +48,7 @@ export const MvcModule: IMvcModuleDecorator<MvcModuleMetadata> = createDIModuleD
         }, 100);
     }
     return metadata;
-}) as IMvcModuleDecorator<MvcModuleMetadata>;
+}) as IMvcModuleDecorator;
 
 
 /**
@@ -82,7 +81,7 @@ export interface AuthorizationMetadata extends TypeMetadata {
  * @extends {IClassMethodDecorator<T>}
  * @template T
  */
-export interface IAuthorizationDecorator<T extends AuthorizationMetadata> extends IClassMethodDecorator<T> {
+export interface IAuthorizationDecorator {
     /**
      * Authorization decorator, define class or method need auth check.
      *
@@ -91,6 +90,14 @@ export interface IAuthorizationDecorator<T extends AuthorizationMetadata> extend
      * @param {string} [role] auth role.
      */
     (role?: string): ClassMethodDecorator;
+    /**
+     * Authorization decorator, define class or method need auth check.
+     *
+     * @Authorization
+     *
+     * @param {AuthorizationMetadata} [metadata] auth metadata.
+     */
+    (metadata: AuthorizationMetadata): ClassMethodDecorator;
 
     /**
      * Authorization decorator, define class or method need auth check.
@@ -101,6 +108,19 @@ export interface IAuthorizationDecorator<T extends AuthorizationMetadata> extend
      * @param {string} [role] auth role.
      */
     (middlewares: MiddlewareType[], role?: string): ClassMethodDecorator;
+
+    /**
+     * Authorization decorator, define class need auth check.
+     *
+     * @Authorization
+     */
+    (target: Type): void;
+    /**
+     * Authorization decorator, define  method need auth check.
+     *
+     * @Authorization
+     */
+    (target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<any>): void;
 }
 
 
@@ -109,7 +129,7 @@ export interface IAuthorizationDecorator<T extends AuthorizationMetadata> extend
  *
  * @Authorization
  */
-export const Authorization: IAuthorizationDecorator<AuthorizationMetadata> = createClassMethodDecorator<AuthorizationMetadata>('Authorization',
+export const Authorization: IAuthorizationDecorator = createClassMethodDecorator<AuthorizationMetadata>('Authorization',
     [
         (ctx, next) => {
             let arg = ctx.currArg;
@@ -127,7 +147,7 @@ export const Authorization: IAuthorizationDecorator<AuthorizationMetadata> = cre
                 ctx.metadata.role = arg;
             }
         }
-    ]) as IAuthorizationDecorator<AuthorizationMetadata>;
+    ]) as IAuthorizationDecorator;
 
 
 
@@ -139,7 +159,7 @@ export const Authorization: IAuthorizationDecorator<AuthorizationMetadata> = cre
  * @interface IControllerDecorator
  * @template T
  */
-export interface IControllerDecorator<T extends ControllerMetadata> extends ITypeDecorator<T> {
+export interface IControllerDecorator {
     /**
      * Controller decorator. define the class as mvc controller.
      * @Controller
@@ -159,8 +179,18 @@ export interface IControllerDecorator<T extends ControllerMetadata> extends ITyp
      * @param {string} [alias] define this controller provider with alias for provide.
      */
     (routePrefix: string, middlewares: MiddlewareType[], provide?: Registration | symbol | string, alias?: string): ClassDecorator;
+
     /**
      * Controller decorator. define the class as mvc controller.
+     *
+     * @Controller
+     *
+     * @param {ControllerMetadata} metadata  controller metadata.
+     */
+    (metadata: ControllerMetadata): ClassDecorator;
+    /**
+     * Controller decorator. define the class as mvc controller.
+     *
      * @Controller
      */
     (target: Function): void;
@@ -170,7 +200,7 @@ export interface IControllerDecorator<T extends ControllerMetadata> extends ITyp
  * Controller decorator, define the class as mvc controller.
  * @Controller
  */
-export const Controller: IControllerDecorator<ControllerMetadata> =
+export const Controller: IControllerDecorator =
     createClassDecorator<ControllerMetadata>('Controller', [
         (ctx, next) => {
             let arg = ctx.currArg;
@@ -192,7 +222,7 @@ export const Controller: IControllerDecorator<ControllerMetadata> =
         if (!routeSart.test(meta.routePrefix)) {
             meta.routePrefix = '/' + meta.routePrefix;
         }
-    }, true) as IControllerDecorator<ControllerMetadata>;
+    }, true) as IControllerDecorator;
 
 
 
@@ -202,10 +232,8 @@ export const Controller: IControllerDecorator<ControllerMetadata> =
  *
  * @export
  * @interface ICorsDecorator
- * @extends {IClassMethodDecorator<T>}
- * @template T
  */
-export interface ICorsDecorator<T extends CorsMetadata> extends IClassMethodDecorator<T> {
+export interface ICorsDecorator {
     /**
      * Cors Decorator, define controller class or controller method support cors.
      * @Cors
@@ -218,11 +246,25 @@ export interface ICorsDecorator<T extends CorsMetadata> extends IClassMethodDeco
 
     /**
      * Cors Decorator, define controller class or controller method support cors.
+     *
      * @Cors
      *
-     * @param {T} [metadata] define metadata.
+     * @param {CorsMetadata} [metadata] define metadata.
      */
-    (metadata: T): ClassMethodDecorator;
+    (metadata: CorsMetadata): ClassMethodDecorator;
+
+    /**
+     * Cors decorator, define all requset method of the controller support cors.
+     *
+     * @Cors
+     */
+    (target: Type): void;
+    /**
+     * Cors decorator, define method support cors.
+     *
+     * @Cors
+     */
+    (target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<any>): void;
 }
 
 /**
@@ -234,7 +276,7 @@ export interface ICorsDecorator<T extends CorsMetadata> extends IClassMethodDeco
  */
 export function createCorsDecorator<T extends CorsMetadata>(name: string,
     actions?: ArgsIteratorAction<T>[],
-    metadataExtends?: MetadataExtends<T>): ICorsDecorator<T> {
+    metadataExtends?: MetadataExtends<T>): ICorsDecorator {
     return createClassMethodDecorator<T>(name,
         [
             ...(actions || []),
@@ -264,7 +306,7 @@ export function createCorsDecorator<T extends CorsMetadata>(name: string,
                     ctx.next(next);
                 }
             }
-        ], metadataExtends) as ICorsDecorator<T>
+        ], metadataExtends) as ICorsDecorator
 
 }
 
@@ -272,7 +314,7 @@ export function createCorsDecorator<T extends CorsMetadata>(name: string,
  * Cors Decorator, define controller class or controller method support cors.
  * @Cors
  */
-export const Cors: ICorsDecorator<CorsMetadata> = createCorsDecorator('Cors');
+export const Cors: ICorsDecorator = createCorsDecorator<CorsMetadata>('Cors');
 
 
 export type MiddlewareDecorator = <TFunction extends Type<IMiddleware>>(target: TFunction) => TFunction | void;
@@ -285,13 +327,28 @@ export type MiddlewareDecorator = <TFunction extends Type<IMiddleware>>(target: 
  * @interface IMiddlewareDecorator
  * @template T
  */
-export interface IMiddlewareDecorator<T extends MiddlewareMetadata> {
+export interface IMiddlewareDecorator {
+    /**
+     * Middleware decorator, define the class as mvc Middleware.
+     *
+     * @Middleware
+     *
+     * @param {string} [name]  middleware name.
+     */
+    (name?: string): MiddlewareDecorator;
     /**
      * Middleware decorator. define the class as mvc Middleware.
      * @Middleware
-     * @param {T} middleware middleware name singed for mvc.
+     *
+     * @param {MiddlewareMetadata} middleware middleware name singed for mvc.
      */
-    (middleware: T): MiddlewareDecorator;
+    (middleware: MiddlewareMetadata): MiddlewareDecorator;
+
+    /**
+     * Middleware decorator. define the class as mvc Middleware.
+     * @Middleware
+     */
+    (target: Type<IMiddleware>): void;
 }
 
 /**
@@ -299,7 +356,7 @@ export interface IMiddlewareDecorator<T extends MiddlewareMetadata> {
  *
  * @Middleware
  */
-export const Middleware: IMiddlewareDecorator<MiddlewareMetadata> = createClassDecorator<MiddlewareMetadata>('Middleware',
+export const Middleware: IMiddlewareDecorator = createClassDecorator<MiddlewareMetadata>('Middleware',
     null,
     (metadata) => {
         metadata.singleton = true;
@@ -309,7 +366,7 @@ export const Middleware: IMiddlewareDecorator<MiddlewareMetadata> = createClassD
         if (!metadata.scope) {
             metadata.scope = 'global';
         }
-    }) as IMiddlewareDecorator<MiddlewareMetadata>;
+    }) as IMiddlewareDecorator;
 
 
 /**
@@ -317,9 +374,8 @@ export const Middleware: IMiddlewareDecorator<MiddlewareMetadata> = createClassD
  *
  * @export
  * @interface IRouteMethodDecorator
- * @template T
  */
-export interface IRouteMethodDecorator<T extends RouteMetadata> extends IMethodDecorator<T> {
+export interface IRouteMethodDecorator {
     /**
      * route decorator. define the controller method as an route.
      *
@@ -351,6 +407,14 @@ export interface IRouteMethodDecorator<T extends RouteMetadata> extends IMethodD
      * @param {RequestMethod} [method] set request method.
      */
     (route: string, middlewares: MiddlewareType[], contentType?: string, method?: RequestMethod): MethodDecorator;
+
+
+    /**
+     * route decorator. define the controller method as an route.
+     *
+     * @param {RouteMetadata} [metadata] route metadata.
+     */
+    (metadata: RouteMetadata): MethodDecorator;
 }
 
 /**
@@ -364,7 +428,7 @@ export interface IRouteMethodDecorator<T extends RouteMetadata> extends IMethodD
 export function createRouteDecorator<T extends RouteMetadata>(
     method?: RequestMethod,
     actions?: ArgsIteratorAction<T>[],
-    metaExtends?: MetadataExtends<T>): IRouteMethodDecorator<T> {
+    metaExtends?: MetadataExtends<T>) {
     return createMethodDecorator<RouteMetadata>('Route',
         [
             ...(actions || []),
@@ -419,7 +483,7 @@ export function createRouteDecorator<T extends RouteMetadata>(
                 metadata.method = RequestMethod.Get;
             }
             return metadata;
-        }) as IRouteMethodDecorator<T>;
+        });
 }
 
 /**
@@ -427,7 +491,7 @@ export function createRouteDecorator<T extends RouteMetadata>(
  *
  * @Route
  */
-export const Route: IRouteMethodDecorator<RouteMetadata> = createRouteDecorator<RouteMetadata>() as IRouteMethodDecorator<RouteMetadata>;
+export const Route: IRouteMethodDecorator = createRouteDecorator<RouteMetadata>() as IRouteMethodDecorator;
 
 
 
@@ -438,11 +502,10 @@ export const Route: IRouteMethodDecorator<RouteMetadata> = createRouteDecorator<
  *
  * @export
  * @interface IHeadDecorator
- * @template T
  */
-export interface IHeadDecorator<T extends HeadMetadata> extends IMethodDecorator<T> {
+export interface IHeadDecorator {
     /**
-     * Head decorator. define the route method as head.
+     * Head decorator. define the route method as head route.
      *
      * @Head
      *
@@ -452,7 +515,7 @@ export interface IHeadDecorator<T extends HeadMetadata> extends IMethodDecorator
     (route: string, contentType?: string): MethodDecorator;
 
     /**
-     * Head decorator. define the route method as head.
+     * Head decorator. define the route method as head route.
      *
      * @Head
      *
@@ -461,6 +524,13 @@ export interface IHeadDecorator<T extends HeadMetadata> extends IMethodDecorator
      * @param {string} [contentType] set request contentType.
      */
     (route: string, middlewares: MiddlewareType[], contentType?: string): MethodDecorator;
+
+    /**
+     * Head decorator. define the controller method as an route.
+     *
+     * @param {HeadMetadata} [metadata] head method metadata.
+     */
+    (metadata: HeadMetadata): MethodDecorator;
 }
 
 
@@ -469,7 +539,7 @@ export interface IHeadDecorator<T extends HeadMetadata> extends IMethodDecorator
  *
  * @Head
  */
-export const Head: IHeadDecorator<HeadMetadata> = createRouteDecorator<HeadMetadata>(RequestMethod.Head);
+export const Head: IHeadDecorator = createRouteDecorator<HeadMetadata>(RequestMethod.Head) as IHeadDecorator;
 
 
 /**
@@ -479,11 +549,10 @@ export const Head: IHeadDecorator<HeadMetadata> = createRouteDecorator<HeadMetad
  *
  * @export
  * @interface IOptionsDecorator
- * @template T
  */
-export interface IOptionsDecorator<T extends OptionsMetadata> extends IMethodDecorator<T> {
+export interface IOptionsDecorator {
     /**
-     * Options decorator. define the route method as an options.
+     * Options decorator. define the route method as an options route.
      *
      * @Options
      *
@@ -491,6 +560,13 @@ export interface IOptionsDecorator<T extends OptionsMetadata> extends IMethodDec
      * @param {string} [contentType] set request contentType.
      */
     (route: string, contentType?: string): MethodDecorator;
+
+    /**
+     * Options decorator. define the controller method as an options route.
+     *
+     * @param {OptionsMetadata} [metadata] options method metadata.
+     */
+    (metadata: OptionsMetadata): MethodDecorator;
 }
 
 /**
@@ -498,7 +574,7 @@ export interface IOptionsDecorator<T extends OptionsMetadata> extends IMethodDec
  *
  * @Options
  */
-export const Options: IOptionsDecorator<OptionsMetadata> = createRouteDecorator<OptionsMetadata>(RequestMethod.Options);
+export const Options: IOptionsDecorator = createRouteDecorator<OptionsMetadata>(RequestMethod.Options) as IOptionsDecorator;
 
 
 /**
@@ -508,11 +584,10 @@ export const Options: IOptionsDecorator<OptionsMetadata> = createRouteDecorator<
  *
  * @export
  * @interface IGetDecorator
- * @template T
  */
-export interface IGetDecorator<T extends GetMetadata> extends IMethodDecorator<T> {
+export interface IGetDecorator {
     /**
-     * Get decorator. define the route method as get.
+     * Get decorator. define the route method as get route.
      *
      * @Get
      *
@@ -522,7 +597,7 @@ export interface IGetDecorator<T extends GetMetadata> extends IMethodDecorator<T
     (route: string, contentType?: string): MethodDecorator;
 
     /**
-     * Get decorator. define the route method as get.
+     * Get decorator. define the route method as get route.
      *
      * @Get
      *
@@ -531,6 +606,13 @@ export interface IGetDecorator<T extends GetMetadata> extends IMethodDecorator<T
      * @param {string} [contentType] set request contentType.
      */
     (route: string, middlewares: MiddlewareType[], contentType?: string): MethodDecorator;
+
+    /**
+     * Get decorator. define the controller method as an get route.
+     *
+     * @param {GetMetadata} [metadata] get method metadata.
+     */
+    (metadata: GetMetadata): MethodDecorator;
 }
 
 /**
@@ -538,7 +620,7 @@ export interface IGetDecorator<T extends GetMetadata> extends IMethodDecorator<T
  *
  * @Get
  */
-export const Get: IGetDecorator<GetMetadata> = createRouteDecorator<GetMetadata>(RequestMethod.Get);
+export const Get: IGetDecorator = createRouteDecorator<GetMetadata>(RequestMethod.Get) as IGetDecorator;
 
 
 
@@ -549,9 +631,8 @@ export const Get: IGetDecorator<GetMetadata> = createRouteDecorator<GetMetadata>
  *
  * @export
  * @interface IDeleteDecorator
- * @template T
  */
-export interface IDeleteDecorator<T extends DeleteMetadata> extends IMethodDecorator<T> {
+export interface IDeleteDecorator {
     /**
      * Delete decorator. define the route method as delete.
      *
@@ -573,13 +654,21 @@ export interface IDeleteDecorator<T extends DeleteMetadata> extends IMethodDecor
      */
     (route: string, middlewares: MiddlewareType[], contentType?: string): MethodDecorator;
 
+
+    /**
+     * Delete decorator. define the controller method as an delete route.
+     *
+     * @param {DeleteMetadata} [metadata] delete method metadata.
+     */
+    (metadata: DeleteMetadata): MethodDecorator;
+
 }
 /**
  * Delete decorator. define the route method as delete.
  *
  * @Delete
  */
-export const Delete: IDeleteDecorator<DeleteMetadata> = createRouteDecorator<DeleteMetadata>(RequestMethod.Delete);
+export const Delete: IDeleteDecorator = createRouteDecorator<DeleteMetadata>(RequestMethod.Delete) as IDeleteDecorator;
 
 
 
@@ -590,11 +679,10 @@ export const Delete: IDeleteDecorator<DeleteMetadata> = createRouteDecorator<Del
  *
  * @export
  * @interface IPatchDecorator
- * @template T
  */
-export interface IPatchDecorator<T extends PatchMetadata> extends IMethodDecorator<T> {
+export interface IPatchDecorator {
     /**
-     * Patch decorator. define the route method as an Patch.
+     * Patch decorator. define the route method as an patch route.
      *
      * @Patch
      *
@@ -604,7 +692,7 @@ export interface IPatchDecorator<T extends PatchMetadata> extends IMethodDecorat
     (route: string, contentType?: string): MethodDecorator;
 
     /**
-     * Patch decorator. define the route method as Patch.
+     * Patch decorator. define the route method as patch route.
      *
      * @Patch
      *
@@ -613,13 +701,20 @@ export interface IPatchDecorator<T extends PatchMetadata> extends IMethodDecorat
      * @param {string} [contentType] set request contentType.
      */
     (route: string, middlewares: MiddlewareType[], contentType?: string): MethodDecorator;
+
+    /**
+     * Patch decorator. define the controller method as an patch route.
+     *
+     * @param {PatchMetadata} [metadata] patch method metadata.
+     */
+    (metadata: PatchMetadata): MethodDecorator;
 }
 /**
  * Patch decorator. define the route method as patch.
  *
  * @Patch
  */
-export const Patch: IPatchDecorator<PatchMetadata> = createRouteDecorator<PatchMetadata>(RequestMethod.Patch);
+export const Patch: IPatchDecorator = createRouteDecorator<PatchMetadata>(RequestMethod.Patch) as IPatchDecorator;
 
 
 
@@ -631,11 +726,10 @@ export const Patch: IPatchDecorator<PatchMetadata> = createRouteDecorator<PatchM
  *
  * @export
  * @interface IPostDecorator
- * @template T
  */
-export interface IPostDecorator<T extends PostMetadata> extends IMethodDecorator<T> {
+export interface IPostDecorator {
     /**
-     * Post decorator. define the route method as an Post.
+     * Post decorator. define the route method as an post route.
      *
      * @Post
      *
@@ -644,7 +738,7 @@ export interface IPostDecorator<T extends PostMetadata> extends IMethodDecorator
      */
     (route: string, contentType?: string): MethodDecorator;
     /**
-     * Post decorator. define the route method as Post.
+     * Post decorator. define the route method as post route.
      *
      * @Post
      *
@@ -653,13 +747,19 @@ export interface IPostDecorator<T extends PostMetadata> extends IMethodDecorator
      * @param {string} [contentType] set request contentType.
      */
     (route: string, middlewares: MiddlewareType[], contentType?: string): MethodDecorator;
+    /**
+     * Post decorator. define the controller method as an post route.
+     *
+     * @param {PostMetadata} [metadata] post method metadata.
+     */
+    (metadata: PostMetadata): MethodDecorator;
 }
 /**
  * Post decorator. define the route method as post.
  *
  * @Post
  */
-export const Post: IPostDecorator<PostMetadata> = createRouteDecorator<PostMetadata>(RequestMethod.Post);
+export const Post: IPostDecorator = createRouteDecorator<PostMetadata>(RequestMethod.Post) as IPostDecorator;
 
 
 
@@ -670,11 +770,10 @@ export const Post: IPostDecorator<PostMetadata> = createRouteDecorator<PostMetad
  *
  * @export
  * @interface IPutDecorator
- * @template T
  */
-export interface IPutDecorator<T extends PutMetadata> extends IMethodDecorator<T> {
+export interface IPutDecorator {
     /**
-     * Put decorator. define the route method as an Put.
+     * Put decorator. define the route method as an put route.
      *
      * @Put
      *
@@ -684,7 +783,7 @@ export interface IPutDecorator<T extends PutMetadata> extends IMethodDecorator<T
     (route: string, contentType?: string): MethodDecorator;
 
     /**
-     * Put decorator. define the route method as Put.
+     * Put decorator. define the route method as put route.
      *
      * @Put
      *
@@ -693,11 +792,17 @@ export interface IPutDecorator<T extends PutMetadata> extends IMethodDecorator<T
      * @param {string} [contentType] set request contentType.
      */
     (route: string, middlewares: MiddlewareType[], contentType?: string): MethodDecorator;
+    /**
+     * Put decorator. define the controller method as an put route.
+     *
+     * @param {PutMetadata} [metadata] put method metadata.
+     */
+    (metadata: PutMetadata): MethodDecorator;
 }
 /**
  * Put decorator. define the route method as put.
  *
  * @Put
  */
-export const Put: IPutDecorator<PutMetadata> = createRouteDecorator<PutMetadata>(RequestMethod.Put);
+export const Put: IPutDecorator = createRouteDecorator<PutMetadata>(RequestMethod.Put) as IPutDecorator;
 

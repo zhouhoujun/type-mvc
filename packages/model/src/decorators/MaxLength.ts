@@ -1,10 +1,23 @@
-import { IFiledDecorator, createFieldDecorator } from './Field';
+import { createFieldDecorator } from './Field';
 import { MaxLengthMetadata } from '../metadata';
-import { IPropertyDecorator, isNumber, isString } from '@tsdi/ioc';
+import { isNumber, isString } from '@tsdi/ioc';
 
 
-export interface IMaxLengthDecorator<T extends MaxLengthMetadata> extends IPropertyDecorator<T> {
+export interface IMaxLengthDecorator<T extends MaxLengthMetadata> {
+    /**
+     * MaxLength decorator
+     */
     (MaxLength?: number, errorMessage?: string, dbtype?: string, dbfield?: string): PropertyDecorator;
+    /**
+    * MaxLength decorator with metadata map.
+    * @param {T} [metadata] define matadata map to resolve value to the property.
+    */
+   (metadata?: T): PropertyDecorator;
+   /**
+    * MaxLength decorator.
+    */
+   (target: object, propertyKey: string | symbol, descriptor?: TypedPropertyDescriptor<any>): void;
+
 }
 
 /**
