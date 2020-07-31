@@ -1,4 +1,4 @@
-import { isClass, Injectable, isString, Inject, INJECTOR, Action, isToken, isFunction, AsyncHandler } from '@tsdi/ioc';
+import { isClass, Injectable, isString, Inject, INJECTOR, Action, isToken, isFunction, AsyncHandler, InjectorProxyToken, InjectorProxy } from '@tsdi/ioc';
 import { ICoreInjector } from '@tsdi/core';
 import { Handle, Handles, HandleType } from '@tsdi/boot';
 import { IContext } from '../IContext';
@@ -14,8 +14,16 @@ import { IMiddleware } from './IMiddleware';
  * @implements {IMiddleware}
  */
 export abstract class MvcMiddleware extends Handle<IContext> implements IMiddleware {
-    static d0NPT = true;
-    @Inject(INJECTOR) injector: ICoreInjector;
+    @Inject(InjectorProxyToken)
+    private _injector: InjectorProxy<ICoreInjector>;
+
+    /**
+     * get injector of current message queue.
+     */
+    getInjector(): ICoreInjector {
+        return this._injector();
+    }
+
 }
 
 /**
@@ -27,8 +35,15 @@ export abstract class MvcMiddleware extends Handle<IContext> implements IMiddlew
  */
 @Injectable()
 export class CompositeMiddleware extends Handles<IContext> {
-    static d0NPT = true;
-    @Inject(INJECTOR) injector: ICoreInjector;
+    @Inject(InjectorProxyToken)
+    private _injector: InjectorProxy<ICoreInjector>;
+
+    /**
+     * get injector of current message queue.
+     */
+    getInjector(): ICoreInjector {
+        return this._injector();
+    }
 
     find(filter: (item: HandleType<IContext>) => boolean) {
         return this.handles.find(item => filter(item));
@@ -71,7 +86,7 @@ export class CompositeMiddleware extends Handles<IContext> {
 
     protected registerHandle(HandleType: HandleType<IContext>): this {
         if (isClass(HandleType)) {
-            this.injector.registerType(HandleType);
+            this.getInjector().registerType(HandleType);
         }
         return this;
     }
@@ -80,7 +95,7 @@ export class CompositeMiddleware extends Handles<IContext> {
         if (handleType instanceof Action) {
             return handleType.toAction() as AsyncHandler<IContext>;
         } else if (isToken(handleType)) {
-            return this.injector.get<Action>(handleType)?.toAction?.() as AsyncHandler<IContext>;
+            return this.getInjector().get<Action>(handleType)?.toAction?.() as AsyncHandler<IContext>;
         } else if (isFunction(handleType)) {
             return handleType as AsyncHandler<IContext>;
         }

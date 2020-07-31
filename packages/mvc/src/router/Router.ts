@@ -6,7 +6,7 @@ import { MvcRoute } from './Route';
 
 @Singleton()
 export class Router extends CompositeMiddleware {
-
+    static ρNPT = true;
     sorted = false;
 
     async execute(ctx: IContext, next?: () => Promise<void>): Promise<void> {
@@ -30,7 +30,7 @@ export class Router extends CompositeMiddleware {
     }
 
     getChecker() {
-        return this.injector.get(RouteChecker);
+        return this.getInjector().get(RouteChecker);
     }
 
     isRouteUrl(route: string) {

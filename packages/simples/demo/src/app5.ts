@@ -8,9 +8,9 @@ import { IdentityModule, JwtRequest } from '@mvx/identity';
     imports: [
         ModelModule,
         IdentityModule
-    ]
+    ],
     // middlewares: DefaultMvcMiddlewares,
-    // debug: true
+    debug: true
 })
 class MvcApi {
     constructor() {
@@ -37,6 +37,7 @@ MvcApplication.run({
                                 return { user: null, info: false }
                             }
                             let user = { user: { id: payload.data, name: 'edge', account: 'edge' }, info: true };
+                            console.log(payload, user);
                             if (user) {
                                 return { user, info: true };
                             } else {
@@ -52,7 +53,7 @@ MvcApplication.run({
                 ],
                 deserializers: [
                     (obj: any, ctx: IContext) => {
-                        return <any>{ name: 'edge', account: 'edge' };
+                        return <any>{ id: 'edge', name: 'edge', account: 'edge' };
                     }
                 ]
             }

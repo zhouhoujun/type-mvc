@@ -24,7 +24,7 @@ export class AuthMiddleware extends CompositeMiddleware {
     private checker: RouteChecker;
     getChecker() {
         if (!this.checker) {
-            this.checker = this.injector.get(RouteChecker);
+            this.checker = this.getInjector().get(RouteChecker);
         }
         return this.checker;
     }

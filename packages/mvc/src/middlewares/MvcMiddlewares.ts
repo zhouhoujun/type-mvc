@@ -13,7 +13,7 @@ import { MvcContext } from '../MvcContext';
  */
 @Singleton()
 export class MvcMiddlewares extends CompositeMiddleware {
-
+    static ρNPT = true;
     /**
      * setup root in koa.
      *

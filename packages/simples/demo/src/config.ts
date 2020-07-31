@@ -14,7 +14,7 @@ export default {
         ],
         deserializers: [
             async (obj, ctx) => {
-                let container =  ctx.getContainer();
+                let container =  ctx.getInjector();
                 // todo get dao service.
                 console.log('deserializers', obj);
                 return obj;

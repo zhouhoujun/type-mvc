@@ -8,7 +8,7 @@ export const RouteUrlArgToken = tokenId<string>('route_url');
 
 @Abstract()
 export abstract class MvcRoute extends MvcMiddleware {
-
+    static ρNPT = true;
     protected metaUrl: string;
     private _url: string;
     get url(): string {
@@ -32,7 +32,7 @@ export abstract class MvcRoute extends MvcMiddleware {
     private checker: RouteChecker;
     getChecker() {
         if (!this.checker) {
-            this.checker = this.injector.get(RouteChecker);
+            this.checker = this.getInjector().get(RouteChecker);
         }
         return this.checker;
     }
@@ -79,7 +79,7 @@ export abstract class MvcRoute extends MvcMiddleware {
         if (handleType instanceof Action) {
             return handleType.toAction() as AsyncHandler<IContext>;
         } else if (isToken(handleType)) {
-            return this.injector.get<Action>(handleType)?.toAction?.() as AsyncHandler<IContext>;
+            return this.getInjector().get<Action>(handleType)?.toAction?.() as AsyncHandler<IContext>;
         } else if (isFunction(handleType)) {
             return handleType as AsyncHandler<IContext>;
         }

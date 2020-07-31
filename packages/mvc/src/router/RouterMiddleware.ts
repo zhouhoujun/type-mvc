@@ -7,11 +7,11 @@ import { IContext } from '../IContext';
 
 @Singleton()
 export class RouterMiddleware extends MvcMiddleware implements IMiddleware {
-
+    static ρNPT = true;
     static middleName = MiddlewareTypes.Router;
 
     execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
         ctx._corsCheck = false;
-        return this.injector.get(Router).execute(ctx, next);
+        return this.getInjector().get(Router).execute(ctx, next);
     }
 }
