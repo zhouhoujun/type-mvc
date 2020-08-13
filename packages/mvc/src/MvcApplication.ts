@@ -107,12 +107,6 @@ export class MvcStartupService extends StartupService<MvcContext> {
         ctx.getKoa().keys = config.keys;
         let injector = ctx.injector;
 
-        if (config.debug) {
-            injector.register(DebugLogAspect);
-            // disable custom log.
-            config.logConfig = null;
-        }
-
         let logConfig = config.logConfig;
         if (logConfig && !injector.has(LogConfigureToken)) {
             injector.bindProvider(LogConfigureToken, logConfig);
@@ -254,7 +248,6 @@ class MvcCoreModule {
             },
             models: ['./models/**/*{.js,.ts}', '!./**/*.d.ts'],
             repositories: ['./repositories/**/*.(ts|js)', '!./**/*.d.ts'],
-            debug: false,
             keys: ['typemvc'],
             contents: ['./public']
         });
