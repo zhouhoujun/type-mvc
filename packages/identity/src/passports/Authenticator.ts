@@ -310,8 +310,9 @@ export class Authenticator implements IAuthenticator {
                 } catch (error) {
                     if (callback) {
                         return callback(error);
+                    } else {
+                        await new FailResult(error.toString(), 401).execute(ctx, next);
                     }
-                    throw error;
                 }
             }
             return allFailed();
