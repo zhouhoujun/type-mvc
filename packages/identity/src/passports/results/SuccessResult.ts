@@ -50,8 +50,8 @@ export class SuccessResult extends ValidationResult {
             }
             ctx.session.message[info.type].push(info.message);
         }
-        if (options.assignProperty) {
-            ctx.state[options.assignProperty] = user;
+        if (options.userProperty) {
+            ctx.state[options.userProperty] = user;
         }
 
         await ctx.login(user);

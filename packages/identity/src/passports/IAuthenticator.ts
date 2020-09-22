@@ -30,7 +30,7 @@ export type TransformAuthInfoOption = Type<ITransformAuthInfo> | ((info, ctx: IC
 
 export interface IAuthFlowOption {
     strategy: string | string[];
-    options: any;
+    options: AuthenticateOption;
 }
 
 /**
@@ -45,9 +45,26 @@ export interface IStrategyOption extends ObjectMap {
     verify?: Function
 }
 
+/**
+ *  init auth option.
+ */
+export interface  InitAuthOption {
+    /**
+     * assign deserializer user info to ctx state via this property name.
+     */
+    userProperty?: string;
+    /**
+     * assign deserializer user role to ctx state via this property name.
+     */
+    rolesProperty?: string;
+}
+
 export interface PassportConfigure {
     default?: IAuthFlowOption;
-    initialize?: { userProperty?: string, rolesProperty?: string }
+    /**
+     * @deprecated
+     */
+    initialize?: InitAuthOption;
     strategies: IStrategyOption[];
     serializers?: SerializeUserOption[];
     deserializers?: DeserializeUserOption[];
@@ -60,12 +77,19 @@ export interface PassportConfigure {
  * @export
  * @interface AuthenticateOption
  */
-export interface AuthenticateOption {
+export interface AuthenticateOption extends InitAuthOption, ObjectMap<any> {
     session?: boolean;
     successRedirect?: string;
     successReturnToOrRedirect?: string;
-    failureRedirect?: string;
+    /**
+     * assign deserializer user info to ctx state via this property name.
+     * @deprecated use userProperty instead.
+     */
     assignProperty?: any;
+    /**
+     * auth faild to redirect to.
+     */
+    failureRedirect?: string;
     failureFlash?: string | { type: string, message: string };
     failureMessage?: string | boolean;
     failWithError?: boolean;
@@ -95,16 +119,67 @@ declare module '@mvx/mvc' {
 
 declare module 'koa' {
     interface Context {
+        /**
+         * passport.
+         */
         passport: IAuthenticator;
+        /**
+         * auth failues.
+         */
         failures: VaildFailure[],
+        /**
+         * mvc application context.
+         */
         mvcContext: MvcContext;
         connection?: any;
+        /**
+         * get current login user.
+         */
+        getUser<T = any>(): T;
+        /**
+         * get current login user roles.
+         */
+        getRoles<T = string>(): T[];
+        /**
+         * current login user has this roles or not.
+         * @param role roles.
+         */
         hasRole(...role: string[]): boolean;
+        /**
+         * Intiate a login session for `user`.
+         *
+         * Options:
+         *   - `session`  Save login state in session, defaults to `true`
+         *
+         * Examples:
+         *
+         *     await req.logIn(user, { session: false });
+         * @param user
+         * @param options
+         */
         login(user: any, options?: any): Promise<void>;
+        /**
+         * Intiate a login session for `user`.
+         * @param user
+         * @param options
+         * @param done
+         */
         logIn(user, options, done);
+        /**
+         * the current user logout.
+         */
         logout(): void;
+        /**
+         * the current user logout.
+         */
         logOut(): void;
+        /**
+         * Test if request is authenticated.
+         */
         isAuthenticated(): boolean;
+        /**
+         * Test if request is unauthenticated.
+         */
         isUnauthenticated(): boolean;
     }
 }
@@ -217,7 +292,7 @@ export interface IAuthenticator {
      *     });
      *
      */
-    initialize(options?: { userProperty?: string, rolesProperty?: string }): Middleware;
+    initialize(options?: InitAuthOption): Middleware;
     /**
      * Authenticates requests.
      *

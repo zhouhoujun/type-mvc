@@ -41,27 +41,9 @@ export class AuthMiddleware extends CompositeMiddleware {
     }
 
     protected async setup(context: MvcContext) {
-        let configuration: IConfiguration = context.getConfiguration();
-        this.use(this.passport.initialize(configuration.passports.initialize || {}));
+        let { passports } = context.getConfiguration();
+        let initOpt = passports.default?.options ?? {};
+        this.use(this.passport.initialize({ userProperty: initOpt.userProperty || initOpt.assignProperty, rolesProperty: initOpt.rolesProperty, ...passports.initialize }));
         this.use(this.passport.session());
     }
 }
-
-
-// @Middleware({
-//     name: 'authcheck',
-//     scope: 'route'
-// })
-// export class AuthCheckMiddleware extends MvcMiddleware {
-//     @Inject(AuthenticatorToken)
-//     passport: IAuthenticator;
-
-//     async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
-//         let configuration: IConfiguration = ctx.mvcContext.configuration;
-//         if (configuration.passports.default) {
-//             let flowOption = configuration.passports.default;
-//             await this.passport.authenticate(flowOption.strategy, flowOption.options)(ctx, next);
-//         }
-//         await next();
-//     }
-// }

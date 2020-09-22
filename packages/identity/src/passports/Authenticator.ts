@@ -334,7 +334,7 @@ export class Authenticator implements IAuthenticator {
      *    passport.authorize('twitter-authz', { failureRedirect: '/account' });
      */
     public authorize(strategy: string | string[], options: AuthenticateOption = {}, callback?) {
-        options.assignProperty = 'account';
+        options.userProperty = 'account';
         return this.authenticate(strategy, options, callback);
     }
 

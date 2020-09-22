@@ -33,6 +33,32 @@ async function login(this: Context, user): Promise<void> {
 }
 
 /**
+ * get current login user.
+ *
+ * @api public
+ */
+function getUser<T = any>(this: Context): T {
+    if (!this.passport || !this.session) {
+        return null;
+    }
+    const property = this.passport.userProperty;
+    return this.state[property];
+}
+
+/**
+ * get current login user roles.
+ *
+ * @api public
+ */
+function getRoles<T = string>(this: Context): T[] {
+    if (!this.passport || !this.session) {
+        return null;
+    }
+    const property = this.passport.rolesProperty;
+    return this.state[property];
+}
+
+/**
  * Terminate an existing login session.
  *
  * @api public
@@ -100,27 +126,37 @@ export function contextExtends(ctx: BaseContext): void {
         login: {
             value: login,
             writable: false,
-            enumerable: false,
+            enumerable: false
         },
         logout: {
             value: logout,
             writable: false,
-            enumerable: false,
+            enumerable: false
         },
-        isAuthenticated: {
-            value: isAuthenticated,
+        getUser: {
+            value: getUser,
             writable: false,
-            enumerable: false,
-        },
-        isUnauthenticated: {
-            value: isUnauthenticated,
-            writable: false,
-            enumerable: false,
+            enumerable: false
         },
         hasRole: {
             value: hasRole,
             writable: false,
-            enumerable: false,
+            enumerable: false
+        },
+        getRoles: {
+            value: getRoles,
+            writable: false,
+            enumerable: false
+        },
+        isAuthenticated: {
+            value: isAuthenticated,
+            writable: false,
+            enumerable: false
+        },
+        isUnauthenticated: {
+            value: isUnauthenticated,
+            writable: false,
+            enumerable: false
         }
     });
 }
