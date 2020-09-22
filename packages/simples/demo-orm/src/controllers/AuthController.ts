@@ -38,7 +38,6 @@ export class AuthController {
     @Get('/refresh')
     async refreshToken() {
         let strategy = this.ctx.passport.get('jwt') as JwtStrategy;
-        this.ctx.mvcContext.getConfiguration().passports.default.options
         let sign = await strategy.sign({
             data: this.ctx.getUser().id
         }, strategy.secretOrKey, { expiresIn: 60 * 60 * 1000 });
