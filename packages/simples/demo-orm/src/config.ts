@@ -3,8 +3,7 @@ import { LogConfigure } from '@tsdi/logs';
 import { Connection } from 'typeorm';
 import { User } from './models/User';
 import { UserRepository } from './repositories/UserRepository';
-// import { JwtRequest } from '@mvx/identity';
-// import { UserService } from './services';
+import { JwtRequest } from '@mvx/identity';
 
 export default {
     // debug: true,
@@ -40,46 +39,43 @@ export default {
         synchronize: true, // 同步数据库
         logging: false  // 日志
     },
-    // passports: {
-    //     default: { strategy: 'jwt', options: { session: false } },
-    //     strategies: [
-    //         {
-    //             strategy: 'jwt',
-    //             issuer: '192.168.1.0',
-    //             audience: '192.168.1.0',
-    //             secretOrKey: 'secret',
-    //             jwtFromRequest: JwtRequest.fromAuthHeaderAsBearerToken(),
-    //             verify: async (payload: any, ctx?: IContext): Promise<{ user, info }> => {
-    //                 if (!payload.data) {
-    //                     return { user: null, info: false }
-    //                 }
-    //                 if (payload.data === '5d2a4ac905c30c31400e5df8') {
-    //                     return { user: { id: payload.data, name: 'edge', account: 'edge' }, info: true };
-    //                 }
-    //                 if (Date.now() / 1000 > payload.exp) {
-    //                     return { user: { id: payload.data }, info: false }
-    //                 }
+    passports: {
+        default: { strategy: 'jwt', options: { session: false } },
+        strategies: [
+            {
+                strategy: 'jwt',
+                issuer: '192.168.1.0',
+                audience: '192.168.1.0',
+                secretOrKey: 'secret',
+                jwtFromRequest: JwtRequest.fromAuthHeaderAsBearerToken(),
+                verify: async (payload: any, ctx?: IContext): Promise<{ user, info }> => {
+                    if (!payload.data) {
+                        return { user: null, info: false }
+                    }
+                    if (Date.now() / 1000 > payload.exp) {
+                        return { user: { id: payload.data }, info: false }
+                    }
 
-    //                 let user = await ctx.getInjector().get(UserRepository).verifyJWT(payload.data);
-    //                 if (user) {
-    //                     return { user, info: true };
-    //                 } else {
-    //                     return { user: null, info: false };
-    //                 }
-    //             }
-    //         }
-    //     ],
-    //     serializers: [
-    //         async (user: any, ctx: IContext) => {
-    //             return user.id.toString();
-    //         }
-    //     ],
-    //     deserializers: [
-    //         (obj: any, ctx: IContext) => {
-    //             return ctx.getInjector().get(UserRepository).findById(obj.data);
-    //         }
-    //     ]
-    // },
+                    let user = await ctx.getInjector().get(UserRepository).verifyJWT(payload.data);
+                    if (user) {
+                        return { user, info: true };
+                    } else {
+                        return { user: null, info: false };
+                    }
+                }
+            }
+        ],
+        serializers: [
+            async (user: any, ctx: IContext) => {
+                return user.id.toString();
+            }
+        ],
+        deserializers: [
+            (obj: any, ctx: IContext) => {
+                return ctx.getInjector().get(UserRepository).findById(obj.data);
+            }
+        ]
+    },
     logConfig: <LogConfigure>{
         adapter: 'log4js',
         config: {
