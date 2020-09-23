@@ -41,7 +41,7 @@ export class AuthController {
         let sign = await strategy.sign({
             data: this.ctx.getUser().id
         }, strategy.secretOrKey, { expiresIn: 60 * 60 * 1000 });
-        this.ctx.body = ResponseResult.success(sign);
+        return ResponseResult.success(sign);
 
     }
 
