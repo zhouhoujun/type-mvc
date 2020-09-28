@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@tsdi/ioc';
 import { IContext, ContextToken } from './IContext';
 import { ViewResult } from './results/ViewResult';
-import { FileResult } from './results/FileResult';
+import { FileResult, FileResultOption } from './results/FileResult';
 import { RedirectResult } from './results/RedirectResult';
 import { JsonResult } from './results/JsonResult';
 import { Stream } from 'stream';
@@ -40,13 +40,12 @@ export class BaseController {
      * respone file result.
      *
      * @param {(string | Buffer | Stream)} file
-     * @param {string} [contentType]
-     * @param {string} [fileDownloadName]
+     * @param {options} [FileResultOption]
      * @returns
      * @memberof BaseController
      */
-    file(file: string | Buffer | Stream, contentType?: string, fileDownloadName?: string): FileResult {
-        return new FileResult(file, contentType, fileDownloadName);
+    file(file: string | Buffer | Stream, options?: FileResultOption): FileResult {
+        return new FileResult(file, options);
     }
 
     /**

@@ -6,6 +6,21 @@ import { Options } from 'content-disposition';
 import { ResultValue } from './ResultValue';
 import { IContext } from '../IContext';
 
+export interface FileResultOption {
+
+    /**
+     * content type
+     */
+    contentType?: string;
+    /**
+     * file name for download.
+     */
+    filename?: string;
+    /**
+     * content disposition.
+     */
+    disposition: Options;
+}
 
 /**
  * controller method return result type of file.
@@ -14,7 +29,7 @@ import { IContext } from '../IContext';
  * @class FileResult
  */
 export class FileResult extends ResultValue {
-    constructor(private file: string | Buffer | Stream, private options?: { contentType?: string; filename?: string; disposition: Options; }) {
+    constructor(private file: string | Buffer | Stream, private options?: FileResultOption) {
         super(options?.contentType || 'application/octet-stream');
     }
 
