@@ -5,7 +5,7 @@ import { MiddlewareRegister } from '../middlewares/MiddlewareRegister';
 
 
 export const MiddlewareRegisterAction = (ctx: DesignContext, next: () => void) => {
-    let metas = ctx.reflects.getMetadata<MiddlewareMetadata>(ctx.currDecoractor, ctx.type);
+    let metas = ctx.reflects.getMetadata<MiddlewareMetadata>(ctx.currDecor, ctx.type);
     let meta = metas.find(meta => !!meta.before || !!meta.after) || lang.first(metas);
 
     if (meta.scope === 'global') {

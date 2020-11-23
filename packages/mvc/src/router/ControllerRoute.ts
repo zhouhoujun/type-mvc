@@ -1,6 +1,6 @@
 import {
     lang, Injectable, Type, getMethodMetadata, isFunction, isBaseType,
-    isUndefined, ParamProviders, Provider, isClass, IParameter, isObject,
+    isUndefined, Provider, isClass, IParameter, isObject,
     isArray, isPromise, getTypeMetadata, isString, Inject, isNullOrUndefined, tokenId
 } from '@tsdi/ioc';
 import { ModelParser, DefaultModelParserToken, BaseTypeParserToken, BuilderServiceToken } from '@tsdi/boot';
@@ -259,9 +259,9 @@ export class ControllerRoute extends MvcRoute {
         }
     }
 
-    protected async createProvider(ctx: IContext, ctrl: any, meta: RouteMetadata, params: IParameter[]): Promise<ParamProviders[]> {
+    protected async createProvider(ctx: IContext, ctrl: any, meta: RouteMetadata, params: IParameter[]): Promise<Provider[]> {
         let injector = ctx.getInjector();
-        let providers: ParamProviders[] = [{ provide: ContextToken, useValue: ctx }];
+        let providers: Provider[] = [{ provide: ContextToken, useValue: ctx }];
         if (params && params.length) {
             let restParams: any = {};
             if (this.isRestUri(meta.route)) {
@@ -276,7 +276,7 @@ export class ControllerRoute extends MvcRoute {
             }
             let body = ctx.request.body || {};
             let parser = injector.get(BaseTypeParserToken);
-            let ppds: ParamProviders[] = await Promise.all(params.map(async (param, idx) => {
+            let ppds: Provider[] = await Promise.all(params.map(async (param) => {
                 let ptype = param.provider ? injector.getTokenProvider(param.provider) : param.type;
                 let val;
                 if (isFunction(ptype)) {
@@ -306,7 +306,7 @@ export class ControllerRoute extends MvcRoute {
                 if (isNullOrUndefined(val)) {
                     return null;
                 }
-                return Provider.createParam(param.name || ptype, val, idx);
+                return { provide: param.name || ptype, useValue: val };
             }))
             providers = providers.concat(ppds.filter(p => p !== null));
         }

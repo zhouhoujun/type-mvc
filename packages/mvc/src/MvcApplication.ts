@@ -72,7 +72,7 @@ export class MvcApplication extends BootApplication<MvcContext> {
 
     onContextInit(ctx: MvcContext) {
         super.onContextInit(ctx);
-        this.getContainer().setSingleton(MvcContextToken, ctx);
+        this.getContainer().setValue(MvcContextToken, ctx);
     }
 }
 

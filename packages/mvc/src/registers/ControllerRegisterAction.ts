@@ -7,7 +7,7 @@ import { RouteUrlArgToken } from '../router/Route';
 
 export const ControllerRegisterAction = (ctx: DesignContext, next: () => void) => {
 
-    let ctrlmetadatas = ctx.reflects.getMetadata<ControllerMetadata>(ctx.currDecoractor, ctx.type);
+    let ctrlmetadatas = ctx.reflects.getMetadata<ControllerMetadata>(ctx.currDecor, ctx.type);
     let router = ctx.injector.getInstance(Router);
     ctrlmetadatas.forEach(ctlmeta => {
         if (!ctlmeta) {
