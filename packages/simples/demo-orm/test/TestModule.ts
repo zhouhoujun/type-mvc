@@ -1,11 +1,9 @@
-import { User } from '../src/models/User';
 import { MvcModule } from '@mvx/mvc';
-import { RunnableConfigure } from '@tsdi/boot';
 import { TypeOrmModule } from '@tsdi/typeorm-adapter';
 import { RealtimeService } from '../src/services/RealtimeService';
 
 
-@MvcModule(<RunnableConfigure>{
+@MvcModule({
     baseURL: __dirname,
     imports: [
         TypeOrmModule
