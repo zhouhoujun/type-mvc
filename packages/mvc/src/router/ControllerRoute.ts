@@ -15,6 +15,7 @@ import { MiddlewareType } from '../middlewares/IMiddleware';
 import { AuthorizationService } from '../services/AuthorizationService';
 import { MvcMiddleware } from '../middlewares/MvcMiddleware';
 import { MvcMiddlewares } from '../middlewares/MvcMiddlewares';
+const vary = require('vary');
 
 declare let Buffer: any;
 
@@ -133,11 +134,19 @@ export class ControllerRoute extends MvcRoute {
             try {
                 return await next();
             } catch (err) {
-                err.headers = Object.assign({}, err.headers, headersSet);
+                const errHeadersSet = err.headers || {};
+                const varyWithOrigin = vary.append(errHeadersSet.vary || errHeadersSet.Vary || '', 'Origin');
+                delete errHeadersSet.Vary;
+
+                err.headers = {
+                    ...errHeadersSet,
+                    ...headersSet,
+                    ...{ vary: varyWithOrigin },
+                };
                 this.catchHttpError(ctx, err);
             };
         } else {
-            let coremeta = this.getCorsMeta(ctx, ctx.get('Access-Control-Request-Method'));
+            const coremeta = this.getCorsMeta(ctx, ctx.get('Access-Control-Request-Method'));
             if (!coremeta) {
                 ctx.status = 403;
                 return await next();
