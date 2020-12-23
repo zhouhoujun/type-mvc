@@ -151,7 +151,7 @@ export class ControllerRoute extends MvcRoute {
                 ctx.status = 403;
                 return await next();
             }
-            options = Object.assign({}, options, coremeta);
+            options = { ...options, ...coremeta };
             ctx.set('Access-Control-Allow-Origin', origin);
 
             if (options.credentials === true) {
