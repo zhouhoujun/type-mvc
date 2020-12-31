@@ -4,7 +4,6 @@ import {
     isArray, isPromise, getTypeMetadata, isString, Inject, isNullOrUndefined, tokenId
 } from '@tsdi/ioc';
 import { ModelParser, DefaultModelParserToken, BaseTypeParserToken, BuilderServiceToken } from '@tsdi/boot';
-import { MvcRoute, RouteUrlArgToken } from './Route';
 import { IContext, ContextToken } from '../IContext';
 import { RequestMethod, parseRequestMethod, methodToString } from '../RequestMethod';
 import { RouteMetadata, CorsMetadata } from '../metadata';
@@ -13,6 +12,7 @@ import { ResultValue } from '../results/ResultValue';
 import { Cors, Route } from '../decorators';
 import { MiddlewareType } from '../middlewares/IMiddleware';
 import { AuthorizationService } from '../services/AuthorizationService';
+import { MvcRoute, RouteUrlArgToken } from './Route';
 import { MvcMiddleware } from '../middlewares/MvcMiddleware';
 import { MvcMiddlewares } from '../middlewares/MvcMiddlewares';
 const vary = require('vary');
@@ -26,6 +26,8 @@ export function isBuffer(target: any): boolean {
         return lang.getClass(target) === Buffer;
     }
 }
+
+const emptyNext = async () => { };
 
 export const RouteControllerArgToken = tokenId<Type>('ROUTE_CONTRL_ARGS');
 
@@ -54,15 +56,8 @@ export class ControllerRoute extends MvcRoute {
         if (middlewares.length) {
             await this.execFuncs(ctx, middlewares.map(m => this.toHandle(m)).filter(f => !!f))
         }
-        await this.navigating(ctx, meta, next);
-    }
-
-    async navigating(ctx: IContext, meta: RouteMetadata, next: () => Promise<void>) {
-        try {
-            await this.invoke(ctx, meta);
-        } catch (err) {
-            this.catchHttpError(ctx, err);
-        }
+        await this.invoke(ctx, meta);
+        return await next();
     }
 
     protected getRouteMiddleware(ctx: IContext, meta: RouteMetadata) {
@@ -80,15 +75,6 @@ export class ControllerRoute extends MvcRoute {
     }
 
     async options(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        try {
-            return await this.invokeOption(ctx, next);
-        } catch (err) {
-            this.catchHttpError(ctx, err);
-        }
-    }
-
-
-    async invokeOption(ctx: IContext, next: () => Promise<void>): Promise<void> {
         let requestOrigin = ctx.get('Origin');
         ctx.vary('Origin');
         if (!requestOrigin) {
@@ -185,14 +171,9 @@ export class ControllerRoute extends MvcRoute {
 
     protected catchHttpError(ctx: IContext, err: Error) {
         ctx.status = err instanceof HttpError ? err.status || 500 : 500;
-        ctx.message = err.message || err.toString() || '';
+        ctx.message = err.message || err.stack || '';
         const logger = ctx.mvcContext.getLogManager()?.getLogger();
-        if (ctx.status === 500) {
-            logger?.error(err);
-            throw err;
-        } else {
-            logger?.warn(err);
-        }
+        logger?.error(err);
     }
 
     protected getCorsMeta(ctx: IContext, reqMethod: string): CorsMetadata {
@@ -242,7 +223,7 @@ export class ControllerRoute extends MvcRoute {
             if (isFunction(result)) {
                 await result(ctx);
             } else if (result instanceof MvcMiddleware || result instanceof MvcMiddlewares) {
-                await result.execute(ctx, null);
+                await result.execute(ctx, emptyNext);
             } else if (isBaseType(result) || isArray(result) || isBuffer(result)) {
                 if (isBuffer(result)) {
                     if (typeof Buffer !== 'undefined') {

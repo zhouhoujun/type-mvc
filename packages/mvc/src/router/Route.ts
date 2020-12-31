@@ -1,8 +1,9 @@
 import { Abstract, tokenId, Action, isToken, isFunction, AsyncHandler } from '@tsdi/ioc';
+import { HandleType } from '@tsdi/boot';
 import { IContext } from '../IContext';
 import { MvcMiddleware } from '../middlewares/MvcMiddleware';
 import { RouteChecker } from '../services/RouteChecker';
-import { HandleType } from '@tsdi/boot';
+
 
 export const RouteUrlArgToken = tokenId<string>('route_url');
 
@@ -54,20 +55,11 @@ export abstract class MvcRoute extends MvcMiddleware {
         return this.getChecker().isActiveRoute(ctx, this.url);
     }
 
-    protected getRouteNext(ctx: IContext): () => Promise<void> {
-        return ctx.__routeNext;
-    }
-
-
-    execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
+    async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
         if (this.match(ctx)) {
-            if (!ctx._corsCheck && ctx.method !== 'OPTIONS') {
-                return this.navigate(ctx, this.getRouteNext(ctx));
-            } else {
-                return this.options(ctx, this.getRouteNext(ctx))
-            }
+           ctx.route = this;
         } else {
-            return next();
+            return await next();
         }
     }
 

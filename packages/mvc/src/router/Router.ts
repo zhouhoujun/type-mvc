@@ -1,7 +1,7 @@
 import { Singleton } from '@tsdi/ioc';
+import { IContext } from '../IContext';
 import { CompositeMiddleware } from '../middlewares/MvcMiddleware';
 import { RouteChecker } from '../services/RouteChecker';
-import { IContext } from '../IContext';
 import { MvcRoute } from './Route';
 
 @Singleton()
@@ -9,22 +9,44 @@ export class Router extends CompositeMiddleware {
     static ρNPT = true;
     sorted = false;
 
-    async execute(ctx: IContext, next?: () => Promise<void>): Promise<void> {
-        if ((!ctx.status || ctx.status === 404) && this.isRouteUrl(ctx.url)) {
-            if (!this.sorted) {
-                this.handles = this.handles.sort((a, b) => {
-                    if (a instanceof MvcRoute && b instanceof MvcRoute) {
-                        return (b.url || '').length - (a.url || '').length;
-                    }
-                    return -1;
-                });
-                this.resetFuncs();
-                this.sorted = true;
-            }
-
-            ctx.__routeNext = next;
-            return await super.execute(ctx);
+    async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
+        if (this.vaild(ctx) && ctx.method !== 'OPTIONS') {
+            await this.execute(ctx);
+            const route = ctx.route as MvcRoute;
+            return route ? route.navigate(ctx, next) : next();
         } else {
+            return await next();
+        }
+    }
+
+    async options(ctx: IContext, next: () => Promise<void>): Promise<void> {
+        if (this.vaild(ctx)) {
+            await this.execute(ctx);
+            const route = ctx.route as MvcRoute;
+            return route ? route.options(ctx, next) : next();
+        } else {
+            return await next();
+        }
+
+    }
+
+    protected vaild(ctx: IContext): boolean {
+        return (!ctx.status || ctx.status === 404) && this.isRouteUrl(ctx.url);
+    }
+
+    async execute(ctx: IContext, next?: () => Promise<void>): Promise<void> {
+        if (!this.sorted) {
+            this.handles = this.handles.sort((a, b) => {
+                if (a instanceof MvcRoute && b instanceof MvcRoute) {
+                    return (b.url || '').length - (a.url || '').length;
+                }
+                return -1;
+            });
+            this.resetFuncs();
+            this.sorted = true;
+        }
+        await super.execute(ctx);
+        if (next) {
             return await next();
         }
     }
@@ -37,8 +59,8 @@ export class Router extends CompositeMiddleware {
         return this.getChecker().isRoute(route);
     }
 
-    routes(route: MvcRoute): this {
-        this.use(route);
+    routes(...routes: MvcRoute[]): this {
+        routes.forEach(r=> this.use(r));
         this.sorted = false;
 
         return this;
