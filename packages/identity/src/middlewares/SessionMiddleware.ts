@@ -40,8 +40,7 @@ export class SessionMiddleware extends MvcMiddleware {
         if (!this.hasInit && !this.middleware) {
             let sessCfg = context.getConfiguration().session || ({} as any);
             this.hasInit = true;
-            this.sessCfg  = Object.assign(sessCfg, {
-                autoCommit: false,
+            this.sessCfg = Object.assign(sessCfg, {
                 key: 'typemvc:sess', /** (string) cookie key (default is koa:sess) */
                 /** (number || 'session') maxAge in ms (default is 1 days) */
                 /** 'session' will result in a cookie that expires when session/browser is closed */
@@ -64,8 +63,22 @@ export class SessionMiddleware extends MvcMiddleware {
         return this.middleware;
     }
 
-async execute(ctx: IContext, next: () => Promise<void>): Promise < void> {
-    let middleware = this.getMiddleware(ctx.mvcContext, ctx.app);
-    return await middleware(ctx, next);
-}
+    async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
+        let middleware = this.getMiddleware(ctx.mvcContext, ctx.app);
+        let error: any;
+        try {
+            return await middleware(ctx, async () => {
+                try {
+                    await next();
+                } catch (err) {
+                    error = err
+                    throw err;
+                }
+            });
+        } catch (err) {
+            if (err === error) {
+                throw err;
+            }
+        }
+    }
 }
