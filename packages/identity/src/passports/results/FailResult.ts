@@ -17,7 +17,7 @@ export class FailResult extends ValidationResult {
         super();
     }
 
-    async execute(ctx: Context, next: () => Promise<void>): Promise<void> {
+    action(ctx: Context): void {
         ctx.failures.push({ challenge: this.challenge, status: this.status });
     }
 }

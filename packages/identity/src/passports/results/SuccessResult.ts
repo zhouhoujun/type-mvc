@@ -22,7 +22,7 @@ export class SuccessResult extends ValidationResult {
         super();
     }
 
-    async execute(ctx: Context, next: () => Promise<void>, callback?: Function): Promise<void> {
+    async action(ctx: Context, callback?: Function): Promise<void> {
 
         let user = this.user;
         let info = this.info || <any>{};

@@ -1,13 +1,14 @@
-import { Singleton, isFunction, isString } from '@tsdi/ioc';
+import { Singleton, isFunction, isString, lang, PromiseUtil, chain } from '@tsdi/ioc';
 import { Middleware, Context } from 'koa';
 import * as http from 'http';
 import { contextExtends } from './ContextExtends';
-import { FailResult } from './results';
+import { FailResult, PassResult, RedirectResult, SuccessResult } from './results';
 import { IStrategy } from './IStrategy';
 import { Strategy } from './Strategy';
 import { SessionStrategy } from './SessionStrategy';
 import { AuthenticationError } from '../errors';
 import { IAuthenticator, AuthenticatorToken, AuthenticateOption } from './IAuthenticator';
+import { UnauthorizedError } from '@mvx/mvc';
 
 
 /**
@@ -241,61 +242,7 @@ export class Authenticator implements IAuthenticator {
             // accumulator for failures from each strategy in the chain
             const failures = ctx.failures = [];
 
-            function allFailed() {
-                if (callback) {
-                    if (!multi) {
-                        return callback(null, false, failures[0].challenge, failures[0].status);
-                    } else {
-                        const challenges = failures.map(f => f.challenge);
-                        const statuses = failures.map(f => f.status);
-                        return callback(null, false, challenges, statuses);
-                    }
-                }
-
-                // Strategies are ordered by priority.  For the purpose of flashing a
-                // message, the first failure will be displayed.
-                // const challenge = (failures[0] || {}).challenge || {};
-                if (options.failureMessage && failures[0].challenge.type) {
-                    const challenge = failures[0].challenge;
-                    if (!(challenge.type in ctx.session.message)) {
-                        ctx.session.message[challenge.type] = [];
-                    }
-                    ctx.session.message[challenge.type].push(challenge.messages);
-                }
-                if (options.failureRedirect) {
-                    return ctx.redirect(options.failureRedirect);
-                }
-
-                // When failure handling is not delegated to the application, the default
-                // is to respond with 401 Unauthorized.  Note that the WWW-Authenticate
-                // header will be set according to the strategies in use (see
-                // actions#fail).  If multiple strategies failed, each of their challenges
-                // will be included in the response.
-
-                const rchallenge = [];
-                let rstatus;
-                let status;
-                for (const failure of failures) {
-                    status = failure.status;
-                    rstatus = rstatus || status;
-                    if (isString(failure.challenge)) {
-                        rchallenge.push(failure.challenge);
-                    }
-                }
-
-                ctx.status = rstatus || 401;
-                if (ctx.status === 401 && rchallenge.length) {
-                    ctx.set('WWW-Authenticate', rchallenge);
-                }
-                if (options.failWithError) {
-                    throw new AuthenticationError(rstatus, http.STATUS_CODES[ctx.status]);
-                }
-                // ctx.res.statusMessage = http.STATUS_CODES[ctx.status];
-                ctx.response.message = http.STATUS_CODES[ctx.status];
-                ctx.res.end(http.STATUS_CODES[ctx.status]);
-            }
-
-            for (const strategyName of strategyNames) {
+            await chain((strategyNames as string[]).map(strategyName => async (ctx, step: () => Promise<void>) => {
                 const strategy = this.strategies.get(strategyName);
                 if (!strategy) {
                     throw new Error(`Unknown authentication strategy "${strategyName}"`);
@@ -303,19 +250,74 @@ export class Authenticator implements IAuthenticator {
                 try {
                     const res = await strategy.authenticate(ctx, options);
                     if (res instanceof FailResult) {
-                        await res.execute(ctx, next);
+                        await res.action(ctx);
+                    } else if (res instanceof SuccessResult || res instanceof RedirectResult) {
+                        await res.action(ctx);
                     } else {
-                        return await res.execute(ctx, next, callback);
+                        await res.action(ctx, callback);
+                        return step();
                     }
                 } catch (error) {
-                    if (callback) {
-                        return callback(error);
-                    } else {
-                        await new FailResult(error.toString(), 401).execute(ctx, next);
-                    }
+                    await new FailResult(error.toString(), 401).action(ctx);
+                }
+            }), ctx);
+
+            if(!failures.length){
+                return await next();
+            }
+            if (callback) {
+                if (!multi) {
+                    return callback(null, false, failures[0].challenge, failures[0].status);
+                } else {
+                    const challenges = failures.map(f => f.challenge);
+                    const statuses = failures.map(f => f.status);
+                    return callback(null, false, challenges, statuses);
                 }
             }
-            return allFailed();
+
+            // Strategies are ordered by priority.  For the purpose of flashing a
+            // message, the first failure will be displayed.
+            // const challenge = (failures[0] || {}).challenge || {};
+            if (options.failureMessage && failures[0].challenge.type) {
+                const challenge = failures[0].challenge;
+                if (!(challenge.type in ctx.session.message)) {
+                    ctx.session.message[challenge.type] = [];
+                }
+                ctx.session.message[challenge.type].push(challenge.messages);
+            }
+            if (options.failureRedirect) {
+                return ctx.redirect(options.failureRedirect);
+            }
+
+            // When failure handling is not delegated to the application, the default
+            // is to respond with 401 Unauthorized.  Note that the WWW-Authenticate
+            // header will be set according to the strategies in use (see
+            // actions#fail).  If multiple strategies failed, each of their challenges
+            // will be included in the response.
+
+            const rchallenge = [];
+            let rstatus;
+            let status;
+            for (const failure of failures) {
+                status = failure.status;
+                rstatus = rstatus || status;
+                if (isString(failure.challenge)) {
+                    rchallenge.push(failure.challenge);
+                }
+            }
+
+            ctx.status = rstatus || 401;
+            if (ctx.status === 401 && rchallenge.length) {
+                ctx.set('WWW-Authenticate', rchallenge);
+            }
+            if (options.failWithError) {
+                throw new AuthenticationError(rstatus, http.STATUS_CODES[ctx.status]);
+            }
+            // ctx.res.statusMessage = http.STATUS_CODES[ctx.status];
+            ctx.response.message = http.STATUS_CODES[ctx.status];
+            ctx.res.end(http.STATUS_CODES[ctx.status]);
+
+            throw new UnauthorizedError(ctx.response.message)
         };
     }
 

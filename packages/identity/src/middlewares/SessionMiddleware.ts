@@ -29,45 +29,43 @@ export abstract class SessionStorage implements stores {
  */
 @Middleware({
     name: MiddlewareTypes.Session,
-    before: MiddlewareTypes.BodyParser
+    after: MiddlewareTypes.Cors
 })
 export class SessionMiddleware extends MvcMiddleware {
 
     private middleware: MiddlewareFunc;
     private hasInit = false;
+    private sessCfg: any;
     getMiddleware(context: MvcContext, koa: any) {
         if (!this.hasInit && !this.middleware) {
-            let sessCfg = context.getConfiguration().session;
+            let sessCfg = context.getConfiguration().session || ({} as any);
             this.hasInit = true;
-            if (sessCfg) {
-                sessCfg = Object.assign({
-                    key: 'typemvc:sess', /** (string) cookie key (default is koa:sess) */
-                    /** (number || 'session') maxAge in ms (default is 1 days) */
-                    /** 'session' will result in a cookie that expires when session/browser is closed */
-                    /** Warning: If a session cookie is stolen, this cookie will never expire */
-                    maxAge: 36000000,
-                    overwrite: true, /** (boolean) can overwrite or not (default true) */
-                    httpOnly: true, /** (boolean) httpOnly or not (default true) */
-                    signed: true, /** (boolean) signed or not (default true) */
-                    rolling: false/** (boolean) Force a session identifier cookie to be set on every response. The expiration is reset to the original maxAge, resetting the expiration countdown. default is false **/
-                }, sessCfg);
-                if (!sessCfg.store) {
-                    let storage = context.getContainer().getService(SessionStorage);
-                    if (storage) {
-                        sessCfg.store = storage;
-                    }
+            this.sessCfg  = Object.assign(sessCfg, {
+                autoCommit: false,
+                key: 'typemvc:sess', /** (string) cookie key (default is koa:sess) */
+                /** (number || 'session') maxAge in ms (default is 1 days) */
+                /** 'session' will result in a cookie that expires when session/browser is closed */
+                /** Warning: If a session cookie is stolen, this cookie will never expire */
+                maxAge: 36000000,
+                overwrite: true, /** (boolean) can overwrite or not (default true) */
+                httpOnly: true, /** (boolean) httpOnly or not (default true) */
+                signed: true, /** (boolean) signed or not (default true) */
+                rolling: false/** (boolean) Force a session identifier cookie to be set on every response. The expiration is reset to the original maxAge, resetting the expiration countdown. default is false **/
+            }, sessCfg);
+            if (!this.sessCfg.store) {
+                let storage = context.getContainer().getService(SessionStorage);
+                if (storage) {
+                    this.sessCfg.store = storage;
                 }
-
-                this.middleware = session(sessCfg, koa);
-            } else {
-                this.middleware = session(koa);
             }
+
+            this.middleware = session(this.sessCfg, koa);
         }
         return this.middleware;
     }
 
-    execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        let middleware = this.getMiddleware(ctx.mvcContext, ctx.app);
-        return middleware(ctx, next);
-    }
+async execute(ctx: IContext, next: () => Promise<void>): Promise < void> {
+    let middleware = this.getMiddleware(ctx.mvcContext, ctx.app);
+    return await middleware(ctx, next);
+}
 }

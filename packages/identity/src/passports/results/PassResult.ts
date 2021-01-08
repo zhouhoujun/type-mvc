@@ -11,7 +11,8 @@ import { Context } from 'koa';
  *
  */
 export class PassResult extends ValidationResult {
-    execute(ctx: Context, next: () => Promise<void>): Promise<void> {
-        return next();
+
+    action(ctx: Context): boolean {
+        return true
     }
 }

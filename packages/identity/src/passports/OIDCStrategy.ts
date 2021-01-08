@@ -1,4 +1,5 @@
 import { isArray, isFunction, Inject, Singleton, PromiseUtil, INJECTOR } from '@tsdi/ioc';
+import { ICoreInjector } from '@tsdi/core';
 import { AfterInit, Input, Component, TemplateOptionToken } from '@tsdi/components';
 import { Strategy } from './Strategy';
 import { IStrategyOption } from './IAuthenticator';
@@ -9,7 +10,6 @@ import { SessionStore, StateStore, OIDCUtils } from '../stores';
 import { parse, resolve, format } from 'url';
 import { OAuth2, OAuth2Error } from './oauth2';
 import { RedirectResult, FailResult, ValidationResult, SuccessResult } from './results';
-import { ICoreInjector } from '@tsdi/core';
 const webfinger = require('webfinger').webfinger;
 const request = require('request');
 

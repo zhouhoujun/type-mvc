@@ -18,10 +18,9 @@ export abstract class ValidationResult {
      *
      * @abstract
      * @param {Context} ctx
-     * @param {() => Promise<void>} next
      * @param {Function} [callback]
-     * @returns {Promise<void>}
+     * @returns {any}
      * @memberof ValidationResult
      */
-    abstract execute(ctx: Context, next: () => Promise<void>, callback?: Function): Promise<void>;
+    abstract action(ctx: Context, callback?: Function): any;
 }
