@@ -78,6 +78,8 @@ export class SessionMiddleware extends MvcMiddleware {
         } catch (err) {
             if (err === error) {
                 throw err;
+            } else {
+                ctx.mvcContext.getLogManager().getLogger()?.error(err);
             }
         }
     }
