@@ -118,7 +118,7 @@ export class ControllerRoute extends MvcRoute {
             }
 
             try {
-                return await next();
+                await next();
             } catch (err) {
                 const errHeadersSet = err.headers || {};
                 const varyWithOrigin = vary.append(errHeadersSet.vary || errHeadersSet.Vary || '', 'Origin');
@@ -129,7 +129,10 @@ export class ControllerRoute extends MvcRoute {
                     ...headersSet,
                     ...{ vary: varyWithOrigin },
                 };
-                this.catchHttpError(ctx, err);
+
+                ctx.status = err instanceof HttpError ? err.status || 500 : 500;
+                ctx.message = err.message || err.toString() || '';
+                ctx.mvcContext.getLogManager()?.getLogger()?.error(err);
             };
         } else {
             const coremeta = this.getCorsMeta(ctx, ctx.get('Access-Control-Request-Method'));
@@ -166,14 +169,6 @@ export class ControllerRoute extends MvcRoute {
             }
             ctx.status = 204;
         }
-    }
-
-
-    protected catchHttpError(ctx: IContext, err: Error) {
-        ctx.status = err instanceof HttpError ? err.status || 500 : 500;
-        ctx.message = err.message || err.stack || '';
-        const logger = ctx.mvcContext.getLogManager()?.getLogger();
-        logger?.error(err);
     }
 
     protected getCorsMeta(ctx: IContext, reqMethod: string): CorsMetadata {

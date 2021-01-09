@@ -240,6 +240,7 @@ class MvcCoreModule {
             views: './views',
             corsOptions: {
                 allowMethods: 'GET,PUT,POST,DELETE,OPTIONS',
+                keepHeadersOnError: true,
                 maxAge: 60 * 60 * 1000
             },
             viewsOptions: {
