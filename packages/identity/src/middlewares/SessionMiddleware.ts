@@ -29,7 +29,7 @@ export abstract class SessionStorage implements stores {
  */
 @Middleware({
     name: MiddlewareTypes.Session,
-    after: MiddlewareTypes.Cors
+    before: MiddlewareTypes.Cors
 })
 export class SessionMiddleware extends MvcMiddleware {
 
