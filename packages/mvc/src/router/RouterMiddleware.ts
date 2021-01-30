@@ -10,7 +10,7 @@ export class RouterMiddleware extends MvcMiddleware implements IMiddleware {
     static ρNPT = true;
     static middleName = MiddlewareTypes.Router;
 
-    execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        return this.getInjector().get(Router).navigate(ctx, next);
+    async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
+        return await this.getInjector().get(Router).navigate(ctx, next);
     }
 }

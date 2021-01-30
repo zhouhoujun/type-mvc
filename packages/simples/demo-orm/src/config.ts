@@ -34,7 +34,7 @@ export default {
         host: process.env.DBHOST || 'localhost',
         port: process.env.DBPORT || 5432,
         username: 'postgres',
-        password: 'postgres',
+        password: 'zhouyou81',
         database: 'testdb',
         synchronize: true, // 同步数据库
         logging: false  // 日志

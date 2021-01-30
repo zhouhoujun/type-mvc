@@ -203,6 +203,7 @@ export class ControllerRoute extends MvcRoute {
         }
         return null;
     }
+
     async invoke(ctx: IContext, meta: RouteMetadata) {
         let injector = ctx.mvcContext.injector;
         if (meta && meta.propertyKey) {

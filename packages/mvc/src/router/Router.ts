@@ -13,7 +13,7 @@ export class Router extends CompositeMiddleware {
         if (this.vaild(ctx) && ctx.method !== 'OPTIONS') {
             await this.execute(ctx);
             const route = ctx.route as MvcRoute;
-            return route ? route.navigate(ctx, next) : next();
+            return await route ? route.navigate(ctx, next) : next();
         } else {
             return await next();
         }
@@ -23,7 +23,7 @@ export class Router extends CompositeMiddleware {
         if (this.vaild(ctx)) {
             await this.execute(ctx);
             const route = ctx.route as MvcRoute;
-            return route ? route.options(ctx, next) : next();
+            return await route ? route.options(ctx, next) : next();
         } else {
             return await next();
         }

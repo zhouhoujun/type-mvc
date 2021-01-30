@@ -1,8 +1,8 @@
-import { Singleton, isFunction, isString, lang, PromiseUtil, chain } from '@tsdi/ioc';
+import { Singleton, isFunction, isString, chain } from '@tsdi/ioc';
 import { Middleware, Context } from 'koa';
 import * as http from 'http';
 import { contextExtends } from './ContextExtends';
-import { FailResult, PassResult, RedirectResult, SuccessResult } from './results';
+import { FailResult, RedirectResult, SuccessResult } from './results';
 import { IStrategy } from './IStrategy';
 import { Strategy } from './Strategy';
 import { SessionStrategy } from './SessionStrategy';
