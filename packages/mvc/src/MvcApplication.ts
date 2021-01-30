@@ -5,7 +5,7 @@ import {
 } from '@tsdi/ioc';
 import { LoadType, ContainerToken, IContainer } from '@tsdi/core';
 import { AopModule } from '@tsdi/aop';
-import { DebugLogAspect, LogConfigureToken, LogModule, ILogger } from '@tsdi/logs';
+import { LogConfigureToken, LogModule, ILogger } from '@tsdi/logs';
 import {
     DefaultConfigureToken, BootApplication, checkBootArgs, BootContext, Startup, Handle, registerModule,
     ModuleProvidersBuilderToken, ModuleProviders, ORMCoreModule, StartupService, Boot
