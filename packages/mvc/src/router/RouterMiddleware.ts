@@ -11,6 +11,7 @@ export class RouterMiddleware extends MvcMiddleware implements IMiddleware {
     static middleName = MiddlewareTypes.Router;
 
     async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        return await this.getInjector().get(Router).navigate(ctx, next);
+        ctx._isCors = false;
+        return await this.getInjector().get(Router).execute(ctx, next);
     }
 }

@@ -10,6 +10,7 @@ export class CorsMiddleware extends MvcMiddleware implements IMiddleware {
     static middleName = MiddlewareTypes.Cors;
 
     async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        return await ctx.getInjector().getInstance(Router).options(ctx, next);
+        ctx._isCors = true;
+        return await ctx.getInjector().getInstance(Router).execute(ctx, next);
     }
 }

@@ -47,7 +47,15 @@ export class ControllerRoute extends MvcRoute {
         super(url);
     }
 
-    async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
+    navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
+        if(ctx._isCors) {
+            return this.options(ctx, next);
+        } else {
+            return this.navigating(ctx, next);
+        }
+    }
+
+    async navigating(ctx: IContext, next: () => Promise<void>): Promise<void> {
         let meta = this.getRouteMetaData(ctx, parseRequestMethod(ctx.method));
         if (!meta) {
             return await next();

@@ -4,6 +4,7 @@ import { IContext } from '../IContext';
 const urlReg = /\/((\w|%|\.))+\.\w+$/;
 const noParms = /\/\s*$/;
 const hasParms = /\?\S*$/;
+const subStart = /^\s*\/|\?/;
 
 @Singleton()
 export class RouteChecker extends IocCoreService {
@@ -39,9 +40,9 @@ export class RouteChecker extends IocCoreService {
 
     isActiveRoute(ctx: IContext, route: string) {
         let routeUrl = this.getReqRoute(ctx);
-        if (route === '') {
+        if (route === '' || route === routeUrl) {
             return true;
         }
-        return routeUrl.startsWith(route);
+        return routeUrl.startsWith(route) && subStart.test(routeUrl.substring(route.length));
     }
 }

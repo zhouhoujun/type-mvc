@@ -1,6 +1,6 @@
 {
   "name": "@mvx/identity",
-  "version": "4.0.34",
+  "version": "4.0.35",
   "description": "identity is oidc for mvc, type-mvc is base on koa. Decorator, Ioc, AOP mvc framework on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -49,13 +49,13 @@
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",
-    "@tsdi/annotations": "~6.0.39",
-    "@tsdi/components": "~6.0.39",
-    "@tsdi/ioc": "~6.0.39",
-    "@tsdi/boot": "~6.0.39",
-    "@tsdi/core": "~6.0.39",
-    "@tsdi/aop":"~6.0.39",
-    "@mvx/mvc": "~4.0.34",
+    "@tsdi/annotations": "~6.0.40",
+    "@tsdi/components": "~6.0.40",
+    "@tsdi/ioc": "~6.0.40",
+    "@tsdi/boot": "~6.0.40",
+    "@tsdi/core": "~6.0.40",
+    "@tsdi/aop":"~6.0.40",
+    "@mvx/mvc": "~4.0.35",
     "tslib": "^1.13.0"
   },
   "homepage": "https://github.com/zhouhoujun/type-mvc#readme"

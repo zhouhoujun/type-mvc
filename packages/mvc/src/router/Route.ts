@@ -57,15 +57,13 @@ export abstract class MvcRoute extends MvcMiddleware {
 
     async execute(ctx: IContext, next: () => Promise<void>): Promise<void> {
         if (this.match(ctx)) {
-           ctx.route = this;
+            await this.navigate(ctx, next);
         } else {
             return await next();
         }
     }
 
     abstract navigate(ctx: IContext, next: () => Promise<void>): Promise<void>;
-
-    abstract options(ctx: IContext, next: () => Promise<void>): Promise<void>;
 
     protected toHandle(handleType: HandleType<IContext>): AsyncHandler<IContext> {
         if (handleType instanceof Action) {

@@ -9,27 +9,6 @@ export class Router extends CompositeMiddleware {
     static ρNPT = true;
     sorted = false;
 
-    async navigate(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        if (this.vaild(ctx) && ctx.method !== 'OPTIONS') {
-            await this.execute(ctx);
-            const route = ctx.route as MvcRoute;
-            return await route ? route.navigate(ctx, next) : next();
-        } else {
-            return await next();
-        }
-    }
-
-    async options(ctx: IContext, next: () => Promise<void>): Promise<void> {
-        if (this.vaild(ctx)) {
-            await this.execute(ctx);
-            const route = ctx.route as MvcRoute;
-            return await route ? route.options(ctx, next) : next();
-        } else {
-            return await next();
-        }
-
-    }
-
     protected vaild(ctx: IContext): boolean {
         return (!ctx.status || ctx.status === 404) && this.isRouteUrl(ctx.url);
     }
