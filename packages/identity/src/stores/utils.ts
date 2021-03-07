@@ -26,7 +26,7 @@ export namespace OIDCUtils {
         }
         var trustProxy = options.proxy;
 
-        var proto = (ctx.headers['x-forwarded-proto'] || '').toLowerCase()
+        var proto = (ctx.headers['x-forwarded-proto']?.toString() || '').toLowerCase()
             , tls = ctx.connection.encrypted || (trustProxy && 'https' === proto.split(/\s*,\s*/)[0])
             , host = (trustProxy && ctx.headers['x-forwarded-host']) || ctx.headers.host
             , protocol = tls ? 'https' : 'http'

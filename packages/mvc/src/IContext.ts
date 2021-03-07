@@ -1,8 +1,7 @@
-import { ObjectMap, InjectToken, tokenId } from '@tsdi/ioc';
+import { ObjectMap, tokenId } from '@tsdi/ioc';
 import { IHandleContext } from '@tsdi/boot';
 import { MvcContext } from './MvcContext';
 import { Context } from 'koa';
-import 'koa-bodyparser';
 import { ICoreInjector } from '@tsdi/core';
 
 /**
@@ -10,6 +9,13 @@ import { ICoreInjector } from '@tsdi/core';
  */
 export const ContextToken = tokenId<IContext>('MVC_SERVICE_CONTEXT');
 
+
+declare module 'koa' {
+    interface Request {
+        body?: any;
+        rawBody: string;
+    }
+} 
 
 /**
  * middleware context.

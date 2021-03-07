@@ -9,7 +9,7 @@ import { AuthenticationError } from './AuthenticationError';
  */
 export class OIDCError extends AuthenticationError {
 
-    constructor(message: string, public code: string, public uri?: string, status?: number) {
+    constructor(message: string | string[], public code: string|string[], public uri?: string|string[], status?: number) {
         super(status, message);
         if (!status) {
             switch (code) {

@@ -213,7 +213,7 @@ export class OAuth2Strategy extends Strategy implements AfterInit {
             if (ctx.query.error === 'access_denied') {
                 return new FailResult(ctx.query.error_description, 401);
             }
-            throw new AuthenticationError(ctx.query.error_description, ctx.query.error_uri, ctx.query.error);
+            throw new AuthenticationError(ctx.status || 403, ctx.query.error_uri, ctx.query.error_description || ctx.query.error);
         }
 
         let callbackURL = options.callbackURL || this.callbackURL;

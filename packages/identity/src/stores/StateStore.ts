@@ -83,5 +83,5 @@ export abstract class StateStore implements IStateStore {
     }
 
     abstract store(ctx: Context, meta?: StoreMeta): Promise<string>;
-    abstract verify(ctx: Context, providedState: string): Promise<VerifyResult>;
+    abstract verify(ctx: Context, providedState: string|string[]): Promise<VerifyResult>;
 }

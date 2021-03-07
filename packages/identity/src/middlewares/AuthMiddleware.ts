@@ -1,5 +1,5 @@
 import { Inject } from '@tsdi/ioc';
-import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext, RouteChecker, IConfiguration } from '@mvx/mvc';
+import { Middleware, CompositeMiddleware, MiddlewareTypes, IContext, MvcContext, RouteChecker } from '@mvx/mvc';
 import { AuthenticatorToken, IAuthenticator } from '../passports';
 import '../passports/IAuthenticator';
 

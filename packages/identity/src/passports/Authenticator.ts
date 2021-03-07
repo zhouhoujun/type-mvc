@@ -242,23 +242,23 @@ export class Authenticator implements IAuthenticator {
             // accumulator for failures from each strategy in the chain
             const failures = ctx.failures = [];
 
-            await chain((strategyNames as string[]).map(strategyName => async (ctx, step: () => Promise<void>) => {
+            await chain((strategyNames as string[]).map(strategyName => async (ctx1, step: () => Promise<void>) => {
                 const strategy = this.strategies.get(strategyName);
                 if (!strategy) {
                     throw new Error(`Unknown authentication strategy "${strategyName}"`);
                 }
                 try {
-                    const res = await strategy.authenticate(ctx, options);
+                    const res = await strategy.authenticate(ctx1, options);
                     if (res instanceof FailResult) {
-                        await res.action(ctx);
+                        res.action(ctx1);
                     } else if (res instanceof SuccessResult || res instanceof RedirectResult) {
-                        await res.action(ctx);
+                        await res.action(ctx1);
                     } else {
-                        await res.action(ctx, callback);
+                        await res.action(ctx1, callback);
                         return step();
                     }
                 } catch (error) {
-                    await new FailResult(error.toString(), 401).action(ctx);
+                    new FailResult(error.toString(), 401).action(ctx1);
                 }
             }), ctx);
 

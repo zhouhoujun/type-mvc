@@ -1,6 +1,6 @@
 {
   "name": "@mvx/simples",
-  "version": "4.0.35",
+  "version": "4.0.36",
   "description": "type-mvc is base on koa.  Decorator, Ioc, AOP mvc frameworker on server.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -40,8 +40,8 @@
     "@tsdi/platform-server-boot": "~6.0.40",
     "@tsdi/platform-server-logs": "~6.0.40",
     "@tsdi/typeorm-adapter": "~6.0.40",
-    "@mvx/identity": "~4.0.35",
-    "@mvx/mvc": "~4.0.35",
+    "@mvx/identity": "~4.0.36",
+    "@mvx/mvc": "~4.0.36",
     "typeorm": "~0.2.24",
     "mongodb": "~3.5.4",
     "pg": "^8.2.1",

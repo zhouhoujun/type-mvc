@@ -12,10 +12,10 @@ export class AuthenticationError extends HttpError {
     error: string;
     expose: boolean;
     // tslint:disable-next-line: variable-name
-    constructor(status: number, message: string, public error_description?: string) {
+    constructor(status: number, message: string|string[], public error_description?: string|string[]) {
         super(status, message);
         this.name = lang.getClassName(this);
-        this.error = message;
+        this.error = this.message;
         this.expose = status < 500;
     }
 }

@@ -13,11 +13,11 @@ import { Context } from 'koa';
  */
 export class FailResult extends ValidationResult {
 
-    constructor(private challenge: string, private status: number) {
+    constructor(private challenge: string | string[], private status: number) {
         super();
     }
 
-    action(ctx: Context): void {
+    action(ctx: Context) {
         ctx.failures.push({ challenge: this.challenge, status: this.status });
     }
 }
