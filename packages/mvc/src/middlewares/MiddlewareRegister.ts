@@ -44,9 +44,7 @@ export class MiddlewareRegister {
             if (meta.before) {
                 middlewares.useBefore(middle, meta.before);
             } else if (meta.after) {
-                console.log('use after', middlewares, meta.after);
                 middlewares.useAfter(middle, meta.after);
-                console.log(middlewares);
             } else {
                 middlewares.use(middle);
             }
