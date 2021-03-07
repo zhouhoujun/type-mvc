@@ -1,4 +1,4 @@
-import { Abstract, tokenId, Action, isToken, isFunction, AsyncHandler } from '@tsdi/ioc';
+import { Abstract, tokenId, Action, isToken, isFunction, AsyncHandler, isClass } from '@tsdi/ioc';
 import { HandleType } from '@tsdi/boot';
 import { IContext } from '../IContext';
 import { MvcMiddleware } from '../middlewares/MvcMiddleware';
@@ -68,6 +68,9 @@ export abstract class MvcRoute extends MvcMiddleware {
     protected toHandle(handleType: HandleType<IContext>): AsyncHandler<IContext> {
         if (handleType instanceof Action) {
             return handleType.toAction() as AsyncHandler<IContext>;
+        } else if (isClass(handleType)) {
+            const ist = this.getInjector().get(handleType) ?? this.getInjector().getContainer().getTypeReflects().getInjector(handleType).getInstance(handleType);
+            return ist?.toAction?.() as AsyncHandler<IContext>;
         } else if (isToken(handleType)) {
             return this.getInjector().get<Action>(handleType)?.toAction?.() as AsyncHandler<IContext>;
         } else if (isFunction(handleType)) {

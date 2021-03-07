@@ -1,6 +1,6 @@
-import { Singleton, Type, isString, Inject, INJECTOR } from '@tsdi/ioc';
+import { Singleton, Type, Inject, INJECTOR } from '@tsdi/ioc';
 import { ICoreInjector } from '@tsdi/core';
-import { IMiddleware, isMiddlewareFunc } from './IMiddleware';
+import { IMiddleware } from './IMiddleware';
 import { MiddlewareMetadata } from '../metadata';
 import { CompositeMiddleware } from './MvcMiddleware';
 import { MvcMiddlewares } from './MvcMiddlewares';
@@ -42,13 +42,11 @@ export class MiddlewareRegister {
                 middlewares = injector.get(comp);
             }
             if (meta.before) {
-                middlewares.useBefore(middle, isString(meta.before) ?
-                    middlewares.find(item => isMiddlewareFunc(item) && item.middleName === meta.before)
-                    : meta.before);
+                middlewares.useBefore(middle, meta.before);
             } else if (meta.after) {
-                middlewares.useAfter(middle, isString(meta.after) ?
-                    middlewares.find(item => isMiddlewareFunc(item) && item.middleName === meta.after)
-                    : meta.after);
+                console.log('use after', middlewares, meta.after);
+                middlewares.useAfter(middle, meta.after);
+                console.log(middlewares);
             } else {
                 middlewares.use(middle);
             }

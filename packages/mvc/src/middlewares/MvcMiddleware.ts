@@ -77,9 +77,9 @@ export class CompositeMiddleware extends Handles<IContext> {
     useAfter(handle: HandleType<IContext>, after?: HandleType<IContext>): this {
         if (isString(after)) {
             let afterhdl = this.find((h: any) => h.middleName === after);
-            super.useBefore(handle, afterhdl);
+            super.useAfter(handle, afterhdl);
         } else {
-            super.useBefore(handle, after)
+            super.useAfter(handle, after)
         }
         return this;
     }
@@ -94,6 +94,9 @@ export class CompositeMiddleware extends Handles<IContext> {
     protected toHandle(handleType: HandleType<IContext>): AsyncHandler<IContext> {
         if (handleType instanceof Action) {
             return handleType.toAction() as AsyncHandler<IContext>;
+        } else if (isClass(handleType)) {
+            const ist = this.getInjector().get(handleType) ?? this.getInjector().getContainer().getTypeReflects().getInjector(handleType).getInstance(handleType);
+            return ist?.toAction?.() as AsyncHandler<IContext>;
         } else if (isToken(handleType)) {
             return this.getInjector().get<Action>(handleType)?.toAction?.() as AsyncHandler<IContext>;
         } else if (isFunction(handleType)) {
