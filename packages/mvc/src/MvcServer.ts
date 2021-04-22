@@ -40,7 +40,7 @@ export class MvcServer extends Service<Koa> implements IMvcServer {
         this.logger = ctx.getLogManager().getLogger();
         this.port = config.port || parseInt(process.env.PORT || '0');
         this.hostname = config.hostname;
-        this.uri = `${ctx.httpServer instanceof https.Server ? 'https' : 'http'}://${this.hostname || '127.0.0.1'}:${this.port}`;
+        this.uri = `${ctx.httpServer instanceof https.Server ? 'https' : 'http'}://${this.hostname || 'localhost'}:${this.port}`;
     }
 
     @Inject()
