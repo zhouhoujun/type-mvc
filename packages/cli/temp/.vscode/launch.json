@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Launch Sample",
             "args": [
-                "${workspaceRoot}/packages/simples/demo-orm/src/app.ts" 
+                "${workspaceRoot}/src/app.ts" 
             ],
             "runtimeArgs": [
                 "--nolazy",
